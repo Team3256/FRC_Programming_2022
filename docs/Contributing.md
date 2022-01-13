@@ -23,12 +23,7 @@ Install all necessary tools: Gradle, Third-Party libraries, etc.
 ```
 $ ./gradlew
 ```
-
-If you're using IntelliJ, run the script to generate the IDEA project files, and then open in IntelliJ
-
-```
-$ ./gradlew idea
-```
+Open the project in IntelliJ and make the edits you want!
 
 ### Any time you want to make a change:
 We are currently using Github Flow, which can be read about [here](https://guides.github.com/introduction/flow/).
