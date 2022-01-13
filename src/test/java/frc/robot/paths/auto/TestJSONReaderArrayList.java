@@ -1,4 +1,4 @@
-package auto.paths;
+package frc.robot.paths.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.auto.paths.JSONReader;
