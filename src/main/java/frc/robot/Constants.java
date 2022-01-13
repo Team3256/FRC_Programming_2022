@@ -7,6 +7,8 @@ package frc.robot;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
+import java.util.logging.Level;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -71,6 +73,44 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR_ID = 14;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
+
+
+    }
+    public static class LoggingConstants {
+
+
+        // ******* DEBUG SETTINGS ******* //
+
+        //Make sure this is WARNING in Competition
+        //Ideally CONSOLE should be at most warning, too cluttered otherwise
+        public static Level CONSOLE_LEVEL = Level.WARNING;
+
+        //Make sure this is INFO in Competition
+        public static Level LOG_LEVEL = Level.INFO;
+
+        //Uses Internal Storage for normal logging, be careful of
+        //using too much storage - Normally should be false.
+        public static boolean FORCE_NORMAL_INTERNAL = false;
+
+        // ******************************* //
+
+
+        //Max Number of Files
+        public static final int TXT_LOG_MAX_FILES = 10;
+        public static final int HTML_LOG_MAX_FILES = 3;
+
+        //Normal Max File Sizes
+        public static final int TXT_LOG_MAX_SIZE = 100000000;  // In Bytes
+        public static final int HTML_LOG_MAX_SIZE = 100000000; // In Bytes
+
+        //File Names (%g is for Numbering of Files)
+        public static final String TXT_FILE_NAME = "TextLog%g.txt";
+        public static final String HTML_FILE_NAME = "HtmlLog%g.html";
+
+
+        //Emergency File Settings (NO USB)
+        public static final int EMERGENCY_TXT_MAX_FILES = 3;
+        public static final int EMERGENCY_TXT_MAX_SIZE = 3000000; //In Bytes
 
 
     }

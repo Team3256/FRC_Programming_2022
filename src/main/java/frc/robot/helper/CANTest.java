@@ -4,7 +4,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+
+import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.*;
 
@@ -12,6 +15,8 @@ import static frc.robot.Constants.IDConstants.*;
  * A Class to test if CAN devices are online
  */
 public class CANTest {
+
+    private static final Logger logger = Logger.getLogger(CANTest.class.getCanonicalName());
 
 
     /**
@@ -24,9 +29,9 @@ public class CANTest {
                 testPigeon();
 
         if (noErrors) {
-            System.out.println("All CAN Devices Online");
+            logger.info("All CAN Devices Online");
         } else {
-            System.out.println("CAN Errors Exist");
+            logger.severe("CAN Errors Exist");
         }
     }
 
@@ -39,7 +44,7 @@ public class CANTest {
         PowerDistribution pdp = new PowerDistribution();
         double voltage = pdp.getVoltage();
         if (voltage == 0) {
-            System.out.println("PDP Offline");
+            logger.severe("PDP Offline");
             return false;
         }
         return true;
@@ -57,7 +62,7 @@ public class CANTest {
             double temp = talon.getTemperature();
             if (temp == 0) {
                 isGood = false;
-                System.out.println("Talon FX ID " + id + " Offline");
+                logger.severe("Talon FX ID " + id + " Offline");
             }
         }
         return isGood;
@@ -72,7 +77,7 @@ public class CANTest {
         PigeonIMU pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
         double temp = pigeon.getTemp();
         if (temp == 0) {
-            System.out.println("Pigeon is Offline");
+            logger.severe("Pigeon is Offline");
             return false;
         }
         return true;
@@ -88,7 +93,7 @@ public class CANTest {
             double temp = sparkMax.getMotorTemperature();
             if (temp == 0) {
                 isGood = false;
-                System.out.println("SparkMax " + id + " offline");
+                logger.severe("SparkMax " + id + " offline");
             }
         }
         return isGood;
