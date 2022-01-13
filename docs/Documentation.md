@@ -1,4 +1,4 @@
 
 # Documentation
 
-Logging Documentation [here](docs/LoggingDocs.md)
+Logging Documentation [here](LoggingDocs.md)
