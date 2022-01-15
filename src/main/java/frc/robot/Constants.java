@@ -118,7 +118,8 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_INITIAL_SPEED = 0.0;
-        public static final double FLYWHEEL_RADIUS = 0.0;
+        public static final double SHOOTER_INITIAL_SPEED = 0.0; // in m/s
+        public static final double FLYWHEEL_RADIUS = 0.0; // in m
+        public static final double MARGIN_OF_ERROR_SPEED = 0.0; // in m/s
     }
 }

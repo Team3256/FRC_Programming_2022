@@ -19,8 +19,14 @@ public class StartShooterDefaultCommand extends CommandBase {
     }
 
     @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            flywheelSubsystem.stop();
+        }
+    }
+
+    @Override
     public boolean isFinished() {
-        return false;
+        return flywheelSubsystem.isAtSetPoint();
     }
 }
-

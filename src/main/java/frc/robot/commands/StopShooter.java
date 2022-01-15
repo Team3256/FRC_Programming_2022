@@ -18,14 +18,7 @@ public class StopShooter extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
-    }
-
-    @Override
     public boolean isFinished() {
         return true;
     }
 }
-
-// TODO: End command

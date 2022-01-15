@@ -8,6 +8,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX shooterMotor;
+    private double currentTargetSpeed;
 
     public FlywheelSubsystem() {
         shooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID);
@@ -19,13 +20,26 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public void setSpeed(double velocity) {
         // formula for converting m/s to sensor units/100ms
-        double velocityInSensorUnits = velocity * 0.1 * 2048 *(1/(2*Math.PI*FLYWHEEL_RADIUS));
-        shooterMotor.set(ControlMode.Velocity, velocityInSensorUnits);
+        currentTargetSpeed = velocity * 0.1 * 2048 *(1/(2*Math.PI*FLYWHEEL_RADIUS));
+        shooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
     }
 
     public void stop() {
         shooterMotor.set(ControlMode.PercentOutput, 0);
     }
-}
 
-// TODO: Is at set point command
+    public double getVelocity() {
+        double velocityInSensorUnits = shooterMotor.getSensorCollection().getIntegratedSensorVelocity();
+        return velocityInSensorUnits  * 10 * (1/2048) * 2 * Math.PI * FLYWHEEL_RADIUS;
+    }
+
+    public boolean isAtSetPoint() {
+        double velocity = getVelocity();
+
+        if ((velocity <= currentTargetSpeed + MARGIN_OF_ERROR_SPEED) && (velocity >= currentTargetSpeed - MARGIN_OF_ERROR_SPEED)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
