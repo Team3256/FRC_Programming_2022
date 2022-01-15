@@ -1,25 +1,19 @@
-package frc.robot.hardware;
+package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.team3256.warriorlib.loop.Loop;
-import frc.robot.Constants.LimelightConstants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.LimelightConstants.*;
 
-public class Limelight implements Loop {
+public class Limelight extends SubsystemBase {
     private NetworkTableInstance inst;
     private NetworkTableEntry limeLightTx, limeLightTy, limeLightTa, limeLightTs, limeLightTcornx, limeLightTcorny;
     private double tx, ty, ta, ts;
     private double [] tcornx, tcorny;
 
-    //singleton
-    private static Limelight instance;
-    public static Limelight getInstance() { return instance == null ? instance = new Limelight() : instance; }
-
-    public void init() {
+    public Limelight() {
         //Setting up NetworkTables
         inst = NetworkTableInstance.getDefault();
         NetworkTable limelight = inst.getTable("limelight");
@@ -40,7 +34,7 @@ public class Limelight implements Loop {
         limelight.getEntry("snapshot").setNumber(0); //Takes no snapshots
     }
     @Override
-    public void update(double timestamp) {
+    public void periodic() {
         tx = limeLightTx.getDouble(0);
         ty = limeLightTy.getDouble(0);
         ta = limeLightTa.getDouble(0);
@@ -54,13 +48,5 @@ public class Limelight implements Loop {
     public double toRadians(double degrees){
         return degrees * Math.PI/180.0;
     }
-    //unused
-    @Override
-    public void init(double timestamp) {
 
-    }
-    @Override
-    public void end(double timestamp) {
-
-    }
 }
