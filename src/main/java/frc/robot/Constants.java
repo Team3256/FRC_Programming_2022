@@ -18,6 +18,11 @@ import java.util.logging.Level;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static class LimelightConstants {
+        public static final double ROBOT_HEIGHT_INCHES = 29;
+        public static final double TARGET_HEIGHT_INCHES = 98;
+        public static final double LIMELIGHT_ANGLE_DEG = 60.4;
+    }
     public static class SwerveConstants {
         public static final double MAX_VOLTAGE = 12.0;
 

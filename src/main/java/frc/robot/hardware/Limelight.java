@@ -5,6 +5,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.team3256.warriorlib.loop.Loop;
+import frc.robot.Constants.LimelightConstants;
+
+import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight implements Loop {
     private NetworkTableInstance inst;
@@ -45,7 +48,13 @@ public class Limelight implements Loop {
         tcornx = limeLightTcornx.getDoubleArray(new double[4]);
         tcorny = limeLightTcorny.getDoubleArray(new double[4]);
     }
-
+    public double getDistanceToTarget(){
+        return (TARGET_HEIGHT_INCHES-ROBOT_HEIGHT_INCHES)/Math.tan(toRadians(LIMELIGHT_ANGLE_DEG+ty));
+    }
+    public double toRadians(double degrees){
+        return degrees * Math.PI/180.0;
+    }
+    //unused
     @Override
     public void init(double timestamp) {
 
