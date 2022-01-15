@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class StartShooterSpeedCommand extends CommandBase {
+public class StartShooterDefaultCommand extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
 
-    public StartShooterSpeedCommand(FlywheelSubsystem flywheelSubsystem) {
+    public StartShooterDefaultCommand(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
 
         addRequirements(flywheelSubsystem);
@@ -23,3 +23,4 @@ public class StartShooterSpeedCommand extends CommandBase {
         return false;
     }
 }
+

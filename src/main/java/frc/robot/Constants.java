@@ -116,4 +116,9 @@ public final class Constants {
 
 
     }
+
+    public static class ShooterConstants {
+        public static final double SHOOTER_INITIAL_SPEED = 0.0;
+        public static final double FLYWHEEL_RADIUS = 0.0;
+    }
 }

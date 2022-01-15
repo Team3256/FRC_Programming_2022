@@ -27,3 +27,5 @@ public class FlywheelSubsystem extends SubsystemBase {
         shooterMotor.set(ControlMode.PercentOutput, 0);
     }
 }
+
+// TODO: Is at set point command
