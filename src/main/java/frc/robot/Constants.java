@@ -118,8 +118,13 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_INITIAL_SPEED = 0.0; // in m/s
-        public static final double FLYWHEEL_RADIUS = 0.0; // in m
-        public static final double MARGIN_OF_ERROR_SPEED = 0.0; // in m/s
+        public static final double SHOOTER_INITIAL_SPEED = 0.0; // in m/s TODO: Set flywheel initiation speed
+        public static final double FLYWHEEL_RADIUS = 0.0; // in m TODO: Set flywheel radius
+        public static final double MARGIN_OF_ERROR_SPEED = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double UPPER_HUB_HEIGHT = 2.64; // in m
+        public static final double LOWER_HUB_HEIGHT = 1.04; // in m
+        public static final double SHOOTER_HEIGHT = 0.51; // in m
+        public static final double PREFERRED_DISTANCE_FROM_TOP = 0; // in m TODO: Set preferred distance from top
+        public static final double CONSTANT_GRAVITY = 9.81;
     }
 }
