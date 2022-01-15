@@ -24,6 +24,9 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   public final Limelight limelight = new Limelight();
 
+  //For Testing
+  private TalonFX test = new TalonFX(3);
+
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
