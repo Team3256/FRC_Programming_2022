@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -17,8 +18,8 @@ public class PIDShooterSubsystem extends PIDSubsystem {
         // leave blank
     }
 
-    protected void setSpeed(double speed) {
-//        m_shooterMotor.set();
+    public void setSpeed(double velocity) {
+        m_shooterMotor.set(ControlMode.Velocity, velocity);
     }
 
     @Override

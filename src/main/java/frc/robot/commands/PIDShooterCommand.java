@@ -14,9 +14,12 @@ public class PIDShooterCommand extends CommandBase {
 
     @Override
     public void initialize() {
-
+        m_subsystem.setSpeed(0);
     }
 
+    public void setVelocity(double velocity) {
+        m_subsystem.setSpeed(velocity);
+    }
 
 
     @Override
