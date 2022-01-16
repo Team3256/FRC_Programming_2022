@@ -15,11 +15,6 @@ public class SetCustomVelocityShooterCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
-    }
-
-    @Override
     public void execute() {
         double distanceToTarget = 0.0; //TODO: limelight fetch distance goes here
 

@@ -6,10 +6,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetPercentSpeedShooterCommand;
+import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.FlywheelSubsystem;
+
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,9 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -37,7 +43,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    XboxController xboxController = new XboxController(0);
+
+    JoystickAnalogButton rightTrigger = new JoystickAnalogButton(xboxController, XboxController.Axis.kRightTrigger.value);
+    rightTrigger.setThreshold(0.01);
+
+    rightTrigger.whenPressed(new SetPercentSpeedShooterCommand(flywheelSubsystem, xboxController::getRightTriggerAxis));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -46,6 +59,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new Command() {
+      @Override
+      public Set<Subsystem> getRequirements() {
+        return null;
+      }
+    };
   }
 }

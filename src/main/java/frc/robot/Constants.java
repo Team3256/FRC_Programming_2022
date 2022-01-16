@@ -53,7 +53,7 @@ public final class Constants {
     }
 
     public static class IDConstants {
-        public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15,20};
+        public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15,20,21};
         public static final int[] SPARK_MAX_IDS = new int[]{};
 
         public static final int DRIVETRAIN_PIGEON_ID = 4;
@@ -74,7 +74,8 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
 
-        public static final int PID_SHOOTER_MOTOR_ID = 20;
+        public static final int PID_SHOOTER_MOTOR_ID_0 = 7;
+        public static final int PID_SHOOTER_MOTOR_ID_1 = 8;
 
 
     }
