@@ -20,11 +20,14 @@ public class SetCustomVelocityShooterCommand extends CommandBase {
 
         double theta;
 
-        double aimHeight = UPPER_HUB_HEIGHT - PREFERRED_DISTANCE_FROM_TOP;
+        double aimHeight = UPPER_HUB_HEIGHT + PREFERRED_DISTANCE_FROM_TOP;
         double deltaHeight = aimHeight - SHOOTER_HEIGHT;
 
-        theta = Math.atan((aimHeight + UPPER_HUB_HEIGHT)/(0.5 * distanceToTarget));
-        flywheelSubsystem.setSpeed((distanceToTarget * Math.sqrt(CONSTANT_GRAVITY) * 1/(Math.cos(theta))) / ((Math.sqrt(distanceToTarget * Math.tan(theta)) - deltaHeight)));
+        double correctedDistance = distanceToTarget + (distanceToTarget * DELTA_DISTANCE_TO_TARGET_FACTOR);
+        double correctedAimHeight = aimHeight + (aimHeight * DELTA_AIM_HEIGHT_FACTOR);
+
+        theta = Math.atan((correctedAimHeight + UPPER_HUB_HEIGHT)/(0.5 * correctedDistance));
+        flywheelSubsystem.setSpeed((correctedDistance * Math.sqrt(CONSTANT_GRAVITY) * 1/(Math.cos(theta))) / ((Math.sqrt(correctedDistance * Math.tan(theta)) - deltaHeight)));
     }
 
     @Override

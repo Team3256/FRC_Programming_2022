@@ -15,7 +15,7 @@ public class StartShooterDefaultCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        flywheelSubsystem.setSpeed(SHOOTER_INITIAL_SPEED);
+        flywheelSubsystem.setSpeed(CUSTOM_INITIATION_SPEED);
     }
 
     @Override
