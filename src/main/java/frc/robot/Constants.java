@@ -77,6 +77,11 @@ public final class Constants {
         public static final int PID_SHOOTER_MOTOR_ID_0 = 7;
         public static final int PID_SHOOTER_MOTOR_ID_1 = 8;
 
+        // Channels
+
+        public static final int HOOD_SERVO_CHANNEL_ID = 0;
+        public static final int HOOD_LIMIT_SWITCH_CHANNEL_ID = 1;
+
 
     }
     public static class LoggingConstants {
@@ -129,5 +134,8 @@ public final class Constants {
 
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
+
+        // Hood Constants
+        public static final double HOOD_GEAR_RATIO = 1.0;
     }
 }
