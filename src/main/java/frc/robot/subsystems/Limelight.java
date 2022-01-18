@@ -49,4 +49,7 @@ public class Limelight extends SubsystemBase {
         return degrees * Math.PI/180.0;
     }
 
+    public double getTuned(double x){
+        return 0.961*x + 9.39;
+    }
 }

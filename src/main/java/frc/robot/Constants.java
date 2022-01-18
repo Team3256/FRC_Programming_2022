@@ -19,9 +19,9 @@ import java.util.logging.Level;
  */
 public final class Constants {
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double ROBOT_HEIGHT_INCHES = 29.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 29.6;
+        public static final double LIMELIGHT_ANGLE_DEG = 30;
     }
     public static class SwerveConstants {
         public static final double MAX_VOLTAGE = 12.0;
