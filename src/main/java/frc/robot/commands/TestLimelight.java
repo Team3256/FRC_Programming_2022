@@ -19,6 +19,7 @@ public class TestLimelight extends CommandBase {
         System.out.println("Running");
 
         SmartDashboard.putNumber("distance to target:", limelight.getDistanceToTarget());
+        SmartDashboard.putNumber("(tuned) distance to target:", limelight.getTuned(limelight.getDistanceToTarget()));
     }
 
     @Override
