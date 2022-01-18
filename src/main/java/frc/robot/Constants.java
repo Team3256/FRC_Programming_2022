@@ -129,7 +129,7 @@ public final class Constants {
         public static final double UPPER_HUB_HEIGHT = 2.64; // in m
         public static final double LOWER_HUB_HEIGHT = 1.04; // in m
         public static final double SHOOTER_HEIGHT = 0.51; // in m
-        public static final double PREFERRED_DISTANCE_FROM_TOP = 0; // in m TODO: Set preferred distance from top
+        public static final double PREFERRED_DISTANCE_FROM_TOP = 0.05; // in m TODO: Set preferred distance from top
         public static final double CONSTANT_GRAVITY = 9.81;
 
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning

@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.text.DecimalFormat;
+
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -57,7 +59,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterShooterMotor.set(ControlMode.PercentOutput, percent);
     }
 
-    private void setHoodAngle(double hoodAngle) {
+    public void setHoodAngle(double hoodAngle) {
         hoodAngleServo.setAngle(hoodAngle);
     }
 
@@ -75,7 +77,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private ShooterState ballInverseKinematics(double distance) {
         double theta;
 
-        double aimHeight = UPPER_HUB_HEIGHT + PREFERRED_DISTANCE_FROM_TOP;
+        double aimHeight = UPPER_HUB_HEIGHT - PREFERRED_DISTANCE_FROM_TOP;
         double deltaHeight = aimHeight - SHOOTER_HEIGHT;
 
         double correctedDistance = distance + (distance * DELTA_DISTANCE_TO_TARGET_FACTOR);
@@ -88,18 +90,20 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private void applyShooterState(ShooterState shooterState) {
+        shooterState.velocity = ((Math.floor(shooterState.velocity * 100000 * 100000) / 100000) / 100000);
+
         setSpeed(shooterState.velocity);
         setHoodAngle(shooterState.theta);
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
         // TODO: Get calibration equations
-        return 0.0;
+        return ballVelocity;
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
         // TODO: Get calibration equations
-        return 0.0;
+        return ballAngle;
     }
 
     private double getVelocity() {
