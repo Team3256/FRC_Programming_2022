@@ -43,7 +43,7 @@ public class Limelight extends SubsystemBase {
         tcorny = limeLightTcorny.getDoubleArray(new double[4]);
     }
     public double getDistanceToTarget(){
-        return (TARGET_HEIGHT_INCHES-ROBOT_HEIGHT_INCHES)/Math.tan(toRadians(LIMELIGHT_ANGLE_DEG+ty));
+        return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+ty));
     }
     public double toRadians(double degrees){
         return degrees * Math.PI/180.0;
