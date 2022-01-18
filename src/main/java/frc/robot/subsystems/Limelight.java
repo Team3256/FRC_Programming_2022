@@ -50,6 +50,6 @@ public class Limelight extends SubsystemBase {
     }
 
     public double getTuned(double x){
-        return 0.961*x + 9.39;
+        return 1.04*x + -9.54;
     }
 }
