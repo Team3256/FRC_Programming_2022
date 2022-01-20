@@ -18,10 +18,10 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ExampleCommand;
+//import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IntakeOn;
 import frc.robot.helper.logging.RobotLogger;
-import frc.robot.subsystems.ExampleSubsystem;
+//import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-      Button rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
+      Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
