@@ -80,7 +80,6 @@ public final class Constants {
         // Channels
 
         public static final int HOOD_SERVO_CHANNEL_ID = 0;
-        public static final int HOOD_LIMIT_SWITCH_CHANNEL_ID = 1;
 
 
     }
@@ -126,16 +125,13 @@ public final class Constants {
     public static class ShooterConstants {
         public static final double CUSTOM_INITIATION_SPEED = 0.0; // in m/s TODO: Set flywheel initiation speed
         public static final double MARGIN_OF_ERROR_SPEED = 0.0; // in m/s TODO: Set margin of error for initiation speed test
-        public static final double UPPER_HUB_HEIGHT = 2.64; // in m
-        public static final double LOWER_HUB_HEIGHT = 1.04; // in m
+        public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
+        public static final double RADIUS_UPPER_HUB = 0.61; // in m
         public static final double SHOOTER_HEIGHT = 0.51; // in m
         public static final double PREFERRED_DISTANCE_FROM_TOP = 0.05; // in m TODO: Set preferred distance from top
         public static final double CONSTANT_GRAVITY = 9.81;
 
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-
-        // Hood Constants
-        public static final double HOOD_GEAR_RATIO = 1.0;
     }
 }

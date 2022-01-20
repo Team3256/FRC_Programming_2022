@@ -35,8 +35,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
     }
 
-    public void autoAim(double distance) {
-        ShooterState ikShooterState = ballInverseKinematics(distance);
+    public void autoAim(double distance, double angleEntry) {
+        ShooterState ikShooterState = ballInverseKinematics(distance, angleEntry);
 
         ShooterState correctedShooterState = new ShooterState(
                 getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
@@ -74,19 +74,27 @@ public class FlywheelSubsystem extends SubsystemBase {
                 (velocity >= currentTargetSpeed - MARGIN_OF_ERROR_SPEED);
     }
 
-    private ShooterState ballInverseKinematics(double distance) {
-        double theta;
+    private ShooterState ballInverseKinematics(double distance, double angleEntry) {
+        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
+        double distToAimPoint = RADIUS_UPPER_HUB + distance;
 
-        double aimHeight = UPPER_HUB_HEIGHT - PREFERRED_DISTANCE_FROM_TOP;
-        double deltaHeight = aimHeight - SHOOTER_HEIGHT;
+        double tangentEntryAngle = Math.tan(angleEntry);
+        double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
+        double distanceToAimSquare = Math.pow(distToAimPoint, 2);
+        double deltaHeightSquare = Math.pow(angleEntry, 2);
+        double tangentAimDistSquare = Math.pow(distToAimPoint * tangentEntryAngle, 2);
+        double tangentAimDist = distToAimPoint * tangentEntryAngle;
 
-        double correctedDistance = distance + (distance * DELTA_DISTANCE_TO_TARGET_FACTOR);
-        double correctedAimHeight = aimHeight + (aimHeight * DELTA_AIM_HEIGHT_FACTOR);
 
-        theta = Math.atan((correctedAimHeight + UPPER_HUB_HEIGHT)/(0.5 * correctedDistance));
-        double velocity = (correctedDistance * Math.sqrt(CONSTANT_GRAVITY) * 1/(Math.cos(theta))) / ((Math.sqrt(correctedDistance * Math.tan(theta)) - deltaHeight));
+        double exitAngleTheta = -2 * Math.atan((distToAimPoint -
+                Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
+                / (tangentAimDist + 2 * deltaHeight));
+        double velocity = 0.3 * Math.sqrt(109/2) *
+                ((Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
+                / Math.sqrt(tangentAimDist + deltaHeight));
 
-        return new ShooterState(velocity, theta);
+        ShooterState shooterState = new ShooterState(velocity, exitAngleTheta);
+        return shooterState;
     }
 
     private void applyShooterState(ShooterState shooterState) {

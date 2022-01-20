@@ -16,9 +16,10 @@ public class SetCustomVelocityShooterCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double distanceToTarget = 10.0; //TODO: limelight fetch distance goes here
+        double distanceToTarget = 10.0; // TODO: limelight fetch distance goes here
+        double entryAngle = 50.0; // in deg TODO: entry angle needs to be custom set
 
-        flywheelSubsystem.autoAim(distanceToTarget);
+        flywheelSubsystem.autoAim(distanceToTarget, entryAngle);
     }
 
     @Override
