@@ -32,6 +32,6 @@ public class SetShooterCustomVelocityTest {
         commandScheduler.schedule(customVelocityCommand);
         commandScheduler.run();
 
-        verify(flywheelSubsystem).autoAim(anyDouble());
+        verify(flywheelSubsystem).autoAim(anyDouble(), anyDouble());
     }
 }

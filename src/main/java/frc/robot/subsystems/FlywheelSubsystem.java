@@ -74,14 +74,16 @@ public class FlywheelSubsystem extends SubsystemBase {
                 (velocity >= currentTargetSpeed - MARGIN_OF_ERROR_SPEED);
     }
 
-    private ShooterState ballInverseKinematics(double distance, double angleEntry) {
+    private ShooterState ballInverseKinematics(double distance, double entryAngle) {
+        double angleEntry = entryAngle * Math.PI / 180;
+
         double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
         double distToAimPoint = RADIUS_UPPER_HUB + distance;
 
         double tangentEntryAngle = Math.tan(angleEntry);
         double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
         double distanceToAimSquare = Math.pow(distToAimPoint, 2);
-        double deltaHeightSquare = Math.pow(angleEntry, 2);
+        double deltaHeightSquare = Math.pow(deltaHeight, 2);
         double tangentAimDistSquare = Math.pow(distToAimPoint * tangentEntryAngle, 2);
         double tangentAimDist = distToAimPoint * tangentEntryAngle;
 
@@ -89,12 +91,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         double exitAngleTheta = -2 * Math.atan((distToAimPoint -
                 Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
                 / (tangentAimDist + 2 * deltaHeight));
-        double velocity = 0.3 * Math.sqrt(109/2) *
+        double velocity = 0.3 * Math.sqrt(54.5) *
                 ((Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
-                / Math.sqrt(tangentAimDist + deltaHeight));
+                        / Math.sqrt(tangentAimDist + deltaHeight));
 
-        ShooterState shooterState = new ShooterState(velocity, exitAngleTheta);
-        return shooterState;
+        return new ShooterState(velocity, exitAngleTheta);
     }
 
     private void applyShooterState(ShooterState shooterState) {
@@ -117,6 +118,32 @@ public class FlywheelSubsystem extends SubsystemBase {
     private double getVelocity() {
         double velocityInSensorUnits = masterShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
+    }
+
+    public double[] ballInverseKinematicsTester(double distance, double entryAngle) {
+        double angleEntry = entryAngle * Math.PI / 180;
+
+        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
+        double distToAimPoint = RADIUS_UPPER_HUB + distance;
+
+        double tangentEntryAngle = Math.tan(angleEntry);
+        double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
+        double distanceToAimSquare = Math.pow(distToAimPoint, 2);
+        double deltaHeightSquare = Math.pow(deltaHeight, 2);
+        double tangentAimDistSquare = Math.pow(distToAimPoint * tangentEntryAngle, 2);
+        double tangentAimDist = distToAimPoint * tangentEntryAngle;
+
+
+        double exitAngleTheta = -2 * Math.atan((distToAimPoint -
+                Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
+                / (tangentAimDist + 2 * deltaHeight));
+        double velocity = 0.3 * Math.sqrt(54.5) *
+                ((Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
+                        / Math.sqrt(tangentAimDist + deltaHeight));
+
+        double exitAngleDegrees = exitAngleTheta * 180 / Math.PI;
+
+        return new double[]{velocity, exitAngleDegrees};
     }
 }
 
