@@ -19,7 +19,7 @@ public class JSONReader {
       * actual function that will be used in real purposes, NOT for testing
      */
     public static ArrayList<Translation2d> ParseJSONFile(String file) {
-        JSONArray translation;
+        JSONArray translation = new JSONArray();
 
         file = new File(Filesystem.getDeployDirectory(),file).getAbsolutePath();
 
