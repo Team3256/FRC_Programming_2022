@@ -114,7 +114,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         return ballAngle;
     }
 
-    private double getVelocity() {
+    public double getVelocity() {
         double velocityInSensorUnits = masterShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
     }

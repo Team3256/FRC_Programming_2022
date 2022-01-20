@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 
@@ -19,6 +20,7 @@ public class SetPercentSpeedShooterCommand extends CommandBase {
     @Override
     public void execute() {
         flywheelSubsystem.setPercentSpeed(triggerInput.getAsDouble() * 100);
+        SmartDashboard.putNumber("Flywheel Velocity", flywheelSubsystem.getVelocity());
     }
 
     @Override
