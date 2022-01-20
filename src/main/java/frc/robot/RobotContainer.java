@@ -17,6 +17,13 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeOn;
+import frc.robot.helper.logging.RobotLogger;
+import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +36,7 @@ import java.util.List;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
     private final Field2d field = new Field2d();
     private final XboxController controller = new XboxController(0);
 
@@ -37,6 +45,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+      RobotLogger.setup();
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
@@ -61,10 +70,13 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+      Button rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+      
+      rightBumper.whenHeld(new IntakeOn(intake));
     }
     public SendableChooser<Command> getCommandChooser() {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem);
