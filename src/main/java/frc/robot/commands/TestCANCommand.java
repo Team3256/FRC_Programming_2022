@@ -10,7 +10,7 @@ public class TestCANCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        CANTest.test();
+       CANTest.test();
     }
     @Override
     public boolean isFinished() {
