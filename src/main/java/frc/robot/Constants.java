@@ -54,8 +54,10 @@ public final class Constants {
 
     public static class IDConstants {
         public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15};
-        public static final int[] SPARK_MAX_IDS = new int[]{};
-
+        public static final int[] SPARK_MAX_IDS = new int[]{33};
+        //Intake
+        public static final int INTAKE_ID = 33;
+        //Drivetrain
         public static final int DRIVETRAIN_PIGEON_ID = 4;
 
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 5;
