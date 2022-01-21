@@ -2,8 +2,8 @@ package frc.robot.paths.commands;
 
 import frc.robot.subsystems.FlywheelSubsystem;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import java.text.DecimalFormat;
+import static org.junit.Assert.assertArrayEquals;
 
 public class FlywheelInverseKinematicsTest {
     @Test
@@ -20,6 +20,6 @@ public class FlywheelInverseKinematicsTest {
 
         String[] accurateCompareTo = {"8.93681763198", "64.2817680352"};
 
-        assertEquals(accurateCompareTo, velocityEntryString);
+        assertArrayEquals(accurateCompareTo, velocityEntryString);
     }
 }
