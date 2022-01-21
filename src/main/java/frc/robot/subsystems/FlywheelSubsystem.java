@@ -56,7 +56,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void setPercentSpeed(double percent) {
-        masterShooterMotor.set(ControlMode.PercentOutput, percent);
+        masterShooterMotor.set(ControlMode.PercentOutput, -1 * percent);
     }
 
     public void setHoodAngle(double hoodAngle) {
