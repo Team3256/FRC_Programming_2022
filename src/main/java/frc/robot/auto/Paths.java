@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.commands.TrajectoryFollowCommand;
+import frc.robot.helper.UniformThetaSupplier;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
@@ -42,19 +43,19 @@ public class Paths {
         Trajectory trajectory1 =
                 TrajectoryGenerator.generateTrajectory(
                         // Start at the origin facing the +X direction
-                       waypoints,
-                config);
+                        waypoints,
+                        config);
 
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
                         P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                 trajectory1,
-                robotDrive::getPose, // Functional interface to feed supplies
-                robotDrive.getKinematics(),
+                robotDrive::getPose,
 
+                // Functional interface to feed supplies
+                robotDrive.getKinematics(),
 
                 // Position controllers
                 new PIDController(P_X_CONTROLLER, I_X_CONTROLLER, D_X_CONTROLLER),
@@ -78,6 +79,7 @@ public class Paths {
         for(int pos = 0; pos <= 80; pos++){
             waypoints.add(new Pose2d(Units.inchesToMeters(pos), 0, new Rotation2d()));
         }
+
 //        List<Translation2d> waypoints = List.of(new Translation2d(Units.inchesToMeters(12), 0));s
         // JSONReader.ParseJSONFile("");
 
@@ -93,12 +95,13 @@ public class Paths {
                         P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+        UniformThetaSupplier thetaFeed = new UniformThetaSupplier(trajectory2.getTotalTimeSeconds(), new Rotation2d(Units.degreesToRadians(180)), 0.75);
         TrajectoryFollowCommand trajectoryFollowCommand = new TrajectoryFollowCommand(
                 trajectory2,
                 new PIDController(P_X_CONTROLLER, I_X_CONTROLLER, D_X_CONTROLLER),
                 new PIDController(P_Y_CONTROLLER, I_Y_CONTROLLER, D_Y_CONTROLLER),
+                thetaFeed::rotationSupply,
                 thetaController,
-                new Rotation2d(Units.degreesToRadians(180)),
                 robotDrive
         );
 
