@@ -124,4 +124,9 @@ public final class Constants {
 
 
     }
+
+    public static class HangerConstants {
+        public static final int SPOOL_FORWARD_SPEED = 0; // TODO: Set speed of forward spool
+        public static final int SPOOL_BACKWARD_SPEED = 0; // TODO: Set speed of backward spool
+    }
 }
