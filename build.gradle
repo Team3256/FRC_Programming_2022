@@ -72,8 +72,9 @@ dependencies {
 
 
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-    implementation  'com.github.Team3256:warriorlib:d31221e'
-    implementation  'com.github.SwerveDriveSpecialties:swerve-lib:feb950b'
+
+    //Dylans "Fixed" Version, Change to Actual Swerve once they release 2022 version.
+    implementation 'com.github.StarDylan:swerve-lib:a0ae84c1be'
 }
 
 // Simulation configuration (e.g. environment variables).
