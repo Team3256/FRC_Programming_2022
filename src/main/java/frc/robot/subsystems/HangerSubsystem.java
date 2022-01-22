@@ -17,4 +17,20 @@ public class HangerSubsystem extends SubsystemBase {
         pneumaticControl1 = new PneumaticsControlModule(PNEUMATIC_CONTROL_MODULE_ONE);
         pneumaticControl2 = new PneumaticsControlModule(PNEUMATIC_CONTROL_MODULE_TWO);
     }
+
+    public void hangerMotorSpool() {
+
+    }
+
+    public void hangerMotorUnspool() {
+
+    }
+
+    public void pneumaticFire() {
+
+    }
+
+    public void pneumaticUnfire() {
+
+    }
 }
