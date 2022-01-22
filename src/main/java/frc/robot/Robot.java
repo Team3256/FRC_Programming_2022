@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  
-  private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer;
+
+  private Command autonomousCommand;
+  private RobotContainer robotContainer;
   
   /**
    * This function is run when the robot is first started up and should be used for any
