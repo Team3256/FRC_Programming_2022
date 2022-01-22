@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,13 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.TestLimelight;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeOn;
 import frc.robot.helper.logging.RobotLogger;
-import frc.robot.subsystems.Limelight;
+import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +42,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+      Limelight.init();
     RobotLogger.setup();
       // Set up the default command for the drivetrain.
       // The controls are for field-oriented driving:

@@ -17,6 +17,7 @@ public final class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+        public static final double DEFAULT_TURRET_SPEED = 50;
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
