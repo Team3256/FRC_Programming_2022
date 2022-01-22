@@ -6,14 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.button.Button;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.SetPercentSpeedShooterCommand;
+import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FlywheelSubsystem;
 
@@ -49,7 +45,7 @@ public class RobotContainer {
     JoystickAnalogButton rightTrigger = new JoystickAnalogButton(xboxController, XboxController.Axis.kRightTrigger.value);
     rightTrigger.setThreshold(0.01);
 
-    rightTrigger.whenPressed(new SetPercentSpeedShooterCommand(flywheelSubsystem, xboxController::getRightTriggerAxis));
+    rightTrigger.whenPressed(new SetShooterFromTriggerDebug(flywheelSubsystem, xboxController::getRightTriggerAxis));
   }
 
   /**

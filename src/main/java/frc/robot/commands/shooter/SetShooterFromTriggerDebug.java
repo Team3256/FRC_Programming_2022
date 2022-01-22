@@ -1,15 +1,15 @@
-package frc.robot.commands;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.util.function.DoubleSupplier;
 
-public class SetPercentSpeedShooterCommand extends CommandBase {
+public class SetShooterFromTriggerDebug extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
     private DoubleSupplier triggerInput;
 
-    public SetPercentSpeedShooterCommand(FlywheelSubsystem flywheelSubsystem, DoubleSupplier triggerInput) {
+    public SetShooterFromTriggerDebug(FlywheelSubsystem flywheelSubsystem, DoubleSupplier triggerInput) {
         this.flywheelSubsystem = flywheelSubsystem;
         this.triggerInput = triggerInput;
 

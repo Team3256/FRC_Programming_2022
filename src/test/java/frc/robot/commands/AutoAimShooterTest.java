@@ -1,8 +1,8 @@
-package frc.robot.paths.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.SetCustomVelocityShooterCommand;
+import frc.robot.commands.shooter.AutoAimShooter;
 import frc.robot.subsystems.FlywheelSubsystem;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SetShooterCustomVelocityTest {
+public class AutoAimShooterTest {
     private CommandScheduler commandScheduler;
 
     @Before
@@ -27,11 +27,11 @@ public class SetShooterCustomVelocityTest {
         DriverStationSim.setEnabled(true);
 
         FlywheelSubsystem flywheelSubsystem = mock(FlywheelSubsystem.class);
-        SetCustomVelocityShooterCommand customVelocityCommand = new SetCustomVelocityShooterCommand(flywheelSubsystem);
+        AutoAimShooter customVelocityCommand = new AutoAimShooter(flywheelSubsystem);
 
         commandScheduler.schedule(customVelocityCommand);
         commandScheduler.run();
 
-        verify(flywheelSubsystem).autoAim(anyDouble(), anyDouble());
+        verify(flywheelSubsystem).autoAim(anyDouble());
     }
 }
