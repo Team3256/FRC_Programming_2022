@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,10 +23,12 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void hangerMotorSpool() {
+        hangerMotor.set(SPOOL_FORWARD_SPEED);
 
     }
 
     public void hangerMotorUnspool() {
+        hangerMotor.set(SPOOL_BACKWARD_SPEED);
 
     }
 
