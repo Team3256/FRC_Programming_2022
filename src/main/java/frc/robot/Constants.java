@@ -8,6 +8,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class TurretConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+    }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
