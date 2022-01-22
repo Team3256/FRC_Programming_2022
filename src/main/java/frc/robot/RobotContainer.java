@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,11 +23,16 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeOn;
+import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
+import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import java.util.ArrayList;
 import java.util.List;
+import frc.robot.subsystems.FlywheelSubsystem;
+
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,11 +64,8 @@ public class RobotContainer {
               () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
               () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
               () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        ));
-
-        // Configure the button bindings
-        configureButtonBindings();
-
+       
+     configureButtonBindings();
   }
 
   /**
@@ -74,7 +80,7 @@ public class RobotContainer {
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-      
+
       rightBumper.whenHeld(new IntakeOn(intake));
     }
     public SendableChooser<Command> getCommandChooser() {
@@ -106,6 +112,14 @@ public class RobotContainer {
       return trajectory1;
     }
 
+  private void configureShooter() {
+    XboxController xboxController = new XboxController(0);
+
+    JoystickAnalogButton rightTrigger = new JoystickAnalogButton(xboxController, XboxController.Axis.kRightTrigger.value);
+    rightTrigger.setThreshold(0.01);
+
+    rightTrigger.whenPressed(new SetShooterFromTriggerDebug(flywheelSubsystem, xboxController::getRightTriggerAxis));
+  }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

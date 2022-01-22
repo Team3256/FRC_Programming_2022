@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -19,6 +23,9 @@ public final class Constants {
         public static final double kD = 0;
         public static final double DEFAULT_TURRET_SPEED = 50;
         public static final double TURRET_TOLERANCE_TX = 0.5;
+    }
+    public static class FeederConstants {
+        public static final double DEFAULT_FEEDER_SPEED = 50;
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
@@ -85,9 +92,20 @@ public final class Constants {
     }
 
     public static class IDConstants {
-        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
+        public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15,20,21};
         public static final int[] SPARK_MAX_IDS = new int[]{};
+
         public static final int TURRET_ID = 34;
+
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+      
+        public static final int FEEDER_MOTOR_ID = 35;
+
+        // Channels
+
+        public static final int HOOD_SERVO_CHANNEL_ID = 0;
+
     }
 
     public static class LoggingConstants {
@@ -127,5 +145,24 @@ public final class Constants {
         public static final int EMERGENCY_TXT_MAX_SIZE = 3000000; //In Bytes
 
 
+    }
+
+    public static class ShooterConstants {
+        // Constant Shooting Section
+        public static final double RADIUS_UPPER_HUB = 0.61; // in m
+        public static final double SHOOTER_HEIGHT = 0.51; // in m
+        public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
+
+        // Tuning Section
+        public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
+        public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
+        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
+        public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
+        public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
+
+        // Hood Angle Constants
+        public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
+        public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
 }
