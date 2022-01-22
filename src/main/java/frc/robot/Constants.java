@@ -123,7 +123,6 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double CUSTOM_INITIATION_SPEED = 0.0; // in m/s TODO: Set flywheel initiation speed
         public static final double MARGIN_OF_ERROR_SPEED = 0.0; // in m/s TODO: Set margin of error for initiation speed test
         public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
         public static final double RADIUS_UPPER_HUB = 0.61; // in m

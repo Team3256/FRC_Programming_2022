@@ -35,6 +35,10 @@ public class FlywheelSubsystem extends SubsystemBase {
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
     }
 
+    /**
+     * @param distance distance to hoop
+     * @param angleEntry entry angle into hoop/hood angle set point
+     */
     public void autoAim(double distance, double angleEntry) {
         ShooterState ikShooterState = ballInverseKinematics(distance, angleEntry);
 
@@ -55,18 +59,32 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterShooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
     }
 
+    /**
+     * @param percent Angular Velocity in (rev/s)
+     * Flywheel speed is set by integrated PID controller
+     */
     public void setPercentSpeed(double percent) {
         masterShooterMotor.set(ControlMode.PercentOutput, percent);
     }
 
+    /**
+     * @param hoodAngle Hood Servo Angle 0.0 - 1.0
+     * Hood angle set from value 0.0 to 1.0
+     */
     public void setHoodAngle(double hoodAngle) {
         hoodAngleServo.setAngle(hoodAngle);
     }
 
+    /**
+     * Set motors to neutral
+     */
     public void stop() {
         masterShooterMotor.neutralOutput();
     }
 
+    /*
+    * Confirms if velocity is within margin of set point
+    */
     public boolean isAtSetPoint() {
         double velocity = getVelocity();
 
@@ -74,6 +92,11 @@ public class FlywheelSubsystem extends SubsystemBase {
                 (velocity >= currentTargetSpeed - MARGIN_OF_ERROR_SPEED);
     }
 
+    /**
+     * @param distance distance from target
+     * @param entryAngle angle for entry into hoop
+     * @return ShooterState with velocity and hood angle settings
+     */
     private ShooterState ballInverseKinematics(double distance, double entryAngle) {
         double angleEntry = entryAngle * Math.PI / 180;
 
@@ -98,6 +121,10 @@ public class FlywheelSubsystem extends SubsystemBase {
         return new ShooterState(velocity, exitAngleTheta);
     }
 
+    /**
+     * @param shooterState has both velocity and hood angle
+     * sets hood angle and velocity
+     */
     private void applyShooterState(ShooterState shooterState) {
         shooterState.velocity = ((Math.floor(shooterState.velocity * 100000 * 100000) / 100000) / 100000);
 
@@ -115,35 +142,12 @@ public class FlywheelSubsystem extends SubsystemBase {
         return ballAngle;
     }
 
+    /**
+     * @return current velocity of motors
+     */
     private double getVelocity() {
         double velocityInSensorUnits = masterShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
-    }
-
-    public double[] ballInverseKinematicsTester(double distance, double entryAngle) {
-        double angleEntry = entryAngle * Math.PI / 180;
-
-        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
-        double distToAimPoint = RADIUS_UPPER_HUB + distance;
-
-        double tangentEntryAngle = Math.tan(angleEntry);
-        double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
-        double distanceToAimSquare = Math.pow(distToAimPoint, 2);
-        double deltaHeightSquare = Math.pow(deltaHeight, 2);
-        double tangentAimDistSquare = Math.pow(distToAimPoint * tangentEntryAngle, 2);
-        double tangentAimDist = distToAimPoint * tangentEntryAngle;
-
-
-        double exitAngleTheta = -2 * Math.atan((distToAimPoint -
-                Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
-                / (tangentAimDist + 2 * deltaHeight));
-        double velocity = 0.3 * Math.sqrt(54.5) *
-                ((Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
-                        / Math.sqrt(tangentAimDist + deltaHeight));
-
-        double exitAngleDegrees = exitAngleTheta * 180 / Math.PI;
-
-        return new double[]{velocity, exitAngleDegrees};
     }
 }
 

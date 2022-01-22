@@ -1,20 +1,16 @@
-package frc.robot.paths.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.SetCustomVelocityShooterCommand;
-import frc.robot.commands.SetPercentSpeedShooterCommand;
+import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.subsystems.FlywheelSubsystem;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.function.DoubleSupplier;
-
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SetShooterTriggerVelocityTest {
+public class SetShooterFromTriggerDebugTest {
     private CommandScheduler commandScheduler;
 
     @Before
@@ -30,7 +26,7 @@ public class SetShooterTriggerVelocityTest {
         DriverStationSim.setEnabled(true);
 
         FlywheelSubsystem flywheelSubsystem = mock(FlywheelSubsystem.class);
-        SetPercentSpeedShooterCommand percentSpeedCommand = new SetPercentSpeedShooterCommand(flywheelSubsystem, ()->0.4);
+        SetShooterFromTriggerDebug percentSpeedCommand = new SetShooterFromTriggerDebug(flywheelSubsystem, ()->0.4);
 
         commandScheduler.schedule(percentSpeedCommand);
         commandScheduler.run();

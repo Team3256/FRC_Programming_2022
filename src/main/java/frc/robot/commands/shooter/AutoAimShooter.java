@@ -1,14 +1,14 @@
-package frc.robot.commands;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class SetCustomVelocityShooterCommand extends CommandBase {
+public class AutoAimShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
     //TODO: Add limelight subsystem definition
 
-    public SetCustomVelocityShooterCommand(FlywheelSubsystem flywheelSubsystem) {
+    public AutoAimShooter(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
         //TODO: Add limelight subsystem initation
         addRequirements(flywheelSubsystem);
