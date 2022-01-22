@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import static frc.robot.Constants.IDConstants.*;
+import static frc.robot.Constants.HangerConstants.*;
 
 public class HangerSubsystem extends SubsystemBase {
     private final TalonFX hangerMotor;
@@ -23,12 +23,12 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void hangerMotorSpool() {
-        hangerMotor.set(SPOOL_FORWARD_SPEED);
+        hangerMotor.set(ControlMode.Velocity, SPOOL_FORWARD_SPEED);
 
     }
 
     public void hangerMotorUnspool() {
-        hangerMotor.set(SPOOL_BACKWARD_SPEED);
+        hangerMotor.set(ControlMode.Velocity, SPOOL_BACKWARD_SPEED);
 
     }
 
