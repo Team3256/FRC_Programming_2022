@@ -66,11 +66,11 @@ public class RobotLogger {
                     htmlFilePath.toString(), HTML_LOG_MAX_SIZE, HTML_LOG_MAX_FILES, false);
 
 
-//            fileTxtHandler.setFormatter(new OneLineFormatter());
-//            globalLogger.addHandler(fileTxtHandler);
-//
-//            fileHTMLHandler.setFormatter(new HtmlFormatter());
-//            globalLogger.addHandler(fileHTMLHandler);
+            fileTxtHandler.setFormatter(new OneLineFormatter());
+            globalLogger.addHandler(fileTxtHandler);
+
+            fileHTMLHandler.setFormatter(new HtmlFormatter());
+            globalLogger.addHandler(fileHTMLHandler);
 
         } catch(IOException e){
             System.err.println("Normal Log FAILED - IOException - Going to Emergency Log");

@@ -7,30 +7,28 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.text.DecimalFormat;
-
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
-    private final TalonFX masterShooterMotor;
-    private final TalonFX followerShooterMotor;
+    private final TalonFX masterLeftShooterMotor;
+    private final TalonFX followerRightShooterMotor;
 
     private final Servo hoodAngleServo;
 
     private double currentTargetSpeed;
 
     public FlywheelSubsystem() {
-        masterShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_0);
-        followerShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_1);
+        masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
+        followerRightShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_RIGHT);
 
-        masterShooterMotor.setInverted(InvertType.InvertMotorOutput);
-        followerShooterMotor.setInverted(InvertType.None);
+        masterLeftShooterMotor.setInverted(InvertType.InvertMotorOutput);
+        followerRightShooterMotor.setInverted(InvertType.None);
 
-        followerShooterMotor.follow(masterShooterMotor);
+        followerRightShooterMotor.follow(masterLeftShooterMotor);
 
-        followerShooterMotor.setNeutralMode(NeutralMode.Coast);
-        masterShooterMotor.setNeutralMode(NeutralMode.Coast);
+        followerRightShooterMotor.setNeutralMode(NeutralMode.Coast);
+        masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
     }
@@ -56,15 +54,15 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void setSpeed(double velocity) {
         // formula for converting m/s to sensor units/100ms
         currentTargetSpeed = velocity * 204.8; // rev/s * 1s/10 (100ms) * 2048su/1rev
-        masterShooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
+        masterLeftShooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
     }
 
     /**
-     * @param percent Angular Velocity in (rev/s)
+     * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
      * Flywheel speed is set by integrated PID controller
      */
     public void setPercentSpeed(double percent) {
-        masterShooterMotor.set(ControlMode.PercentOutput, percent);
+        masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
     }
 
     /**
@@ -76,10 +74,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * Set motors to neutral
+     * Disables powers to motors, motors change to neutral/coast mode
      */
     public void stop() {
-        masterShooterMotor.neutralOutput();
+        masterLeftShooterMotor.neutralOutput();
     }
 
     /*
@@ -88,8 +86,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     public boolean isAtSetPoint() {
         double velocity = getVelocity();
 
-        return (velocity <= currentTargetSpeed + MARGIN_OF_ERROR_SPEED) &&
-                (velocity >= currentTargetSpeed - MARGIN_OF_ERROR_SPEED);
+        return (velocity <= currentTargetSpeed + SET_POINT_ERROR_MARGIN) &&
+                (velocity >= currentTargetSpeed - SET_POINT_ERROR_MARGIN);
     }
 
     /**
@@ -100,8 +98,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     private ShooterState ballInverseKinematics(double distance, double entryAngle) {
         double angleEntry = entryAngle * Math.PI / 180;
 
-        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
         double distToAimPoint = RADIUS_UPPER_HUB + distance;
+        distToAimPoint = distToAimPoint +
+                DELTA_DISTANCE_TO_TARGET_FACTOR * distToAimPoint + OFFSET_DISTANCE_FACTOR;
+
+        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
+        deltaHeight = deltaHeight +
+                DELTA_AIM_HEIGHT_FACTOR * distToAimPoint + OFFSET_HEIGHT_FACTOR;
 
         double tangentEntryAngle = Math.tan(angleEntry);
         double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
@@ -126,8 +129,6 @@ public class FlywheelSubsystem extends SubsystemBase {
      * sets hood angle and velocity
      */
     private void applyShooterState(ShooterState shooterState) {
-        shooterState.velocity = ((Math.floor(shooterState.velocity * 100000 * 100000) / 100000) / 100000);
-
         setSpeed(shooterState.velocity);
         setHoodAngle(shooterState.theta);
     }
@@ -146,7 +147,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @return current velocity of motors
      */
     private double getVelocity() {
-        double velocityInSensorUnits = masterShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
+        double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
     }
 }
