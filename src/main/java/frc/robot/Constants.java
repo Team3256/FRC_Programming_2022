@@ -12,26 +12,20 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final int DRIVETRAIN_PIGEON_ID = 4; // FIXME get a pigeon lmao
-
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 5;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 6;
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 7;
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(168.8379); //357
 
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
         public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 9;
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 10;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(233.1738); //179
 
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 11;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR = 12;
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 13;
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(349.8926);
 
         public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 14;
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 15;
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 16;
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(52.8223); //179
 
         public static final double MAX_METERS_PER_SECOND = 10;
@@ -73,6 +67,15 @@ public final class Constants {
     }
 
     public static class IDConstants {
+        public static final int DRIVETRAIN_PIGEON_ID = 4;
+
+        public static final int FRONT_LEFT_MODULE_STEER_ENCODER_ID = 7;
+        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_ID = 10;
+        public static final int BACK_LEFT_MODULE_STEER_ENCODER_ID = 13;
+        public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
+
+
+
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
         public static final int[] SPARK_MAX_IDS = new int[]{};
     }
