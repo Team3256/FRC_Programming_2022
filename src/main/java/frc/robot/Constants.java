@@ -73,8 +73,15 @@ public final class Constants {
     }
 
     public static class IDConstants {
-        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
+        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 22};
         public static final int[] SPARK_MAX_IDS = new int[]{};
+
+
+        public static final int HANGER_TALON_FX_MOTOR_ID = 22;
+
+        // PCM
+        public static final int PNEUMATIC_CONTROL_MODULE_ONE = 0;
+        public static final int PNEUMATIC_CONTROL_MODULE_TWO = 1;
     }
 
     public static class LoggingConstants {
