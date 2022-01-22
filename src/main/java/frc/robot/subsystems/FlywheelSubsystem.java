@@ -66,11 +66,21 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * @param hoodAngle Hood Servo Angle 0.0 - 1.0
+     * @param angleOfHood Hood Servo Angle 0.0 - 1.0
      * Hood angle set from value 0.0 to 1.0
      */
-    public void setHoodAngle(double hoodAngle) {
-        hoodAngleServo.setAngle(hoodAngle);
+    public void setHoodAngle(double angleOfHood) {
+        double hoodAngle = angleOfHood;
+        if (hoodAngle > HOOD_ANGLE_UPPER_LIMIT) {
+            hoodAngle = HOOD_ANGLE_UPPER_LIMIT;
+        } else if (hoodAngle < HOOD_ANGLE_LOWER_LIMIT) {
+            hoodAngle = HOOD_ANGLE_LOWER_LIMIT;
+        }
+
+
+
+        hoodAngleServo.setAngle((HOOD_ANGLE_UPPER_LIMIT - hoodAngle)
+                / (HOOD_ANGLE_UPPER_LIMIT - HOOD_ANGLE_LOWER_LIMIT));
     }
 
     /**

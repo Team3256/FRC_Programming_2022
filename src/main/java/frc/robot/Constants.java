@@ -134,5 +134,9 @@ public final class Constants {
         public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
+
+        // Hood Angle Constants
+        public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
+        public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
 }
