@@ -8,6 +8,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class FeederConstants {
+        public static final double DEFAULT_FEEDER_SPEED = 50;
+    }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
@@ -75,6 +78,7 @@ public final class Constants {
     public static class IDConstants {
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
         public static final int[] SPARK_MAX_IDS = new int[]{};
+        public static final int FEEDER_MOTOR_ID = 35;
     }
 
     public static class LoggingConstants {
