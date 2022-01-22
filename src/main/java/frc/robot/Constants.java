@@ -13,6 +13,13 @@ public final class Constants {
         public static final double TARGET_HEIGHT_INCHES = 98;
         public static final double MOUNTING_ANGLE_DEG = 30;
     }
+    public static class TurretConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double DEFAULT_TURRET_SPEED = 50;
+        public static final double TURRET_TOLERANCE_TX = 0.5;
+    }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
