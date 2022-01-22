@@ -18,6 +18,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.IDConstants.*;
+
 
 public class SwerveDrive extends SubsystemBase {
     public static final double MAX_VOLTAGE = 12.0;
@@ -55,7 +57,7 @@ public class SwerveDrive extends SubsystemBase {
                 Mk3SwerveModuleHelper.GearRatio.FAST,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR,
                 FRONT_LEFT_MODULE_STEER_MOTOR,
-                FRONT_LEFT_MODULE_STEER_ENCODER,
+                FRONT_LEFT_MODULE_STEER_ENCODER_ID,
                 FRONT_LEFT_MODULE_STEER_OFFSET
         );
 
@@ -66,7 +68,7 @@ public class SwerveDrive extends SubsystemBase {
                 Mk3SwerveModuleHelper.GearRatio.FAST,
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                 FRONT_RIGHT_MODULE_STEER_MOTOR,
-                FRONT_RIGHT_MODULE_STEER_ENCODER,
+                FRONT_RIGHT_MODULE_STEER_ENCODER_ID,
                 FRONT_RIGHT_MODULE_STEER_OFFSET
         );
 
@@ -77,7 +79,7 @@ public class SwerveDrive extends SubsystemBase {
                 Mk3SwerveModuleHelper.GearRatio.FAST,
                 BACK_LEFT_MODULE_DRIVE_MOTOR,
                 BACK_LEFT_MODULE_STEER_MOTOR,
-                BACK_LEFT_MODULE_STEER_ENCODER,
+                BACK_LEFT_MODULE_STEER_ENCODER_ID,
                 BACK_LEFT_MODULE_STEER_OFFSET
         );
 
@@ -88,7 +90,7 @@ public class SwerveDrive extends SubsystemBase {
                 Mk3SwerveModuleHelper.GearRatio.FAST,
                 BACK_RIGHT_MODULE_DRIVE_MOTOR,
                 BACK_RIGHT_MODULE_STEER_MOTOR,
-                BACK_RIGHT_MODULE_STEER_ENCODER,
+                BACK_RIGHT_MODULE_STEER_ENCODER_ID,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
     }
