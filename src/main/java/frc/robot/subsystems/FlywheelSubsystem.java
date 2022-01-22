@@ -35,10 +35,9 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     /**
      * @param distance distance to hoop
-     * @param angleEntry entry angle into hoop/hood angle set point
      */
-    public void autoAim(double distance, double angleEntry) {
-        ShooterState ikShooterState = ballInverseKinematics(distance, angleEntry);
+    public void autoAim(double distance) {
+        ShooterState ikShooterState = ballInverseKinematics(distance);
 
         ShooterState correctedShooterState = new ShooterState(
                 getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
@@ -66,22 +65,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * @param angleOfHood Hood Servo Angle 0.0 - 1.0
+     * @param hoodAngle Radians
      * Hood angle set from value 0.0 to 1.0
      */
-    public void setHoodAngle(double angleOfHood) {
-        double hoodAngle = angleOfHood;
-        if (hoodAngle > HOOD_ANGLE_UPPER_LIMIT) {
-            hoodAngle = HOOD_ANGLE_UPPER_LIMIT;
-        } else if (hoodAngle < HOOD_ANGLE_LOWER_LIMIT) {
-            hoodAngle = HOOD_ANGLE_LOWER_LIMIT;
-        }
-
-
-
-        hoodAngleServo.setAngle((HOOD_ANGLE_UPPER_LIMIT - hoodAngle)
-                / (HOOD_ANGLE_UPPER_LIMIT - HOOD_ANGLE_LOWER_LIMIT));
-    }
+    public void setHoodAngle(double hoodAngle) { hoodAngleServo.setAngle(hoodAngle); }
 
     /**
      * Disables powers to motors, motors change to neutral/coast mode
@@ -102,11 +89,10 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     /**
      * @param distance distance from target
-     * @param entryAngle angle for entry into hoop
      * @return ShooterState with velocity and hood angle settings
      */
-    private ShooterState ballInverseKinematics(double distance, double entryAngle) {
-        double angleEntry = entryAngle * Math.PI / 180;
+    private ShooterState ballInverseKinematics(double distance) {
+        double angleEntry = ENTRY_ANGLE_INTO_HUB * Math.PI / 180;
 
         double distToAimPoint = RADIUS_UPPER_HUB + distance;
         distToAimPoint = distToAimPoint +
@@ -149,8 +135,16 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
-        // TODO: Get calibration equations
-        return ballAngle;
+
+        double hoodAngle = ballAngle; // TODO: Get Calibration equation
+
+        if (hoodAngle < 0.0) {
+            hoodAngle = 0.0;
+        } else if (hoodAngle > 1.0) {
+            hoodAngle = 1.0;
+        }
+
+        return hoodAngle;
     }
 
     /**

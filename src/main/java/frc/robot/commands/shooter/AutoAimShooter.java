@@ -17,9 +17,8 @@ public class AutoAimShooter extends CommandBase {
     @Override
     public void execute() {
         double distanceToTarget = 10.0; // TODO: limelight fetch distance goes here
-        double entryAngle = 50.0; // in deg TODO: entry angle needs to be custom set
 
-        flywheelSubsystem.autoAim(distanceToTarget, entryAngle);
+        flywheelSubsystem.autoAim(distanceToTarget);
     }
 
     @Override
