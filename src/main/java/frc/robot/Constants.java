@@ -80,8 +80,10 @@ public final class Constants {
         public static final int HANGER_TALON_FX_MOTOR_ID = 22;
 
         // PCM
-        public static final int PNEUMATIC_CONTROL_MODULE_ONE = 0;
-        public static final int PNEUMATIC_CONTROL_MODULE_TWO = 1;
+        public static final int SOLENOID_FORWARD_ONE = 1;
+        public static final int SOLENOID_BACKWARD_ONE = 2;
+        public static final int SOLENOID_FORWARD_TWO = 3;
+        public static final int SOLENOID_BACKWARD_TWO = 4;
     }
 
     public static class LoggingConstants {

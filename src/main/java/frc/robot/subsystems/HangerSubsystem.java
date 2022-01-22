@@ -14,8 +14,11 @@ public class HangerSubsystem extends SubsystemBase {
     public HangerSubsystem() {
         hangerMotor = new TalonFX(HANGER_TALON_FX_MOTOR_ID);
 
-        pneumaticControl1 = new PneumaticsControlModule(PNEUMATIC_CONTROL_MODULE_ONE);
-        pneumaticControl2 = new PneumaticsControlModule(PNEUMATIC_CONzTROL_MODULE_TWO);
+        pneumaticControl1 = new PneumaticsControlModule(0);
+        pneumaticControl2 = new PneumaticsControlModule(5);
+
+        pneumaticControl1.makeDoubleSolenoid(SOLENOID_FORWARD_ONE, SOLENOID_BACKWARD_ONE);
+        pneumaticControl2.makeDoubleSolenoid(SOLENOID_FORWARD_TWO, SOLENOID_BACKWARD_TWO);
     }
 
     public void hangerMotorSpool() {
