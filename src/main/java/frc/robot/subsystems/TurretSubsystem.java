@@ -17,21 +17,30 @@ public class TurretSubsystem extends PIDSubsystem {
 
     public TurretSubsystem() {
         super(new PIDController(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD));
+        getController().setTolerance(TurretConstants.TURRET_TOLERANCE_TX);
+        this.setSetpoint(0);
+        this.disable();
     }
 
     //NOTE: enable, disable PID methods built in
 
     public void manualLeft(){
+        this.disable();
         turretMotor.set(TalonFXControlMode.PercentOutput, -1*TurretConstants.DEFAULT_TURRET_SPEED);
     }
 
     public void manualRight(){
+        this.disable();
         turretMotor.set(TalonFXControlMode.PercentOutput, TurretConstants.DEFAULT_TURRET_SPEED);
+    }
+
+    public void autoAlign(){
+        this.enable();
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        turretMotor.set(TalonFXControlMode.PercentOutput, setpoint+output);
+        turretMotor.set(TalonFXControlMode.Current, output);
     }
 
     @Override
