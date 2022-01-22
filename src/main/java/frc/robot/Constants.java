@@ -8,6 +8,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class LimelightConstants {
+        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double TARGET_HEIGHT_INCHES = 98;
+        public static final double MOUNTING_ANGLE_DEG = 30;
+    }
     public static class TurretConstants {
         public static final double kP = 0;
         public static final double kI = 0;
