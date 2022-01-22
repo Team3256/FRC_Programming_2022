@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.helper.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -48,6 +49,7 @@ public class TrajectoryFollowCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        RobotContainer.setCurrentTrajectory(trajectory);
         timer.reset();
         timer.start();
     }

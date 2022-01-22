@@ -39,6 +39,7 @@ public class RobotContainer {
     private final IntakeSubsystem intake = new IntakeSubsystem();
     private final Field2d field = new Field2d();
     private final XboxController controller = new XboxController(0);
+    private static Trajectory currentTrajectory = new Trajectory();
 
     /**
      *
@@ -78,46 +79,21 @@ public class RobotContainer {
       
       rightBumper.whenHeld(new IntakeOn(intake));
     }
-    public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem);
-    }
 
-    public Trajectory getTrajectory() { // FIXME: scuffed rn, pls fix later
-        TrajectoryConfig config =
-                new TrajectoryConfig(
-                        Constants.AutoConstants.MAX_SPEED_CONTROLLER_METERS_PER_SECOND,
-                        Constants.AutoConstants.MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED)
-                        // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(drivetrainSubsystem.getKinematics());
-
-        List<Pose2d> waypoints = new ArrayList<>();
-        for(int pos = 0; pos <= 80; pos++){
-            waypoints.add(new Pose2d(Units.inchesToMeters(pos), 0, new Rotation2d()));
-        }
-//        List<Translation2d> waypoints = List.of(new Translation2d(Units.inchesToMeters(12), 0));s
-        // JSONReader.ParseJSONFile("");
-
-        // An example trajectory to follow.  All units in meters.
-        Trajectory trajectory1 =
-                TrajectoryGenerator.generateTrajectory(
-                        // Start at the origin facing the +X direction
-                        waypoints,
-                        config);
-
-        return trajectory1;
-    }
-
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
 
-    public void resetPose() {
-        drivetrainSubsystem.resetOdometry(new Pose2d());
+    public SendableChooser<Command> getCommandChooser() {
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem);
+    }
+
+    public Trajectory getTrajectory() {
+       return currentTrajectory;
+    }
+
+    public static void setCurrentTrajectory(Trajectory newTrajectory) {
+        currentTrajectory = newTrajectory;
     }
 
     public void sendTrajectoryToDashboard() {
@@ -127,6 +103,10 @@ public class RobotContainer {
     public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
+    }
+
+    public void resetPose() {
+        drivetrainSubsystem.resetOdometry(new Pose2d());
     }
 
     private static double deadband(double value, double deadband) {

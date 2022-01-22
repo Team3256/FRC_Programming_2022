@@ -12,21 +12,19 @@ import java.util.function.DoubleSupplier;
 
 public class AutoChooser {
     private static SendableChooser<Command> autoChooser;
+    private static Command currentCommand;
 
     public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive) {
         autoChooser = new SendableChooser<>();
 
         Command doNothing = new DefaultDriveCommand(drive); // dont move
-        autoChooser.setDefaultOption("Do Nothing rip :(((((", doNothing);
+        autoChooser.setDefaultOption("Do Nothing", doNothing);
 
-        Command trajectory1 = Paths.getTrajectory1(drive);
-        autoChooser.addOption("SwerveControllerCommand Follower (BAd)", trajectory1);
+        Command trajectory2 = Paths.getTrajectoryCommand2(drive);
+        autoChooser.addOption("80in forward 180 deg turn", trajectory2);
 
-        Command trajectory2 = Paths.getTrajectory2(drive);
-        autoChooser.addOption("Custom Path Follower", trajectory2);
-//
-//        Command trajectory3 = Paths.getTrajectory3(drive);
-//        autoChooser.addOption("Traj 3", trajectory3);
+        Command trajectory3 = Paths.getTrajectoryCommand2(drive);
+        autoChooser.addOption("Dont use", trajectory3);
 
         return autoChooser;
     }
