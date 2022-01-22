@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Limelight;
+import frc.robot.helper.Limelight;
 
 public class TestLimelight extends CommandBase {
 
@@ -11,7 +11,6 @@ public class TestLimelight extends CommandBase {
     public TestLimelight(Limelight limelight) {
         this.limelight = limelight;
         System.out.println("TestInit");
-        addRequirements(limelight);
     }
 
     @Override
