@@ -79,14 +79,13 @@ public class Paths {
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
                         P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.enableContinuousInput(-2 * Math.PI, 2 * Math.PI);
 
-        UniformThetaSupplier thetaFeed = uniformThetaSupplier;
         TrajectoryFollowCommand trajectoryFollowCommand = new TrajectoryFollowCommand(
                 trajectory,
                 new PIDController(P_X_CONTROLLER, I_X_CONTROLLER, D_X_CONTROLLER),
                 new PIDController(P_Y_CONTROLLER, I_Y_CONTROLLER, D_Y_CONTROLLER),
-                thetaFeed::rotationSupply,
+                uniformThetaSupplier::rotationSupply,
                 thetaController,
                 robotDrive
         );

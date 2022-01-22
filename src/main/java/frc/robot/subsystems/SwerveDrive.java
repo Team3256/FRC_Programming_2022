@@ -95,12 +95,9 @@ public class SwerveDrive extends SubsystemBase {
         );
     }
 
-    /**
-     * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
-     * 'forwards' direction.
-     */
     public void zeroGyroscope() {
         pigeon.setFusedHeading(0.0);
+        resetOdometry(new Pose2d());
     }
 
     public SwerveDriveKinematics getKinematics() {

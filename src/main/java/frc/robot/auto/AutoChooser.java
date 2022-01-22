@@ -24,7 +24,7 @@ public class AutoChooser {
         autoChooser.addOption("80in forward 180 deg turn", trajectory2);
 
         Command trajectory3 = Paths.getTrajectoryCommand3(drive);
-        autoChooser.addOption("The one that uses Pathweaver. DONT USE", trajectory3);
+        autoChooser.addOption("SPLINE The one that uses Pathweaver. DONT USE", trajectory3);
 
         return autoChooser;
     }

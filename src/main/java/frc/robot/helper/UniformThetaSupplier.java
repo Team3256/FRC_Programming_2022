@@ -21,7 +21,7 @@ public class UniformThetaSupplier {
     }
 
     public Rotation2d rotationSupply(double now) {
-        return new Rotation2d(this.desiredRotation.getRadians() >= 0 ? 1 : -1 * Math.min(
+        return new Rotation2d((this.desiredRotation.getRadians() >= 0 ? 1 : -1) * Math.min(
                 Math.abs(
                         this.desiredRotation.getRadians() * (now/(this.trajectoryDuration * proportion))),
                 Math.abs(

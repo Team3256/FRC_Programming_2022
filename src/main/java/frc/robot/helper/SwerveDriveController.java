@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.opencv.core.Mat;
 
 import static frc.robot.Constants.AutoConstants.TRANSLATION_FF;
 
@@ -16,6 +18,7 @@ public class SwerveDriveController {
     private Pose2d poseTolerance = new Pose2d();
     private Pose2d poseError;
     private Rotation2d rotationError;
+    private double prevCurrentRotation;
     private boolean firstInteration = true;
 
     public SwerveDriveController(PIDController xPositionController, PIDController yPositionController, ProfiledPIDController thetaController) {
@@ -40,14 +43,31 @@ public class SwerveDriveController {
         // heading.
         if (firstInteration) {
             thetaController.reset(currentPose.getRotation().getRadians());
+            prevCurrentRotation = currentPose.getRotation().getRadians();
             firstInteration = false;
         }
+
+        double currentRotation = currentPose.getRotation().getRadians();
+
+        if (Math.abs(currentRotation - prevCurrentRotation) >= Math.PI) {
+            if (prevCurrentRotation > 0) {
+                currentRotation = prevCurrentRotation + Math.abs(-Math.PI - currentRotation);
+            } else {
+                currentRotation = prevCurrentRotation + Math.abs(Math.PI - currentRotation);
+            }
+        }
+
+        SmartDashboard.putNumber("Current Rotation", currentRotation * 180/Math.PI);
+        SmartDashboard.putNumber("Current Pose Rotation", currentPose.getRotation().getDegrees());
+        SmartDashboard.putNumber("Current Rotation Error", (currentRotation * 180/Math.PI) - angleRef.getDegrees());
+
 
         // Calculate feedforward velocities (field-relative).
         double xFF = linearVelocityRefMeters * poseRef.getRotation().getCos() * TRANSLATION_FF;
         double yFF = linearVelocityRefMeters * poseRef.getRotation().getSin() * TRANSLATION_FF;
         double thetaFF =
-                thetaController.calculate(currentPose.getRotation().getRadians(), angleRef.getRadians());
+                thetaController.calculate(currentRotation, angleRef.getRadians());
+        SmartDashboard.putNumber("Theta FF", thetaFF * 180/ Math.PI);
 
         poseError = poseRef.relativeTo(currentPose);
         rotationError = angleRef.minus(currentPose.getRotation());
@@ -56,8 +76,14 @@ public class SwerveDriveController {
         double xFeedback = xPositionController.calculate(currentPose.getX(), poseRef.getX());
         double yFeedback = yPositionController.calculate(currentPose.getY(), poseRef.getY());
 
+        prevCurrentRotation = currentRotation;
+
         // Return next output.
         return ChassisSpeeds.fromFieldRelativeSpeeds(
                 xFF + xFeedback, yFF + yFeedback, thetaFF, currentPose.getRotation());
+    }
+
+    public void reset() {
+        firstInteration = true;
     }
 }

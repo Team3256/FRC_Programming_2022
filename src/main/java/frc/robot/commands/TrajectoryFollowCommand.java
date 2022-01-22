@@ -43,13 +43,14 @@ public class TrajectoryFollowCommand extends CommandBase {
         this.driveSubsystem = driveSubsystem;
         this.thetaFeeder = thetaFeeder;
 
-
         addRequirements(driveSubsystem);
     }
 
     @Override
     public void initialize() {
         RobotContainer.setCurrentTrajectory(trajectory);
+        this.controller.reset();
+        driveSubsystem.resetOdometry(new Pose2d());
         timer.reset();
         timer.start();
     }
@@ -66,7 +67,6 @@ public class TrajectoryFollowCommand extends CommandBase {
         Rotation2d desiredRotation = thetaFeeder.apply(now);
 
         SmartDashboard.putNumber("Desired Rotation", desiredRotation.getDegrees());
-        SmartDashboard.putNumber("Current Rotation", currentPose.getRotation().getDegrees());
         SmartDashboard.putNumber("Desired Position", Units.metersToInches(desiredPose.getX()));
 
         driveSubsystem.drive(controller.calculate(currentPose, desiredPose, desiredLinearVelocity, desiredRotation));

@@ -60,10 +60,9 @@ public final class Constants {
 
         public static double TRANSLATION_FF = 0.3;
 
-        public static double P_THETA_CONTROLLER = 2.2;
-        public static double I_THETA_CONTROLLER = 0;
+        public static double P_THETA_CONTROLLER = 1.8;
+        public static double I_THETA_CONTROLLER = 0.01;
         public static double D_THETA_CONTROLLER = 0;
-        public static double THETA_FF = 7.5;
     }
 
     public static class IDConstants {
