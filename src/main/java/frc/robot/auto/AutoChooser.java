@@ -23,8 +23,8 @@ public class AutoChooser {
         Command trajectory2 = Paths.getTrajectoryCommand2(drive);
         autoChooser.addOption("80in forward 180 deg turn", trajectory2);
 
-        Command trajectory3 = Paths.getTrajectoryCommand2(drive);
-        autoChooser.addOption("Dont use", trajectory3);
+        Command trajectory3 = Paths.getTrajectoryCommand3(drive);
+        autoChooser.addOption("The one that uses Pathweaver. DONT USE", trajectory3);
 
         return autoChooser;
     }

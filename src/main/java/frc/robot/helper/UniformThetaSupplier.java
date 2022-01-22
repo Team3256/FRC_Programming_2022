@@ -14,10 +14,16 @@ public class UniformThetaSupplier {
         this.proportion = proportion;
     }
 
+    public UniformThetaSupplier(double trajectoryDuration) {
+        this.trajectoryDuration = trajectoryDuration;
+        this.desiredRotation = new Rotation2d();
+        this.proportion = 1;
+    }
+
     public Rotation2d rotationSupply(double now) {
         return new Rotation2d(this.desiredRotation.getRadians() >= 0 ? 1 : -1 * Math.min(
                 Math.abs(
-                        this.desiredRotation.getRadians() * (now/(this.trajectoryDuration * 0.75))),
+                        this.desiredRotation.getRadians() * (now/(this.trajectoryDuration * proportion))),
                 Math.abs(
                         this.desiredRotation.getRadians())
         ));
