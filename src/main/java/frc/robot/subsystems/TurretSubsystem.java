@@ -2,18 +2,15 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.helper.Limelight;
 
-import java.util.function.DoubleSupplier;
-
+import static frc.robot.Constants.IDConstants;
 import static frc.robot.Constants.TurretConstants;
 
 public class TurretSubsystem extends PIDSubsystem {
-    private final TalonFX turretMotor = new TalonFX(34);
+    private final TalonFX turretMotor = new TalonFX(IDConstants.TURRET_ID);
 
     /**
      * PID coefficients (kp - proportional ki - integral kd - derivative)
@@ -55,8 +52,6 @@ public class TurretSubsystem extends PIDSubsystem {
      */
     @Override
     protected double getMeasurement() {
-        double ret = Limelight.getTx();
-        if (Math.abs(ret) < 0.5) ret = 0;
-        return ret;
+        return Limelight.getTx();
     }
 }
