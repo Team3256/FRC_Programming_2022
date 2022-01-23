@@ -15,8 +15,11 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.commands.IntakeOn;
 import frc.robot.commands.TrajectoryFollowCommand;
 import frc.robot.helper.UniformThetaSupplier;
 import frc.robot.subsystems.SwerveDrive;
@@ -90,6 +93,6 @@ public class Paths {
                 robotDrive
         );
 
-        return trajectoryFollowCommand.andThen(() -> robotDrive.drive(new ChassisSpeeds()));
+        return trajectoryFollowCommand;
     }
 }

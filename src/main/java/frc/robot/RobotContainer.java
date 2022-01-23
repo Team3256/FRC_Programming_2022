@@ -85,7 +85,7 @@ public class RobotContainer {
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem);
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intake);
     }
 
     public Trajectory getTrajectory() {
