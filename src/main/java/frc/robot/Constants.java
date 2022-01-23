@@ -12,6 +12,18 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class LimelightConstants {
+        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double TARGET_HEIGHT_INCHES = 98;
+        public static final double MOUNTING_ANGLE_DEG = 30;
+    }
+    public static class TurretConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double DEFAULT_TURRET_SPEED = 50;
+        public static final double TURRET_TOLERANCE_TX = 0.5;
+    }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
     }
@@ -83,15 +95,17 @@ public final class Constants {
         public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15,20,21};
         public static final int[] SPARK_MAX_IDS = new int[]{};
 
+        public static final int TURRET_ID = 34;
+
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+      
+        public static final int FEEDER_MOTOR_ID = 35;
 
         // Channels
 
         public static final int HOOD_SERVO_CHANNEL_ID = 0;
 
-
-        public static final int FEEDER_MOTOR_ID = 35;
     }
 
     public static class LoggingConstants {
