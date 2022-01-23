@@ -82,7 +82,7 @@ public class Paths {
         TrajectoryConfig config = getDefaultTrajectoryConfig(robotDrive).setReversed(true);
 
         List<Pose2d> waypoints = new ArrayList<>();
-        for(double pos = 0; pos <= 2; pos += 0.1){
+        for(double pos = 0; pos <= 2; pos += 1){
             waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
         }
 
