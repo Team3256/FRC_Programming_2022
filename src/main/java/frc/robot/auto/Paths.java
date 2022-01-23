@@ -78,6 +78,25 @@ public class Paths {
         return getCommand(robotDrive, trajectory, uniformThetaSupplier);
     }
 
+    public static Command getTrajectoryCommand4(SwerveDrive robotDrive) {
+        TrajectoryConfig config = getDefaultTrajectoryConfig(robotDrive);
+
+        List<Pose2d> waypoints = new ArrayList<>();
+        for(int pos = 0; pos <= 2; pos++){
+            waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
+        }
+
+        Trajectory trajectory =
+                TrajectoryGenerator.generateTrajectory(
+                        waypoints,
+                        config);
+
+        UniformThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds(), new Rotation2d(Units.degreesToRadians(90)), 0.75);
+
+        return getCommand(robotDrive, trajectory, uniformThetaSupplier);
+    }
+
+
     private static Command getCommand(SwerveDrive robotDrive, Trajectory trajectory, UniformThetaSupplier uniformThetaSupplier ) {
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
