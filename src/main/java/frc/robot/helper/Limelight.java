@@ -71,6 +71,9 @@ public class Limelight {
     public static double getDistanceToTarget(){
         return getTuned(TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
     }
+    public static double getInaccurateDistanceToTarget(){
+        return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
+    }
 
     public static double toRadians(double degrees){
         return degrees * Math.PI/180.0;

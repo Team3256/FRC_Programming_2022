@@ -6,19 +6,10 @@ import frc.robot.helper.Limelight;
 
 public class TestLimelight extends CommandBase {
 
-    Limelight limelight;
-
-    public TestLimelight(Limelight limelight) {
-        this.limelight = limelight;
-        System.out.println("TestInit");
-    }
-
     @Override
     public void execute() {
-        System.out.println("Running");
-
-        SmartDashboard.putNumber("distance to target:", limelight.getDistanceToTarget());
-        SmartDashboard.putNumber("(tuned) distance to target:", limelight.getTuned(limelight.getDistanceToTarget()));
+        SmartDashboard.putNumber("distance to target:", Limelight.getInaccurateDistanceToTarget());
+        SmartDashboard.putNumber("(tuned) distance to target:", Limelight.getDistanceToTarget());
     }
 
     @Override

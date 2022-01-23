@@ -44,6 +44,7 @@ public class RobotContainer {
   public final Limelight limelightSubsystem = new Limelight();
   private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
   private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
   
   private final Field2d field = new Field2d();
   
@@ -64,6 +65,7 @@ public class RobotContainer {
               () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
               () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
               () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+     ));
        
      configureButtonBindings();
   }
