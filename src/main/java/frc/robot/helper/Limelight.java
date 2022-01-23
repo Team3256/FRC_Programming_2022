@@ -55,14 +55,14 @@ public class Limelight {
     }
 
     /**
-     * @return Number array of corner coordinates [x0,x1……]
+     * @return Number array of corner coordinates [x0,x1,etc]
      */
     public static double[] getTcornx(){
         return getLimelightValue("tcornx").getDoubleArray(new double[4]);
     }
 
     /**
-     * @return Number array of corner coordinates [y0,y1……]
+     * @return Number array of corner coordinates [y0,y1,etc]
      */
     public static double[] getTcorny(){
         return getLimelightValue("tcorny").getDoubleArray(new double[4]);
