@@ -73,7 +73,7 @@ public class Paths {
     public static Command getTrajectoryCommand3(SwerveDrive robotDrive) {
         String trajectoryJSON = "paths/Test.wpilib.json";
         Trajectory trajectory = generateTrajectory(trajectoryJSON);
-        UniformThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds());
+        UniformThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds(), Rotation2d.fromDegrees(-90), 0.5);
 
         return getCommand(robotDrive, trajectory, uniformThetaSupplier);
     }
