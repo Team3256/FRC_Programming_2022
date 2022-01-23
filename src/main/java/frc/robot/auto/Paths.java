@@ -79,10 +79,10 @@ public class Paths {
     }
 
     public static Command getTrajectoryCommand4(SwerveDrive robotDrive) {
-        TrajectoryConfig config = getDefaultTrajectoryConfig(robotDrive);
+        TrajectoryConfig config = getDefaultTrajectoryConfig(robotDrive).setReversed(true);
 
         List<Pose2d> waypoints = new ArrayList<>();
-        for(int pos = 0; pos <= 2; pos++){
+        for(double pos = 0; pos <= 2; pos += 0.1){
             waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
         }
 

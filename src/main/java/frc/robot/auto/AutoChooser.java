@@ -27,8 +27,15 @@ public class AutoChooser {
         Command trajectory3 = Paths.getTrajectoryCommand3(drive);
         Command trajectory4 = Paths.getTrajectoryCommand4(drive);
 
-        Command command3 = new ParallelCommandGroup(trajectory3.andThen(new DefaultDriveCommand(drive)), (new WaitCommand(1)).andThen(new IntakeOn(intakeSubsystem)).andThen(new WaitCommand(3)).andThen(new IntakeOff(intakeSubsystem)));
-        autoChooser.addOption("SPLINE + Intake", command3.andThen(trajectory4).andThen(new DefaultDriveCommand(drive)));
+        Command command3 = new ParallelDeadlineGroup(
+                trajectory3,
+                (new WaitCommand(1))
+                        .andThen(new IntakeOn(intakeSubsystem))
+                        .andThen(new WaitCommand(3))
+                        .andThen(new IntakeOff(intakeSubsystem))
+                ).andThen(trajectory4);
+        autoChooser.addOption("SPLINE + Intake", command3);
+        autoChooser.addOption("go back", trajectory4);
 
         return autoChooser;
     }
