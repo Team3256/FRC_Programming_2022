@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
+import org.apache.commons.math3.analysis.interpolation.*;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -138,7 +138,13 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
 
-        double hoodAngle = ballAngle; // TODO: Get Calibration equation
+        double[] vValTrain = new double[100];
+        double[] thetaValTrain = new double[100];
+        double[][] hoodValTrain = new double[100][100];
+        BicubicSplineInterpolator functionFitter = new BicubicSplineInterpolator();
+        BicubicSplineInterpolatingFunction interpolatingFunction = functionFitter.interpolate(vValTrain, thetaValTrain, hoodValTrain);
+
+        double hoodAngle = interpolatingFunction.value(ballVelocity, ballAngle);
 
         if (hoodAngle < 0.0) {
             hoodAngle = 0.0;
