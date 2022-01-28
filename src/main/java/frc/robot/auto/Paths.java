@@ -34,6 +34,12 @@ import java.util.List;
 import static frc.robot.Constants.AutoConstants.*;
 
 public class Paths {
+
+    public enum Direction {
+        X, Y
+    }
+
+
     private static TrajectoryConfig getDefaultTrajectoryConfig(SwerveDrive robotDrive) {
         return new TrajectoryConfig(
                 Constants.AutoConstants.MAX_SPEED_CONTROLLER_METERS_PER_SECOND,
@@ -78,12 +84,20 @@ public class Paths {
         return getCommand(robotDrive, trajectory, uniformThetaSupplier);
     }
 
-    public static Command getTrajectoryCommand4(SwerveDrive robotDrive) {
+    public static Command moveStraight(SwerveDrive robotDrive, double start, double end, Direction direction) {
         TrajectoryConfig config = getDefaultTrajectoryConfig(robotDrive).setReversed(true);
-
         List<Pose2d> waypoints = new ArrayList<>();
-        for(double pos = 0; pos <= 2; pos += 1){
-            waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
+
+        if (direction == Direction.X) {
+            for(double pos = start; pos <= end; pos += 1) {
+                waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
+            }
+        }
+
+        if (direction == Direction.Y) {
+            for(double pos = start; pos <= end; pos += 1) {
+                waypoints.add(new Pose2d(0, -pos, new Rotation2d()));
+            }
         }
 
         Trajectory trajectory =
@@ -91,7 +105,7 @@ public class Paths {
                         waypoints,
                         config);
 
-        UniformThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds(), new Rotation2d(Units.degreesToRadians(90)), 0.75);
+        UniformThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds(), new Rotation2d(Units.degreesToRadians(0)), 0.75);
 
         return getCommand(robotDrive, trajectory, uniformThetaSupplier);
     }
