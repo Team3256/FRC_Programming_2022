@@ -7,7 +7,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
+import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
+
+import java.util.List;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -19,6 +23,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final Servo hoodAngleServo;
 
     private double currentTargetSpeed;
+
+    private List<TrainingDataPoint> trainingDataPointsList;
+    private String filename = ""; // TODO: Add filename for the .csv file with training data points
 
     public FlywheelSubsystem() {
         masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
@@ -40,6 +47,8 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public void autoAim(double distance) {
         ShooterState ikShooterState = ballInverseKinematics(distance);
+
+        trainingDataPointsList = ReadTrainingFromCSV.readDataFromCSV(filename);
 
         ShooterState correctedShooterState = new ShooterState(
                 getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
@@ -132,20 +141,37 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
-        double[] vValTrain = new double[100];
-        double[] thetaValTrain = new double[100];
-        double[][] hoodValTrain = new double[100][100];
+        double[] vValTrain = new double[trainingDataPointsList.size()];
+        double[] thetaValTrain = new double[trainingDataPointsList.size()];
+        double[][] angularVelocityTrain = new double[trainingDataPointsList.size()][trainingDataPointsList.size()];
+
+        TrainingDataPoint data;
+        for (int i = 0; i < trainingDataPointsList.size(); i++) {
+            data = trainingDataPointsList.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            angularVelocityTrain[i][i] = data.calibratedTraining;
+        }
+
         BicubicSplineInterpolatingFunction interpolatingFunction = new BicubicSplineInterpolator()
-                .interpolate(vValTrain, thetaValTrain, hoodValTrain);
+                .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
 
         return interpolatingFunction.value(ballVelocity, ballAngle);
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
+        double[] vValTrain = new double[trainingDataPointsList.size()];
+        double[] thetaValTrain = new double[trainingDataPointsList.size()];
+        double[][] hoodValTrain = new double[trainingDataPointsList.size()][trainingDataPointsList.size()];
 
-        double[] vValTrain = new double[100];
-        double[] thetaValTrain = new double[100];
-        double[][] hoodValTrain = new double[100][100];
+        TrainingDataPoint data;
+        for (int i = 0; i < trainingDataPointsList.size(); i++) {
+            data = trainingDataPointsList.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            hoodValTrain[i][i] = data.calibratedTraining;
+        }
+
         BicubicSplineInterpolatingFunction interpolatingFunction = new BicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, hoodValTrain);
 
