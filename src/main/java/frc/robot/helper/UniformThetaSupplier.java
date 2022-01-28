@@ -3,7 +3,7 @@ package frc.robot.helper;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class UniformThetaSupplier {
+public class UniformThetaSupplier implements ThetaSupplier {
     private double trajectoryDuration;
     private Rotation2d desiredRotation;
     private double proportion;
