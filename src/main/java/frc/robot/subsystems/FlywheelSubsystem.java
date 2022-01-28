@@ -24,8 +24,10 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double currentTargetSpeed;
 
-    private List<TrainingDataPoint> trainingDataPointsList;
-    private String filename = ""; // TODO: Add filename for the .csv file with training data points
+    private List<TrainingDataPoint> velocityTrainingPoints;
+    private List<TrainingDataPoint> hoodAngleTrainingPoints;
+    private String velocityCalibFilename = ""; // TODO: Add filename for the .csv file with training data points
+    private String hoodCalibFilename = ""; // TODO: Add filename for the .csv file with training data points
 
     public FlywheelSubsystem() {
         masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
@@ -48,7 +50,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void autoAim(double distance) {
         ShooterState ikShooterState = ballInverseKinematics(distance);
 
-        trainingDataPointsList = ReadTrainingFromCSV.readDataFromCSV(filename);
+        velocityTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(velocityCalibFilename);
+        hoodAngleTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(hoodCalibFilename);
 
         ShooterState correctedShooterState = new ShooterState(
                 getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
@@ -141,13 +144,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
-        double[] vValTrain = new double[trainingDataPointsList.size()];
-        double[] thetaValTrain = new double[trainingDataPointsList.size()];
-        double[][] angularVelocityTrain = new double[trainingDataPointsList.size()][trainingDataPointsList.size()];
+        double[] vValTrain = new double[velocityTrainingPoints.size()];
+        double[] thetaValTrain = new double[velocityTrainingPoints.size()];
+        double[][] angularVelocityTrain = new double[velocityTrainingPoints.size()][velocityTrainingPoints.size()];
 
         TrainingDataPoint data;
-        for (int i = 0; i < trainingDataPointsList.size(); i++) {
-            data = trainingDataPointsList.get(i);
+        for (int i = 0; i < velocityTrainingPoints.size(); i++) {
+            data = velocityTrainingPoints.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
             angularVelocityTrain[i][i] = data.calibratedTraining;
@@ -160,13 +163,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
-        double[] vValTrain = new double[trainingDataPointsList.size()];
-        double[] thetaValTrain = new double[trainingDataPointsList.size()];
-        double[][] hoodValTrain = new double[trainingDataPointsList.size()][trainingDataPointsList.size()];
+        double[] vValTrain = new double[hoodAngleTrainingPoints.size()];
+        double[] thetaValTrain = new double[hoodAngleTrainingPoints.size()];
+        double[][] hoodValTrain = new double[hoodAngleTrainingPoints.size()][hoodAngleTrainingPoints.size()];
 
         TrainingDataPoint data;
-        for (int i = 0; i < trainingDataPointsList.size(); i++) {
-            data = trainingDataPointsList.get(i);
+        for (int i = 0; i < hoodAngleTrainingPoints.size(); i++) {
+            data = hoodAngleTrainingPoints.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
             hoodValTrain[i][i] = data.calibratedTraining;
