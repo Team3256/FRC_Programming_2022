@@ -20,6 +20,16 @@ public class UniformThetaSupplier implements ThetaSupplier {
         this.proportion = 1;
     }
 
+    public UniformThetaSupplier(Rotation2d desiredRotation, double proportion) {
+        this.trajectoryDuration = 10; // SHOULD GET CHANGED BY TRAJECTORY FACTORY
+        this.desiredRotation = desiredRotation;
+        this.proportion = proportion;
+    }
+
+    public void setTrajectoryDuration(double duration) {
+        this.trajectoryDuration = duration;
+    }
+
     public Rotation2d rotationSupply(double now) {
         return new Rotation2d((this.desiredRotation.getRadians() >= 0 ? 1 : -1) * Math.min(
                 Math.abs(
