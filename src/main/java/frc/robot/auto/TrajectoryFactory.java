@@ -59,17 +59,6 @@ public class TrajectoryFactory {
         return getCommand(trajectory, thetaSupplier);
     }
 
-    public Command createCommand(double start, double end, Direction direction, ThetaSupplier thetaSupplier) {
-        List<Pose2d> waypoints = createStraightWaypoints(start, end, direction);
-
-        Trajectory trajectory =
-                TrajectoryGenerator.generateTrajectory(
-                        waypoints,
-                        getDefaultTrajectoryConfig());
-
-        thetaSupplier.setTrajectoryDuration(trajectory.getTotalTimeSeconds());
-        return getCommand(trajectory, thetaSupplier);
-    }
 
     public Command createCommand(double start, double end, Direction direction, ThetaSupplier thetaSupplier, boolean reversed) {
         List<Pose2d> waypoints = createStraightWaypoints(start, end, direction);
@@ -86,17 +75,28 @@ public class TrajectoryFactory {
     private List<Pose2d> createStraightWaypoints(double start, double end, Direction direction) {
         List<Pose2d> waypoints = new ArrayList<>();
         if (direction == Direction.X) {
-            for(double pos = start; pos <= end; pos += (end-start)/20) { // create 20 waypoints
-                waypoints.add(new Pose2d(-pos, 0, new Rotation2d()));
+            for(double pos = start; pos <= end; pos += ((end-start)/20)) { // create 20 waypoints
+                waypoints.add(new Pose2d(pos, 0, new Rotation2d()));
             }
         }
-
-        if (direction == Direction.Y) {
-            for(double pos = start; pos <= end; pos += (end-start)/20) { // create 20 waypoints
-                waypoints.add(new Pose2d(0, -pos, new Rotation2d()));
+        else if (direction == Direction.Y) {
+            for(double pos = start; pos <= end; pos += ((end-start)/20)) { // create 20 waypoints
+                waypoints.add(new Pose2d(0, pos, new Rotation2d()));
             }
         }
         return waypoints;
+    }
+
+    public Command createCommand(double start, double end, Direction direction, ThetaSupplier thetaSupplier) {
+        List<Pose2d> waypoints = createStraightWaypoints(start, end, direction);
+
+        Trajectory trajectory =
+                TrajectoryGenerator.generateTrajectory(
+                        waypoints,
+                        getDefaultTrajectoryConfig());
+
+        thetaSupplier.setTrajectoryDuration(trajectory.getTotalTimeSeconds());
+        return getCommand(trajectory, thetaSupplier);
     }
 
     private Command getCommand(Trajectory trajectory, ThetaSupplier uniformThetaSupplier) {

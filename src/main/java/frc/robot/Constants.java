@@ -36,7 +36,7 @@ public final class Constants {
                  SdsModuleConfigurations.MK4_L2.getDriveReduction() *
                  SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
-        private static final double ANGULAR_VELOCITY_CONSTANT = 0.5;
+        private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
     }
