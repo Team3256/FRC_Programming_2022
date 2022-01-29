@@ -24,7 +24,7 @@ public class ReadTrainingFromCSV {
 
             String[] attributes;
             while (line != null) {
-                attributes = line.split(",");
+                attributes = line.split(";");
 
                 trainingData.add(createDataPoint(attributes));
 
