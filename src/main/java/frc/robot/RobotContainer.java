@@ -126,9 +126,14 @@ public class RobotContainer {
         value = deadband(value, 0.05);
 
         // cube the axis
+        value = Math.copySign(value*value*value, value);
 
-        double exp = SmartDashboard.getNumber("exponential value", 1);
-        value = Math.copySign(Math.pow(value, exp), value);
+//      Putting exponent input value on Smart Dashboard for joystick input mapping
+//        double exp = SmartDashboard.getNumber("exponential value", 1);
+//
+//        value = Math.copySign(Math.pow(value, exp), value);
+//
+//        SmartDashboard.putNumber("exponential value", exp);
 
         return value;
     }
