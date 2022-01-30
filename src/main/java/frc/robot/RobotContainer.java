@@ -126,7 +126,9 @@ public class RobotContainer {
         value = deadband(value, 0.05);
 
         // cube the axis
-        value = Math.copySign(value * value, value);
+
+        double exp = SmartDashboard.getNumber("exponential value", 1);
+        value = Math.copySign(Math.pow(value, exp), value);
 
         return value;
     }
