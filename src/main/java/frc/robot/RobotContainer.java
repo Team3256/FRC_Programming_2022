@@ -125,8 +125,8 @@ public class RobotContainer {
         // Deadband
         value = deadband(value, 0.05);
 
-        // Square the axis
-//        value = Math.copySign(value * value, value);
+        // cube the axis
+        value = Math.copySign(value * value, value);
 
         return value;
     }
