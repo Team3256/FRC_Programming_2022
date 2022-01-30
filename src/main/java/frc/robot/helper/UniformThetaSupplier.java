@@ -21,7 +21,7 @@ public class UniformThetaSupplier implements ThetaSupplier {
     }
 
     public UniformThetaSupplier(Rotation2d desiredRotation, double proportion) {
-        this.trajectoryDuration = 10; // SHOULD GET CHANGED BY TRAJECTORY FACTORY
+        this.trajectoryDuration = 5; // SHOULD GET CHANGED BY TRAJECTORY FACTORY
         this.desiredRotation = desiredRotation;
         this.proportion = proportion;
     }

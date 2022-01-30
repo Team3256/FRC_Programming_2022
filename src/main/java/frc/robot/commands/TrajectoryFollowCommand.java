@@ -25,6 +25,7 @@ public class TrajectoryFollowCommand extends CommandBase {
     private final Function<Double, Rotation2d> thetaFeeder;
     private final SwerveDrive driveSubsystem;
     private final double trajectoryDuration;
+    private final Pose2d startPose;
 
     public TrajectoryFollowCommand(
             Trajectory trajectory,
@@ -32,6 +33,32 @@ public class TrajectoryFollowCommand extends CommandBase {
             PIDController yController,
             Function<Double, Rotation2d> thetaFeeder,
             ProfiledPIDController thetaController,
+            SwerveDrive driveSubsystem) {
+
+
+        this.trajectory = trajectory;
+        this.trajectoryDuration = trajectory.getTotalTimeSeconds();
+        this.controller = new SwerveDriveController(
+                xController,
+                yController,
+                thetaController
+        );
+
+        this.driveSubsystem = driveSubsystem;
+        this.thetaFeeder = thetaFeeder;
+
+        this.startPose = new Pose2d();
+
+        addRequirements(driveSubsystem);
+    }
+
+    public TrajectoryFollowCommand(
+            Trajectory trajectory,
+            PIDController xController,
+            PIDController yController,
+            Function<Double, Rotation2d> thetaFeeder,
+            ProfiledPIDController thetaController,
+            Pose2d startPose,
             SwerveDrive driveSubsystem) {
 
         this.trajectory = trajectory;
@@ -43,7 +70,7 @@ public class TrajectoryFollowCommand extends CommandBase {
         );
         this.driveSubsystem = driveSubsystem;
         this.thetaFeeder = thetaFeeder;
-
+        this.startPose = startPose;
         addRequirements(driveSubsystem);
     }
 
@@ -51,7 +78,7 @@ public class TrajectoryFollowCommand extends CommandBase {
     public void initialize() {
         RobotContainer.setCurrentTrajectory(trajectory);
         this.controller.reset();
-        driveSubsystem.resetOdometry(new Pose2d());
+        driveSubsystem.resetOdometry(this.startPose);
         timer.reset();
         timer.start();
     }
