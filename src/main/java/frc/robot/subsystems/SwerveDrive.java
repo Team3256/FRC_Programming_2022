@@ -137,6 +137,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Desired Back Right Angle", desiredStates[3].angle.getDegrees());
 
 
+
         SwerveModuleState frontLeftOptimized = optimizeModuleState(desiredStates[0], frontLeftModule.getSteerAngle());
         SwerveModuleState frontRightOptimized = optimizeModuleState(desiredStates[1], frontRightModule.getSteerAngle());
         SwerveModuleState backLeftOptimized = optimizeModuleState(desiredStates[2], backLeftModule.getSteerAngle());
@@ -161,10 +162,12 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
         SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
+        short[] r = new short[3];
+//        pigeon.getAccelerometerAngles(r);
+        pigeon.getBiasedAccelerometer(r);
+//        SmartDashboard.putNumber("Gyro Z Acceleration", ((r[2]/16384)/9.81));
+        SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
 
-//        short[] r = new short[3];
-//        pigeon.getBiasedAccelerometer(r);
-//        SmartDashboard.putNumber("Gyro Acceleration", r[2]);
     }
 
     public SwerveModuleState optimizeModuleState(SwerveModuleState state, double heading) {

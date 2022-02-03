@@ -123,17 +123,23 @@ public class RobotContainer {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.05);
+        double deadband = 0.05;
+        value = deadband(value, deadband);
 
         // cube the axis
-        value = Math.copySign(value*value*value, value);
+//        value = Math.copySign(value*value*value, value);
 
 //      Putting exponent input value on Smart Dashboard for joystick input mapping
-//        double exp = SmartDashboard.getNumber("exponential value", 1);
-//
+
+        SmartDashboard.setDefaultNumber("exponential value", 3);
+
+        double exp = SmartDashboard.getNumber("exponential value", 3);
+
+        //(1+(deadzone_value)*value - (deadzone_value))^a
 //        value = Math.copySign(Math.pow(value, exp), value);
-//
-//        SmartDashboard.putNumber("exponential value", exp);
+        value = Math.copySign(Math.pow((1 + deadband*value - deadband), exp), value);
+
+
 
         return value;
     }
