@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,6 +38,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
     private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final HangerSubsystem hanger = new HangerSubsystem();
     private final Field2d field = new Field2d();
     private final XboxController controller = new XboxController(0);
 
@@ -75,8 +77,15 @@ public class RobotContainer {
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-      
-      rightBumper.whenHeld(new IntakeOn(intake));
+        new Button(controller::getXButton)
+                // No requirements because we don't need to interrupt anything
+                .whenPressed(hanger::extend);
+        new Button(controller::getYButton)
+                // No requirements because we don't need to interrupt anything
+                .whenPressed(hanger::retract);
+
+
+        rightBumper.whenHeld(new IntakeOn(intake));
     }
     public SendableChooser<Command> getCommandChooser() {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem);

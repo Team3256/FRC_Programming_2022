@@ -121,9 +121,13 @@ public final class Constants {
 
     public static class HangerConstants {
         public static final int HANGER_TALON_FX_MOTOR_ID = 22;
+
         public static final double EXTEND_DISTANCE = 0.0;
         public static final double RETRACT_DISTANCE = 0.0;
         public static final double PARTIAL_DISTANCE = 0.0;
+
+        public static final double CURRENT_LIMIT = 0;
+
         public static final int SOLENOID_LEFT_FORWARD = 1;
         public static final int SOLENOID_LEFT_BACKWARD = 2;
         public static final int SOLENOID_RIGHT_FORWARD = 3;
