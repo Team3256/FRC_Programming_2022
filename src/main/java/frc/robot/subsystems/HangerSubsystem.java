@@ -14,8 +14,8 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 public class HangerSubsystem extends SubsystemBase {
     private final TalonFX masterTalonMotor;
     private final TalonFX followerTalonMotor;
-    DoubleSolenoid leftSolenoid;
-    DoubleSolenoid rightSolenoid;
+    private final DoubleSolenoid leftSolenoid;
+    private final DoubleSolenoid rightSolenoid;
 
 
     public HangerSubsystem() {
@@ -40,7 +40,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void retractContinuously() {
-        masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT);
+        masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
@@ -58,25 +58,40 @@ public class HangerSubsystem extends SubsystemBase {
         rightSolenoid.set(kReverse);
     }
 
+    /**
+     * check if the max current is reached on the master talon
+     * @return returns if the master talon's supply current exceeds the current limit
+     */
     public boolean isCurrentReached() {
         return masterTalonMotor.getSupplyCurrent() >= CURRENT_LIMIT;
     }
 
+    /**
+     * get the position of master talon in meters
+     * @return returns position of master talon in meters
+     */
     public double getPosition() {
         return (masterTalonMotor.getSelectedSensorPosition()/2048)/GEAR_RATIO;
     }
 
-    public boolean isPositionReached() {
+    /**
+     * check if master talon motor has reached the full intended distance
+     * @return returns true if master talon has the full reached intended distance
+     */
+    public boolean isFullPositionReached() {
         return getPosition() >= EXTEND_DISTANCE;
     }
 
+    /**
+     * check if master talon motor has reached the partial intended distance
+     * @return returns true if master talon has the partial reached intended distance
+     */
     public boolean isPartialPositionReached() {
         return getPosition() >= PARTIAL_DISTANCE;
     }
 
     public void stopMotor() {
         masterTalonMotor.set(ControlMode.PercentOutput, 0);
-        followerTalonMotor.set(ControlMode.PercentOutput, 0);
     }
 
 }

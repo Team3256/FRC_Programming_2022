@@ -132,11 +132,14 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 0;
 
-        public static final double EXTEND_DISTANCE = 0.0;
-        public static final double RETRACT_PERCENT = 0.0;
-        public static final double PARTIAL_DISTANCE = 0.0;
+        public static final double EXTEND_DISTANCE = 0.0; // in Meters
+        public static final double PARTIAL_DISTANCE = 0.0; // in Meters
 
-        public static final double CURRENT_LIMIT = 0;
+        public static final double RETRACT_PERCENT_SPEED = 0.0;
+
+        public static final double CURRENT_LIMIT = 0; // in Amps
+
+        public static final double PNEUMATIC_WAIT_DURATION = 0;
 
     }
 }
