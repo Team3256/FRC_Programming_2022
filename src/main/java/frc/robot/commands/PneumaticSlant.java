@@ -3,15 +3,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.HangerSubsystem;
 
-public class PneumaticExtend extends CommandBase {
+public class PneumaticSlant extends CommandBase {
     private HangerSubsystem hanger;
-    public PneumaticExtend(HangerSubsystem hanger) {
+    public PneumaticSlant(HangerSubsystem hanger) {
         this.hanger = hanger;
         addRequirements(hanger);
     }
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {hanger.pneumaticExtend();}
+    public void initialize() {hanger.pneumaticSlant();}
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override

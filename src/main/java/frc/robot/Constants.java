@@ -77,7 +77,8 @@ public final class Constants {
         public static final int[] SPARK_MAX_IDS = new int[]{};
 
 
-        public static final int HANGER_TALON_FX_MOTOR_ID = 22;
+        public static final int MASTER_TALON_ID = 0;
+        public static final int FOLLOWER_TALON_ID = 0;
     }
 
     public static class LoggingConstants {
@@ -120,11 +121,11 @@ public final class Constants {
     }
 
     public static class HangerConstants {
-        public static final int LEFT_TALON_ID = 0;
-        public static final int RIGHT_TALON_ID = 0;
+
+        public static final boolean INVERT_MOTOR = false;
 
         public static final double EXTEND_DISTANCE = 0.0;
-        public static final double RETRACT_DISTANCE = 0.0;
+        public static final double RETRACT_PERCENT = 0.0;
         public static final double PARTIAL_DISTANCE = 0.0;
 
         public static final double CURRENT_LIMIT = 0;
