@@ -78,12 +78,6 @@ public final class Constants {
 
 
         public static final int HANGER_TALON_FX_MOTOR_ID = 22;
-
-        // PCM
-        public static final int SOLENOID_FORWARD_ONE = 1;
-        public static final int SOLENOID_BACKWARD_ONE = 2;
-        public static final int SOLENOID_FORWARD_TWO = 3;
-        public static final int SOLENOID_BACKWARD_TWO = 4;
     }
 
     public static class LoggingConstants {
@@ -126,7 +120,13 @@ public final class Constants {
     }
 
     public static class HangerConstants {
-        public static final double SPOOL_FORWARD_SPEED = 0.0; // TODO: Set speed of forward spool
-        public static final double SPOOL_BACKWARD_SPEED = 0.0; // TODO: Set speed of backward spool
+        public static final int HANGER_TALON_FX_MOTOR_ID = 22;
+        public static final double EXTEND_DISTANCE = 0.0;
+        public static final double RETRACT_DISTANCE = 0.0;
+        public static final double PARTIAL_DISTANCE = 0.0;
+        public static final int SOLENOID_LEFT_FORWARD = 1;
+        public static final int SOLENOID_LEFT_BACKWARD = 2;
+        public static final int SOLENOID_RIGHT_FORWARD = 3;
+        public static final int SOLENOID_RIGHT_BACKWARD = 4;
     }
 }
