@@ -25,15 +25,10 @@ public class HangerSubsystem extends SubsystemBase {
 
     public void extend() {
         hangerMotor.set(ControlMode.Position, EXTEND_DISTANCE);
-
     }
 
     public void retract() {
-        if (isFullyRetracted()) {
-            stopMotor();
-        } else {
-            hangerMotor.set(ControlMode.Position, RETRACT_DISTANCE);
-        }
+        hangerMotor.set(ControlMode.Position, RETRACT_DISTANCE);
     }
 
     public void extendPartial() {
@@ -50,8 +45,8 @@ public class HangerSubsystem extends SubsystemBase {
         rightSolenoid.set(kReverse);
     }
 
-    public boolean isFullyRetracted() {
-        return hangerMotor.getSupplyCurrent() > CURRENT_LIMIT;
+    public boolean maxCurrDraw() {
+        return hangerMotor.getSupplyCurrent() >= CURRENT_LIMIT;
     }
 
     public void stopMotor() {

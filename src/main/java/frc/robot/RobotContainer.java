@@ -77,12 +77,6 @@ public class RobotContainer {
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-        new Button(controller::getXButton)
-                // No requirements because we don't need to interrupt anything
-                .whenPressed(hanger::extend);
-        new Button(controller::getYButton)
-                // No requirements because we don't need to interrupt anything
-                .whenPressed(hanger::retract);
 
 
         rightBumper.whenHeld(new IntakeOn(intake));
