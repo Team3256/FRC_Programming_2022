@@ -35,18 +35,17 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void extend() {
-        masterTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
-        followerTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
+        double distance = EXTEND_DISTANCE * 2048 * GEAR_RATIO;
+        masterTalonMotor.set(ControlMode.Position, distance);
     }
 
     public void retractContinuously() {
         masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT);
-        followerTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT);
     }
 
     public void extendPartial() {
-        masterTalonMotor.set(ControlMode.Position, PARTIAL_DISTANCE);
-        followerTalonMotor.set(ControlMode.Position, PARTIAL_DISTANCE);
+        double distance = PARTIAL_DISTANCE * 2048 * GEAR_RATIO;
+        masterTalonMotor.set(ControlMode.Position, distance);
     }
 
     public void pneumaticUpright() {
@@ -61,6 +60,18 @@ public class HangerSubsystem extends SubsystemBase {
 
     public boolean isCurrentReached() {
         return masterTalonMotor.getSupplyCurrent() >= CURRENT_LIMIT;
+    }
+
+    public double getPosition() {
+        return (masterTalonMotor.getSelectedSensorPosition()/2048)/GEAR_RATIO;
+    }
+
+    public boolean isPositionReached() {
+        return getPosition() >= EXTEND_DISTANCE;
+    }
+
+    public boolean isPartialPositionReached() {
+        return getPosition() >= PARTIAL_DISTANCE;
     }
 
     public void stopMotor() {
