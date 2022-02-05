@@ -12,27 +12,32 @@ import javax.naming.ldap.Control;
 import static frc.robot.Constants.HangerConstants.*;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 public class HangerSubsystem extends SubsystemBase {
-    private final TalonFX hangerMotor;
+    private final TalonFX hangerMotorLeft;
+    private final TalonFX hangerMotorRight;
     DoubleSolenoid leftSolenoid;
     DoubleSolenoid rightSolenoid;
 
     public HangerSubsystem() {
-        hangerMotor = new TalonFX(HANGER_TALON_FX_MOTOR_ID);
+        hangerMotorLeft = new TalonFX(LEFT_TALON_ID);
+        hangerMotorRight = new TalonFX(RIGHT_TALON_ID);
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_LEFT_FORWARD, SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_RIGHT_FORWARD, SOLENOID_RIGHT_BACKWARD);
     }
 
     public void extend() {
-        hangerMotor.set(ControlMode.Position, EXTEND_DISTANCE);
+        hangerMotorLeft.set(ControlMode.Position, EXTEND_DISTANCE);
+        hangerMotorRight.set(ControlMode.Position, EXTEND_DISTANCE);
     }
 
     public void retract() {
-        hangerMotor.set(ControlMode.Position, RETRACT_DISTANCE);
+        hangerMotorLeft.set(ControlMode.Position, RETRACT_DISTANCE);
+        hangerMotorRight.set(ControlMode.Position, RETRACT_DISTANCE);
     }
 
     public void extendPartial() {
-        hangerMotor.set(ControlMode.Position, PARTIAL_DISTANCE);
+        hangerMotorLeft.set(ControlMode.Position, PARTIAL_DISTANCE);
+        hangerMotorRight.set(ControlMode.Position, PARTIAL_DISTANCE);
     }
 
     public void pneumaticExtend() {
@@ -46,11 +51,12 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public boolean maxCurrDraw() {
-        return hangerMotor.getSupplyCurrent() >= CURRENT_LIMIT;
+        return hangerMotorLeft.getSupplyCurrent() >= CURRENT_LIMIT || hangerMotorRight.getSupplyCurrent() >= CURRENT_LIMIT;
     }
 
     public void stopMotor() {
-        hangerMotor.set(ControlMode.PercentOutput, 0);
+        hangerMotorLeft.set(ControlMode.PercentOutput, 0);
+        hangerMotorRight.set(ControlMode.PercentOutput, 0);
     }
 
 }

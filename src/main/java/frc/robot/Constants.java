@@ -120,7 +120,8 @@ public final class Constants {
     }
 
     public static class HangerConstants {
-        public static final int HANGER_TALON_FX_MOTOR_ID = 22;
+        public static final int LEFT_TALON_ID = 0;
+        public static final int RIGHT_TALON_ID = 0;
 
         public static final double EXTEND_DISTANCE = 0.0;
         public static final double RETRACT_DISTANCE = 0.0;
