@@ -94,6 +94,14 @@ public final class Constants {
         //Motor CAN IDs
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 36, 37};
         public static final int[] SPARK_MAX_IDS = new int[]{};
+
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+
+
+        public static final int TURRET_ID = 34;
+        public static final int FEEDER_MOTOR_ID = 35;
+
         public static final int HANGER_MASTER_TALON_ID = 36;
         public static final int HANGER_FOLLOWER_TALON_ID = 37;
 
@@ -103,6 +111,8 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
         public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
 
+        // DIO Channels
+        public static final int HOOD_SERVO_CHANNEL_ID = 0;
 
     }
 
