@@ -1,8 +1,6 @@
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import java.util.logging.Level;
@@ -74,16 +72,16 @@ public final class Constants {
 
     public static class IDConstants {
         //Motor CAN IDs
-        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 22};
+        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 36, 37};
         public static final int[] SPARK_MAX_IDS = new int[]{};
-        public static final int MASTER_TALON_ID = 36;
-        public static final int FOLLOWER_TALON_ID = 37;
+        public static final int HANGER_MASTER_TALON_ID = 36;
+        public static final int HANGER_FOLLOWER_TALON_ID = 37;
 
         //Pneumatic IDs
-        public static final int SOLENOID_LEFT_FORWARD = 1;
-        public static final int SOLENOID_LEFT_BACKWARD = 2;
-        public static final int SOLENOID_RIGHT_FORWARD = 3;
-        public static final int SOLENOID_RIGHT_BACKWARD = 4;
+        public static final int HANGER_SOLENOID_LEFT_FORWARD = 1;
+        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
+        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
+        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
 
     }
 

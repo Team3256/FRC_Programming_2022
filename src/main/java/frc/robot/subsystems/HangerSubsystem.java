@@ -19,19 +19,19 @@ public class HangerSubsystem extends SubsystemBase {
 
 
     public HangerSubsystem() {
-        masterTalonMotor = new TalonFX(MASTER_TALON_ID);
-        followerTalonMotor = new TalonFX(FOLLOWER_TALON_ID);
+        masterTalonMotor = new TalonFX(HANGER_MASTER_TALON_ID);
+        followerTalonMotor = new TalonFX(HANGER_FOLLOWER_TALON_ID);
 
         masterTalonMotor.setInverted(INVERT_MOTOR);
 
         followerTalonMotor.follow(masterTalonMotor);
-        followerTalonMotor.setInverted(InvertType.FollowMaster);
+        followerTalonMotor.setInverted(InvertType.OpposeMaster);
 
         masterTalonMotor.setNeutralMode(NeutralMode.Brake);
         followerTalonMotor.setNeutralMode(NeutralMode.Brake);
 
-        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_LEFT_FORWARD, SOLENOID_LEFT_BACKWARD);
-        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_RIGHT_FORWARD, SOLENOID_RIGHT_BACKWARD);
+        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
+        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
     }
 
     public void extend() {
@@ -62,7 +62,7 @@ public class HangerSubsystem extends SubsystemBase {
      * check if the max current is reached on the master talon
      * @return returns if the master talon's supply current exceeds the current limit
      */
-    public boolean isCurrentReached() {
+    public boolean isCurrentLimitReached() {
         return masterTalonMotor.getSupplyCurrent() >= CURRENT_LIMIT;
     }
 
