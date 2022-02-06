@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.hanger;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -6,10 +6,10 @@ import frc.robot.subsystems.HangerSubsystem;
 
 import static frc.robot.Constants.HangerConstants.PNEUMATIC_WAIT_DURATION;
 
-public class PneumaticUpright extends CommandBase {
+public class HangerPneumaticSlant extends CommandBase {
     private HangerSubsystem hanger;
     protected Timer timer = new Timer();
-    public PneumaticUpright(HangerSubsystem hanger) {
+    public HangerPneumaticSlant(HangerSubsystem hanger) {
         this.hanger = hanger;
         addRequirements(hanger);
     }
@@ -18,7 +18,7 @@ public class PneumaticUpright extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-        hanger.pneumaticUpright();
+        hanger.pneumaticSlant();
     }
 
     // Called every time the scheduler runs while the command is scheduled.

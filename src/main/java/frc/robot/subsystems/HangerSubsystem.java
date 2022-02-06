@@ -45,7 +45,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void retractContinuously() {
-        masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT_SPEED);
+        masterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
@@ -72,8 +72,8 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     /**
-     * get the position of master talon in meters
-     * @return returns position of master talon in meters
+     * get the position of master talon in rotations of spool
+     * @return returns position of master talon in rotations of spool
      */
     public double getPosition() {
         return (masterTalonMotor.getSelectedSensorPosition()/2048)/GEAR_RATIO;
