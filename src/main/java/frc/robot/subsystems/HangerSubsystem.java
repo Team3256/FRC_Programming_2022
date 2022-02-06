@@ -40,7 +40,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void retractContinuously() {
-        masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT_SPEED);
+        masterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
