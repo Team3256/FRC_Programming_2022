@@ -126,6 +126,11 @@ public final class Constants {
 
     public static class HangerConstants {
 
+        public static final double HANGER_MASTER_TALON_PID_P = 0;
+        public static final double HANGER_MASTER_TALON_PID_I = 0;
+        public static final double HANGER_MASTER_TALON_PID_D = 0;
+        public static final double HANGER_MASTER_TALON_PID_F = 0;
+
         public static final boolean INVERT_MOTOR = false;
 
         public static final double GEAR_RATIO = 0;

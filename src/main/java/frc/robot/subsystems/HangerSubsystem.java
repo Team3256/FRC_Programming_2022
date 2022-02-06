@@ -22,6 +22,11 @@ public class HangerSubsystem extends SubsystemBase {
         masterTalonMotor = new TalonFX(HANGER_MASTER_TALON_ID);
         followerTalonMotor = new TalonFX(HANGER_FOLLOWER_TALON_ID);
 
+        masterTalonMotor.config_kP(0, HANGER_MASTER_TALON_PID_P); //TODO: change slotIdx if required
+        masterTalonMotor.config_kI(0, HANGER_MASTER_TALON_PID_I); //TODO: change slotIdx if required
+        masterTalonMotor.config_kD(0, HANGER_MASTER_TALON_PID_D); //TODO: change slotIdx if required
+        masterTalonMotor.config_kF(0, HANGER_MASTER_TALON_PID_F); //TODO: change slotIdx if required
+
         masterTalonMotor.setInverted(INVERT_MOTOR);
 
         followerTalonMotor.follow(masterTalonMotor);
