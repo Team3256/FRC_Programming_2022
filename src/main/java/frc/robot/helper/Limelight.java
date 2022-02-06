@@ -9,6 +9,10 @@ import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
     private static NetworkTable limelight;
+
+    //Doesn't Allow Instancing
+    private Limelight(){}
+
     public static void init() {
         //Setting up NetworkTables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
