@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -6,6 +10,21 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class LimelightConstants {
+        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double TARGET_HEIGHT_INCHES = 98;
+        public static final double MOUNTING_ANGLE_DEG = 30;
+    }
+    public static class TurretConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double DEFAULT_TURRET_SPEED = 50;
+        public static final double TURRET_TOLERANCE_TX = 0.5;
+    }
+    public static class FeederConstants {
+        public static final double DEFAULT_FEEDER_SPEED = 50;
+    }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
@@ -71,6 +90,7 @@ public final class Constants {
     }
 
     public static class IDConstants {
+
         //Motor CAN IDs
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 36, 37};
         public static final int[] SPARK_MAX_IDS = new int[]{};
@@ -82,6 +102,7 @@ public final class Constants {
         public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
         public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
         public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
+
 
     }
 
@@ -138,6 +159,25 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 0; // in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
+    
+    }
 
+    public static class ShooterConstants {
+        // Constant Shooting Section
+        public static final double RADIUS_UPPER_HUB = 0.61; // in m
+        public static final double SHOOTER_HEIGHT = 0.51; // in m
+        public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
+
+        // Tuning Section
+        public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
+        public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
+        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
+        public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
+        public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
+
+        // Hood Angle Constants
+        public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
+        public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
 }
