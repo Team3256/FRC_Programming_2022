@@ -175,6 +175,7 @@ public final class Constants {
         public static final double RETRACT_PERCENT_SPEED = 0.0;
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
+        public static final double WAIT_TIME = 0.0; //in Seconds
     
     }
 
