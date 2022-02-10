@@ -15,6 +15,7 @@ public final class Constants {
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
+        public static final String POLYNOMIAL_FILE_PATH = "/home/lvuser/Polynomial.txt";
     }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 29.5;

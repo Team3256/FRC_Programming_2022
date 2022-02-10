@@ -1,9 +1,13 @@
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.helper.Limelight;
+import frc.robot.helper.Polynomial;
 import frc.robot.subsystems.SwerveDrive;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
+
+import java.io.*;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
@@ -36,6 +40,17 @@ public class LimelightAutocorrectCommand extends CommandBase {
             curDistance-=PACE_SIZE;
         }
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        Polynomial result = new Polynomial(fitter.fit(data.toList()));
+        try {
+            Limelight.writePolynomial(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean isFinished(){
         return counter >= PACES;

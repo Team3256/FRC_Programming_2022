@@ -5,11 +5,17 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.io.*;
+
+import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILE_PATH;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
     private static NetworkTable limelight;
-    public static void init() {
+    public static File polynomialFile = new File(POLYNOMIAL_FILE_PATH);
+    private static Polynomial corrector;
+
+    public static void init() throws IOException, ClassNotFoundException {
         //Setting up NetworkTables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         limelight = inst.getTable("limelight");
@@ -20,6 +26,24 @@ public class Limelight {
         limelight.getEntry("pipeline").setNumber(0); //Uses pipeline #0
         limelight.getEntry("stream").setNumber(2); //Driver Camera Main, Vision Camera Lower-Right Corner
         limelight.getEntry("snapshot").setNumber(0); //Takes no snapshots
+
+        //if file does not exist
+        if (!polynomialFile.isFile()) {
+            try {
+                polynomialFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //Get polynomial from file
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(POLYNOMIAL_FILE_PATH));
+        try {
+            corrector = (Polynomial) in.readObject();
+        } catch (Exception e){
+            //if polynomial not parsable from file, get default polynomial
+            corrector = new Polynomial(new double[]{0,1});
+        }
+        in.close();
     }
 
     private static NetworkTableEntry getLimelightValue(String value){
@@ -69,22 +93,26 @@ public class Limelight {
     }
 
     public static double getDistanceToTarget(){
-        return getTuned(TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
-    }
-    public static double getInaccurateDistanceToTarget(){
         return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
     }
+    public static double getTunedDistanceToTarget(){
+        return corrector.getOutput(getDistanceToTarget());
+    }
+
 
     public static double toRadians(double degrees){
         return degrees * Math.PI/180.0;
     }
 
+    public static void writePolynomial(Polynomial toWrite) throws IOException {
+        // Saving of object in a file
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(POLYNOMIAL_FILE_PATH));
+        out.writeObject(toWrite);
+        out.close();
+    }
     /**
      * @param x the not tuned distance
      * tunes the distance you put in to the actual distance
      * @return the actual distance
      */
-    private static double getTuned(double x){
-        return 1.04*x + -9.54;
-    }
 }
