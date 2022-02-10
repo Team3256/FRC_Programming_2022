@@ -12,6 +12,7 @@ public class ManualLeftTurret extends CommandBase {
     @Override
     public void initialize() {
         turretSubsystem.manualLeft();
+        System.out.println("Beginning turret left turn program.");
     }
 
     @Override
@@ -22,5 +23,6 @@ public class ManualLeftTurret extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         turretSubsystem.stop();
+        System.out.println("Ending turret left turn program.");
     }
 }

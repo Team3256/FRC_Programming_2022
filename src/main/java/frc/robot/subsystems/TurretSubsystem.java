@@ -26,8 +26,8 @@ public class TurretSubsystem extends PIDSubsystem {
         this.setSetpoint(0);
         this.disable();
         turretMotor.config_kF(0, 0);
-        turretMotor.config_kP(0, 0.008);
-        turretMotor.config_kI(0, 0);
+        turretMotor.config_kP(0, 0.05);
+        turretMotor.config_kI(0, 0.0);
         turretMotor.config_kD(0, 0);
     }
 
