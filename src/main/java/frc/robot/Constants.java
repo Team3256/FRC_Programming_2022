@@ -1,13 +1,30 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class LimelightConstants {
+        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double TARGET_HEIGHT_INCHES = 98;
+        public static final double MOUNTING_ANGLE_DEG = 30;
+    }
+    public static class TurretConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double DEFAULT_TURRET_SPEED = 50;
+        public static final double TURRET_TOLERANCE_TX = 0.5;
+    }
+    public static class FeederConstants {
+        public static final double DEFAULT_FEEDER_SPEED = 50;
+    }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
@@ -73,17 +90,29 @@ public final class Constants {
     }
 
     public static class IDConstants {
+
         //Motor CAN IDs
-        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 22};
+        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 36, 37};
         public static final int[] SPARK_MAX_IDS = new int[]{};
-        public static final int MASTER_TALON_ID = 36;
-        public static final int FOLLOWER_TALON_ID = 37;
+
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+
+
+        public static final int TURRET_ID = 34;
+        public static final int FEEDER_MOTOR_ID = 35;
+
+        public static final int HANGER_MASTER_TALON_ID = 36;
+        public static final int HANGER_FOLLOWER_TALON_ID = 37;
 
         //Pneumatic IDs
-        public static final int SOLENOID_LEFT_FORWARD = 1;
-        public static final int SOLENOID_LEFT_BACKWARD = 2;
-        public static final int SOLENOID_RIGHT_FORWARD = 3;
-        public static final int SOLENOID_RIGHT_BACKWARD = 4;
+        public static final int HANGER_SOLENOID_LEFT_FORWARD = 1;
+        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
+        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
+        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
+
+        // DIO Channels
+        public static final int HOOD_SERVO_CHANNEL_ID = 0;
 
         //Magnetic Switch IDs
         public static final int LIMIT_SWITCH_CHANNEL = 0;
@@ -131,16 +160,40 @@ public final class Constants {
 
     public static class HangerConstants {
 
+        public static final double HANGER_MASTER_TALON_PID_P = 0;
+        public static final double HANGER_MASTER_TALON_PID_I = 0;
+        public static final double HANGER_MASTER_TALON_PID_D = 0;
+        public static final double HANGER_MASTER_TALON_PID_F = 0;
+
         public static final boolean INVERT_MOTOR = false;
 
-        public static final double GEAR_RATIO = 0;
+        public static final double GEAR_RATIO = 0; // from spool to motor
 
-        public static final double EXTEND_DISTANCE = 0.0; // in Meters
-        public static final double PARTIAL_DISTANCE = 0.0; // in Meters
+        public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
+        public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
 
         public static final double RETRACT_PERCENT_SPEED = 0.0;
 
-        public static final double PNEUMATIC_WAIT_DURATION = 0;
+        public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
+    
+    }
 
+    public static class ShooterConstants {
+        // Constant Shooting Section
+        public static final double RADIUS_UPPER_HUB = 0.61; // in m
+        public static final double SHOOTER_HEIGHT = 0.51; // in m
+        public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
+
+        // Tuning Section
+        public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
+        public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
+        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
+        public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
+        public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
+
+        // Hood Angle Constants
+        public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
+        public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
 }

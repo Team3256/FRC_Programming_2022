@@ -21,19 +21,24 @@ public class HangerSubsystem extends SubsystemBase {
 
 
     public HangerSubsystem() {
-        masterTalonMotor = new TalonFX(MASTER_TALON_ID);
-        followerTalonMotor = new TalonFX(FOLLOWER_TALON_ID);
+        masterTalonMotor = new TalonFX(HANGER_MASTER_TALON_ID);
+        followerTalonMotor = new TalonFX(HANGER_FOLLOWER_TALON_ID);
+
+        masterTalonMotor.config_kP(0, HANGER_MASTER_TALON_PID_P); //TODO: change slotIdx if required
+        masterTalonMotor.config_kI(0, HANGER_MASTER_TALON_PID_I); //TODO: change slotIdx if required
+        masterTalonMotor.config_kD(0, HANGER_MASTER_TALON_PID_D); //TODO: change slotIdx if required
+        masterTalonMotor.config_kF(0, HANGER_MASTER_TALON_PID_F); //TODO: change slotIdx if required
 
         masterTalonMotor.setInverted(INVERT_MOTOR);
 
         followerTalonMotor.follow(masterTalonMotor);
-        followerTalonMotor.setInverted(InvertType.FollowMaster);
+        followerTalonMotor.setInverted(InvertType.OpposeMaster);
 
         masterTalonMotor.setNeutralMode(NeutralMode.Brake);
         followerTalonMotor.setNeutralMode(NeutralMode.Brake);
 
-        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_LEFT_FORWARD, SOLENOID_LEFT_BACKWARD);
-        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,SOLENOID_RIGHT_FORWARD, SOLENOID_RIGHT_BACKWARD);
+        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
+        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
     }
 
     public void extend() {
@@ -42,7 +47,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void retractContinuously() {
-        masterTalonMotor.set(ControlMode.PercentOutput, RETRACT_PERCENT_SPEED);
+        masterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
@@ -72,8 +77,8 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     /**
-     * get the position of master talon in meters
-     * @return returns position of master talon in meters
+     * get the position of master talon in rotations of spool
+     * @return returns position of master talon in rotations of spool
      */
     public double getPosition() {
         return (masterTalonMotor.getSelectedSensorPosition()/2048)/GEAR_RATIO;

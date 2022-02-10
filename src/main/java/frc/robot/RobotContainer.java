@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,14 +23,17 @@ import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-//import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IntakeOn;
+import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
+import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
-//import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import java.util.ArrayList;
 import java.util.List;
+import frc.robot.subsystems.FlywheelSubsystem;
+
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,11 +42,15 @@ import java.util.List;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
     private final HangerSubsystem hanger = new HangerSubsystem();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
+
     private final Field2d field = new Field2d();
+
     private final XboxController controller = new XboxController(0);
 
     /**
@@ -48,6 +59,8 @@ public class RobotContainer {
      */
     public RobotContainer() {
       RobotLogger.setup();
+
+        Limelight.init();
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
@@ -72,44 +85,52 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-      Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+        Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-
         rightBumper.whenHeld(new IntakeOn(intake));
     }
+
     public SendableChooser<Command> getCommandChooser() {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem);
     }
 
     public Trajectory getTrajectory() { // FIXME: scuffed rn, pls fix later
         TrajectoryConfig config =
-                new TrajectoryConfig(
-                        Constants.AutoConstants.MAX_SPEED_CONTROLLER_METERS_PER_SECOND,
-                        Constants.AutoConstants.MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED)
-                        // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(drivetrainSubsystem.getKinematics());
+              new TrajectoryConfig(
+                      Constants.AutoConstants.MAX_SPEED_CONTROLLER_METERS_PER_SECOND,
+                      Constants.AutoConstants.MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED)
+                      // Add kinematics to ensure max speed is actually obeyed
+                      .setKinematics(drivetrainSubsystem.getKinematics());
 
         List<Pose2d> waypoints = new ArrayList<>();
         for(int pos = 0; pos <= 80; pos++){
             waypoints.add(new Pose2d(Units.inchesToMeters(pos), 0, new Rotation2d()));
         }
-//        List<Translation2d> waypoints = List.of(new Translation2d(Units.inchesToMeters(12), 0));s
+        // List<Translation2d> waypoints = List.of(new Translation2d(Units.inchesToMeters(12), 0));s
         // JSONReader.ParseJSONFile("");
 
         // An example trajectory to follow.  All units in meters.
         Trajectory trajectory1 =
-                TrajectoryGenerator.generateTrajectory(
-                        // Start at the origin facing the +X direction
-                        waypoints,
-                        config);
+              TrajectoryGenerator.generateTrajectory(
+                      // Start at the origin facing the +X direction
+                      waypoints,
+                      config);
 
         return trajectory1;
     }
 
+    private void configureShooter() {
+        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(controller, XboxController.Axis.kRightTrigger.value);
+        rightTrigger.setThreshold(0.01);
+
+        rightTrigger.whenPressed(new SetShooterFromTriggerDebug(flywheelSubsystem, controller::getRightTriggerAxis));
+
+    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -118,7 +139,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
-
+  
     public void resetPose() {
         drivetrainSubsystem.resetOdometry(new Pose2d());
     }
