@@ -75,6 +75,9 @@ dependencies {
 
     //Dylans "Fixed" Version, Change to Actual Swerve once they release 2022 version.
     implementation 'com.github.StarDylan:swerve-lib:a0ae84c1be'
+
+    //Apache Commons Math - For Curve Fitting
+    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 }
 
 // Simulation configuration (e.g. environment variables).
