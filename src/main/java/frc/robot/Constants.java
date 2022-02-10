@@ -85,6 +85,9 @@ public final class Constants {
         public static final int SOLENOID_RIGHT_FORWARD = 3;
         public static final int SOLENOID_RIGHT_BACKWARD = 4;
 
+        //Magnetic Switch IDs
+        public static final int LIMIT_SWITCH_CHANNEL = 0;
+
     }
 
     public static class LoggingConstants {
@@ -136,8 +139,6 @@ public final class Constants {
         public static final double PARTIAL_DISTANCE = 0.0; // in Meters
 
         public static final double RETRACT_PERCENT_SPEED = 0.0;
-
-        public static final double CURRENT_LIMIT = 0; // in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0;
 

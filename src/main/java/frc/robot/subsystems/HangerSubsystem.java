@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,7 @@ public class HangerSubsystem extends SubsystemBase {
     private final TalonFX followerTalonMotor;
     private final DoubleSolenoid leftSolenoid;
     private final DoubleSolenoid rightSolenoid;
+    DigitalInput bottomlimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
 
 
     public HangerSubsystem() {
@@ -59,11 +61,14 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     /**
-     * check if the max current is reached on the master talon
-     * @return returns if the master talon's supply current exceeds the current limit
+     * check if the bottom limit switch is triggered
+     * @return returns if the bottom limit switch is triggered
      */
-    public boolean isCurrentReached() {
-        return masterTalonMotor.getSupplyCurrent() >= CURRENT_LIMIT;
+    public boolean hasReachedBottom() {
+        if (bottomlimitSwitch.get()) {
+            return true;
+        }
+        return false;
     }
 
     /**
