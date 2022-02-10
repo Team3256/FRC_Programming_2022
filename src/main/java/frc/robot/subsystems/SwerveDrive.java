@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,7 +33,7 @@ public class SwerveDrive extends SubsystemBase {
             // Back right
             new Translation2d(-DRIVETRAIN_TRACK_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
-    private final PigeonIMU pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
+    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
@@ -96,7 +96,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void zeroGyroscope() {
-        pigeon.setFusedHeading(0.0);
+        pigeon.reset();
         resetOdometry(new Pose2d());
     }
 
@@ -109,7 +109,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Rotation2d getGyroscopeRotation() {
-        return Rotation2d.fromDegrees(pigeon.getFusedHeading());
+        return Rotation2d.fromDegrees(pigeon.getAngle());
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
@@ -161,10 +161,10 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Back Left Angle", backLeftModule.getSteerAngle());
         SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
         SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
-
-        short[] r = new short[3];
+//        SmartDashboard.putData("Accumilated Gyro Error",   );
+//        short[] r = new short[3];
 //        pigeon.getAccelerometerAngles(r);
-        pigeon.getBiasedAccelerometer(r);
+//        pigeon.getBiasedAccelerometer(r);
 //        SmartDashboard.putNumber("Gyro Z Acceleration", ((r[2]/16384)/9.81));
         SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
 

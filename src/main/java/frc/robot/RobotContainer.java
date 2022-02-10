@@ -136,8 +136,8 @@ public class RobotContainer {
         double exp = SmartDashboard.getNumber("exponential value", 3);
 
         //(1+(deadzone_value)*value - (deadzone_value))^a
-//        value = Math.copySign(Math.pow(value, exp), value);
-        value = Math.copySign(Math.pow((1 + deadband*value - deadband), exp), value);
+        value = Math.copySign(Math.pow(value, exp), value);
+//        value = Math.copySign(Math.pow((1 + deadband*value - deadband), exp), value);
 
 
 
