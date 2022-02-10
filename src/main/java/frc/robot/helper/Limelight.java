@@ -15,7 +15,7 @@ public class Limelight {
     public static File polynomialFile = new File(POLYNOMIAL_FILE_PATH);
     private static Polynomial corrector;
 
-    public static void init() throws IOException, ClassNotFoundException {
+    public static void init() {
         //Setting up NetworkTables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         limelight = inst.getTable("limelight");
@@ -36,14 +36,15 @@ public class Limelight {
             }
         }
         //Get polynomial from file
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(POLYNOMIAL_FILE_PATH));
+        ObjectInputStream in;
         try {
+            in = new ObjectInputStream(new FileInputStream(POLYNOMIAL_FILE_PATH));
             corrector = (Polynomial) in.readObject();
+            in.close();
         } catch (Exception e){
             //if polynomial not parsable from file, get default polynomial
             corrector = new Polynomial(new double[]{0,1});
         }
-        in.close();
     }
 
     private static NetworkTableEntry getLimelightValue(String value){
