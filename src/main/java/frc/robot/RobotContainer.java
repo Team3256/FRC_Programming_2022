@@ -16,9 +16,11 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.hanger.AutoHang;
 import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
@@ -91,6 +93,8 @@ public class RobotContainer {
         new Button(controller::getAButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+        new Button(controller::getStartButton)
+                .whenPressed(new AutoHang(hanger));
 
         rightBumper.whenHeld(new IntakeOn(intake));
     }
