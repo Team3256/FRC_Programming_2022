@@ -17,7 +17,8 @@ public class HangerSubsystem extends SubsystemBase {
     private final TalonFX followerTalonMotor;
     private final DoubleSolenoid leftSolenoid;
     private final DoubleSolenoid rightSolenoid;
-    DigitalInput bottomlimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
+    private final DoubleSolenoid airBrake;
+    DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
 
 
     public HangerSubsystem() {
@@ -39,6 +40,16 @@ public class HangerSubsystem extends SubsystemBase {
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
+        airBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
+        engageAirBrake();
+    }
+
+    public void engageAirBrake() {
+        airBrake.set(kForward); //TODO: CHECK THIS
+    }
+
+    public void disengageAirBrake() {
+        airBrake.set(kReverse); //TODO: CHECK THIS
     }
 
     public void extend() {
@@ -70,7 +81,7 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns if the bottom limit switch is triggered
      */
     public boolean hasReachedBottom() {
-        if (bottomlimitSwitch.get()) {
+        if (bottomLimitSwitch.get()) {
             return true;
         }
         return false;
@@ -100,7 +111,7 @@ public class HangerSubsystem extends SubsystemBase {
         return getPosition() >= PARTIAL_DISTANCE;
     }
 
-    public void stopMotor() {
+    public void stopMotors() {
         masterTalonMotor.set(ControlMode.PercentOutput, 0);
     }
 

@@ -11,7 +11,10 @@ public class HangerRetract extends CommandBase {
     }
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {hanger.retractContinuously();}
+    public void initialize() {
+        hanger.disengageAirBrake();
+        hanger.retractContinuously();
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
@@ -21,7 +24,8 @@ public class HangerRetract extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        hanger.stopMotor();
+        hanger.engageAirBrake();
+        hanger.stopMotors();
     }
 
     // Returns true when the command should end.
