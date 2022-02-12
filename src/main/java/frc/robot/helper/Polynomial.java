@@ -3,8 +3,8 @@ import java.io.*;
 import java.util.*;
 
 public class Polynomial implements Serializable {
-    double[] coefficients;
-    int degree;
+    private double[] coefficients;
+    private int degree;
     public Polynomial(double[] coefficients){
         this.coefficients=coefficients;
         degree = coefficients.length-1;
