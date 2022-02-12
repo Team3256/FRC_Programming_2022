@@ -35,8 +35,8 @@ public class RobotLogger {
             return;
         }
 
-        if (Paths.get("u").toFile().exists()) {
-            normalLog("u"); // USB Defaults to /u for Mounting
+        if (Paths.get("/U").toFile().exists()) {
+            normalLog("/U"); // USB Defaults to /U for Mounting
         } else {
             System.err.println("NO USB DRIVE");
 
