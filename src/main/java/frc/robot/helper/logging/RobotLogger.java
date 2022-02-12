@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.LoggingConstants.*;
+import static java.util.logging.Level.OFF;
 
 public class RobotLogger {
 
@@ -27,13 +29,17 @@ public class RobotLogger {
         // get the global logger to configure it, applies to all loggers
         globalLogger = Logger.getLogger("");
 
-        globalLogger.setLevel(LOG_LEVEL);
-        globalLogger.getHandlers()[0].setLevel(CONSOLE_LEVEL);
+
 
         //If Running Unit Tests / Simulation
         if (!RobotBase.isReal()) {
+            globalLogger.setLevel(OFF);
+            globalLogger.getHandlers()[0].setLevel(OFF);
             return;
         }
+
+        globalLogger.setLevel(LOG_LEVEL);
+        globalLogger.getHandlers()[0].setLevel(CONSOLE_LEVEL);
 
         if (Paths.get("u").toFile().exists()) {
             normalLog("u"); // USB Defaults to /u for Mounting
