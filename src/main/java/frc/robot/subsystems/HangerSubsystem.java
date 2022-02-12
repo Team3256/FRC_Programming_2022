@@ -9,10 +9,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.logging.Logger;
+
 import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 public class HangerSubsystem extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(HangerSubsystem.class.getCanonicalName());
+
     private final TalonFX masterTalonMotor;
     private final TalonFX followerTalonMotor;
     private final DoubleSolenoid leftSolenoid;
@@ -20,6 +24,7 @@ public class HangerSubsystem extends SubsystemBase {
     private final DoubleSolenoid leftAirBrake;
     private final DoubleSolenoid rightAirBrake;
     DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
+
 
 
     public HangerSubsystem() {
@@ -44,29 +49,36 @@ public class HangerSubsystem extends SubsystemBase {
         leftAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD, HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD);
         rightAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
         engageAirBrake();
-   }
+
+        logger.info("Hanger Initialized");
+    }
     public void engageAirBrake() {
+        logger.info("Engaging Airbrake");
         leftAirBrake.set(kForward);
         rightAirBrake.set(kForward);
         //TODO: CHECK THIS
     }
 
     public void disengageAirBrake() {
+        logger.info("Disengaging Airbrake");
         leftAirBrake.set(kReverse);
         rightAirBrake.set(kReverse);
         //TODO: CHECK THIS
     }
 
     public void extend() {
+        logger.info("Extending");
         double distance = EXTEND_DISTANCE * 2048 * GEAR_RATIO;
         masterTalonMotor.set(ControlMode.Position, distance);
     }
 
     public void retractContinuously() {
+        logger.info("Retracting Continuously");
         masterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
+        logger.info("Extending Partially");
         double distance = PARTIAL_DISTANCE * 2048 * GEAR_RATIO;
         masterTalonMotor.set(ControlMode.Position, distance);
     }

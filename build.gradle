@@ -75,6 +75,10 @@ dependencies {
 
     //Dylans "Fixed" Version, Change to Actual Swerve once they release 2022 version.
     implementation 'com.github.StarDylan:swerve-lib:a0ae84c1be'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+
 }
 
 // Simulation configuration (e.g. environment variables).

@@ -18,11 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.logging.Logger;
+
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -95,31 +99,13 @@ public class SwerveDrive extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_ENCODER_ID,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
+        logger.info("Swerve Drive Modules Initialized");
     }
 
     public void zeroGyroscope() {
         pigeon.reset();
         resetOdometry(new Pose2d());
-    }
-
-    public Rotation2d getGyroscopeRotation() {
-        return Rotation2d.fromDegrees(pigeon.getYaw());
-    }
-
-    public String getFaultMessage() {
-        if(!pigeonFaults.hasAnyFault()) return "No faults";
-        String retval = "";
-        retval += pigeonFaults.APIError ? "APIError, " : "";
-        retval += pigeonFaults.AccelFault ? "AccelFault, " : "";
-        retval += pigeonFaults.BootIntoMotion ? "BootIntoMotion, " : "";
-        retval += pigeonFaults.GyroFault ? "GyroFault, " : "";
-        retval += pigeonFaults.HardwareFault ? "HardwareFault, " : "";
-        retval += pigeonFaults.MagnetometerFault ? "MagnetometerFault, " : "";
-        retval += pigeonFaults.ResetDuringEn ? "ResetDuringEn, " : "";
-        retval += pigeonFaults.SaturatedAccel ? "SaturatedAccel, " : "";
-        retval += pigeonFaults.SaturatedMag ? "SaturatedMag, " : "";
-        retval += pigeonFaults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
-        return retval;
+        logger.info("zeroed gyroscope");
     }
 
     public SwerveDriveKinematics getKinematics() {
@@ -179,11 +165,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Back Left Angle", backLeftModule.getSteerAngle());
         SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
         SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
-//        SmartDashboard.putData("Accumilated Gyro Error",   );
-//        short[] r = new short[3];
-//        pigeon.getAccelerometerAngles(r);
-//        pigeon.getBiasedAccelerometer(r);
-//        SmartDashboard.putNumber("Gyro Z Acceleration", ((r[2]/16384)/9.81));
+
         SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
         SmartDashboard.putString("Gyro Errors", getFaultMessage());
 
