@@ -69,13 +69,13 @@ public class Limelight {
         return getLimelightValue("tcorny").getDoubleArray(new double[4]);
     }
     /**
-     * @return raw distance to target
+     * @return raw distance to target (inches)
      */
     public static double getDistanceToTarget(){
         return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
     }
     /**
-     * @return tuned distance to target
+     * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
         return corrector.getOutput(getDistanceToTarget());
