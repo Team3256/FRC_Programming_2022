@@ -1,5 +1,7 @@
 package frc.robot.helper.CSVShooting;
 
+import frc.robot.subsystems.FlywheelSubsystem;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,8 +10,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReadTrainingFromCSV {
+    private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
+
     private static String filename;
     private static List<TrainingDataPoint> trainingData;
 
@@ -33,6 +39,7 @@ public class ReadTrainingFromCSV {
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            logger.log(Level.WARNING, ioe.getMessage(), ioe);
         }
 
         return trainingData;

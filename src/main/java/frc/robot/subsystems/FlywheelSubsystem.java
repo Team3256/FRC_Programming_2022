@@ -12,11 +12,14 @@ import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
+
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
@@ -31,6 +34,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private BicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
 
     public FlywheelSubsystem() {
+
         masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
         followerRightShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_RIGHT);
 
@@ -145,6 +149,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
+        if(velocityInterpolatingFunction == null){
+            logger.warning("Velocity Interpolating Function is NULL");
+        }
         return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
     }
 
@@ -187,6 +194,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
+        if(hoodAngleInterpolatingFunction == null){
+            logger.warning("Hood Angle Interpolation Function is NULL");
+        }
         double hoodAngle = hoodAngleInterpolatingFunction.value(ballVelocity, ballAngle);
         if (hoodAngle < 0.0) {
             hoodAngle = 0.0;
