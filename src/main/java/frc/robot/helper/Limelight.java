@@ -3,13 +3,18 @@ package frc.robot.helper;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import java.util.logging.Logger;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
+    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
     private static Polynomial corrector;
+
+    //Doesn't Allow Instancing
+    private Limelight(){}
 
     public static void init() {
         //Setting up NetworkTables
@@ -23,6 +28,9 @@ public class Limelight {
         limelight.getEntry("stream").setNumber(2); //Driver Camera Main, Vision Camera Lower-Right Corner
         limelight.getEntry("snapshot").setNumber(0); //Takes no snapshots
 
+        if(getLimelightValue("tx").getDouble(1000) == 1000)
+            logger.warning("Limelight Not Responding");
+      
         readCorrectorFromFile();
     }
     /**
@@ -30,6 +38,10 @@ public class Limelight {
      * @return entry with name of value
      */
     private static NetworkTableEntry getLimelightValue(String value){
+        if (limelight == null) {
+            logger.severe("Limelight not Initialized! Returning Bad NetworkTable!");
+            return new NetworkTableEntry(NetworkTableInstance.getDefault(), 0);
+        }
         return limelight.getEntry(value);
     }
     /**

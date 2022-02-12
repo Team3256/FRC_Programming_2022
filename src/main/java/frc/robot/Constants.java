@@ -96,19 +96,36 @@ public final class Constants {
     }
 
     public static class IDConstants {
-        public static final int[] TALON_FX_IDS = new int[]{5,6,8,9,11,12,14,15,20,21};
-        public static final int[] SPARK_MAX_IDS = new int[]{};
 
-        public static final int TURRET_ID = 34;
+        //Motor CAN IDs
+        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15, 36, 37};
+        public static final int[] SPARK_MAX_IDS = new int[]{};
 
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
-      
+
+
+        public static final int TURRET_ID = 34;
         public static final int FEEDER_MOTOR_ID = 35;
 
-        // Channels
+        public static final int HANGER_MASTER_TALON_ID = 36;
+        public static final int HANGER_FOLLOWER_TALON_ID = 37;
 
+        //Pneumatic IDs
+        public static final int HANGER_SOLENOID_LEFT_FORWARD = 1;
+        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
+        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
+        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
+        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD = 5;
+        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD = 6;
+        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD = 5;
+        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 6;
+
+        // DIO Channels
         public static final int HOOD_SERVO_CHANNEL_ID = 0;
+
+        //Magnetic Switch IDs
+        public static final int LIMIT_SWITCH_CHANNEL = 0;
 
     }
 
@@ -151,6 +168,29 @@ public final class Constants {
 
     }
 
+    public static class HangerConstants {
+
+        public static final double HANGER_MASTER_TALON_PID_P = 0;
+        public static final double HANGER_MASTER_TALON_PID_I = 0;
+        public static final double HANGER_MASTER_TALON_PID_D = 0;
+        public static final double HANGER_MASTER_TALON_PID_F = 0;
+
+        public static final boolean INVERT_MOTOR = false;
+
+        public static final double GEAR_RATIO = 0; // from spool to motor
+
+        public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
+        public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
+
+        public static final double RETRACT_PERCENT_SPEED = 0.0;
+
+        public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
+        public static final double EXTEND_WAIT = 0; //in Seconds
+        public static final double RETRACT_WAIT = 0.0; //in Seconds
+        public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
+    
+    }
+
     public static class ShooterConstants {
         // Constant Shooting Section
         public static final double RADIUS_UPPER_HUB = 0.61; // in m
@@ -164,6 +204,9 @@ public final class Constants {
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
+
+        public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
+        public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
 
         // Hood Angle Constants
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
