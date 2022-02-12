@@ -83,14 +83,14 @@ public class Limelight {
     /**
      * @return raw distance to target (inches)
      */
-    public static double getDistanceToTarget(){
+    public static double getRawDistanceToTarget(){
         return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
     }
     /**
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return corrector.getOutput(getDistanceToTarget());
+        return corrector.getOutput(getRawDistanceToTarget());
     }
     /**
      * @param degrees

@@ -85,6 +85,6 @@ public class LimelightAutocorrectStepCommand extends SequentialCommandGroup {
     }
 
     private void addPoint(){
-        data.add(distance,distance-Limelight.getDistanceToTarget());
+        data.add(distance,distance-Limelight.getRawDistanceToTarget());
     }
 }
