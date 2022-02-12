@@ -44,7 +44,7 @@ public class LimelightAutocorrectCommand extends CommandBase {
     public void end(boolean interrupted) {
         Polynomial result = new Polynomial(fitter.fit(data.toList()));
         FileUtil.writeObjectToFile(POLYNOMIAL_FILENAME, result);
-        Limelight.updateCorrector();
+        Limelight.readCorrectorFromFile();
     }
 
     @Override

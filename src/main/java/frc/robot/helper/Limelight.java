@@ -23,7 +23,7 @@ public class Limelight {
         limelight.getEntry("stream").setNumber(2); //Driver Camera Main, Vision Camera Lower-Right Corner
         limelight.getEntry("snapshot").setNumber(0); //Takes no snapshots
 
-        updateCorrector();
+        readCorrectorFromFile();
     }
     /**
      * @param value
@@ -88,7 +88,7 @@ public class Limelight {
         return degrees * Math.PI/180.0;
     }
 
-    public static void updateCorrector(){
+    public static void readCorrectorFromFile(){
         corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILENAME);
         //if corrector does not exist, set it to default polynomial y=x
         if (corrector==null) corrector=new Polynomial(new double[]{0,1});
