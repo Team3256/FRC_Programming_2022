@@ -21,8 +21,9 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
 public class LimelightAutocorrectStepCommand extends SequentialCommandGroup {
-    WeightedObservedPoints data;
-    int distance;
+    private WeightedObservedPoints data;
+    private int distance;
+
     public LimelightAutocorrectStepCommand(SwerveDrive robotDrive, WeightedObservedPoints data, int distance)
     {
         addCommands(new WaitCommand(1),
