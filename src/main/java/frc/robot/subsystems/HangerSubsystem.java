@@ -40,10 +40,9 @@ public class HangerSubsystem extends SubsystemBase {
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
-        airBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
+        airBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_AIRBRAKE_FORWARD, HANGER_SOLENOID_AIRBRAKE_BACKWARD);
         engageAirBrake();
-    }
-
+   }
     public void engageAirBrake() {
         airBrake.set(kForward); //TODO: CHECK THIS
     }

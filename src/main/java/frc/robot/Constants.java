@@ -110,8 +110,8 @@ public final class Constants {
         public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
         public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
         public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
-        public static final int HANGER_SOLENOID_AIRBRAKE_FORWARD = 0;
-        public static final int HANGER_SOLENOID_AIRBRAKE_BACKWARD = 0;
+        public static final int HANGER_SOLENOID_AIRBRAKE_FORWARD = 5;
+        public static final int HANGER_SOLENOID_AIRBRAKE_BACKWARD = 6;
 
         // DIO Channels
         public static final int HOOD_SERVO_CHANNEL_ID = 0;
