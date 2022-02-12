@@ -27,6 +27,10 @@ public class Limelight {
         limelight.getEntry("pipeline").setNumber(0); //Uses pipeline #0
         limelight.getEntry("stream").setNumber(2); //Driver Camera Main, Vision Camera Lower-Right Corner
         limelight.getEntry("snapshot").setNumber(0); //Takes no snapshots
+
+        if(getLimelightValue("tx").getDouble(1000) == 1000){
+            logger.warning("Limelight Not Responding");
+        }
     }
 
     private static NetworkTableEntry getLimelightValue(String value){

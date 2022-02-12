@@ -6,11 +6,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -48,6 +46,8 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
 
+        logger.info("Flywheel Initialized");
+      
         getVelocityInterpolatingFunctionFromPoints();
         getHoodAngleInterpolatingFunctionFromPoints();
     }

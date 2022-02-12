@@ -37,12 +37,12 @@ public class RobotLogger {
             globalLogger.getHandlers()[0].setLevel(OFF);
             return;
         }
-
+      
         globalLogger.setLevel(LOG_LEVEL);
         globalLogger.getHandlers()[0].setLevel(CONSOLE_LEVEL);
-
-        if (Paths.get("u").toFile().exists()) {
-            normalLog("u"); // USB Defaults to /u for Mounting
+      
+        if (Paths.get("/U").toFile().exists()) {
+            normalLog("/U"); // USB Defaults to /U for Mounting
         } else {
             System.err.println("NO USB DRIVE");
 
@@ -53,8 +53,6 @@ public class RobotLogger {
                 emergencyLog();
             }
         }
-
-
 
     }
 
