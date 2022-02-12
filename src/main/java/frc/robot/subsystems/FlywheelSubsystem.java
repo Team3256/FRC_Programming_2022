@@ -147,7 +147,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
     }
 
-    private void getVelocityCalibrationFunctionFromPoints(){
+    private BicubicSplineInterpolatingFunction getVelocityCalibrationFunctionFromPoints(){
         velocityTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(VEL_CALIB_FILENAME);
 
         double[] vValTrain = new double[velocityTrainingPoints.size()];
@@ -164,6 +164,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         velocityInterpolatingFunction = new BicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
+        return velocityInterpolatingFunction;
     }
     private void getHoodAngleInterpolatingFunctionFromPoints(){
         hoodAngleTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(HOOD_CALIB_FILENAME);
@@ -186,7 +187,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
 
-        double hoodAngle = interpolatingFunction.value(ballVelocity, ballAngle);
+        double hoodAngle = hoodAngleInterpolatingFunction.value(ballVelocity, ballAngle);
 
         if (hoodAngle < 0.0) {
             hoodAngle = 0.0;
