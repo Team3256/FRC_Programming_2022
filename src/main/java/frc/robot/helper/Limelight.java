@@ -34,6 +34,10 @@ public class Limelight {
     }
 
     private static NetworkTableEntry getLimelightValue(String value){
+        if (limelight == null) {
+            logger.severe("Limelight not Initialized! Returning Bad NetworkTable!");
+            return new NetworkTableEntry(NetworkTableInstance.getDefault(), 0);
+        }
         return limelight.getEntry(value);
     }
 
