@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.shooter.AutoAimShooter;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.FlywheelSubsystem;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ public class AutoAimShooterTest {
 
     @Before
     public void setUp() {
+        RobotLogger.setup(); //Don't write any debug values
         commandScheduler = CommandScheduler.getInstance();
         commandScheduler.cancelAll();
     }

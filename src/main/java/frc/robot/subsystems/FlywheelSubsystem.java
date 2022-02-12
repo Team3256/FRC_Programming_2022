@@ -6,11 +6,18 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
+import frc.robot.helper.CSVShooting.TrainingDataPoint;
+import org.apache.commons.math3.analysis.interpolation.*;
+import java.util.List;
+import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
+
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
@@ -18,7 +25,14 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double currentTargetSpeed;
 
+    private List<TrainingDataPoint> velocityTrainingPoints;
+    private List<TrainingDataPoint> hoodAngleTrainingPoints;
+
+    private BicubicSplineInterpolatingFunction velocityInterpolatingFunction;
+    private BicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
+
     public FlywheelSubsystem() {
+
         masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
         followerRightShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_RIGHT);
 
@@ -31,6 +45,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
+
+        logger.info("Flywheel Initialized");
+      
+        getVelocityInterpolatingFunctionFromPoints();
+        getHoodAngleInterpolatingFunctionFromPoints();
     }
 
     /**
@@ -130,20 +149,60 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
-        // TODO: Get calibration equations
-        return ballVelocity;
+        if(velocityInterpolatingFunction == null){
+            logger.warning("Velocity Interpolating Function is NULL");
+        }
+        return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
+    }
+
+    private void getVelocityInterpolatingFunctionFromPoints(){
+        velocityTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(VEL_CALIB_FILENAME);
+
+        double[] vValTrain = new double[velocityTrainingPoints.size()];
+        double[] thetaValTrain = new double[velocityTrainingPoints.size()];
+        double[][] angularVelocityTrain = new double[velocityTrainingPoints.size()][velocityTrainingPoints.size()];
+
+        TrainingDataPoint data;
+        for (int i = 0; i < velocityTrainingPoints.size(); i++) {
+            data = velocityTrainingPoints.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            angularVelocityTrain[i][i] = data.calibratedTraining;
+        }
+
+        velocityInterpolatingFunction = new BicubicSplineInterpolator()
+                .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
+    }
+    private void getHoodAngleInterpolatingFunctionFromPoints(){
+        hoodAngleTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(HOOD_CALIB_FILENAME);
+
+        double[] vValTrain = new double[hoodAngleTrainingPoints.size()];
+        double[] thetaValTrain = new double[hoodAngleTrainingPoints.size()];
+        double[][] hoodValTrain = new double[hoodAngleTrainingPoints.size()][hoodAngleTrainingPoints.size()];
+
+        TrainingDataPoint data;
+        for (int i = 0; i < hoodAngleTrainingPoints.size(); i++) {
+            data = hoodAngleTrainingPoints.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            hoodValTrain[i][i] = data.calibratedTraining;
+        }
+
+        hoodAngleInterpolatingFunction = new BicubicSplineInterpolator()
+                .interpolate(vValTrain, thetaValTrain, hoodValTrain);
+
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
-
-        double hoodAngle = ballAngle; // TODO: Get Calibration equation
-
+        if(hoodAngleInterpolatingFunction == null){
+            logger.warning("Hood Angle Interpolation Function is NULL");
+        }
+        double hoodAngle = hoodAngleInterpolatingFunction.value(ballVelocity, ballAngle);
         if (hoodAngle < 0.0) {
             hoodAngle = 0.0;
         } else if (hoodAngle > 1.0) {
             hoodAngle = 1.0;
         }
-
         return hoodAngle;
     }
 
