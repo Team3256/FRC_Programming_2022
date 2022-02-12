@@ -17,6 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax intakeMotor;
     public IntakeSubsystem() {
         intakeMotor = new CANSparkMax(33, CANSparkMaxLowLevel.MotorType.kBrushless);
+        logger.info("Intake Initialized");
     }
 
 

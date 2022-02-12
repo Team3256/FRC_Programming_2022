@@ -7,10 +7,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.logging.Logger;
+
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
+
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
@@ -31,6 +35,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
+        logger.info("Flywheel Initialized");
     }
 
     /**

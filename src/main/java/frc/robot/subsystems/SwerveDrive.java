@@ -95,6 +95,7 @@ public class SwerveDrive extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
+        logger.info("Swerve Drive Modules Initialized");
     }
 
     /**
