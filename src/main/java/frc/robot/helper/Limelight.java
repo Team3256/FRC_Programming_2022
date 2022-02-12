@@ -5,9 +5,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.logging.Logger;
+
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
+    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
 
     //Doesn't Allow Instancing
@@ -27,6 +30,10 @@ public class Limelight {
     }
 
     private static NetworkTableEntry getLimelightValue(String value){
+        if (limelight == null) {
+            logger.severe("Limelight not Initialized! Returning Bad NetworkTable!");
+            return new NetworkTableEntry(NetworkTableInstance.getDefault(), 0);
+        }
         return limelight.getEntry(value);
     }
 
