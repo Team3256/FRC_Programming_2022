@@ -21,16 +21,12 @@ public class LimelightAutocorrectTest {
     }
 
     @Test
-    public void checkPolynomial() {
-        DriverStationSim.setEnabled(true);
+    public void testLimelightAutocorrectCommand() {
         SwerveDrive swerveDrive = mock(SwerveDrive.class);
         try (MockedStatic<Limelight> limelight = Mockito.mockStatic(Limelight.class)) {
             limelight.when(Limelight::getDistanceToTarget).thenReturn(500);
         }
-
         LimelightAutocorrectCommand command = new LimelightAutocorrectCommand(swerveDrive, 500);
         scheduler.schedule(command);
-
-        scheduler.run();
     }
 }
