@@ -8,8 +8,6 @@ import frc.robot.subsystems.SwerveDrive;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
-import java.io.*;
-
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
 public class LimelightAutocorrectCommand extends CommandBase {
