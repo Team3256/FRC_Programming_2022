@@ -4,9 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.IntakeOff;
-import frc.robot.commands.IntakeOn;
+import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.helper.ThetaSupplier;
 import frc.robot.helper.UniformThetaSupplier;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -21,7 +19,7 @@ public class AutoChooser {
 
         autoChooser = new SendableChooser<>();
 
-        Command doNothing = new DefaultDriveCommand(drive);
+        Command doNothing = new DefaultDriveCommandRobotOriented(drive);
         autoChooser.setDefaultOption("Do Nothing", doNothing);
 
         ThetaSupplier straightPathThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(180), 0.75);

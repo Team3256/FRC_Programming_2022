@@ -7,35 +7,27 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
-import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
+import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
 import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.IntakeOn;
+import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
-import java.util.ArrayList;
-import java.util.List;
 import frc.robot.subsystems.FlywheelSubsystem;
-
-import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -70,7 +62,7 @@ public class RobotContainer {
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotationx
 
-       drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+       drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommandFieldOriented(
                 drivetrainSubsystem,
                 () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
