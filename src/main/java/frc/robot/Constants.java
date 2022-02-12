@@ -1,8 +1,6 @@
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import java.util.logging.Level;
@@ -29,9 +27,7 @@ public final class Constants {
         public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(52.8223); //179
 
         public static final double MAX_METERS_PER_SECOND = 10;
-//        public static final double MAX_VELOCITY_METERS_PER_SECOND = 1380.0 / 60.0 *
-//         SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-//         SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
                  SdsModuleConfigurations.MK4_L2.getDriveReduction() *
                  SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
@@ -42,10 +38,6 @@ public final class Constants {
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
-//        public static final double[] FRONT_LEFT = {0.5, 0.5};
-//        public static final double[] FRONT_RIGHT = {0.5,-0.5};
-//        public static final double[] BACK_LEFT = {-0.5,0.5};
-//        public static final double[] BACK_RIGHT = {-0.5,-0.5};
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 2;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 2;

@@ -91,7 +91,7 @@ public class TrajectoryFollowCommand extends CommandBase {
         Pose2d desiredPose = desired.poseMeters;
         double desiredLinearVelocity = desired.velocityMetersPerSecond;
 
-        // Move to the desired rotation 3/4 of the way through the whole trajectory
+        // Move to the desired rotation a proportion of the way through the whole trajectory
         Rotation2d desiredRotation = thetaFeeder.apply(now);
 
         SmartDashboard.putNumber("Desired Rotation", desiredRotation.getDegrees());

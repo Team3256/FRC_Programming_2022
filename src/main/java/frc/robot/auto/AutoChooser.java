@@ -21,7 +21,7 @@ public class AutoChooser {
 
         autoChooser = new SendableChooser<>();
 
-        Command doNothing = new DefaultDriveCommand(drive); // dont move
+        Command doNothing = new DefaultDriveCommand(drive);
         autoChooser.setDefaultOption("Do Nothing", doNothing);
 
         ThetaSupplier straightPathThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(180), 0.75);

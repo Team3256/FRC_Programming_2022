@@ -60,7 +60,6 @@ public class RobotContainer {
                 () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -74,7 +73,6 @@ public class RobotContainer {
       Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
-                // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
       
       rightBumper.whenHeld(new IntakeOn(intake));
@@ -122,24 +120,14 @@ public class RobotContainer {
     }
 
     private static double modifyAxis(double value) {
-        // Deadband
+
         double deadband = 0.05;
         value = deadband(value, deadband);
-
-        // cube the axis
-//        value = Math.copySign(value*value*value, value);
-
-//      Putting exponent input value on Smart Dashboard for joystick input mapping
 
         SmartDashboard.setDefaultNumber("exponential value", 3);
 
         double exp = SmartDashboard.getNumber("exponential value", 3);
-
-        //(1+(deadzone_value)*value - (deadzone_value))^a
         value = Math.copySign(Math.pow(value, exp), value);
-//        value = Math.copySign(Math.pow((1 + deadband*value - deadband), exp), value);
-
-
 
         return value;
     }

@@ -65,6 +65,7 @@ public class SwerveDriveController {
         // Calculate feedforward velocities (field-relative).
         double xFF = linearVelocityRefMeters * poseRef.getRotation().getCos() * TRANSLATION_FF;
         double yFF = linearVelocityRefMeters * poseRef.getRotation().getSin() * TRANSLATION_FF;
+
         double thetaFF =
                 thetaController.calculate(currentRotation, angleRef.getRadians());
         SmartDashboard.putNumber("Theta FF", thetaFF * 180/ Math.PI);
