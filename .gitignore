@@ -234,3 +234,5 @@ gradle-app.setting
 /simgui.json
 /simgui-window.json
 *.java___jb_tmp___
+
+local.properties
