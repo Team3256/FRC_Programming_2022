@@ -21,8 +21,9 @@ import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
 /**
+ * Takes robotDrive to move forward, data to add data point, actual distance for point x value
  * Called [Paces] times during the limelight autocorrect command
- * Adds a point to data [actual distance, actual distance - measured distance]
+ * Adds a point to data (actual distance, actual distance - measured distance)
  * Moves forward [Pace size] inches
  */
 public class LimelightAutocorrectStepCommand extends SequentialCommandGroup {
