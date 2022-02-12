@@ -10,15 +10,6 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
-/**
- * Constructor: robotDrive to move forward, initial distance away from goal
- * initial distance will keep track of the robot's actual distance
- * this will be compared to the detected distance to plot error points
- * Purpose: Automatically generate a limelight distance corrector function
- * Runs LimelightAutocorrectStepCommand [PACES] times
- * Make a polynomial of degree [POLYNOMIAL DEGREE] that fits the points of collected data
- * Write polynomial to Polynomial.txt
- */
 public class LimelightAutocorrectCommand extends CommandBase {
     private WeightedObservedPoints data;
     private final SwerveDrive robotDrive;
@@ -28,6 +19,12 @@ public class LimelightAutocorrectCommand extends CommandBase {
 
     private final PolynomialCurveFitter fitter = PolynomialCurveFitter.create(POLYNOMIAL_DEGREE);
 
+    /**
+     * @param robotDrive drivetrain to move forward
+     * @param initDistance current actual distance to goal
+     * Plot data points of limelight error
+     * Create correction function that brings error to 0
+     */
     public LimelightAutocorrectCommand(SwerveDrive robotDrive, int initDistance){
         this.robotDrive = robotDrive;
         this.initDistance = initDistance;

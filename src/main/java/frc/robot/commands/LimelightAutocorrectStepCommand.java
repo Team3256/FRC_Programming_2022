@@ -20,16 +20,17 @@ import java.util.List;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
-/**
- * Takes robotDrive to move forward, data to add data point, actual distance for point x value
- * Called [Paces] times during the limelight autocorrect command
- * Adds a point to data (actual distance, actual distance - measured distance)
- * Moves forward [Pace size] inches
- */
 public class LimelightAutocorrectStepCommand extends SequentialCommandGroup {
     private WeightedObservedPoints data;
     private int distance;
 
+
+    /**
+     * @param robotDrive drivetrain to move forward
+     * @param data datapoints to post to
+     * @param distance current actual distance to goal
+     * Plot datapoint and go forward
+     */
     public LimelightAutocorrectStepCommand(SwerveDrive robotDrive, WeightedObservedPoints data, int distance)
     {
         addCommands(new WaitCommand(1),
