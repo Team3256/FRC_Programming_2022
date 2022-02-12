@@ -1,6 +1,7 @@
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.helper.FileUtil;
 import frc.robot.helper.Limelight;
 import frc.robot.helper.Polynomial;
 import frc.robot.subsystems.SwerveDrive;
@@ -44,11 +45,8 @@ public class LimelightAutocorrectCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         Polynomial result = new Polynomial(fitter.fit(data.toList()));
-        try {
-            Limelight.writePolynomial(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileUtil.writeObjectToFile(POLYNOMIAL_FILE_PATH, result);
+        Limelight.updateCorrector();
     }
 
     @Override

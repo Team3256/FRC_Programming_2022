@@ -25,13 +25,12 @@ public class LimelightAutocorrectTest {
         DriverStationSim.setEnabled(true);
         SwerveDrive swerveDrive = mock(SwerveDrive.class);
         try (MockedStatic<Limelight> limelight = Mockito.mockStatic(Limelight.class)) {
-            limelight.when(Limelight::getDistanceToTarget).thenReturn(Math.random()*500);
+            limelight.when(Limelight::getDistanceToTarget).thenReturn(500);
         }
 
         LimelightAutocorrectCommand command = new LimelightAutocorrectCommand(swerveDrive, 500);
-        scheduler.schedule();
+        scheduler.schedule(command);
 
         scheduler.run();
-
     }
 }
