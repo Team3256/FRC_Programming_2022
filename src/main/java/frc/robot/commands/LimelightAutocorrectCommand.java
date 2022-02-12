@@ -11,13 +11,13 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
 public class LimelightAutocorrectCommand extends CommandBase {
-    WeightedObservedPoints data;
-    final SwerveDrive robotDrive;
-    int counter;
-    final int initDistance;
-    int curDistance;
+    private WeightedObservedPoints data;
+    private final SwerveDrive robotDrive;
+    private int counter;
+    private final int initDistance;
+    private int curDistance;
 
-    final PolynomialCurveFitter fitter = PolynomialCurveFitter.create(POLYNOMIAL_DEGREE);
+    private final PolynomialCurveFitter fitter = PolynomialCurveFitter.create(POLYNOMIAL_DEGREE);
 
     public LimelightAutocorrectCommand(SwerveDrive robotDrive, int initDistance){
         this.robotDrive = robotDrive;
