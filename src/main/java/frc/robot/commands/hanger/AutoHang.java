@@ -11,28 +11,23 @@ public class AutoHang extends SequentialCommandGroup {
         this.hanger = hanger;
         addCommands(
                 new HangerRetract(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(RETRACT_WAIT),
                 new HangerPartial(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(PARTIAL_EXTEND_WAIT),
                 new HangerPneumaticSlant(hanger),
-                new WaitCommand(WAIT_TIME),
                 new HangerExtend(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(EXTEND_WAIT),
                 new HangerPneumaticUpright(hanger),
-                new WaitCommand(WAIT_TIME),
                 new HangerRetract(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(RETRACT_WAIT),
                 new HangerPartial(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(PARTIAL_EXTEND_WAIT),
                 new HangerPneumaticSlant(hanger),
-                new WaitCommand(WAIT_TIME),
                 new HangerExtend(hanger),
-                new WaitCommand(WAIT_TIME),
+                new WaitCommand(EXTEND_WAIT),
                 new HangerPneumaticUpright(hanger),
-                new WaitCommand(WAIT_TIME),
                 new HangerRetract(hanger),
-                new WaitCommand(WAIT_TIME)
-                //TODO: add friction break
+                new WaitCommand(RETRACT_WAIT)
         );
     }
 
