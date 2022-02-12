@@ -17,9 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.logging.Logger;
+
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class SwerveDrive extends SubsystemBase {
+    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -98,6 +102,7 @@ public class SwerveDrive extends SubsystemBase {
      * 'forwards' direction.
      */
     public void zeroGyroscope() {
+        logger.info("zeroed gyroscope");
         pigeon.setFusedHeading(0.0);
     }
 
