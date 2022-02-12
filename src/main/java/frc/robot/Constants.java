@@ -5,20 +5,16 @@
 package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Filesystem;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 
 public final class Constants {
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
-        public static final String POLYNOMIAL_FILE_PATH = Paths.get(Filesystem.getDeployDirectory().toString(),"Polynomial.txt").toString();
+        public static final String POLYNOMIAL_FILENAME = "Polynomial.txt";
+        public static final int POLYNOMIAL_DEGREE = 5;
     }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 29.5;

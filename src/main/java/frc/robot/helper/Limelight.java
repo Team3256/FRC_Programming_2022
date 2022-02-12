@@ -4,11 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILE_PATH;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
@@ -93,7 +89,7 @@ public class Limelight {
     }
 
     public static void updateCorrector(){
-        corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILE_PATH);
+        corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILENAME);
         //if corrector does not exist, set it to default polynomial y=x
         if (corrector==null) corrector=new Polynomial(new double[]{0,1});
     }
