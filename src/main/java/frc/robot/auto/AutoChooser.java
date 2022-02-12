@@ -33,8 +33,11 @@ public class AutoChooser {
         Command intakePathReverse = trajectoryFactory.createCommand("paths/Test-cones.wpilib.json", uniformThetaSupplier, new Pose2d(0, 3, new Rotation2d()));
 
         Command intakeCommand = intakePath.andThen(new WaitCommand(3).andThen(intakePathReverse));
-
         autoChooser.addOption("SPLINE + Intake", intakeCommand);
+
+        ThetaSupplier to2ndBallThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(90), 0.5);
+        Command to2ndBall = trajectoryFactory.createCommand("paths/3BallAuto.wpilib.json", to2ndBallThetaSupplier, new Pose2d(8.963, 6.702, Rotation2d.fromDegrees(90)));
+        autoChooser.addOption("2 Ball Auto", to2ndBall);
 
         return autoChooser;
     }
