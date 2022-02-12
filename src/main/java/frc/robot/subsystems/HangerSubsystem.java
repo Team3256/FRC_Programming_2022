@@ -17,7 +17,8 @@ public class HangerSubsystem extends SubsystemBase {
     private final TalonFX followerTalonMotor;
     private final DoubleSolenoid leftSolenoid;
     private final DoubleSolenoid rightSolenoid;
-    private final DoubleSolenoid airBrake;
+    private final DoubleSolenoid leftAirBrake;
+    private final DoubleSolenoid rightAirBrake;
     DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
 
 
@@ -40,15 +41,20 @@ public class HangerSubsystem extends SubsystemBase {
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
-        airBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_AIRBRAKE_FORWARD, HANGER_SOLENOID_AIRBRAKE_BACKWARD);
+        leftAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD, HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD);
+        rightAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
         engageAirBrake();
    }
     public void engageAirBrake() {
-        airBrake.set(kForward); //TODO: CHECK THIS
+        leftAirBrake.set(kForward);
+        rightAirBrake.set(kForward);
+        //TODO: CHECK THIS
     }
 
     public void disengageAirBrake() {
-        airBrake.set(kReverse); //TODO: CHECK THIS
+        leftAirBrake.set(kReverse);
+        rightAirBrake.set(kReverse);
+        //TODO: CHECK THIS
     }
 
     public void extend() {
