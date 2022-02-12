@@ -43,6 +43,9 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
+
+        getVelocityInterpolatingFunctionFromPoints();
+        getHoodAngleInterpolatingFunctionFromPoints();
     }
 
     /**
@@ -142,12 +145,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
-
-
         return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
     }
 
-    private BicubicSplineInterpolatingFunction getVelocityCalibrationFunctionFromPoints(){
+    private void getVelocityInterpolatingFunctionFromPoints(){
         velocityTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(VEL_CALIB_FILENAME);
 
         double[] vValTrain = new double[velocityTrainingPoints.size()];
@@ -164,10 +165,10 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         velocityInterpolatingFunction = new BicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
-        return velocityInterpolatingFunction;
     }
     private void getHoodAngleInterpolatingFunctionFromPoints(){
         hoodAngleTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(HOOD_CALIB_FILENAME);
+
         double[] vValTrain = new double[hoodAngleTrainingPoints.size()];
         double[] thetaValTrain = new double[hoodAngleTrainingPoints.size()];
         double[][] hoodValTrain = new double[hoodAngleTrainingPoints.size()][hoodAngleTrainingPoints.size()];
@@ -180,21 +181,18 @@ public class FlywheelSubsystem extends SubsystemBase {
             hoodValTrain[i][i] = data.calibratedTraining;
         }
 
-        BicubicSplineInterpolatingFunction interpolatingFunction = new BicubicSplineInterpolator()
+        hoodAngleInterpolatingFunction = new BicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, hoodValTrain);
 
     }
 
     private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
-
         double hoodAngle = hoodAngleInterpolatingFunction.value(ballVelocity, ballAngle);
-
         if (hoodAngle < 0.0) {
             hoodAngle = 0.0;
         } else if (hoodAngle > 1.0) {
             hoodAngle = 1.0;
         }
-
         return hoodAngle;
     }
 
