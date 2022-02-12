@@ -20,6 +20,11 @@ import java.util.List;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 
+/**
+ * Called [Paces] times during the limelight autocorrect command
+ * Adds a point to data [actual distance, actual distance - measured distance]
+ * Moves forward [Pace size] inches
+ */
 public class LimelightAutocorrectStepCommand extends SequentialCommandGroup {
     private WeightedObservedPoints data;
     private int distance;
