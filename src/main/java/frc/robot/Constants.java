@@ -161,6 +161,9 @@ public final class Constants {
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
 
+        public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
+        public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
+
         // Hood Angle Constants
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
         public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
