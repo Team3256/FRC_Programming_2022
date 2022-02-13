@@ -10,6 +10,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.logging.Level;
 
 public final class Constants {
+    public static class LimelightAutoCorrectConstants {
+        public static final int PACE_SIZE = 5;
+        public static final int PACES = 40;
+        public static final String POLYNOMIAL_FILENAME = "Polynomial.txt";
+        public static final int POLYNOMIAL_DEGREE = 5;
+    }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 29.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
