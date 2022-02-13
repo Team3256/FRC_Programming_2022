@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
+import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
@@ -42,9 +44,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final HangerSubsystem hanger = new HangerSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -59,7 +59,6 @@ public class RobotContainer {
         RobotLogger.setup();
         CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
-        Limelight.init();
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
@@ -88,8 +87,6 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-        new Button(controller::getStartButton)
-                .whenPressed(new AutoHang(hanger));
 
         rightBumper.whenHeld(new IntakeOn(intake));
     }
@@ -116,7 +113,6 @@ public class RobotContainer {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(controller, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
 
-        rightTrigger.whenPressed(new SetShooterFromTriggerDebug(flywheelSubsystem, controller::getRightTriggerAxis));
 
     }
 
