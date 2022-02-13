@@ -14,6 +14,7 @@ import frc.robot.commands.TestCANCommand;
 import frc.robot.commands.TestLimelight;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.util.logging.Logger;
 
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     logger.info("Robot Disabled");
+    RobotLogger.closeFiles();
     robotContainer.sendTrajectoryToDashboard();
   }
 
@@ -46,6 +48,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    RobotLogger.setup();
     logger.info("Auto Enabled");
     robotContainer.resetPose();
     robotContainer.sendTrajectoryToDashboard();
@@ -63,6 +66,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    RobotLogger.setup();
     logger.info("TeleOp Enabled");
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
