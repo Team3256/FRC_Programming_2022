@@ -107,6 +107,26 @@ public class SwerveDrive extends SubsystemBase {
         resetOdometry(new Pose2d());
         logger.info("zeroed gyroscope");
     }
+    
+    public Rotation2d getGyroscopeRotation() {
+        return Rotation2d.fromDegrees(pigeon.getYaw());
+    }
+
+    public String getFaultMessage() {
+        if(!pigeonFaults.hasAnyFault()) return "No faults";
+        String retval = "";
+        retval += pigeonFaults.APIError ? "APIError, " : "";
+        retval += pigeonFaults.AccelFault ? "AccelFault, " : "";
+        retval += pigeonFaults.BootIntoMotion ? "BootIntoMotion, " : "";
+        retval += pigeonFaults.GyroFault ? "GyroFault, " : "";
+        retval += pigeonFaults.HardwareFault ? "HardwareFault, " : "";
+        retval += pigeonFaults.MagnetometerFault ? "MagnetometerFault, " : "";
+        retval += pigeonFaults.ResetDuringEn ? "ResetDuringEn, " : "";
+        retval += pigeonFaults.SaturatedAccel ? "SaturatedAccel, " : "";
+        retval += pigeonFaults.SaturatedMag ? "SaturatedMag, " : "";
+        retval += pigeonFaults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
+        return retval;
+    }
 
     public SwerveDriveKinematics getKinematics() {
         return kinematics;
