@@ -146,8 +146,8 @@ public final class Constants {
 
 
         //Max Number of Files
-        public static final int TXT_LOG_MAX_FILES = 10;
-        public static final int HTML_LOG_MAX_FILES = 3;
+        public static final int TXT_LOG_MAX_FILES = 40;
+        public static final int HTML_LOG_MAX_FILES = 20;
 
         //Normal Max File Sizes
         public static final int TXT_LOG_MAX_SIZE = 100000000;  // In Bytes

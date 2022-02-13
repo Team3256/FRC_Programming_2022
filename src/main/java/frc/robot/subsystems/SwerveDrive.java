@@ -25,7 +25,7 @@ import static frc.robot.Constants.IDConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(SwerveDrive.class.getCanonicalName());
 
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -49,6 +49,8 @@ public class SwerveDrive extends SubsystemBase {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
+
+    private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -125,6 +127,7 @@ public class SwerveDrive extends SubsystemBase {
         retval += pigeonFaults.SaturatedAccel ? "SaturatedAccel, " : "";
         retval += pigeonFaults.SaturatedMag ? "SaturatedMag, " : "";
         retval += pigeonFaults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
+        logger.warning("Pigeon Error: "+ retval);
         return retval;
     }
 
@@ -197,6 +200,18 @@ public class SwerveDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        //Log any High Acceleration Events, bool variable to ensure 1 log per real event
+        short[] acc = new short[3];
+        pigeon.getBiasedAccelerometer(acc);
+        double squaredAcc = acc[0] * acc[0] + acc[1] * acc[1];
+        if (!highAccDetectedPrev && squaredAcc > Math.pow(2 * 16384,2)) {
+            logger.warning("High Acceleration Detected: " + Math.sqrt(squaredAcc));
+            highAccDetectedPrev = true;
+        } else {
+            highAccDetectedPrev = false;
+        }
+
         Rotation2d gyroAngle = getGyroscopeRotation();
         pigeon.getFaults(pigeonFaults);
         // Update the pose

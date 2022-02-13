@@ -56,7 +56,8 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-      RobotLogger.setup();
+        RobotLogger.setup();
+        CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
         Limelight.init();
         // Set up the default command for the drivetrain.
