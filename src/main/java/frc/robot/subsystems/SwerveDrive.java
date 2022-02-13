@@ -63,8 +63,8 @@ public class SwerveDrive extends SubsystemBase {
                         .withPosition(0, 0),
                 // This can either be STANDARD or FAST depending on your gear configuration
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                FRONT_LEFT_MODULE_STEER_MOTOR,
+                FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_LEFT_MODULE_STEER_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_ENCODER_ID,
                 FRONT_LEFT_MODULE_STEER_OFFSET
         );
@@ -74,8 +74,8 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(2, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                FRONT_RIGHT_MODULE_STEER_MOTOR,
+                FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_ENCODER_ID,
                 FRONT_RIGHT_MODULE_STEER_OFFSET
         );
@@ -85,8 +85,8 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(4, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                BACK_LEFT_MODULE_DRIVE_MOTOR,
-                BACK_LEFT_MODULE_STEER_MOTOR,
+                BACK_LEFT_MODULE_DRIVE_MOTOR_ID,
+                BACK_LEFT_MODULE_STEER_MOTOR_ID,
                 BACK_LEFT_MODULE_STEER_ENCODER_ID,
                 BACK_LEFT_MODULE_STEER_OFFSET
         );
@@ -96,8 +96,8 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(6, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                BACK_RIGHT_MODULE_STEER_MOTOR,
+                BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                BACK_RIGHT_MODULE_STEER_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_ENCODER_ID,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
