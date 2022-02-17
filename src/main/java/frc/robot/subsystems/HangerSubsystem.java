@@ -23,7 +23,7 @@ public class HangerSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightSolenoid;
     private final DoubleSolenoid leftAirBrake;
     private final DoubleSolenoid rightAirBrake;
-    DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
+    DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
 
 
