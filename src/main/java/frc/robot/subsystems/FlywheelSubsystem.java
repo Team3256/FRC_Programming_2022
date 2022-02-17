@@ -28,8 +28,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     private List<TrainingDataPoint> velocityTrainingPoints;
     private List<TrainingDataPoint> hoodAngleTrainingPoints;
 
-    private BicubicSplineInterpolatingFunction velocityInterpolatingFunction;
-    private BicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
+    private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
+    private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
 
     public FlywheelSubsystem() {
 
@@ -170,7 +170,7 @@ public class FlywheelSubsystem extends SubsystemBase {
             angularVelocityTrain[i][i] = data.calibratedTraining;
         }
 
-        velocityInterpolatingFunction = new BicubicSplineInterpolator()
+        velocityInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
     }
     private void getHoodAngleInterpolatingFunctionFromPoints(){
@@ -188,7 +188,7 @@ public class FlywheelSubsystem extends SubsystemBase {
             hoodValTrain[i][i] = data.calibratedTraining;
         }
 
-        hoodAngleInterpolatingFunction = new BicubicSplineInterpolator()
+        hoodAngleInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, hoodValTrain);
 
     }

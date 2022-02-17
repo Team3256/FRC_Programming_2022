@@ -7,37 +7,32 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
-import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.BrownoutWatcher;
+import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
+import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
 import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.IntakeOn;
+import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import frc.robot.subsystems.FlywheelSubsystem;
-
-import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,36 +44,33 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final HangerSubsystem hanger = new HangerSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
 
     private final Field2d field = new Field2d();
 
     private final XboxController controller = new XboxController(0);
+    private static Trajectory currentTrajectory = new Trajectory();
 
     /**
      *
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-      RobotLogger.setup();
+        CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
-        Limelight.init();
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotationx
 
-       drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+       drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommandFieldOriented(
                 drivetrainSubsystem,
                 () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -93,61 +85,34 @@ public class RobotContainer {
 
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
-                // No requirements because we don't need to interrupt anything
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-        new Button(controller::getStartButton)
-                .whenPressed(new AutoHang(hanger));
 
         rightBumper.whenHeld(new IntakeOn(intake));
     }
 
-    public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem);
+
+    public Command getAutonomousCommand() {
+        return AutoChooser.getCommand();
     }
 
-    public Trajectory getTrajectory() { // FIXME: scuffed rn, pls fix later
-        TrajectoryConfig config =
-              new TrajectoryConfig(
-                      Constants.AutoConstants.MAX_SPEED_CONTROLLER_METERS_PER_SECOND,
-                      Constants.AutoConstants.MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED)
-                      // Add kinematics to ensure max speed is actually obeyed
-                      .setKinematics(drivetrainSubsystem.getKinematics());
+    public SendableChooser<Command> getCommandChooser() {
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intake);
+    }
 
-        List<Pose2d> waypoints = new ArrayList<>();
-        for(int pos = 0; pos <= 80; pos++){
-            waypoints.add(new Pose2d(Units.inchesToMeters(pos), 0, new Rotation2d()));
-        }
-        // List<Translation2d> waypoints = List.of(new Translation2d(Units.inchesToMeters(12), 0));s
-        // JSONReader.ParseJSONFile("");
 
-        // An example trajectory to follow.  All units in meters.
-        Trajectory trajectory1 =
-              TrajectoryGenerator.generateTrajectory(
-                      // Start at the origin facing the +X direction
-                      waypoints,
-                      config);
+    public Trajectory getTrajectory() {
+       return currentTrajectory;
+    }
 
-        return trajectory1;
+    public static void setCurrentTrajectory(Trajectory newTrajectory) {
+        currentTrajectory = newTrajectory;
     }
 
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(controller, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
 
-        rightTrigger.whenPressed(new SetShooterFromTriggerDebug(flywheelSubsystem, controller::getRightTriggerAxis));
 
-    }
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return AutoChooser.getCommand();
-    }
-  
-    public void resetPose() {
-        drivetrainSubsystem.resetOdometry(new Pose2d());
     }
 
     public void sendTrajectoryToDashboard() {
@@ -157,6 +122,10 @@ public class RobotContainer {
     public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
+    }
+
+    public void resetPose() {
+        drivetrainSubsystem.resetOdometry(new Pose2d());
     }
 
     private static double deadband(double value, double deadband) {
@@ -172,11 +141,14 @@ public class RobotContainer {
     }
 
     private static double modifyAxis(double value) {
-        // Deadband
-        value = deadband(value, 0.05);
 
-        // Square the axis
-        value = Math.copySign(value * value, value);
+        double deadband = 0.05;
+        value = deadband(value, deadband);
+
+        SmartDashboard.setDefaultNumber("exponential value", 3);
+
+        double exp = SmartDashboard.getNumber("exponential value", 3);
+        value = Math.copySign(Math.pow(value, exp), value);
 
         return value;
     }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,6 +105,11 @@ public class RobotLogger {
             System.err.println("EMERGENCY LOG FAILED - CANT CREATE FILE");
             e.printStackTrace();
             System.err.println("LOGGING ONLY TO CONSOLE");
+        }
+    }
+    static public void closeFiles(){
+        for (Handler handler : globalLogger.getHandlers()){
+            handler.close();
         }
     }
 

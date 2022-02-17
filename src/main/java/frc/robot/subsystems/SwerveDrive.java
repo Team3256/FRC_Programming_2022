@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2_Faults;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,9 +21,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.IDConstants.*;
+
 
 public class SwerveDrive extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(SwerveDrive.class.getCanonicalName());
 
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -35,7 +38,8 @@ public class SwerveDrive extends SubsystemBase {
             // Back right
             new Translation2d(-DRIVETRAIN_TRACK_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
-    private final PigeonIMU pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
+    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(DRIVETRAIN_PIGEON_ID);
+    private static Pigeon2_Faults pigeonFaults = new Pigeon2_Faults();
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
@@ -45,6 +49,8 @@ public class SwerveDrive extends SubsystemBase {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
+
+    private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -57,9 +63,9 @@ public class SwerveDrive extends SubsystemBase {
                         .withPosition(0, 0),
                 // This can either be STANDARD or FAST depending on your gear configuration
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                FRONT_LEFT_MODULE_STEER_MOTOR,
-                FRONT_LEFT_MODULE_STEER_ENCODER,
+                FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_LEFT_MODULE_STEER_MOTOR_ID,
+                FRONT_LEFT_MODULE_STEER_ENCODER_ID,
                 FRONT_LEFT_MODULE_STEER_OFFSET
         );
 
@@ -68,9 +74,9 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(2, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                FRONT_RIGHT_MODULE_STEER_MOTOR,
-                FRONT_RIGHT_MODULE_STEER_ENCODER,
+                FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
+                FRONT_RIGHT_MODULE_STEER_ENCODER_ID,
                 FRONT_RIGHT_MODULE_STEER_OFFSET
         );
 
@@ -79,9 +85,9 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(4, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                BACK_LEFT_MODULE_DRIVE_MOTOR,
-                BACK_LEFT_MODULE_STEER_MOTOR,
-                BACK_LEFT_MODULE_STEER_ENCODER,
+                BACK_LEFT_MODULE_DRIVE_MOTOR_ID,
+                BACK_LEFT_MODULE_STEER_MOTOR_ID,
+                BACK_LEFT_MODULE_STEER_ENCODER_ID,
                 BACK_LEFT_MODULE_STEER_OFFSET
         );
 
@@ -90,21 +96,39 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 4)
                         .withPosition(6, 0),
                 Mk3SwerveModuleHelper.GearRatio.FAST,
-                BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                BACK_RIGHT_MODULE_STEER_MOTOR,
-                BACK_RIGHT_MODULE_STEER_ENCODER,
+                BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
+                BACK_RIGHT_MODULE_STEER_MOTOR_ID,
+                BACK_RIGHT_MODULE_STEER_ENCODER_ID,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
         logger.info("Swerve Drive Modules Initialized");
     }
 
-    /**
-     * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
-     * 'forwards' direction.
-     */
     public void zeroGyroscope() {
+        pigeon.reset();
+        resetOdometry(new Pose2d());
         logger.info("zeroed gyroscope");
-        pigeon.setFusedHeading(0.0);
+    }
+    
+    public Rotation2d getGyroscopeRotation() {
+        return Rotation2d.fromDegrees(pigeon.getYaw());
+    }
+
+    public String getFaultMessage() {
+        if(!pigeonFaults.hasAnyFault()) return "No faults";
+        String retval = "";
+        retval += pigeonFaults.APIError ? "APIError, " : "";
+        retval += pigeonFaults.AccelFault ? "AccelFault, " : "";
+        retval += pigeonFaults.BootIntoMotion ? "BootIntoMotion, " : "";
+        retval += pigeonFaults.GyroFault ? "GyroFault, " : "";
+        retval += pigeonFaults.HardwareFault ? "HardwareFault, " : "";
+        retval += pigeonFaults.MagnetometerFault ? "MagnetometerFault, " : "";
+        retval += pigeonFaults.ResetDuringEn ? "ResetDuringEn, " : "";
+        retval += pigeonFaults.SaturatedAccel ? "SaturatedAccel, " : "";
+        retval += pigeonFaults.SaturatedMag ? "SaturatedMag, " : "";
+        retval += pigeonFaults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
+        logger.warning("Pigeon Error: "+ retval);
+        return retval;
     }
 
     public SwerveDriveKinematics getKinematics() {
@@ -113,10 +137,6 @@ public class SwerveDrive extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(pose, getGyroscopeRotation());
-    }
-
-    public Rotation2d getGyroscopeRotation() {
-        return Rotation2d.fromDegrees(pigeon.getFusedHeading());
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
@@ -144,6 +164,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Desired Back Right Angle", desiredStates[3].angle.getDegrees());
 
 
+
         SwerveModuleState frontLeftOptimized = optimizeModuleState(desiredStates[0], frontLeftModule.getSteerAngle());
         SwerveModuleState frontRightOptimized = optimizeModuleState(desiredStates[1], frontRightModule.getSteerAngle());
         SwerveModuleState backLeftOptimized = optimizeModuleState(desiredStates[2], backLeftModule.getSteerAngle());
@@ -168,10 +189,9 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
         SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
+        SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
+        SmartDashboard.putString("Gyro Errors", getFaultMessage());
 
-//        short[] r = new short[3];
-//        pigeon.getBiasedAccelerometer(r);
-//        SmartDashboard.putNumber("Gyro Acceleration", r[2]);
     }
 
     public SwerveModuleState optimizeModuleState(SwerveModuleState state, double heading) {
@@ -180,7 +200,20 @@ public class SwerveDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        //Log any High Acceleration Events, bool variable to ensure 1 log per real event
+        short[] acc = new short[3];
+        pigeon.getBiasedAccelerometer(acc);
+        double squaredAcc = acc[0] * acc[0] + acc[1] * acc[1];
+        if (!highAccDetectedPrev && squaredAcc > Math.pow(2 * 16384,2)) {
+            logger.warning("High Acceleration Detected: " + Math.sqrt(squaredAcc));
+            highAccDetectedPrev = true;
+        } else {
+            highAccDetectedPrev = false;
+        }
+
         Rotation2d gyroAngle = getGyroscopeRotation();
+        pigeon.getFaults(pigeonFaults);
         // Update the pose
         SwerveModuleState frontLeftState = new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle()));
         SwerveModuleState frontRightState = new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle()));
