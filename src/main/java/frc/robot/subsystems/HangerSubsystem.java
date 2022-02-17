@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonFXFactory;
+import static frc.robot.hardware.TalonFXFactory.Configuration;
 
 import java.util.logging.Logger;
 
@@ -25,24 +27,28 @@ public class HangerSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightAirBrake;
     DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
 
-
-
     public HangerSubsystem() {
-        masterTalonMotor = new TalonFX(HANGER_MASTER_TALON_ID);
-        followerTalonMotor = new TalonFX(HANGER_FOLLOWER_TALON_ID);
+        Configuration MASTER_CONFIG = new Configuration();
+        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
+        MASTER_CONFIG.INVERT_TYPE = INVERT_MOTOR ? InvertType.InvertMotorOutput : InvertType.None;
+        MASTER_CONFIG.PIDF_CONSTANTS = new Configuration.PIDF(
+                HANGER_MASTER_TALON_PID_P,
+                HANGER_MASTER_TALON_PID_I,
+                HANGER_MASTER_TALON_PID_D,
+                HANGER_MASTER_TALON_PID_F
+        );
 
-        masterTalonMotor.config_kP(0, HANGER_MASTER_TALON_PID_P); //TODO: change slotIdx if required
-        masterTalonMotor.config_kI(0, HANGER_MASTER_TALON_PID_I); //TODO: change slotIdx if required
-        masterTalonMotor.config_kD(0, HANGER_MASTER_TALON_PID_D); //TODO: change slotIdx if required
-        masterTalonMotor.config_kF(0, HANGER_MASTER_TALON_PID_F); //TODO: change slotIdx if required
+        Configuration FOLLOWER_CONFIG = Configuration.clone(MASTER_CONFIG);
+        FOLLOWER_CONFIG.INVERT_TYPE = InvertType.OpposeMaster;
 
-        masterTalonMotor.setInverted(INVERT_MOTOR);
-
-        followerTalonMotor.follow(masterTalonMotor);
-        followerTalonMotor.setInverted(InvertType.OpposeMaster);
-
-        masterTalonMotor.setNeutralMode(NeutralMode.Brake);
-        followerTalonMotor.setNeutralMode(NeutralMode.Brake);
+        masterTalonMotor = TalonFXFactory.createTalonFX(
+                HANGER_MASTER_TALON_ID,
+                MASTER_CONFIG
+        );
+        followerTalonMotor = TalonFXFactory.createFollowerTalonFX(HANGER_FOLLOWER_TALON_ID,
+                HANGER_MASTER_TALON_ID,
+                FOLLOWER_CONFIG
+        );
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
