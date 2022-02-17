@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
+import frc.robot.commands.drivetrain.AutoAlignCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
@@ -86,7 +87,13 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-
+        new Button(controller::getXButton)
+                .whenPressed(new DefaultDriveCommandFieldOriented(
+                        drivetrainSubsystem,
+                        () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                ));
         rightBumper.whenHeld(new IntakeOn(intake));
     }
 
