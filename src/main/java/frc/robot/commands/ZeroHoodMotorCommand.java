@@ -2,11 +2,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 
-public class ZeroHoodMotor extends CommandBase {
+public class ZeroHoodMotorCommand extends CommandBase {
 
     private final FlywheelSubsystem flywheel;
 
-    public ZeroHoodMotor(FlywheelSubsystem subsystem) {
+    public ZeroHoodMotorCommand(FlywheelSubsystem subsystem) {
         flywheel = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
