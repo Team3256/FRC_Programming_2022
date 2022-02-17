@@ -47,7 +47,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
-        limitSwitch = new DigitalInput(0);
+        limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
 
         logger.info("Flywheel Initialized");
       
