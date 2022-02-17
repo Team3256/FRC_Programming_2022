@@ -122,10 +122,7 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 6;
 
         // DIO Channels
-        public static final int HOOD_SERVO_CHANNEL_ID = 0;
-
-        //Magnetic Switch IDs
-        public static final int LIMIT_SWITCH_CHANNEL = 0;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
 
     }
 
@@ -210,7 +207,6 @@ public final class Constants {
 
         // Hood Angle Constants
         public static final double HOOD_SLOW_REVERSE_VELOCITY = 0.01;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
         public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
