@@ -21,7 +21,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-    private final Servo hoodAngleServo;
+    private final TalonFX hoodAngleMotor;
 
     private double currentTargetSpeed;
 
@@ -44,7 +44,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         followerRightShooterMotor.setNeutralMode(NeutralMode.Coast);
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
-        hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
+        hoodAngleMotor = new TalonFX(0);
 
         logger.info("Flywheel Initialized");
       
@@ -84,10 +84,12 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * @param hoodAngle Radians
-     * Hood angle set from value 0.0 to 1.0
+     * @param hoodAngle motor units
+     * motor moves to hoodAngle position
      */
-    public void setHoodAngle(double hoodAngle) { hoodAngleServo.setAngle(hoodAngle); }
+    public void setHoodAngle(double hoodAngle) {
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle);
+    }
 
     /**
      * Disables powers to motors, motors change to neutral/coast mode
