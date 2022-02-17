@@ -206,7 +206,7 @@ public final class Constants {
         public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
 
         // Hood Angle Constants
-        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.01;
+        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
         public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
