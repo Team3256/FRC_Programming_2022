@@ -122,6 +122,7 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 6;
 
         // DIO Channels
+        public static final int LIMIT_SWITCH_CHANNEL = 0;
         public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
 
     }
