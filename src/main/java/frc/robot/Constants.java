@@ -49,6 +49,10 @@ public final class Constants {
         private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
+        public static final double SWERVE_TURRET_KP = 0;
+        public static final double SWERVE_TURRET_KI = 0;
+        public static final double SWERVE_TURRET_KD = 0;
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
