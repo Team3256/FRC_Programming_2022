@@ -87,7 +87,7 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-        new Button(controller::getXButton)
+        new Button(controller::getRightBumper)
                 .whenPressed(new DefaultDriveCommandFieldOriented(
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
