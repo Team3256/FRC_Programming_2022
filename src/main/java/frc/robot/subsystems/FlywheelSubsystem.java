@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
@@ -114,7 +113,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     /**
      * checks if limit switch is pressed
      */
-    public boolean limitSwitchPressed(){
+    public boolean isHoodLimitSwitchPressed(){
         return limitSwitch.get();
     }
     /**
