@@ -95,7 +95,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * for zeroing the hood motor
      */
     public void hoodSlowReverse(){
-        hoodAngleMotor.set(ControlMode.Velocity, -0.01);
+        hoodAngleMotor.set(ControlMode.Velocity, HOOD_SLOW_REVERSE_VELOCITY);
     }
     /**
      * zeros the hood motor

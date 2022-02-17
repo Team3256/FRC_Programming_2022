@@ -208,6 +208,7 @@ public final class Constants {
 
         // Hood Angle Constants
         public static final int HOOD_MOTOR_ID = 0;
+        public static final double HOOD_SLOW_REVERSE_VELOCITY = 0.01;
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
         public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }
