@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
@@ -22,6 +23,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX followerRightShooterMotor;
 
     private final TalonFX hoodAngleMotor;
+    private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
 
@@ -45,6 +47,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
         hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
+        limitSwitch = new DigitalInput(0);
 
         logger.info("Flywheel Initialized");
       
@@ -90,9 +93,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void setHoodAngle(double hoodAngle) {
         hoodAngleMotor.set(ControlMode.Position, hoodAngle);
     }
-
     /**
-     * for zeroing the hood motor
+     * reverses the hood for zeroing the hood motor
      */
     public void hoodSlowReverse(){
         hoodAngleMotor.set(ControlMode.Velocity, HOOD_SLOW_REVERSE_VELOCITY);
@@ -102,6 +104,12 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public void zeroHoodMotor(){
         hoodAngleMotor.setSelectedSensorPosition(0);
+    }
+    /**
+     * checks if limit switch is pressed
+     */
+    public boolean limitSwitchPressed(){
+        return limitSwitch.get();
     }
     /**
      * Disables powers to motors, motors change to neutral/coast mode
