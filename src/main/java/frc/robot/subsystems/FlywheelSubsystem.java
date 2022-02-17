@@ -92,6 +92,18 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
+     * for zeroing the hood motor
+     */
+    public void hoodSlowReverse(){
+        hoodAngleMotor.set(ControlMode.Velocity, -0.01);
+    }
+    /**
+     * zeros the hood motor
+     */
+    public void zeroHoodMotor(){
+        hoodAngleMotor.setSelectedSensorPosition(0);
+    }
+    /**
      * Disables powers to motors, motors change to neutral/coast mode
      */
     public void stop() {
