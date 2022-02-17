@@ -105,7 +105,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
     }
     /**
-     * zeros the hood motor
+     * zeros the hood motor sensor
      */
     public void zeroHoodMotor(){
         hoodAngleMotor.setSelectedSensorPosition(0);

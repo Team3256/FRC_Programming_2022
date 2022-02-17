@@ -6,6 +6,10 @@ public class ZeroHoodMotorCommand extends CommandBase {
 
     private final FlywheelSubsystem flywheel;
 
+    /**
+     * @param subsystem
+     * zeros the hood motor and it's sensor
+     */
     public ZeroHoodMotorCommand(FlywheelSubsystem subsystem) {
         flywheel = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
