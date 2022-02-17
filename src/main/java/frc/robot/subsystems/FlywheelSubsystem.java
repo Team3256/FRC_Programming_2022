@@ -94,6 +94,12 @@ public class FlywheelSubsystem extends SubsystemBase {
         hoodAngleMotor.set(ControlMode.Position, hoodAngle);
     }
     /**
+     * stops the hood motor
+     */
+    public void stopHood(){
+        hoodAngleMotor.set(ControlMode.Velocity,0);
+    }
+    /**
      * reverses the hood for zeroing the hood motor
      */
     public void hoodSlowReverse(){
