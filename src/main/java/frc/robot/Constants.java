@@ -207,6 +207,7 @@ public final class Constants {
         public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
 
         // Hood Angle Constants
+        public static final int HOOD_MOTOR_ID = 0;
         public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
         public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
     }

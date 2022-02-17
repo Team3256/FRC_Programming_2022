@@ -44,7 +44,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         followerRightShooterMotor.setNeutralMode(NeutralMode.Coast);
         masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
 
-        hoodAngleMotor = new TalonFX(0);
+        hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
 
         logger.info("Flywheel Initialized");
       
