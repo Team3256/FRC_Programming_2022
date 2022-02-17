@@ -4,13 +4,14 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.Limelight;
 
 import static frc.robot.Constants.IDConstants;
 import static frc.robot.Constants.TurretConstants;
 
 public class TurretSubsystem extends PIDSubsystem {
-    private final TalonFX turretMotor = new TalonFX(IDConstants.TURRET_ID);
+    private final TalonFX turretMotor;
 
     /**
      * PID coefficients (kp - proportional ki - integral kd - derivative)
@@ -21,6 +22,8 @@ public class TurretSubsystem extends PIDSubsystem {
         getController().setTolerance(TurretConstants.TURRET_TOLERANCE_TX);
         this.setSetpoint(0);
         this.disable();
+
+        turretMotor = TalonFXFactory.createTalonFX(IDConstants.TURRET_ID);
     }
 
     //NOTE: enable, disable PID methods built in

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonFXFactory;
 
 import java.util.logging.Logger;
 
@@ -18,7 +19,7 @@ public class FeederSubsystem extends SubsystemBase {
 
     private final TalonFX feederMotor;
     public FeederSubsystem() {
-        feederMotor = new TalonFX(IDConstants.FEEDER_MOTOR_ID);
+        feederMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID);
         logger.info("Feeder Initialized");
     }
     public void on(){
