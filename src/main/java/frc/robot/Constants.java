@@ -209,7 +209,7 @@ public final class Constants {
         // Hood Angle Constants
         public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
         // In sensor units
-        public static final double HOOD_ANGLE_UPPER_LIMIT = 50;
+        public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
     }
 }
