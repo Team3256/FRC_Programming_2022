@@ -92,7 +92,7 @@ public class RobotContainer {
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        new Button(controller::getYButton).whenPressed(flywheelSubsystem::stop);
+        new Button(controller::getYButton).whenPressed(flywheelSubsystem::stopFullShooter);
 
         rightBumper.whenHeld(new IntakeOn(intake));
         leftBumper.whenHeld(new CustomDashboardShooterSettings(new FlywheelSubsystem()));
