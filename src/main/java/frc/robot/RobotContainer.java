@@ -30,6 +30,8 @@ import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
+
+import java.awt.Robot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
     private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -88,6 +91,8 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+
+        new Button(controller::getYButton).whenPressed(flywheelSubsystem::stop);
 
         rightBumper.whenHeld(new IntakeOn(intake));
         leftBumper.whenHeld(new CustomDashboardShooterSettings(new FlywheelSubsystem()));
