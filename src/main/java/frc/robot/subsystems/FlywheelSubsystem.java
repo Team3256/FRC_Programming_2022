@@ -123,6 +123,14 @@ public class FlywheelSubsystem extends SubsystemBase {
         masterLeftShooterMotor.neutralOutput();
     }
 
+    /**
+     * Disables both the shooter hood and motors
+     */
+    public void stopFullShooter() {
+        stop();
+        stopHood();
+    }
+
     /*
     * Confirms if velocity is within margin of set point
     */
