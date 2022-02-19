@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,8 +18,9 @@ import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
-    private int currentPreset = 0;
-    private int maxPresets = 6; // TODO: Set max possible presets that we have.
+    private int currentPresetNumber = 0;
+    private ArrayList<ShooterPreset> allPresets = new ArrayList<ShooterPreset>();
+    private ShooterPreset currentPreset;
 
     private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
 
@@ -55,6 +58,16 @@ public class FlywheelSubsystem extends SubsystemBase {
       
         getVelocityInterpolatingFunctionFromPoints();
         getHoodAngleInterpolatingFunctionFromPoints();
+
+        createPresets();
+    }
+
+    private void createPresets() {
+        // TODO: Create all presets
+    }
+
+    private ShooterPreset getPreset() {
+        return allPresets.get(currentPresetNumber);
     }
 
     /**
@@ -245,10 +258,16 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void increasePreset() {
-        currentPreset += 1;
-        if (currentPreset > maxPresets) {
-            currentPreset = 0;
+        currentPresetNumber += 1;
+        if (currentPresetNumber > MAX_PRESETS) {
+            currentPresetNumber = 0;
         }
+    }
+
+    public void shootSelectedPreset() {
+        currentPreset = getPreset();
+        this.setSpeed(currentPreset.rpmVelocity);
+        this.setHoodAngle(currentPreset.hoodAngle);
     }
 }
 
@@ -259,5 +278,15 @@ class ShooterState {
     public ShooterState(double v, double t) {
         this.velocity = v;
         this.theta = t;
+    }
+}
+
+class ShooterPreset {
+    public double hoodAngle;
+    public double rpmVelocity;
+
+    public ShooterPreset(double v, double t) {
+        this.hoodAngle = t;
+        this.rpmVelocity = v;
     }
 }

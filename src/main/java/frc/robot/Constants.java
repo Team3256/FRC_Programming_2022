@@ -211,5 +211,8 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+
+        // Presets
+        public static final int MAX_PRESETS = 6; // TODO: Set max possible presets that we have.
     }
 }
