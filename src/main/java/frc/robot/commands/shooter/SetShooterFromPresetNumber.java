@@ -14,7 +14,7 @@ public class SetShooterFromPresetNumber extends CommandBase {
 
     @Override
     public void initialize() {
-        // set velocity and angle based on preset
+        flywheelSubsystem.shootSelectedPreset();
     }
 
     @Override
