@@ -21,6 +21,7 @@ import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
+import frc.robot.commands.shooter.IncreasePresetForShooter;
 import frc.robot.commands.shooter.SetShooterFromPresetNumber;
 import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
@@ -98,7 +99,7 @@ public class RobotContainer {
 
         // "B" button increases the preset number
         new Button(controller::getXButton)
-                .whenPressed(flywheelSubsystem::increasePreset);
+                .whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
 
         rightBumper.whenHeld(new IntakeOn(intake));
         bButton.whenHeld(new SetShooterFromPresetNumber(flywheelSubsystem));
