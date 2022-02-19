@@ -30,6 +30,11 @@ public final class Constants {
     }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
+        public static final int MAX_BALL_COUNT = 2; //change later
+
+        public static final int START_CHANNEL = 0; //change later
+        public static final int STOP_CHANNEL = 1; //change later
+        public static final int END_CHANNEL = 2; //change later
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
