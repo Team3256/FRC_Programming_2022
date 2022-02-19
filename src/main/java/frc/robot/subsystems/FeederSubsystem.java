@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
@@ -23,9 +22,6 @@ public class FeederSubsystem extends SubsystemBase {
 
     private final TalonFX feederMotor;
     private IRSensors irSensors;
-    DigitalInput startIR;
-    DigitalInput stopIR;
-    DigitalInput endIR;
 
     double currentBallCount;
 
@@ -34,10 +30,6 @@ public class FeederSubsystem extends SubsystemBase {
         irSensors = IRSensors.getInstance();
         currentBallCount = 0;
 
-//        SmartDashboard.setDefaultNumber("exponential value", FeederConstants.MAX_BALL_COUNT);
-//        double currentBallCount = SmartDashboard.getNumber("exponential value", FeederConstants.MAX_BALL_COUNT);
-//
-//        SmartDashboard.putData();
         logger.info("Feeder Initialized");
     }
     public void on(){
