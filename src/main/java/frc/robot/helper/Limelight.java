@@ -106,13 +106,17 @@ public class Limelight {
         if (corrector==null) corrector=new Polynomial(new double[]{0,1});
     }
 
+
     /**
-     *  Methods that enable and disable the limelight
+     * Disables the LEDs on the Limelight, LEDs should be off when limelight not in use.
      */
     public static void disable(){
         Limelight.getLimelightValue("ledMode").setNumber(1);
     }
 
+    /**
+     * Enables the LEDs on the limelight, LEDs should be on when limelight is in use.
+     */
     public static void enable(){
         Limelight.getLimelightValue("ledMode").setNumber(3);
     }
