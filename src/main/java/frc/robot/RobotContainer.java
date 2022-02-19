@@ -21,6 +21,7 @@ import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
+import frc.robot.commands.shooter.SetShooterFromPresetNumber;
 import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
@@ -88,15 +89,19 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+        Button bButton = new JoystickButton(controller, XboxController.Button.kB.value);
 
 
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+
+        // "B" button increases the preset number
         new Button(controller::getXButton)
                 .whenPressed(flywheelSubsystem::increasePreset);
 
         rightBumper.whenHeld(new IntakeOn(intake));
+        bButton.whenHeld(new SetShooterFromPresetNumber(flywheelSubsystem));
     }
 
 
