@@ -28,7 +28,9 @@ public class FeederSubsystem extends SubsystemBase {
     public FeederSubsystem() {
         feederMotor = new TalonFX(IDConstants.FEEDER_MOTOR_ID);
         irSensors = IRSensors.getInstance();
-        currentBallCount = 0;
+
+        SmartDashboard.setDefaultNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
+        currentBallCount = SmartDashboard.getNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
 
         logger.info("Feeder Initialized");
     }
@@ -37,12 +39,23 @@ public class FeederSubsystem extends SubsystemBase {
         logger.info("Feeder On");
     }
 
+    public boolean isFull(){
+        return currentBallCount == FeederConstants.MAX_BALL_COUNT;
+    }
+
     public void transferIndex(){
         if(irSensors.isFeederStartIRBroken()){
+            currentBallCount++;
             new FeederOn(this);
+            if(isFull()){
+                logger.info("Feeder is full");
+            }
         }
         else if(irSensors.isFeederStopIRBroken()){
             new FeederOff(this);
+        }
+        if(irSensors.isFeederEndIRBroken()){
+            currentBallCount--;
         }
     }
 
