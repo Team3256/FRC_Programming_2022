@@ -5,9 +5,12 @@ import frc.robot.subsystems.FlywheelSubsystem;
 
 public class SetShooterFromPresetNumber extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
+    private int presetNumber;
 
-    public SetShooterFromPresetNumber(FlywheelSubsystem m_flywheelSubsytem) {
+    public SetShooterFromPresetNumber(FlywheelSubsystem m_flywheelSubsytem, int currentPreset) {
         flywheelSubsystem = m_flywheelSubsytem;
+        presetNumber = currentPreset;
+
         addRequirements(m_flywheelSubsytem);
     }
 
