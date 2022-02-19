@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
@@ -34,18 +35,17 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
 
     public FlywheelSubsystem() {
-        TalonFXFactory.Configuration MASTER_CONFIG = new TalonFXFactory.Configuration();
+        TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
         MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
         MASTER_CONFIG.INVERT_TYPE = InvertType.InvertMotorOutput;
-        MASTER_CONFIG.PIDF_CONSTANTS = new TalonFXFactory.Configuration.PIDF(
+        MASTER_CONFIG.PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
                 HANGER_MASTER_TALON_PID_P,
                 HANGER_MASTER_TALON_PID_I,
                 HANGER_MASTER_TALON_PID_D,
                 HANGER_MASTER_TALON_PID_F
         );
 
-        TalonFXFactory.Configuration FOLLOWER_CONFIG = TalonFXFactory.Configuration.clone(MASTER_CONFIG);
-        FOLLOWER_CONFIG.INVERT_TYPE = InvertType.OpposeMaster;
+        TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
         masterLeftShooterMotor = TalonFXFactory.createTalonFX(
                 PID_SHOOTER_MOTOR_ID_LEFT,

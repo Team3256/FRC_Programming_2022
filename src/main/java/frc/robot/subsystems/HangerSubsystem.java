@@ -1,21 +1,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
-import static frc.robot.hardware.TalonFXFactory.Configuration;
-
 import java.util.logging.Logger;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 public class HangerSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(HangerSubsystem.class.getCanonicalName());
 
@@ -28,24 +25,13 @@ public class HangerSubsystem extends SubsystemBase {
     DigitalInput bottomLimitSwitch = new DigitalInput(LIMIT_SWITCH_CHANNEL);
 
     public HangerSubsystem() {
-        Configuration MASTER_CONFIG = new Configuration();
-        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
-        MASTER_CONFIG.INVERT_TYPE = INVERT_MOTOR ? InvertType.InvertMotorOutput : InvertType.None;
-        MASTER_CONFIG.PIDF_CONSTANTS = new Configuration.PIDF(
-                HANGER_MASTER_TALON_PID_P,
-                HANGER_MASTER_TALON_PID_I,
-                HANGER_MASTER_TALON_PID_D,
-                HANGER_MASTER_TALON_PID_F
-        );
-
-        Configuration FOLLOWER_CONFIG = Configuration.clone(MASTER_CONFIG);
-        FOLLOWER_CONFIG.INVERT_TYPE = InvertType.OpposeMaster;
-
         masterTalonMotor = TalonFXFactory.createTalonFX(
                 HANGER_MASTER_TALON_ID,
                 MASTER_CONFIG
         );
-        followerTalonMotor = TalonFXFactory.createFollowerTalonFX(HANGER_FOLLOWER_TALON_ID,
+
+        followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
+                HANGER_FOLLOWER_TALON_ID,
                 HANGER_MASTER_TALON_ID,
                 FOLLOWER_CONFIG
         );
@@ -104,10 +90,7 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns if the bottom limit switch is triggered
      */
     public boolean hasReachedBottom() {
-        if (bottomLimitSwitch.get()) {
-            return true;
-        }
-        return false;
+        return bottomLimitSwitch.get();
     }
 
     /**

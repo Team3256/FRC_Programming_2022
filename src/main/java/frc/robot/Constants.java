@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.hardware.TalonConfiguration;
 
 import java.util.logging.Level;
 
@@ -173,7 +176,17 @@ public final class Constants {
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
-        public static final boolean INVERT_MOTOR = false;
+        public static final InvertType INVERT_TYPE = InvertType.None;
+
+        public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
+                HANGER_MASTER_TALON_PID_P,
+                HANGER_MASTER_TALON_PID_I,
+                HANGER_MASTER_TALON_PID_D,
+                HANGER_MASTER_TALON_PID_F
+        );
+
+        public static TalonConfiguration MASTER_CONFIG = new TalonConfiguration(PIDF_CONSTANTS, INVERT_TYPE, NeutralMode.Brake);
+        public static TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
