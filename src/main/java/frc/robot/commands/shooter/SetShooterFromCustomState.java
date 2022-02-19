@@ -31,6 +31,7 @@ public class SetShooterFromCustomState extends CommandBase {
     public void end(boolean interrupted) {
         if (interrupted) {
             flywheelSubsystem.stop();
+            flywheelSubsystem.stopHood();
         }
     }
 
