@@ -6,10 +6,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
-import frc.robot.hardware.IRSensors;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.logging.Logger;
@@ -21,16 +22,23 @@ public class FeederSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(FeederSubsystem.class.getCanonicalName());
 
     private final TalonFX feederMotor;
-    private IRSensors irSensors;
+    private DigitalInput feederStartIRSensor;
+    private DigitalInput feederStopIRSensor;
+    private DigitalInput feederEndIRSensor;
 
-    double currentBallCount;
+
+    private double currentBallCount;
+    private boolean firstBreak;
 
     public FeederSubsystem() {
         feederMotor = new TalonFX(IDConstants.FEEDER_MOTOR_ID);
-        irSensors = IRSensors.getInstance();
+        feederStartIRSensor = new DigitalInput(IDConstants.START_CHANNEL);
+        feederStopIRSensor = new DigitalInput(IDConstants.STOP_CHANNEL);
+        feederEndIRSensor = new DigitalInput(IDConstants.END_CHANNEL);
 
         SmartDashboard.setDefaultNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
         currentBallCount = SmartDashboard.getNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
+        firstBreak = true;
 
         logger.info("Feeder Initialized");
     }
@@ -39,26 +47,39 @@ public class FeederSubsystem extends SubsystemBase {
         logger.info("Feeder On");
     }
 
+    public boolean isFeederStartIRBroken() {
+        return feederStartIRSensor.get();
+    }
+
+    public boolean isFeederStopIRBroken() {
+        return feederStopIRSensor.get();
+    }
+
+    public boolean isFeederEndIRBroken() {
+        return feederEndIRSensor.get();
+    }
+
     public boolean isFull(){
         return currentBallCount == FeederConstants.MAX_BALL_COUNT;
     }
 
     public void transferIndex(){
-        if(irSensors.isFeederStartIRBroken()){
-            currentBallCount++;
-            new FeederOn(this);
+        if(firstBreak && isFeederStartIRBroken()){
             if(isFull()){
                 logger.info("Feeder is full");
             }
+            currentBallCount++;
+            firstBreak = false;
+            new FeederOn(this).schedule();
         }
-        else if(irSensors.isFeederStopIRBroken()){
-            new FeederOff(this);
+        else if(isFeederStopIRBroken()){
+            new FeederOff(this).schedule();
+            firstBreak = true;
         }
-        if(irSensors.isFeederEndIRBroken()){
+        if(isFeederEndIRBroken()){
             currentBallCount--;
         }
     }
-
     public void off(){
         feederMotor.set(TalonFXControlMode.PercentOutput, 0);
         logger.info("Feeder Off");
@@ -68,5 +89,6 @@ public class FeederSubsystem extends SubsystemBase {
     public void periodic() {
         super.periodic();
         transferIndex();
+        CommandScheduler.getInstance().run();
     }
 }
