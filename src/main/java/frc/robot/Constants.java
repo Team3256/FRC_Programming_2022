@@ -105,9 +105,9 @@ public final class Constants {
         public static final int TURRET_ID = 34;
         public static final int FEEDER_MOTOR_ID = 35;
 
-        public static final int START_CHANNEL = 0; //change later
-        public static final int STOP_CHANNEL = 1; //change later
-        public static final int END_CHANNEL = 2; //change later
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 0; //change later
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 1; //change later
+        public static final int IR_TRANSFER_END_CHANNEL = 2; //change later
 
         public static final int HOOD_MOTOR_ID = 0;
 

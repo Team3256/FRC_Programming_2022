@@ -8,7 +8,10 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
 
@@ -28,17 +31,15 @@ public class FeederSubsystem extends SubsystemBase {
 
 
     private double currentBallCount;
-    private boolean firstBreak;
 
     public FeederSubsystem() {
         feederMotor = new TalonFX(IDConstants.FEEDER_MOTOR_ID);
-        feederStartIRSensor = new DigitalInput(IDConstants.START_CHANNEL);
-        feederStopIRSensor = new DigitalInput(IDConstants.STOP_CHANNEL);
-        feederEndIRSensor = new DigitalInput(IDConstants.END_CHANNEL);
+        feederStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
+        feederStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);
+        feederEndIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_END_CHANNEL);
 
         SmartDashboard.setDefaultNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
         currentBallCount = SmartDashboard.getNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
-        firstBreak = true;
 
         logger.info("Feeder Initialized");
     }
@@ -64,18 +65,20 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public void transferIndex(){
-        if(firstBreak && isFeederStartIRBroken()){
-            if(isFull()){
-                logger.info("Feeder is full");
-            }
-            currentBallCount++;
-            firstBreak = false;
-            new FeederOn(this).schedule();
-        }
-        else if(isFeederStopIRBroken()){
-            new FeederOff(this).schedule();
-            firstBreak = true;
-        }
+        new Button(this::isFeederStartIRBroken)
+                .whenPressed(new ParallelCommandGroup(
+                                new InstantCommand(()->{
+                                    currentBallCount++;
+                                    if(isFull()){
+                                        logger.info("Feeder is full");
+                                    }
+
+                                }),
+                                new FeederOn(this)
+                ));
+
+        new Button(this::isFeederStopIRBroken).whenReleased(new FeederOff(this));
+
         if(isFeederEndIRBroken()){
             currentBallCount--;
         }
