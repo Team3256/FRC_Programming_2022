@@ -257,11 +257,13 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInSensorUnits  * 10 / 2048;
     }
 
-    public void increasePreset() {
+    public double increasePreset() {
         currentPresetNumber += 1;
         if (currentPresetNumber > MAX_PRESETS) {
             currentPresetNumber = 0;
         }
+
+        return getPreset().distanceToTarget;
     }
 
     public void shootSelectedPreset() {
@@ -284,9 +286,11 @@ class ShooterState {
 class ShooterPreset {
     public double hoodAngle;
     public double rpmVelocity;
+    public double distanceToTarget;
 
-    public ShooterPreset(double v, double t) {
+    public ShooterPreset(double v, double t, double d) {
         this.hoodAngle = t;
         this.rpmVelocity = v;
+        this.distanceToTarget = d;
     }
 }
