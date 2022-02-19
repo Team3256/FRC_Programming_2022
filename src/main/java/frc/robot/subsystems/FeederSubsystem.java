@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants;
+
 import static frc.robot.Constants.FeederConstants;
 
 public class FeederSubsystem extends SubsystemBase {
@@ -41,6 +42,7 @@ public class FeederSubsystem extends SubsystemBase {
         SmartDashboard.setDefaultNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
         currentBallCount = SmartDashboard.getNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
 
+        transferIndex();
         logger.info("Feeder Initialized");
     }
     public void on(){
@@ -79,9 +81,9 @@ public class FeederSubsystem extends SubsystemBase {
 
         new Button(this::isFeederStopIRBroken).whenReleased(new FeederOff(this));
 
-        if(isFeederEndIRBroken()){
+        new Button(this::isFeederEndIRBroken).whenActive(new InstantCommand(() -> {
             currentBallCount--;
-        }
+        }));
     }
     public void off(){
         feederMotor.set(TalonFXControlMode.PercentOutput, 0);
@@ -91,7 +93,6 @@ public class FeederSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        transferIndex();
         CommandScheduler.getInstance().run();
     }
 }

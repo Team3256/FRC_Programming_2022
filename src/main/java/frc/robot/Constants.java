@@ -105,10 +105,6 @@ public final class Constants {
         public static final int TURRET_ID = 34;
         public static final int FEEDER_MOTOR_ID = 35;
 
-        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 0; //change later
-        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 1; //change later
-        public static final int IR_TRANSFER_END_CHANNEL = 2; //change later
-
         public static final int HOOD_MOTOR_ID = 0;
 
         public static final int HANGER_MASTER_TALON_ID = 36;
@@ -126,7 +122,11 @@ public final class Constants {
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 0;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 1;
+
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 2; //change later
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
+        public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
 
     }
 
