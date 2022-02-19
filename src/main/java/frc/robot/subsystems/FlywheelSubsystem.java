@@ -16,6 +16,9 @@ import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    private int currentPreset = 0;
+    private int maxPresets = 6; // TODO: Set max possible presets that we have.
+
     private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
 
     private final TalonFX masterLeftShooterMotor;
@@ -239,6 +242,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     private double getVelocity() {
         double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
+    }
+
+    public void increasePreset() {
+        currentPreset += 1;
+        if (currentPreset > maxPresets) {
+            currentPreset = 0;
+        }
     }
 }
 
