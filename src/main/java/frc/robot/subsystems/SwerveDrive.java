@@ -163,8 +163,6 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Desired Back Left Angle", desiredStates[2].angle.getDegrees());
         SmartDashboard.putNumber("Desired Back Right Angle", desiredStates[3].angle.getDegrees());
 
-
-
         SwerveModuleState frontLeftOptimized = optimizeModuleState(desiredStates[0], frontLeftModule.getSteerAngle());
         SwerveModuleState frontRightOptimized = optimizeModuleState(desiredStates[1], frontRightModule.getSteerAngle());
         SwerveModuleState backLeftOptimized = optimizeModuleState(desiredStates[2], backLeftModule.getSteerAngle());
