@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,6 +27,8 @@ public class HangerSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightAirBrake;
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
+    private final I2C.Port i2cPort;
+    private final ColorSensorV3 m_colorSensor;
 
 
     public HangerSubsystem() {
@@ -50,6 +54,8 @@ public class HangerSubsystem extends SubsystemBase {
         rightAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
         engageAirBrake();
 
+        i2cPort = I2C.Port.kOnboard;
+        m_colorSensor = new ColorSensorV3(i2cPort);
         logger.info("Hanger Initialized");
     }
     public void engageAirBrake() {
