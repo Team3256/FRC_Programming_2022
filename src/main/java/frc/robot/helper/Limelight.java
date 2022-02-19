@@ -22,7 +22,7 @@ public class Limelight {
         limelight = inst.getTable("limelight");
 
         //Setting up default stream
-        limelight.getEntry("ledMode").setNumber(0); //Uses LED Mode in current pipeline
+        limelight.getEntry("ledMode").setNumber(1); //Forces the LED Mode to off
         limelight.getEntry("camMode").setNumber(0); //Uses Vision Processor Mode
         limelight.getEntry("pipeline").setNumber(0); //Uses pipeline #0
         limelight.getEntry("stream").setNumber(2); //Driver Camera Main, Vision Camera Lower-Right Corner
@@ -105,4 +105,16 @@ public class Limelight {
         //if corrector does not exist, set it to default polynomial y=x
         if (corrector==null) corrector=new Polynomial(new double[]{0,1});
     }
+
+    /**
+     *  Methods that enable and disable the limelight
+     */
+    public static void disable(){
+        Limelight.getLimelightValue("ledMode").setNumber(1);
+    }
+
+    public static void enable(){
+        Limelight.getLimelightValue("ledMode").setNumber(3);
+    }
+
 }

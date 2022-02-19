@@ -27,6 +27,7 @@ public final class Constants {
         public static final double kD = 0;
         public static final double DEFAULT_TURRET_SPEED = 50;
         public static final double TURRET_TOLERANCE_TX = 0.5;
+        public static final double GEAR_RATIO = 0.25;
     }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
