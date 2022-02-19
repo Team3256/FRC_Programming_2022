@@ -15,12 +15,13 @@ import frc.robot.commands.TestLimelight;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.logging.RobotLogger;
+import frc.robot.subsystems.ColorsensorTestSubsystem;
 
+import java.awt.*;
 import java.util.logging.Logger;
 
 public class Robot extends TimedRobot {
   private static final Logger logger = Logger.getLogger(Robot.class.getCanonicalName());
-
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
@@ -82,6 +83,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
+    new ColorsensorTestSubsystem();
   }
 
   @Override
