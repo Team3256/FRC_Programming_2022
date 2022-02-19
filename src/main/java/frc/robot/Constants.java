@@ -53,6 +53,9 @@ public final class Constants {
         public static final double SWERVE_TURRET_KP = 0;
         public static final double SWERVE_TURRET_KI = 0;
         public static final double SWERVE_TURRET_KD = 0;
+
+        public static final double TURN_TOLERANCE = 0;
+        public static final double TURN_RATE_TOLERANCE = 0;
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
