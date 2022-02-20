@@ -111,7 +111,6 @@ public class RobotLogger {
         if (globalLogger == null)
             setup();
 
-        System.out.println(globalLogger.getHandlers());
         for (Handler handler : globalLogger.getHandlers()){
             handler.close();
         }
