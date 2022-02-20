@@ -45,6 +45,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -82,11 +83,13 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+        Button leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
 
         Limelight.init();
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+        leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
         rightBumper.whenHeld(new AutoAlignDriveCommand(
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
