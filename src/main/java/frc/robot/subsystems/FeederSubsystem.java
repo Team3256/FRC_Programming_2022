@@ -42,7 +42,7 @@ public class FeederSubsystem extends SubsystemBase {
         SmartDashboard.setDefaultNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
         currentBallCount = SmartDashboard.getNumber("Starting Ball Count", FeederConstants.MAX_BALL_COUNT);
 
-        transferIndex();
+        transferIndexSetup();
         logger.info("Feeder Initialized");
     }
     public void on(){
@@ -66,7 +66,7 @@ public class FeederSubsystem extends SubsystemBase {
         return currentBallCount == FeederConstants.MAX_BALL_COUNT;
     }
 
-    public void transferIndex(){
+    public void transferIndexSetup(){
         new Button(this::isFeederStartIRBroken)
                 .whenPressed(new ParallelCommandGroup(
                                 new InstantCommand(()->{
