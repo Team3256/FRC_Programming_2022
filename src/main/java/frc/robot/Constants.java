@@ -31,6 +31,7 @@ public final class Constants {
     }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
+        public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
@@ -94,8 +95,6 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
 
-
-
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
       
         public static final int[] SPARK_MAX_IDS = new int[]{};
@@ -124,7 +123,11 @@ public final class Constants {
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 0;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 1;
+
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 2; //change later
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
+        public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
 
     }
 
