@@ -39,10 +39,10 @@ public class FlywheelSubsystem extends SubsystemBase {
         MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
         MASTER_CONFIG.INVERT_TYPE = InvertType.InvertMotorOutput;
         MASTER_CONFIG.PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
-                HANGER_MASTER_TALON_PID_P,
-                HANGER_MASTER_TALON_PID_I,
-                HANGER_MASTER_TALON_PID_D,
-                HANGER_MASTER_TALON_PID_F
+                SHOOTER_MASTER_TALON_PID_P,
+                SHOOTER_MASTER_TALON_PID_I,
+                SHOOTER_MASTER_TALON_PID_D,
+                SHOOTER_MASTER_TALON_PID_F
         );
 
         TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
@@ -52,7 +52,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                 MASTER_CONFIG
         );
         followerRightShooterMotor = TalonFXFactory.createFollowerTalonFX(PID_SHOOTER_MOTOR_ID_RIGHT,
-                PID_SHOOTER_MOTOR_ID_LEFT,
+                PID_SHOOTER_MOTOR_ID_RIGHT,
                 FOLLOWER_CONFIG
         );
 
