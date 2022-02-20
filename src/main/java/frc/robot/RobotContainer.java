@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -51,6 +53,7 @@ public class RobotContainer {
     private final XboxController controller = new XboxController(0);
     private static Trajectory currentTrajectory = new Trajectory();
 
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     /**
      *
      * The container for the robot. Contains subsystems, OI devices, and commands.

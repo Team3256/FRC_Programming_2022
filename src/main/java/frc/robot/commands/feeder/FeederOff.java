@@ -6,11 +6,11 @@ package frc.robot.commands.feeder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeederSubsystem;
 
-public class FeederOn extends CommandBase {
+public class FeederOff extends CommandBase {
 
     private final FeederSubsystem feeder;
 
-    public FeederOn(FeederSubsystem subsystem) {
+    public FeederOff(FeederSubsystem subsystem) {
         feeder = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
@@ -19,10 +19,9 @@ public class FeederOn extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        feeder.on();
+        feeder.off();
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;
