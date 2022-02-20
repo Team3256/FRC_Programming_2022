@@ -77,8 +77,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    robotContainer.logStuff();
-    SmartDashboard.putNumber("Limelight Tx", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(100));
     robotContainer.autoOutputToDashboard();
   }
 

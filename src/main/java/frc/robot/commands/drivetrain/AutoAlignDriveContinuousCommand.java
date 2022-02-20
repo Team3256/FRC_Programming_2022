@@ -2,27 +2,27 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
-public class AutoAlignDriveCommand extends PIDCommand {
+public class AutoAlignDriveContinuousCommand extends PIDCommand {
 
+    private static boolean isTuning = false;
 
     /**
-     * Rotates SwerveDrive toward target until at tolerance.
-     * Meant for Auto, Not meant for tuning / teleop.
+     * Continuously rotates swerve drive toward Limelight target. Use tuningSetup() for easy tuning.
      *
      * @param drivetrainSubsystem drivetrain instance
      * @param joystickX Driver's Translation X
      * @param joystickY Driver's Translation Y
      */
-    public AutoAlignDriveCommand (SwerveDrive drivetrainSubsystem,
+    public AutoAlignDriveContinuousCommand (SwerveDrive drivetrainSubsystem,
                                             DoubleSupplier joystickX,
                                             DoubleSupplier joystickY) {
 
@@ -45,19 +45,40 @@ public class AutoAlignDriveCommand extends PIDCommand {
                     drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
                             joystickX.getAsDouble(),
                             joystickY.getAsDouble(),
-                            motorOutput,
+                             motorOutput,
                             drivetrainSubsystem.getGyroscopeRotation()
                     ));
+
+                    //Tuning
+                    if (isTuning) {
+                        SmartDashboard.putNumber("Swerve Turret PID OUT", motorOutput);
+                        SmartDashboard.putNumber("Swerve Turret Limelight TX", Limelight.getTx());
+                    }
                 },
                 drivetrainSubsystem);
         getController().enableContinuousInput(-180,180);
-        getController().setTolerance(TURN_TOLERANCE, TURN_RATE_TOLERANCE);
 
     }
 
+    public static void tuningSetup(){
+
+        isTuning = true;
+
+        SmartDashboard.setDefaultNumber("Swerve Turret kP", 0);
+        SmartDashboard.setDefaultNumber("Swerve Turret kI", 0);
+        SmartDashboard.setDefaultNumber("Swerve Turret kD", 0);
+        SmartDashboard.setDefaultNumber("Swerve Turret Stationary Min", 0);
+
+        SWERVE_TURRET_KP = SmartDashboard.getNumber("Swerve Turret kP", 0);
+        SWERVE_TURRET_KI = SmartDashboard.getNumber("Swerve Turret kI", 0);
+        SWERVE_TURRET_KD = SmartDashboard.getNumber("Swerve Turret kD", 0);
+        SWERVE_TURRET_STATIONARY_MIN = SmartDashboard.getNumber("Swerve Turret Stationary Min", 0);
+    }
+
+
     @Override
     public boolean isFinished() {
-        return getController().atSetpoint();
+        return false;
     }
 
 }
