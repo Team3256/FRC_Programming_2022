@@ -45,7 +45,6 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -84,17 +83,20 @@ public class RobotContainer {
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
 
+        Limelight.init();
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-        new Button(controller::getRightBumper)
-                .whenPressed(new AutoAlignDriveCommand(
+        rightBumper.whenHeld(new AutoAlignDriveCommand(
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
                 ));
-        rightBumper.whenHeld(new IntakeOn(intake));
+    }
+
+    public void logStuff(){
+        SmartDashboard.putNumber("Controller Rot", -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }
 
 
@@ -103,7 +105,7 @@ public class RobotContainer {
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intake);
+        return null;
     }
 
 
