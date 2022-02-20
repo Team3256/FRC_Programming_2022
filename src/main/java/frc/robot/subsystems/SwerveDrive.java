@@ -190,7 +190,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
         SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
-        SmartDashboard.putString("Gyro Errors", getFaultMessage());
+        //SmartDashboard.putString("Gyro Errors", getFaultMessage());
 
     }
 
