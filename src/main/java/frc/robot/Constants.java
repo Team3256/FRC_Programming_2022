@@ -30,9 +30,11 @@ public final class Constants {
         public static final double kD = 0;
         public static final double DEFAULT_TURRET_SPEED = 50;
         public static final double TURRET_TOLERANCE_TX = 0.5;
+        public static final double GEAR_RATIO = 0.25;
     }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
+        public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
@@ -96,8 +98,6 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
 
-
-
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
       
         public static final int[] SPARK_MAX_IDS = new int[]{};
@@ -108,6 +108,8 @@ public final class Constants {
 
         public static final int TURRET_ID = 34;
         public static final int FEEDER_MOTOR_ID = 35;
+
+        public static final int HOOD_MOTOR_ID = 0;
 
         public static final int HANGER_MASTER_TALON_ID = 36;
         public static final int HANGER_FOLLOWER_TALON_ID = 37;
@@ -123,10 +125,12 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 6;
 
         // DIO Channels
-        public static final int HOOD_SERVO_CHANNEL_ID = 0;
+        public static final int HANGER_LIMITSWITCH_CHANNEL = 0;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 1;
 
-        //Magnetic Switch IDs
-        public static final int LIMIT_SWITCH_CHANNEL = 0;
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 2; //change later
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
+        public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
 
     }
 
@@ -220,7 +224,9 @@ public final class Constants {
         public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
 
         // Hood Angle Constants
-        public static final double HOOD_ANGLE_UPPER_LIMIT = (75 * Math.PI / 180.0);
-        public static final double HOOD_ANGLE_LOWER_LIMIT = (45 * Math.PI / 180.0);
+        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
+        // In sensor units
+        public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
+        public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
     }
 }
