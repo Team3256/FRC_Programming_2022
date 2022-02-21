@@ -92,23 +92,20 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-<<<<<<< HEAD
-        new Button(controller::getLeftBumper)
-                .whenPressed(new AutoAlignDriveCommand(
-=======
-        leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
+
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
 
-        rightBumper.whenHeld(
+        leftBumper.whenHeld(
             new SequentialCommandGroup(
                 //Sets Tuning Constants from Smart Dashboard
                 new InstantCommand(AutoAlignDriveContinuousCommand::tuningSetup),
                 new AutoAlignDriveContinuousCommand(
->>>>>>> ed1e2f21ae421f442dab49c146d543679e567313
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                )));
+                ))
+        );
     }
 
     public Command getAutonomousCommand() {
