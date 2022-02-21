@@ -13,10 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
+import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
@@ -45,7 +48,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -83,27 +86,37 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+        Button leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
 
+        Limelight.init();
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+<<<<<<< HEAD
         new Button(controller::getLeftBumper)
                 .whenPressed(new AutoAlignDriveCommand(
+=======
+        leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
+
+
+        rightBumper.whenHeld(
+            new SequentialCommandGroup(
+                //Sets Tuning Constants from Smart Dashboard
+                new InstantCommand(AutoAlignDriveContinuousCommand::tuningSetup),
+                new AutoAlignDriveContinuousCommand(
+>>>>>>> ed1e2f21ae421f442dab49c146d543679e567313
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                ));
-        rightBumper.whenHeld(new IntakeOn(intake));
+                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                )));
     }
-
 
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intake);
+        return null;
     }
 
 
