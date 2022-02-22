@@ -16,26 +16,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
-import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.shooter.CustomDashboardShooterSettings;
-import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.helper.logging.RobotLogger;
-import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 
 import java.awt.Robot;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import frc.robot.subsystems.FlywheelSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

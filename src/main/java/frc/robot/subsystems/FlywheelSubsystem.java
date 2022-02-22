@@ -117,9 +117,9 @@ public class FlywheelSubsystem extends SubsystemBase {
         return limitSwitch.get();
     }
     /**
-     * Disables powers to motors, motors change to neutral/coast mode
+     * Disables powers to flywheel motor, motors change to neutral/coast mode
      */
-    public void stop() {
+    public void stopFlywheel() {
         masterLeftShooterMotor.neutralOutput();
     }
 
@@ -127,7 +127,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * Disables both the shooter hood and motors
      */
     public void stopFullShooter() {
-        stop();
+        stopFlywheel();
         stopHood();
     }
 
