@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.swervedrivespecialties.swervelib.DriveController;
 import com.swervedrivespecialties.swervelib.DriveControllerFactory;
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+import frc.robot.hardware.LazyTalonFX;
 
 public final class Falcon500DriveControllerFactoryBuilder {
     private static final double TICKS_PER_ROTATION = 2048.0;
@@ -58,7 +59,7 @@ public final class Falcon500DriveControllerFactoryBuilder {
                 motorConfiguration.supplyCurrLimit.enable = true;
             }
 
-            TalonFX motor = new TalonFX(driveConfiguration);
+            TalonFX motor = new LazyTalonFX(driveConfiguration);
             CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
 
             if (hasVoltageCompensation()) {
