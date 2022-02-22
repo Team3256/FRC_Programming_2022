@@ -32,6 +32,7 @@ public final class Constants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
     }
     public static class SwerveConstants {
+        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 

@@ -187,12 +187,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     private double deadzoneMotor(double volts) {
-        double deadzone = 0.55; // volts
-
-        if (Math.abs(volts) < deadzone) {
+        if (Math.abs(volts) < DRIVETRAIN_MOTOR_DEADZONE_VOLTS) {
             return 0;
         }
-        return (((MAX_VOLTAGE - deadzone)/MAX_VOLTAGE) * volts) + deadzone;
+        return (((MAX_VOLTAGE - DRIVETRAIN_MOTOR_DEADZONE_VOLTS)/MAX_VOLTAGE) * volts) + DRIVETRAIN_MOTOR_DEADZONE_VOLTS;
     }
 
     public void outputToDashboard() {
