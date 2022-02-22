@@ -5,11 +5,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.Constants;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
+import static frc.robot.Constants.CANdleConstants.AUTO_AIM_PATTERN;
+import static frc.robot.Constants.CANdleConstants.LEDSectionName.AUTO_AIM;
+import static frc.robot.Constants.CANdleConstants.SECTIONS;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class AutoAlignDriveContinuousCommand extends PIDCommand {
@@ -87,10 +91,12 @@ public class AutoAlignDriveContinuousCommand extends PIDCommand {
     @Override
     public void initialize() {
         Limelight.enable();
+        AUTO_AIM_PATTERN.update(true);
     }
 
     @Override
     public void end(boolean interrupted) {
         Limelight.disable();
+        AUTO_AIM_PATTERN.update(false);
     }
 }

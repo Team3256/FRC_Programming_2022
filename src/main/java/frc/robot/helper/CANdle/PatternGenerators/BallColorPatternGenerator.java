@@ -30,18 +30,13 @@ public class BallColorPatternGenerator implements PatternGenerator {
     @Override
     public ArrayList<LEDInstruction> getLEDInstructions(boolean isSpoofed, int ledCount) {
 
-
         ArrayList<LEDInstruction> ledInstructions = new ArrayList<>();
-
 
         // For now, just turn off if spoofed
         if (isSpoofed) {
             ledInstructions.add(new LEDInstruction(Color.off, 0, ledCount));
             return ledInstructions;
         }
-
-
-
 
         //Deal with Odd / Even LED Counts
         int ball1SectionLen = ledCount / 2;

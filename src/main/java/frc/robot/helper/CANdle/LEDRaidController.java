@@ -16,8 +16,6 @@ import static frc.robot.Constants.CANdleConstants.*;
 public class LEDRaidController {
     private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
 
-    boolean updateQueued = false;
-
     CANdle candle;
 
     SwerveDrive swerveDrive;
@@ -27,25 +25,7 @@ public class LEDRaidController {
         this.swerveDrive = swerveDrive;
     }
 
-    /**
-     * Queues an update
-     */
-    public void queueUpdate(){
-        updateQueued = true;
-    }
-
-    /**
-     * Checks if there's an update queued, if there is, run the update.
-     * Should be run every cycle
-     */
-    public void runUpdates(){
-        if (updateQueued) {
-            update();
-            updateQueued = false;
-        }
-    }
-
-    private void update() {
+    public void update() {
         for (LEDRange range: RANGES){
             for (LEDSectionName ledSectionName : SECTIONS.keySet()){
 

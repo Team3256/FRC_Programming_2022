@@ -293,10 +293,13 @@ public final class Constants {
         };
     }
     public static class PatternGeneratorConstants{
-        public static final Color RED_BALL_COLOR = Color.fromRGB(1,0,0);
-        public static final Color BLUE_BALL_COLOR = Color.fromRGB(0,0,1);
+        public static final Color RED_BALL_COLOR = Color.fromRGB(255,0,0);
+        public static final Color BLUE_BALL_COLOR = Color.fromRGB(0,0,255);
+
+        public static final Color AUTO_AIM_COLOR = Color.fromRGB(0, 255, 0);
     }
 
     public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
 
 }
