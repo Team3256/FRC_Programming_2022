@@ -53,7 +53,6 @@ public class RobotContainer {
     private final XboxController controller = new XboxController(0);
     private static Trajectory currentTrajectory = new Trajectory();
 
-    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     /**
      *
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -148,10 +147,7 @@ public class RobotContainer {
         double deadband = 0.05;
         value = deadband(value, deadband);
 
-        SmartDashboard.setDefaultNumber("exponential value", 3);
-
-        double exp = SmartDashboard.getNumber("exponential value", 3);
-        value = Math.copySign(Math.pow(value, exp), value);
+        value = Math.copySign(Math.pow(value, 3), value);
 
         return value;
     }
