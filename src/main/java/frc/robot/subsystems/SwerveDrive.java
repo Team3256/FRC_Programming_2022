@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.Pigeon2_Faults;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -44,7 +43,6 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(-DRIVETRAIN_TRACK_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(DRIVETRAIN_PIGEON_ID);
-    private static Pigeon2_Faults pigeonFaults = new Pigeon2_Faults();
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
@@ -119,23 +117,6 @@ public class SwerveDrive extends SubsystemBase {
     
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
-    }
-
-    public String getFaultMessage() {
-        if(!pigeonFaults.hasAnyFault()) return "No faults";
-        String retval = "";
-        retval += pigeonFaults.APIError ? "APIError, " : "";
-        retval += pigeonFaults.AccelFault ? "AccelFault, " : "";
-        retval += pigeonFaults.BootIntoMotion ? "BootIntoMotion, " : "";
-        retval += pigeonFaults.GyroFault ? "GyroFault, " : "";
-        retval += pigeonFaults.HardwareFault ? "HardwareFault, " : "";
-        retval += pigeonFaults.MagnetometerFault ? "MagnetometerFault, " : "";
-        retval += pigeonFaults.ResetDuringEn ? "ResetDuringEn, " : "";
-        retval += pigeonFaults.SaturatedAccel ? "SaturatedAccel, " : "";
-        retval += pigeonFaults.SaturatedMag ? "SaturatedMag, " : "";
-        retval += pigeonFaults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
-        logger.warning("Pigeon Error: "+ retval);
-        return retval;
     }
 
     public SwerveDriveKinematics getKinematics() {
@@ -214,7 +195,6 @@ public class SwerveDrive extends SubsystemBase {
             SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
             SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
-            //SmartDashboard.putString("Gyro Errors", getFaultMessage());
 
         }
     }
@@ -241,7 +221,6 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         Rotation2d gyroAngle = getGyroscopeRotation();
-        pigeon.getFaults(pigeonFaults);
         // Update the pose
         SwerveModuleState frontLeftState = new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle()));
         SwerveModuleState frontRightState = new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle()));
