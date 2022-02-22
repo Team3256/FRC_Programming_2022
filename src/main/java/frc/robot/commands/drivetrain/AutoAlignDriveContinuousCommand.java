@@ -84,4 +84,13 @@ public class AutoAlignDriveContinuousCommand extends PIDCommand {
         return false;
     }
 
+    @Override
+    public void initialize() {
+        Limelight.enable();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        Limelight.disable();
+    }
 }

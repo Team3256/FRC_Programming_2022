@@ -14,6 +14,16 @@ import static frc.robot.Constants.SwerveConstants.*;
 public class AutoAlignDriveCommand extends PIDCommand {
 
 
+    @Override
+    public void initialize() {
+        Limelight.enable();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        Limelight.disable();
+    }
+
     /**
      * Rotates SwerveDrive toward target until at tolerance.
      * Meant for Auto, Not meant for tuning / teleop.
