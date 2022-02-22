@@ -4,14 +4,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonConfiguration;
+import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -21,7 +24,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-    private final Servo hoodAngleServo;
+    private final TalonFX hoodAngleMotor;
+    private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
 
@@ -32,19 +36,29 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
 
     public FlywheelSubsystem() {
+        TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
+        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
+        MASTER_CONFIG.INVERT_TYPE = InvertType.InvertMotorOutput;
+        MASTER_CONFIG.PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
+                SHOOTER_MASTER_TALON_PID_P,
+                SHOOTER_MASTER_TALON_PID_I,
+                SHOOTER_MASTER_TALON_PID_D,
+                SHOOTER_MASTER_TALON_PID_F
+        );
 
-        masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
-        followerRightShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_RIGHT);
+        TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
-        masterLeftShooterMotor.setInverted(InvertType.InvertMotorOutput);
-        followerRightShooterMotor.setInverted(InvertType.None);
+        masterLeftShooterMotor = TalonFXFactory.createTalonFX(
+                PID_SHOOTER_MOTOR_ID_LEFT,
+                MASTER_CONFIG
+        );
+        followerRightShooterMotor = TalonFXFactory.createFollowerTalonFX(PID_SHOOTER_MOTOR_ID_RIGHT,
+                PID_SHOOTER_MOTOR_ID_RIGHT,
+                FOLLOWER_CONFIG
+        );
 
-        followerRightShooterMotor.follow(masterLeftShooterMotor);
-
-        followerRightShooterMotor.setNeutralMode(NeutralMode.Coast);
-        masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
-
-        hoodAngleServo = new Servo(HOOD_SERVO_CHANNEL_ID);
+        hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
+        limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
 
         logger.info("Flywheel Initialized");
       
@@ -84,16 +98,49 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * @param hoodAngle Radians
-     * Hood angle set from value 0.0 to 1.0
+     * @param hoodAngle motor units
+     * motor moves to hoodAngle position
      */
-    public void setHoodAngle(double hoodAngle) { hoodAngleServo.setAngle(hoodAngle); }
+    public void setHoodAngle(double hoodAngle) {
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle);
+    }
+    /**
+     * stops the hood motor
+     */
+    public void stopHood(){
+        hoodAngleMotor.set(ControlMode.PercentOutput, 0);
+    }
+    /**
+     * reverses the hood for zeroing the hood motor
+     */
+    public void hoodSlowReverse(){
+        hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
+    }
+    /**
+     * zeros the hood motor sensor
+     */
+    public void zeroHoodMotor(){
+        hoodAngleMotor.setSelectedSensorPosition(0);
+    }
+    /**
+     * checks if limit switch is pressed
+     */
+    public boolean isHoodLimitSwitchPressed(){
+        return limitSwitch.get();
+    }
+    /**
+     * Disables powers to flywheel motor, motors change to neutral/coast mode
+     */
+    public void stopFlywheel() {
+        masterLeftShooterMotor.neutralOutput();
+    }
 
     /**
-     * Disables powers to motors, motors change to neutral/coast mode
+     * Disables both the shooter hood and motors
      */
-    public void stop() {
-        masterLeftShooterMotor.neutralOutput();
+    public void stopFullShooter() {
+        stopFlywheel();
+        stopHood();
     }
 
     /*

@@ -108,6 +108,9 @@ public class RobotLogger {
         }
     }
     static public void closeFiles(){
+        if (globalLogger == null)
+            setup();
+
         for (Handler handler : globalLogger.getHandlers()){
             handler.close();
         }

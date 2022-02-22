@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -20,23 +22,15 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
-import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.subsystems.HangerSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.helper.logging.RobotLogger;
-import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import frc.robot.subsystems.FlywheelSubsystem;
+
+import java.awt.Robot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -92,8 +86,7 @@ public class RobotContainer {
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
-
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+      
         leftBumper.whenHeld(
             new SequentialCommandGroup(
                 //Sets Tuning Constants from Smart Dashboard
@@ -104,8 +97,11 @@ public class RobotContainer {
                         () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
                 ))
         );
-    }
 
+        rightBumper.whenHeld(new IntakeOn(intake));
+
+    }
+  
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
@@ -168,12 +164,7 @@ public class RobotContainer {
         if (value == 0) {
             return 0;
         }
-
-        SmartDashboard.setDefaultNumber("exponential value", 3);
-
-        double exp = SmartDashboard.getNumber("exponential value", 3);
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
-//        value = Math.copySign(Math.pow(value, exp), value);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
 
         return value;
     }
