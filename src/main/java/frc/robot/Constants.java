@@ -23,9 +23,9 @@ public final class Constants {
         public static final int POLYNOMIAL_DEGREE = 5;
     }
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 30;
+        public static final double MOUNTING_ANGLE_DEG = 43;
     }
     public static class TurretConstants {
         public static final double kP = 0;
@@ -40,6 +40,7 @@ public final class Constants {
         public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
+        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
@@ -57,6 +58,22 @@ public final class Constants {
         private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
+        //Swerve Turret
+
+        public static final boolean SWERVE_TURRET_TUNING = false;
+
+
+        //Non-final Allow for Changing via Smart Dashboard
+        public static double SWERVE_TURRET_KP = 0.1;
+        public static double SWERVE_TURRET_KI = 0;
+        public static double SWERVE_TURRET_KD = 0;
+        public static boolean IS_TUNING_SWERVE_TURRET = true;
+
+        public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
+
+        public static final double TURN_TOLERANCE = 0;
+        public static final double TURN_RATE_TOLERANCE = 0;
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;

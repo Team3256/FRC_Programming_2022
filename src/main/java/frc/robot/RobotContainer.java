@@ -4,27 +4,29 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
+import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.Constants.SwerveConstants;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 
 import java.awt.Robot;
 
@@ -38,7 +40,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -51,6 +53,8 @@ public class RobotContainer {
      */
     public RobotContainer() {
         CommandScheduler.getInstance().schedule(new BrownoutWatcher());
+
+        Limelight.init();
 
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
@@ -76,21 +80,33 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+        Button leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
 
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
+      
+        leftBumper.whenHeld(
+            new SequentialCommandGroup(
+                //Sets Tuning Constants from Smart Dashboard
+                new InstantCommand(AutoAlignDriveContinuousCommand::tuningSetup),
+                new AutoAlignDriveContinuousCommand(
+                        drivetrainSubsystem,
+                        () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                ))
+        );
 
-        rightBumper.whenHeld(new IntakeOn(intake));
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
     }
-
+  
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intake);
+        return null;
     }
 
 
@@ -113,7 +129,13 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void autoOutputToDashboard() {
+    public void robotOutputToDashboard() {
+        SmartDashboard.putNumber("Modified Left Y", modifyAxis(controller.getLeftY()));
+        SmartDashboard.putNumber("Unmodified Left Y", (controller.getLeftY()));
+        SmartDashboard.putNumber("Modified Left X", modifyAxis(controller.getLeftX()));
+        SmartDashboard.putNumber("Unmodified Left X", (controller.getLeftX()));
+        SmartDashboard.putNumber("Modified Right X", modifyAxis(controller.getRightX()));
+        SmartDashboard.putNumber("Unmodified Right X", (controller.getRightX()));
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }
@@ -135,11 +157,13 @@ public class RobotContainer {
     }
 
     private static double modifyAxis(double value) {
-
-        double deadband = 0.05;
+        double deadband = 0.1;
         value = deadband(value, deadband);
 
-        value = Math.copySign(Math.pow(value, 3), value);
+        if (value == 0) {
+            return 0;
+        }
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
 
         return value;
     }
