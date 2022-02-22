@@ -48,7 +48,6 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -86,18 +85,14 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
-        Button leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
 
         // Back button zeros the gyroscope
         new Button(controller::getAButton)
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        new Button(controller::getYButton).whenPressed(flywheelSubsystem::stopFullShooter);
-
         rightBumper.whenHeld(new IntakeOn(intake));
-        leftBumper.whenHeld(new CustomDashboardShooterSettings(new FlywheelSubsystem()));
-    }
 
+    }
 
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
