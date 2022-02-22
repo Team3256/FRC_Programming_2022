@@ -17,9 +17,9 @@ public final class Constants {
         public static final int POLYNOMIAL_DEGREE = 5;
     }
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 30;
+        public static final double MOUNTING_ANGLE_DEG = 43;
     }
     public static class TurretConstants {
         public static final double kP = 0;
@@ -56,9 +56,10 @@ public final class Constants {
 
 
         //Non-final Allow for Changing via Smart Dashboard
-        public static double SWERVE_TURRET_KP = 0.08;
+        public static double SWERVE_TURRET_KP = 0.1;
         public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 31.0/32.0;
+        public static double SWERVE_TURRET_KD = 0;
+        public static boolean IS_TUNING_SWERVE_TURRET = true;
 
         public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
 

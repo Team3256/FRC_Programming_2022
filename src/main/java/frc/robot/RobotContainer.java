@@ -94,8 +94,6 @@ public class RobotContainer {
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
 
         rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
-
-
         leftBumper.whenHeld(
             new SequentialCommandGroup(
                 //Sets Tuning Constants from Smart Dashboard
@@ -136,7 +134,13 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void autoOutputToDashboard() {
+    public void robotOutputToDashboard() {
+        SmartDashboard.putNumber("Modified Left Y", modifyAxis(controller.getLeftY()));
+        SmartDashboard.putNumber("Unmodified Left Y", (controller.getLeftY()));
+        SmartDashboard.putNumber("Modified Left X", modifyAxis(controller.getLeftX()));
+        SmartDashboard.putNumber("Unmodified Left X", (controller.getLeftX()));
+        SmartDashboard.putNumber("Modified Right X", modifyAxis(controller.getRightX()));
+        SmartDashboard.putNumber("Unmodified Right X", (controller.getRightX()));
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }
@@ -158,14 +162,18 @@ public class RobotContainer {
     }
 
     private static double modifyAxis(double value) {
-
-        double deadband = 0.05;
+        double deadband = 0.1;
         value = deadband(value, deadband);
+
+        if (value == 0) {
+            return 0;
+        }
 
         SmartDashboard.setDefaultNumber("exponential value", 3);
 
         double exp = SmartDashboard.getNumber("exponential value", 3);
-        value = Math.copySign(Math.pow(value, exp), value);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
+//        value = Math.copySign(Math.pow(value, exp), value);
 
         return value;
     }

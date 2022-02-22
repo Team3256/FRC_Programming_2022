@@ -1,6 +1,7 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -12,9 +13,6 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class AutoAlignDriveContinuousCommand extends PIDCommand {
-
-    private static boolean isTuning = false;
-
     /**
      * Continuously rotates swerve drive toward Limelight target. Use tuningSetup() for easy tuning.
      *
@@ -50,29 +48,34 @@ public class AutoAlignDriveContinuousCommand extends PIDCommand {
                     ));
 
                     //Tuning
-                    if (isTuning) {
+                    if (IS_TUNING_SWERVE_TURRET) {
+                        double current_distance = Limelight.getTunedDistanceToTarget();
+                        double current_velocity = drivetrainSubsystem.getVelocity().getTranslation().getNorm();
+                        SmartDashboard.putNumber("Swerve Velocity", current_velocity);
+                        SmartDashboard.putNumber("Distance to target", current_distance);
                         SmartDashboard.putNumber("Swerve Turret PID OUT", motorOutput);
                         SmartDashboard.putNumber("Swerve Turret Limelight TX", Limelight.getTx());
                     }
                 },
                 drivetrainSubsystem);
         getController().enableContinuousInput(-180,180);
+        if (IS_TUNING_SWERVE_TURRET) {
+            SmartDashboard.putData("Swerve Turret PID", getController());
+        }
 
     }
 
     public static void tuningSetup(){
-
-        isTuning = true;
-
-        SmartDashboard.setDefaultNumber("Swerve Turret kP", 0);
-        SmartDashboard.setDefaultNumber("Swerve Turret kI", 0);
-        SmartDashboard.setDefaultNumber("Swerve Turret kD", 0);
-        SmartDashboard.setDefaultNumber("Swerve Turret Stationary Min", 0);
-
-        SWERVE_TURRET_KP = SmartDashboard.getNumber("Swerve Turret kP", 0);
-        SWERVE_TURRET_KI = SmartDashboard.getNumber("Swerve Turret kI", 0);
-        SWERVE_TURRET_KD = SmartDashboard.getNumber("Swerve Turret kD", 0);
-        SWERVE_TURRET_STATIONARY_MIN = SmartDashboard.getNumber("Swerve Turret Stationary Min", 0);
+        // not sure if we need this
+//        SmartDashboard.setDefaultNumber("Swerve Turret kP", 0);
+//        SmartDashboard.setDefaultNumber("Swerve Turret kI", 0);
+//        SmartDashboard.setDefaultNumber("Swerve Turret kD", 0);
+//        SmartDashboard.setDefaultNumber("Swerve Turret Stationary Min", 0);
+//
+//        SWERVE_TURRET_KP = SmartDashboard.getNumber("Swerve Turret kP", 0);
+//        SWERVE_TURRET_KI = SmartDashboard.getNumber("Swerve Turret kI", 0);
+//        SWERVE_TURRET_KD = SmartDashboard.getNumber("Swerve Turret kD", 0);
+//        SWERVE_TURRET_STATIONARY_MIN = SmartDashboard.getNumber("Swerve Turret Stationary Min", 0);
     }
 
 
