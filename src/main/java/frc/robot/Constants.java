@@ -14,7 +14,7 @@ import java.util.logging.Level;
 
 public final class Constants {
 
-    private static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;

@@ -17,7 +17,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import org.apache.commons.math3.analysis.function.Constant;
 
+import java.util.ConcurrentModificationException;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.SwerveConstants.*;
@@ -153,17 +157,18 @@ public class SwerveDrive extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_VELOCITY_METERS_PER_SECOND);
 
-        SmartDashboard.putNumber("Desired Front Left Speed", desiredStates[0].speedMetersPerSecond);
-        SmartDashboard.putNumber("Desired Front Right Speed", desiredStates[1].speedMetersPerSecond);
-        SmartDashboard.putNumber("Desired Back Left Speed", desiredStates[2].speedMetersPerSecond);
-        SmartDashboard.putNumber("Desired Back Right Speed", desiredStates[3].speedMetersPerSecond);
+        if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Desired Front Left Speed", desiredStates[0].speedMetersPerSecond);
+            SmartDashboard.putNumber("Desired Front Right Speed", desiredStates[1].speedMetersPerSecond);
+            SmartDashboard.putNumber("Desired Back Left Speed", desiredStates[2].speedMetersPerSecond);
+            SmartDashboard.putNumber("Desired Back Right Speed", desiredStates[3].speedMetersPerSecond);
 
-        SmartDashboard.putNumber("Desired Front Left Angle", desiredStates[0].angle.getDegrees());
-        SmartDashboard.putNumber("Desired Front Right Angle", desiredStates[1].angle.getDegrees());
-        SmartDashboard.putNumber("Desired Back Left Angle", desiredStates[2].angle.getDegrees());
-        SmartDashboard.putNumber("Desired Back Right Angle", desiredStates[3].angle.getDegrees());
+            SmartDashboard.putNumber("Desired Front Left Angle", desiredStates[0].angle.getDegrees());
+            SmartDashboard.putNumber("Desired Front Right Angle", desiredStates[1].angle.getDegrees());
+            SmartDashboard.putNumber("Desired Back Left Angle", desiredStates[2].angle.getDegrees());
+            SmartDashboard.putNumber("Desired Back Right Angle", desiredStates[3].angle.getDegrees());
 
-
+        }
 
         SwerveModuleState frontLeftOptimized = optimizeModuleState(desiredStates[0], frontLeftModule.getSteerAngle());
         SwerveModuleState frontRightOptimized = optimizeModuleState(desiredStates[1], frontRightModule.getSteerAngle());
@@ -178,20 +183,22 @@ public class SwerveDrive extends SubsystemBase {
 
     public void outputToDashboard() {
 
-        SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
-        SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
-        SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
-        SmartDashboard.putNumber("Back Right Speed", backRightModule.getDriveVelocity());
+        if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
+            SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
+            SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
+            SmartDashboard.putNumber("Back Right Speed", backRightModule.getDriveVelocity());
 
-        SmartDashboard.putNumber("Front Left Angle", frontLeftModule.getSteerAngle());
-        SmartDashboard.putNumber("Front Right Angle", frontRightModule.getSteerAngle());
-        SmartDashboard.putNumber("Back Left Angle", backLeftModule.getSteerAngle());
-        SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
-        SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
+            SmartDashboard.putNumber("Front Left Angle", frontLeftModule.getSteerAngle());
+            SmartDashboard.putNumber("Front Right Angle", frontRightModule.getSteerAngle());
+            SmartDashboard.putNumber("Back Left Angle", backLeftModule.getSteerAngle());
+            SmartDashboard.putNumber("Back Right Angle", backRightModule.getSteerAngle());
+            SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
-        SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
-        //SmartDashboard.putString("Gyro Errors", getFaultMessage());
+            SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
+            //SmartDashboard.putString("Gyro Errors", getFaultMessage());
 
+        }
     }
 
     public SwerveModuleState optimizeModuleState(SwerveModuleState state, double heading) {
