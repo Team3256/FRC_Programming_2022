@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonFXFactory;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
@@ -34,7 +35,8 @@ public class FeederSubsystem extends SubsystemBase {
     private double currentBallCount;
 
     public FeederSubsystem() {
-        feederMotor = new TalonFX(IDConstants.FEEDER_MOTOR_ID);
+        feederMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID);
+      
         feederStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         feederStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);
         feederEndIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_END_CHANNEL);

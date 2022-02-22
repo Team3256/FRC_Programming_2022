@@ -4,12 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.hardware.TalonConfiguration;
 
 import java.util.logging.Level;
 
 public final class Constants {
+
+    public static final boolean DEBUG = false;
+
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
@@ -177,7 +183,17 @@ public final class Constants {
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
-        public static final boolean INVERT_MOTOR = false;
+        public static final InvertType INVERT_TYPE = InvertType.None;
+
+        public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
+                HANGER_MASTER_TALON_PID_P,
+                HANGER_MASTER_TALON_PID_I,
+                HANGER_MASTER_TALON_PID_D,
+                HANGER_MASTER_TALON_PID_F
+        );
+
+        public static TalonConfiguration MASTER_CONFIG = new TalonConfiguration(PIDF_CONSTANTS, INVERT_TYPE, NeutralMode.Brake);
+        public static TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
@@ -206,6 +222,12 @@ public final class Constants {
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
+
+        //PID
+        public static final double SHOOTER_MASTER_TALON_PID_P = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_I = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_D = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
         public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
         public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points

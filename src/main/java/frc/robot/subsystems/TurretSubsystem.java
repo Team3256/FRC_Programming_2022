@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.Limelight;
 
 import static frc.robot.Constants.IDConstants;
@@ -14,7 +15,7 @@ import static frc.robot.Constants.TurretConstants;
 import static frc.robot.Constants.TurretConstants.GEAR_RATIO;
 
 public class TurretSubsystem extends PIDSubsystem {
-    private final TalonFX turretMotor = new TalonFX(IDConstants.TURRET_ID);
+    private final TalonFX turretMotor;
 
     /**
      * PID coefficients (kp - proportional ki - integral kd - derivative)
@@ -25,6 +26,9 @@ public class TurretSubsystem extends PIDSubsystem {
         getController().setTolerance(TurretConstants.TURRET_TOLERANCE_TX);
         this.setSetpoint(0);
         this.disable();
+      
+        turretMotor = TalonFXFactory.createTalonFX(IDConstants.TURRET_ID);
+      
         turretMotor.config_kF(0, 0);
         turretMotor.config_kP(0, 0.05);
         turretMotor.config_kI(0, 0.0);
