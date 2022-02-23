@@ -35,6 +35,7 @@ public class LimelightAutocorrectCommand extends CommandBase {
         counter = 0;
         data = new WeightedObservedPoints();
         curDistance = initDistance;
+        Limelight.enable();
     }
 
     @Override
@@ -51,6 +52,7 @@ public class LimelightAutocorrectCommand extends CommandBase {
         Polynomial result = new Polynomial(fitter.fit(data.toList()));
         FileUtil.writeObjectToFile(POLYNOMIAL_FILENAME, result);
         Limelight.readCorrectorFromFile();
+        Limelight.disable();
     }
 
     @Override

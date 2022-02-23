@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -10,12 +8,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.hardware.TalonFXFactory;
 import java.util.logging.Logger;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 public class HangerSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(HangerSubsystem.class.getCanonicalName());
 
@@ -27,26 +26,17 @@ public class HangerSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightAirBrake;
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
-    private final I2C.Port i2cPort;
-    private final ColorSensorV3 m_colorSensor;
-
-
     public HangerSubsystem() {
-        masterTalonMotor = new TalonFX(HANGER_MASTER_TALON_ID);
-        followerTalonMotor = new TalonFX(HANGER_FOLLOWER_TALON_ID);
+        masterTalonMotor = TalonFXFactory.createTalonFX(
+                HANGER_MASTER_TALON_ID,
+                MASTER_CONFIG
+        );
 
-        masterTalonMotor.config_kP(0, HANGER_MASTER_TALON_PID_P); //TODO: change slotIdx if required
-        masterTalonMotor.config_kI(0, HANGER_MASTER_TALON_PID_I); //TODO: change slotIdx if required
-        masterTalonMotor.config_kD(0, HANGER_MASTER_TALON_PID_D); //TODO: change slotIdx if required
-        masterTalonMotor.config_kF(0, HANGER_MASTER_TALON_PID_F); //TODO: change slotIdx if required
-
-        masterTalonMotor.setInverted(INVERT_MOTOR);
-
-        followerTalonMotor.follow(masterTalonMotor);
-        followerTalonMotor.setInverted(InvertType.OpposeMaster);
-
-        masterTalonMotor.setNeutralMode(NeutralMode.Brake);
-        followerTalonMotor.setNeutralMode(NeutralMode.Brake);
+        followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
+                HANGER_FOLLOWER_TALON_ID,
+                HANGER_MASTER_TALON_ID,
+                FOLLOWER_CONFIG
+        );
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
@@ -54,8 +44,6 @@ public class HangerSubsystem extends SubsystemBase {
         rightAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
         engageAirBrake();
 
-        i2cPort = I2C.Port.kOnboard;
-        m_colorSensor = new ColorSensorV3(i2cPort);
         logger.info("Hanger Initialized");
     }
     public void engageAirBrake() {
@@ -104,10 +92,7 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns if the bottom limit switch is triggered
      */
     public boolean hasReachedBottom() {
-        if (bottomLimitSwitch.get()) {
-            return true;
-        }
-        return false;
+        return bottomLimitSwitch.get();
     }
 
     /**
