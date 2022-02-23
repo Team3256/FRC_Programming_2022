@@ -37,6 +37,9 @@ public class AutoChooser {
         Command to2ndBall = trajectoryFactory.createCommand("paths/3BallAuto.wpilib.json", to2ndBallThetaSupplier, new Pose2d(8.963, 6.702, Rotation2d.fromDegrees(90)));
         autoChooser.addOption("2 Ball Auto", to2ndBall);
 
+        Command curl = trajectoryFactory.createPathPlannerCommand("PathPlannerCurl", new Pose2d(1, 3, new Rotation2d()));
+        autoChooser.addOption("PathPlanner Curl", curl);
+
         return autoChooser;
     }
 

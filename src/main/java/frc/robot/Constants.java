@@ -78,8 +78,8 @@ public final class Constants {
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 2;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 2;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 8;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 5;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
@@ -92,7 +92,7 @@ public final class Constants {
 
         public static double TRANSLATION_FF = 0.3;
 
-        public static double P_THETA_CONTROLLER = 1.8;
+        public static double P_THETA_CONTROLLER = 10;
         public static double I_THETA_CONTROLLER = 0.01;
         public static double D_THETA_CONTROLLER = 0;
     }
