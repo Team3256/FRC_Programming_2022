@@ -22,6 +22,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
+import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
