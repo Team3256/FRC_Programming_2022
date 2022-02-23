@@ -1,8 +1,7 @@
-package frc.robot.helper;
+package frc.robot.hardware;
 
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.hal.I2CJNI;
-import edu.wpi.first.hal.simulation.I2CDataJNI;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
