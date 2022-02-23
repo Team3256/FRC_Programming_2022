@@ -4,8 +4,8 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.hal.I2CJNI;
 import edu.wpi.first.hal.simulation.I2CDataJNI;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 
-import java.awt.*;
 
 import static frc.robot.Constants.IDConstants.*;
 
@@ -32,28 +32,24 @@ public class MuxedColorSensor {
         rightAlignColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
-    /**
-     * Use ColorSensor Immediately after getting, may not be valid for long
-     */
-    public ColorSensorV3 getBallColorSensor() {
+    public Color getBallSensorColor() {
         changeMuxPort(BALL_COLOR_SENSOR_MUX_PORT);
-        return ballColorSensor;
+        return ballColorSensor.getColor();
     }
 
-    /**
-     * Use ColorSensor Immediately after getting, may not be valid for long
-     */
-    public ColorSensorV3 getLeftAlignColorSensor() {
+    public int getBallSensorProximity() {
+        changeMuxPort(BALL_COLOR_SENSOR_MUX_PORT);
+        return ballColorSensor.getProximity();
+    }
+
+    public Color getLeftAlignSensorColor() {
         changeMuxPort(LEFT_ALIGN_COLOR_SENSOR_MUX_PORT);
-        return leftAlignColorSensor;
+        return leftAlignColorSensor.getColor();
     }
 
-    /**
-     * Use ColorSensor Immediately after getting, may not be valid for long
-     */
-    public ColorSensorV3 getRightAlignColorSensor(){
+    public Color getRightAlignSensorColor(){
         changeMuxPort(RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT);
-        return rightAlignColorSensor;
+        return rightAlignColorSensor.getColor();
     }
 
     /**
