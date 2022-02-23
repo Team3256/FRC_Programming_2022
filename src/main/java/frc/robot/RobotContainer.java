@@ -87,15 +87,13 @@ public class RobotContainer {
                 .whenPressed(drivetrainSubsystem::zeroGyroscope);
       
         leftBumper.whenHeld(
-            new SequentialCommandGroup(
-                //Sets Tuning Constants from Smart Dashboard
-                new InstantCommand(AutoAlignDriveContinuousCommand::tuningSetup),
                 new AutoAlignDriveContinuousCommand(
                         drivetrainSubsystem,
                         () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ))
-        );
+                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(controller.getRightY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                ));
 
         rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 

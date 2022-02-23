@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.SwerveDrive;
@@ -12,81 +13,96 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
-public class AutoAlignDriveContinuousCommand extends PIDCommand {
+public class AutoAlignDriveContinuousCommand extends CommandBase {
+
+
+    PIDController autoAlignPIDController;
+    PIDController operatorNudgeAbsoluteAnglePIDController;
+
+    DoubleSupplier driverJoystickX;
+    DoubleSupplier driverJoystickY;
+    DoubleSupplier operatorJoystickX;
+    DoubleSupplier operatorJoystickY;
+
+    SwerveDrive swerveDrive;
+
+
     /**
      * Continuously rotates swerve drive toward Limelight target. Use tuningSetup() for easy tuning.
      *
      * @param drivetrainSubsystem drivetrain instance
-     * @param joystickX Driver's Translation X
-     * @param joystickY Driver's Translation Y
+     * @param driverJoystickX Driver's Translation X
+     * @param driverJoystickY Driver's Translation Y
      */
     public AutoAlignDriveContinuousCommand (SwerveDrive drivetrainSubsystem,
-                                            DoubleSupplier joystickX,
-                                            DoubleSupplier joystickY) {
+                                            DoubleSupplier driverJoystickX,
+                                            DoubleSupplier driverJoystickY,
+                                            DoubleSupplier operatorJoystickX,
+                                            DoubleSupplier operatorJoystickY) {
 
-        super(new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD),
-                Limelight::getTx, //Measurement Source
-                0, //Set point
-                pidOutput -> { //Using output
+        this.swerveDrive = drivetrainSubsystem;
 
-                    //Save some Computation from Sqrt
-                    double speedSquared = Math.pow(joystickX.getAsDouble(),2) + Math.pow(joystickY.getAsDouble(),2);
+        this.driverJoystickX = driverJoystickX;
+        this.driverJoystickY = driverJoystickY;
 
-                    // Use translation from Driver, Rotation is from PID
-                    // Ternary Explanation: Since while moving we can easily rotate, we don't mess with the PID
-                    // but while NOT moving, the motors need more power in order to actually move, so
-                    // we add a Constant, (Using copysign to either add or subtract depending on sign)
-                    double motorOutput = speedSquared > Math.pow(0.1,2) ?
-                            pidOutput :
-                            pidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, pidOutput);
+        this.operatorJoystickX = operatorJoystickX;
 
-                    drivetrainSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-                            joystickX.getAsDouble(),
-                            joystickY.getAsDouble(),
-                             motorOutput,
-                            drivetrainSubsystem.getGyroscopeRotation()
-                    ));
-
-                    //Tuning
-                    if (IS_TUNING_SWERVE_TURRET) {
-                        double current_distance = Limelight.getTunedDistanceToTarget();
-                        double current_velocity = drivetrainSubsystem.getVelocity().getTranslation().getNorm();
-                        SmartDashboard.putNumber("Swerve Velocity", current_velocity);
-                        SmartDashboard.putNumber("Distance to target", current_distance);
-                        SmartDashboard.putNumber("Swerve Turret PID OUT", motorOutput);
-                        SmartDashboard.putNumber("Swerve Turret Limelight TX", Limelight.getTx());
-                    }
-                },
-                drivetrainSubsystem);
-        getController().enableContinuousInput(-180,180);
-        if (IS_TUNING_SWERVE_TURRET) {
-            SmartDashboard.putData("Swerve Turret PID", getController());
-        }
-
+        autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
+        autoAlignPIDController.setSetpoint(0);
+        autoAlignPIDController.enableContinuousInput(-180,180);
     }
 
-    public static void tuningSetup(){
-        // not sure if we need this
-//        SmartDashboard.setDefaultNumber("Swerve Turret kP", 0);
-//        SmartDashboard.setDefaultNumber("Swerve Turret kI", 0);
-//        SmartDashboard.setDefaultNumber("Swerve Turret kD", 0);
-//        SmartDashboard.setDefaultNumber("Swerve Turret Stationary Min", 0);
-//
-//        SWERVE_TURRET_KP = SmartDashboard.getNumber("Swerve Turret kP", 0);
-//        SWERVE_TURRET_KI = SmartDashboard.getNumber("Swerve Turret kI", 0);
-//        SWERVE_TURRET_KD = SmartDashboard.getNumber("Swerve Turret kD", 0);
-//        SWERVE_TURRET_STATIONARY_MIN = SmartDashboard.getNumber("Swerve Turret Stationary Min", 0);
+    @Override
+    public void initialize() {
+        Limelight.enable();
+    }
+
+    @Override
+    public void execute() {
+
+        double autoAlignPidOutput = autoAlignPIDController.calculate(Limelight.getTx());
+        operatorNudgeAbsoluteAnglePIDController.setSetpoint(
+                Math.toDegrees(Math.atan2(-operatorJoystickY.getAsDouble(),-operatorJoystickX.getAsDouble())));
+        double robotHeading = swerveDrive.getGyroscopeRotation().getDegrees() + 90;
+
+
+        double nudgePidOutput = 0;
+
+        //Only move if a lot
+        if (Math.abs(operatorJoystickX.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE ||
+                Math.abs(operatorJoystickY.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE) {
+            nudgePidOutput = operatorNudgeAbsoluteAnglePIDController.calculate(
+                    Math.abs(robotHeading % 360) - 180 );
+        }
+        SmartDashboard.putNumber("Heading Current", Math.abs(robotHeading % 360) - 180 );
+
+        //Save some Computation from Sqrt
+        double speedSquared = Math.pow(driverJoystickX.getAsDouble(),2) + Math.pow(driverJoystickY.getAsDouble(),2);
+
+        // Use translation from Driver, Rotation is from PID
+        // Ternary Explanation: Since while moving we can easily rotate, we don't mess with the PID
+        // but while NOT moving, the motors need more power in order to actually move, so
+        // we add a Constant, (Using copysign to either add or subtract depending on sign)
+        double autoAlignPIDRotationalOutput = 0;
+        if (Math.abs(operatorJoystickX.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE ||
+                Math.abs(operatorJoystickY.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE)
+            autoAlignPIDRotationalOutput = speedSquared > Math.pow(0.1,2) ?
+                    autoAlignPidOutput :
+                    autoAlignPidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, autoAlignPidOutput);
+
+        swerveDrive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+                driverJoystickX.getAsDouble(),
+                driverJoystickY.getAsDouble(),
+                autoAlignPIDRotationalOutput +
+                        (SWERVE_TURRET_OPERATOR_INFLUENCE*nudgePidOutput),
+                swerveDrive.getGyroscopeRotation()
+        ));
     }
 
 
     @Override
     public boolean isFinished() {
         return false;
-    }
-
-    @Override
-    public void initialize() {
-        Limelight.enable();
     }
 
     @Override
