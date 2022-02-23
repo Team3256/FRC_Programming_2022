@@ -6,8 +6,20 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.helper.CANdle.Color;
+import frc.robot.helper.CANdle.HashMapFiller;
+import frc.robot.helper.CANdle.LEDRange;
+import frc.robot.helper.CANdle.PatternGenerators.AutoAimPatternGenerator;
+import frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerator;
+import frc.robot.helper.CANdle.PatternGenerators.PatternGenerator;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Vector;
 import java.util.logging.Level;
+
+import static frc.robot.Constants.CANdleConstants.Section.*;
+import static java.util.Map.entry;
 
 public final class Constants {
     public static class LimelightAutoCorrectConstants {
@@ -211,5 +223,38 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+    }
+    public static class CANdleConstants{
+        public enum Section {
+            BALL_COLOR, AUTO_AIM
+        }
+
+        public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
+        public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+
+        //Defines order of Sections (Thus LinkedHashMap)
+        public static final LinkedHashMap<Section, PatternGenerator> SECTIONS_TO_GENERATOR =
+            HashMapFiller.populateLinkedHashMap(
+                entry(BALL_COLOR, BALL_PATTERN),
+                entry(AUTO_AIM, AUTO_AIM_PATTERN)
+            );
+
+        //All Doubles Must add to 1
+        public static final HashMap<Section, Double> SECTIONS_TO_PERCENTAGE =
+                HashMapFiller.populateHashMap(
+                    entry(BALL_COLOR, 0.7),
+                    entry(AUTO_AIM, 0.3)
+                );
+
+
+        //Defines sRanges
+        public static final LEDRange[] RANGES = {
+                new LEDRange(0, 10),
+                new LEDRange(10,15)
+        };
+    }
+    public static class PatternGeneratorConstants{
+        public static final Color RED_BALL_COLOR = Color.fromRGB(1,0,0);
+        public static final Color BLUE_BALL_COLOR = Color.fromRGB(0,0,1);
     }
 }

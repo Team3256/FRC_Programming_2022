@@ -9,20 +9,12 @@ This writes multiple `LED Ranges` to the physical addressable LED strip.
 The `LED Ranges` can be different lengths.  
 `[ 🟠🟠🟠🟣🟣🟣🟢🟢🟢 | 🟠🟣🟢 | 🟠🟠🟠🟣🟣🟣🟢🟢🟢 | 🟠🟣🟢 ]`
 
-## LED Range
+## LED Section
 
-A length of n LEDs that contain `LED Sections`, 
-this transforms the % LEDRange of a `LED Section` to an actual number of LEDs.
+A length of n LEDs that each contain `Pattern Generators`,
 
 `[🟠🟠🟠🟣🟣🟣🟢🟢🟢]`
 
-Transforms `[0%-100%🟠]` into `[🟠🟠🟠]`
-
-## LED Section
-
-A subsection of an `LED Range` that is controlled by a `Pattern Generator`.  
-
-`[0%-100%🟠]`
 
 ## Pattern Generators
 
