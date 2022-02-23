@@ -76,10 +76,14 @@ public final class Constants {
         public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
 
         public static double SWERVE_TURRET_OPERATOR_DEADZONE = 0.4;
-        public static double SWERVE_TURRET_OPERATOR_INFLUENCE = 4;
+        public static double SWERVE_TURRET_OPERATOR_INFLUENCE = 0.5;
 
         public static final double TURN_TOLERANCE = 0;
         public static final double TURN_RATE_TOLERANCE = 0;
+
+        // TELEOP
+        public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.3;
+
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;

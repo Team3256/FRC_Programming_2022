@@ -17,7 +17,6 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
 
 
     PIDController autoAlignPIDController;
-    PIDController operatorNudgeAbsoluteAnglePIDController;
 
     DoubleSupplier driverJoystickX;
     DoubleSupplier driverJoystickY;
@@ -28,7 +27,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
 
 
     /**
-     * Continuously rotates swerve drive toward Limelight target. Use tuningSetup() for easy tuning.
+     * Continuously rotates swerve drive toward Limelight target.
      *
      * @param drivetrainSubsystem drivetrain instance
      * @param driverJoystickX Driver's Translation X
@@ -37,8 +36,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
     public AutoAlignDriveContinuousCommand (SwerveDrive drivetrainSubsystem,
                                             DoubleSupplier driverJoystickX,
                                             DoubleSupplier driverJoystickY,
-                                            DoubleSupplier operatorJoystickX,
-                                            DoubleSupplier operatorJoystickY) {
+                                            DoubleSupplier operatorJoystickX) {
 
         this.swerveDrive = drivetrainSubsystem;
 
@@ -61,20 +59,6 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
     public void execute() {
 
         double autoAlignPidOutput = autoAlignPIDController.calculate(Limelight.getTx());
-        operatorNudgeAbsoluteAnglePIDController.setSetpoint(
-                Math.toDegrees(Math.atan2(-operatorJoystickY.getAsDouble(),-operatorJoystickX.getAsDouble())));
-        double robotHeading = swerveDrive.getGyroscopeRotation().getDegrees() + 90;
-
-
-        double nudgePidOutput = 0;
-
-        //Only move if a lot
-        if (Math.abs(operatorJoystickX.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE ||
-                Math.abs(operatorJoystickY.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE) {
-            nudgePidOutput = operatorNudgeAbsoluteAnglePIDController.calculate(
-                    Math.abs(robotHeading % 360) - 180 );
-        }
-        SmartDashboard.putNumber("Heading Current", Math.abs(robotHeading % 360) - 180 );
 
         //Save some Computation from Sqrt
         double speedSquared = Math.pow(driverJoystickX.getAsDouble(),2) + Math.pow(driverJoystickY.getAsDouble(),2);
@@ -94,7 +78,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
                 driverJoystickX.getAsDouble(),
                 driverJoystickY.getAsDouble(),
                 autoAlignPIDRotationalOutput +
-                        (SWERVE_TURRET_OPERATOR_INFLUENCE*nudgePidOutput),
+                        (SWERVE_TURRET_OPERATOR_INFLUENCE*operatorJoystickX.getAsDouble()),
                 swerveDrive.getGyroscopeRotation()
         ));
     }
