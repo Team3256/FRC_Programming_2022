@@ -152,6 +152,16 @@ public final class Constants {
         public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
         public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
 
+        // I2C
+        public static final byte I2C_MUX_ADDRESS = 0x70;
+        public static final int I2C_COLOR_SENSOR_FIXED_ADDRESS = 0x52;
+
+
+        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 0;
+        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
+
+
     }
 
     public static class LoggingConstants {
