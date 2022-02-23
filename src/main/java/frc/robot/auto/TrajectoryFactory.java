@@ -45,7 +45,7 @@ public class TrajectoryFactory {
 
     public Command createPathPlannerCommand(String path) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
-        return getCommand(trajectory, new Pose2d());
+        return getCommand(trajectory);
     }
 
     public Command createCommand(String jsonFilePath) {
@@ -148,6 +148,21 @@ public class TrajectoryFactory {
                 uniformThetaSupplier::rotationSupply,
                 thetaController,
                 startPose,
+                drive
+        );
+    }
+
+    private Command getCommand(PathPlannerTrajectory trajectory) {
+        ProfiledPIDController thetaController =
+                new ProfiledPIDController(
+                        P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
+        thetaController.enableContinuousInput(-2 * Math.PI, 2 * Math.PI);
+
+        return new PPTrajectoryFollowCommand(
+                trajectory,
+                new PIDController(P_X_CONTROLLER, I_X_CONTROLLER, D_X_CONTROLLER),
+                new PIDController(P_Y_CONTROLLER, I_Y_CONTROLLER, D_Y_CONTROLLER),
+                thetaController,
                 drive
         );
     }

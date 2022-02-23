@@ -40,7 +40,7 @@ public class AutoChooser {
         Command curl = trajectoryFactory.createPathPlannerCommand("PathPlannerCurl", new Pose2d(1, 3, new Rotation2d()));
         autoChooser.addOption("PathPlanner Curl", curl);
 
-        Command fourBall = trajectoryFactory.createPathPlannerCommand("4Ball-StartTarmac-2BallSide", new Pose2d(7.62, 1.73, Rotation2d.fromDegrees(90)));
+        Command fourBall = trajectoryFactory.createPathPlannerCommand("4Ball-StartTarmac-2BallSide");
         autoChooser.addOption("4 Ball Auto", fourBall);
 
         return autoChooser;

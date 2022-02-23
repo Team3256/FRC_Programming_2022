@@ -61,7 +61,7 @@ public final class Constants {
 
         //Swerve Turret
 
-        public static final boolean SWERVE_TURRET_TUNING = false;
+        public static final boolean SWERVE_TURRET_TUNING = true;
 
 
         //Non-final Allow for Changing via Smart Dashboard

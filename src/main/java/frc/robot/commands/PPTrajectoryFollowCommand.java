@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
@@ -43,7 +44,10 @@ public class PPTrajectoryFollowCommand extends CommandBase {
         );
 
         this.driveSubsystem = driveSubsystem;
-        this.startPose = trajectory.sample(0.0).poseMeters;
+        PathPlannerTrajectory.PathPlannerState start = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(0.0);
+        Rotation2d rotation = start.holonomicRotation;
+        Translation2d translation = start.poseMeters.getTranslation();
+        this.startPose = new Pose2d(translation, rotation);
 
         addRequirements(driveSubsystem);
     }
