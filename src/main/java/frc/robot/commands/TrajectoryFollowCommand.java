@@ -49,7 +49,7 @@ public class TrajectoryFollowCommand extends CommandBase {
         this.driveSubsystem = driveSubsystem;
         this.thetaFeeder = thetaFeeder;
 
-        this.startPose = new Pose2d();
+        this.startPose = trajectory.sample(0.0).poseMeters;
 
         addRequirements(driveSubsystem);
     }

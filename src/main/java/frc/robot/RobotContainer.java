@@ -146,24 +146,29 @@ public class RobotContainer {
 
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
-            if (value > 0.0) {
-                return (value - deadband) / (1.0 - deadband);
-            } else {
-                return (value + deadband) / (1.0 - deadband);
-            }
+            return value;
+//            if (value > 0.0) {
+//                return (value - deadband) / (1.0 - deadband);
+//            } else {
+//                return (value + deadband) / (1.0 - deadband);
+//            }
         } else {
             return 0.0;
         }
     }
 
     private static double modifyAxis(double value) {
-        double deadband = 0.1;
+        double deadband = 0.05;
         value = deadband(value, deadband);
 
         if (value == 0) {
             return 0;
         }
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
+
+        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
+//
+        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
 
         return value;
     }

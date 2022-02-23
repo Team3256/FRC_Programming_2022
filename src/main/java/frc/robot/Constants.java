@@ -40,7 +40,7 @@ public final class Constants {
         public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
-        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
+        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.4;
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
@@ -78,8 +78,8 @@ public final class Constants {
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 8;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 5;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 13;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 15;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
@@ -94,7 +94,7 @@ public final class Constants {
 
         public static double P_THETA_CONTROLLER = 10;
         public static double I_THETA_CONTROLLER = 0.01;
-        public static double D_THETA_CONTROLLER = 0;
+        public static double D_THETA_CONTROLLER = 2;
     }
 
     public static class IDConstants {
