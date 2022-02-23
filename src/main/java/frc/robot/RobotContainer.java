@@ -43,7 +43,6 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -71,6 +70,8 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+
+        SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
 
@@ -105,14 +106,10 @@ public class RobotContainer {
                         () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ));
+                ), true);
         //Any Significant Movement in driver's X interrupt auto align
-        new JoystickAnalogButton(driverController, XboxController.Axis.kRightX.value, AUTO_AIM_BREAKOUT_TOLERANCE)
+        new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
-
-        // Right Bumper enables intake
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
-
     }
   
     public Command getAutonomousCommand() {

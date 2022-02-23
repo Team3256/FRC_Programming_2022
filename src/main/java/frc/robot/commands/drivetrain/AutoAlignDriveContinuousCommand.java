@@ -48,6 +48,8 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
         autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
         autoAlignPIDController.setSetpoint(0);
         autoAlignPIDController.enableContinuousInput(-180,180);
+
+        addRequirements(drivetrainSubsystem);
     }
 
     @Override
@@ -67,10 +69,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
         // Ternary Explanation: Since while moving we can easily rotate, we don't mess with the PID
         // but while NOT moving, the motors need more power in order to actually move, so
         // we add a Constant, (Using copysign to either add or subtract depending on sign)
-        double autoAlignPIDRotationalOutput = 0;
-        if (Math.abs(operatorJoystickX.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE ||
-                Math.abs(operatorJoystickY.getAsDouble()) > SWERVE_TURRET_OPERATOR_DEADZONE)
-            autoAlignPIDRotationalOutput = speedSquared > Math.pow(0.1,2) ?
+        double autoAlignPIDRotationalOutput = speedSquared > Math.pow(0.1,2) ?
                     autoAlignPidOutput :
                     autoAlignPidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, autoAlignPidOutput);
 
