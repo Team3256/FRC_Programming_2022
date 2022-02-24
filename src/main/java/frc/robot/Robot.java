@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
   public void testInit() {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
-    new ColorsensorTestSubsystem();
   }
 
   @Override
