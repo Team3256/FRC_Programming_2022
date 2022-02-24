@@ -256,8 +256,8 @@ public class SwerveDrive extends SubsystemBase {
         backLeftModule.set(deadzoneMotor(volts), 0);
     }
     public void fixedLeftRotate(int volts){
-        frontLeftModule.set(deadzoneMotor(volts), 0);
-        backLeftModule.set(deadzoneMotor(volts), 0);
+        frontRightModule.set(deadzoneMotor(volts), 0);
+        backRightModule.set(deadzoneMotor(volts), 0);
     }
     public void stop(){
         drive(new ChassisSpeeds(0,0,0));
