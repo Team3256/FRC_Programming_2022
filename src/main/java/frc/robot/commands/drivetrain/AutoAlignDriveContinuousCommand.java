@@ -56,11 +56,6 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        Limelight.enable();
-    }
-
-    @Override
     public void execute() {
 
         double autoAlignPidOutput = autoAlignPIDController.calculate(Limelight.getTx());
