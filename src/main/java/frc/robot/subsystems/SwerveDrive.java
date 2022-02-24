@@ -251,13 +251,13 @@ public class SwerveDrive extends SubsystemBase {
     public void pivotTurn(double rad){
         drive( new ChassisSpeeds(0,0,rad));
     }
-    public void fixedRightRotate(){
-        frontLeftModule.set(deadzoneMotor(5), 0);
-        backLeftModule.set(deadzoneMotor(5), 0);
+    public void fixedRightRotate(int volts){
+        frontLeftModule.set(deadzoneMotor(volts), 0);
+        backLeftModule.set(deadzoneMotor(volts), 0);
     }
-    public void fixedLeftRotate(){
-        frontLeftModule.set(deadzoneMotor(5), 0);
-        backLeftModule.set(deadzoneMotor(5), 0);
+    public void fixedLeftRotate(int volts){
+        frontLeftModule.set(deadzoneMotor(volts), 0);
+        backLeftModule.set(deadzoneMotor(volts), 0);
     }
     public void stop(){
         drive(new ChassisSpeeds(0,0,0));
