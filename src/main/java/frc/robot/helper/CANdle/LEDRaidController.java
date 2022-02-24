@@ -72,9 +72,7 @@ public class LEDRaidController {
     private boolean isSpoofed(LEDRange range){
 
         // 180 + Robot Heading, wrapping around if necessary
-        double robotInverseHeading0to360 = (swerveDrive.getGyroscopeRotation().getDegrees() + 180) % 360 ;
-        if (robotInverseHeading0to360 < 0)
-            robotInverseHeading0to360 += 360;
+        double robotInverseHeading0to360 = swerveDrive.getPose().getRotation().getDegrees() + 180;
 
         if ( Math.abs(robotInverseHeading0to360 - range.degreesFromForward) <= POKERFACE_ANGLE_MARGIN_OF_ERROR)
             return false;
