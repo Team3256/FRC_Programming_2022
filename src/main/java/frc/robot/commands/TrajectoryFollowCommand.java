@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.helper.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
+import java.util.ConcurrentModificationException;
 import java.util.function.Function;
 
 import static frc.robot.Constants.AutoConstants.*;
@@ -94,8 +96,10 @@ public class TrajectoryFollowCommand extends CommandBase {
         // Move to the desired rotation a proportion of the way through the whole trajectory
         Rotation2d desiredRotation = thetaFeeder.apply(now);
 
-        SmartDashboard.putNumber("Desired Rotation", desiredRotation.getDegrees());
-        SmartDashboard.putNumber("Desired Position", Units.metersToInches(desiredPose.getX()));
+        if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Desired Rotation", desiredRotation.getDegrees());
+            SmartDashboard.putNumber("Desired Position", Units.metersToInches(desiredPose.getX()));
+        }
 
         driveSubsystem.drive(controller.calculate(currentPose, desiredPose, desiredLinearVelocity, desiredRotation));
     }
