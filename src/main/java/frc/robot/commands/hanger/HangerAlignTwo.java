@@ -8,8 +8,6 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
-
 public class HangerAlignTwo extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
@@ -32,7 +30,7 @@ public class HangerAlignTwo extends CommandBase {
     public void execute() {
         //rotate swerve CW
         if (colorSensor.leftAlignSensorDetectsTape()){
-            
+
         }
         //rotate swerve CCW
         else if (colorSensor.rightAlignSensorDetectsTape()){
