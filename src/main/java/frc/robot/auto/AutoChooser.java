@@ -16,32 +16,21 @@ public class AutoChooser {
 
     public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intakeSubsystem) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
+        Paths.initialize(drive);
 
         autoChooser = new SendableChooser<>();
 
         Command doNothing = new DefaultDriveCommandRobotOriented(drive);
         autoChooser.setDefaultOption("Do Nothing", doNothing);
 
-        ThetaSupplier straightPathThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(180), 0.75);
-        Command straightPath = trajectoryFactory.createCommand(0, 80, TrajectoryFactory.Direction.X, straightPathThetaSupplier);
-        autoChooser.addOption("80 in forward 180 deg turn", straightPath);
+        Command twoBallTarmac2BallSide = Paths.get2BallStartTarmac2BallSide();
+        autoChooser.addOption("2 Ball | Start Tarmac | 2 Ball Side", twoBallTarmac2BallSide);
 
-        ThetaSupplier uniformThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(180), 0.75); // trajectory factory adds duration
-        Command intakePath = trajectoryFactory.createCommand("paths/Test-cones.wpilib.json", uniformThetaSupplier, new Pose2d(0, 3, new Rotation2d()));
-        Command intakePathReverse = trajectoryFactory.createCommand("paths/Test-cones.wpilib.json", uniformThetaSupplier, new Pose2d(0, 3, new Rotation2d()));
+        Command threeBallTarmac2BallSide = Paths.get3BallStartTarmac2BallSide();
+        autoChooser.addOption("3 Ball | Start Tarmac | 2 Ball Side", threeBallTarmac2BallSide);
 
-        Command intakeCommand = intakePath.andThen(new WaitCommand(3).andThen(intakePathReverse));
-        autoChooser.addOption("SPLINE + Intake", intakeCommand);
-
-        ThetaSupplier to2ndBallThetaSupplier = new UniformThetaSupplier(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(90), 0.5);
-        Command to2ndBall = trajectoryFactory.createCommand("paths/3BallAuto.wpilib.json", to2ndBallThetaSupplier, new Pose2d(8.963, 6.702, Rotation2d.fromDegrees(90)));
-        autoChooser.addOption("2 Ball Auto", to2ndBall);
-
-        Command curl = trajectoryFactory.createPathPlannerCommand("PathPlannerCurl", new Pose2d(1, 3, new Rotation2d()));
-        autoChooser.addOption("PathPlanner Curl", curl);
-
-        Command fourBall = trajectoryFactory.createPathPlannerCommand("4Ball-StartTarmac-2BallSide");
-        autoChooser.addOption("4 Ball Auto", fourBall);
+        Command fourBallTarmac2BallSide = Paths.get4BallStartTarmac2BallSide();
+        autoChooser.addOption("4 Ball | Start Tarmac | 2 Ball Side", fourBallTarmac2BallSide);
 
         return autoChooser;
     }
