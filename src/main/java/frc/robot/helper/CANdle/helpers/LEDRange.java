@@ -1,4 +1,4 @@
-package frc.robot.helper.CANdle;
+package frc.robot.helper.CANdle.helpers;
 import java.util.logging.Logger;
 
 public class LEDRange {
@@ -26,5 +26,8 @@ public class LEDRange {
             this.lower = lower;
             this.upper = upper;
         }
+    }
+    public int getLength(){
+        return upper-lower;
     }
 }

@@ -1,6 +1,6 @@
 package frc.robot.helper.CANdle.PatternGenerators;
 
-import frc.robot.helper.CANdle.LEDInstruction;
+import frc.robot.helper.CANdle.helpers.LEDInstruction;
 
 import java.util.ArrayList;
 
