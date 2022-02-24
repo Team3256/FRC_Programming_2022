@@ -1,5 +1,6 @@
 package frc.robot.commands.hanger;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.helper.Limelight;
 import frc.robot.helper.MuxedColorSensor;
@@ -30,11 +31,11 @@ public class HangerAlignTwo extends CommandBase {
     public void execute() {
         //rotate swerve CW
         if (colorSensor.leftAlignSensorDetectsTape()){
-
+            swerve.drive(new ChassisSpeeds(0,0,5));
         }
         //rotate swerve CCW
         else if (colorSensor.rightAlignSensorDetectsTape()){
-
+            swerve.drive(new ChassisSpeeds(0,0,5));
         }
     }
 
