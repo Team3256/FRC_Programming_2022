@@ -7,7 +7,11 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helper.MuxedColorSensor;
+
 import java.util.logging.Logger;
+
+import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
 
 //NOTES:
 //SENSOR WORKS TO UP TO 2 INCHES FOR BALL COLOR DETECTION
@@ -17,12 +21,8 @@ public class ColorsensorTestSubsystem extends SubsystemBase {
 
     //default
     private static final Logger logger = Logger.getLogger(ColorsensorTestSubsystem.class.getCanonicalName());
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;;
-    private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);;
+    private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
     private final ColorMatch colorMatcher = new ColorMatch();
-
-    //targeting
-    private final Color tape = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
 
     //averageColor tracking
     private double redSum = 0;
@@ -31,7 +31,7 @@ public class ColorsensorTestSubsystem extends SubsystemBase {
     private int rounds = 0;
 
     public ColorsensorTestSubsystem(){
-        colorMatcher.addColorMatch(tape);
+        colorMatcher.addColorMatch(TAPE_COLOR);
     }
 
     @Override
@@ -50,22 +50,21 @@ public class ColorsensorTestSubsystem extends SubsystemBase {
     }
 
     public void postSensorValues(){
-        SmartDashboard.putNumber("Red", colorSensor.getRed());
-        SmartDashboard.putNumber("Green", colorSensor.getGreen());
-        SmartDashboard.putNumber("Blue", colorSensor.getBlue());
-        SmartDashboard.putNumber("Proximity", colorSensor.getProximity());
+        SmartDashboard.putNumber("Red", colorSensor.getLeftAlignSensorColor().red);
+        SmartDashboard.putNumber("Green", colorSensor.getLeftAlignSensorColor().green);
+        SmartDashboard.putNumber("Blue", colorSensor.getLeftAlignSensorColor().blue);
     }
 
     public void postDetectionConfidence(){
-        Color detectedColor = colorSensor.getColor();
+        Color detectedColor = colorSensor.getLeftAlignSensorColor();
         ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
         SmartDashboard.putNumber("Confidence", match.confidence);
     }
 
     public void postAverageColor(){
-        redSum+=colorSensor.getRed();
-        greenSum+=colorSensor.getGreen();
-        blueSum+=colorSensor.getBlue();
+        redSum+=colorSensor.getLeftAlignSensorColor().red;
+        greenSum+=colorSensor.getLeftAlignSensorColor().green;
+        blueSum+=colorSensor.getLeftAlignSensorColor().blue;
         rounds++;
         SmartDashboard.putNumber("Red Avg", redSum/rounds);
         SmartDashboard.putNumber("Green Avg", greenSum/rounds);
