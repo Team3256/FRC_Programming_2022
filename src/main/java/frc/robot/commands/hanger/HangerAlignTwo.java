@@ -42,6 +42,8 @@ public class HangerAlignTwo extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        //stop
+        swerve.drive(new ChassisSpeeds(0,0,0));
         logger.log(Level.INFO, "Hanger Align Part Two Complete.");
     }
 
