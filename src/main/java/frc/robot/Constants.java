@@ -75,12 +75,22 @@ public final class Constants {
         public static double SWERVE_TURRET_KP = 0.1;
         public static double SWERVE_TURRET_KI = 0;
         public static double SWERVE_TURRET_KD = 0;
-        public static boolean IS_TUNING_SWERVE_TURRET = true;
+
+        public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
+        public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
+        public static double SWERVE_TURRET_STATIONARY_KD = 0;
 
         public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
 
-        public static final double TURN_TOLERANCE = 0;
-        public static final double TURN_RATE_TOLERANCE = 0;
+        public static double SWERVE_TURRET_OPERATOR_DEADZONE = 0.4;
+        public static double SWERVE_TURRET_OPERATOR_INFLUENCE = 1;
+
+        public static final double TURN_TOLERANCE = 0.1;
+        public static final double TURN_RATE_TOLERANCE = 1;
+
+        // TELEOP
+        public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
+
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;

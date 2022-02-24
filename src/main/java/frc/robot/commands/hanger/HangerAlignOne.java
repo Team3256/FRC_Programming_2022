@@ -3,8 +3,8 @@ package frc.robot.commands.hanger;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.hardware.MuxedColorSensor;
 import frc.robot.helper.Limelight;
-import frc.robot.helper.MuxedColorSensor;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.logging.Level;

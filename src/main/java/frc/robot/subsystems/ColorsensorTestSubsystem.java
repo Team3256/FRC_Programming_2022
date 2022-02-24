@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.helper.MuxedColorSensor;
+import frc.robot.hardware.MuxedColorSensor;
 
 import java.util.logging.Logger;
 

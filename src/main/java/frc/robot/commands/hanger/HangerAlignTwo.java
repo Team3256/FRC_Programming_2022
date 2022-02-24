@@ -1,8 +1,7 @@
 package frc.robot.commands.hanger;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.helper.Limelight;
-import frc.robot.helper.MuxedColorSensor;
+import frc.robot.hardware.MuxedColorSensor;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.logging.Level;
