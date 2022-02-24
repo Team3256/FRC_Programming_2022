@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 
 import static frc.robot.Constants.HangerConstants.MAX_CONFIDENCE_DEVIATION;
+import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
 import static frc.robot.Constants.IDConstants.*;
 
 public class MuxedColorSensor {
@@ -62,6 +63,13 @@ public class MuxedColorSensor {
         return (1-result.confidence)<MAX_CONFIDENCE_DEVIATION;
     }
 
+    public boolean rightAlignSensorDetectsTape(){
+        return colorsMatch(getRightAlignSensorColor(), TAPE_COLOR);
+    }
+
+    public boolean leftAlignSensorDetectsTape(){
+        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR);
+    }
     /**
      * Changes the Mux to Select certain I2C port
      * @param port Port from 0..9

@@ -24,12 +24,13 @@ public class HangerAlignTwo extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
+        //move swerve backwards
     }
 
     // Called once the command ends or is interrupted.
@@ -41,7 +42,7 @@ public class HangerAlignTwo extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return colorSensor.colorsMatch(colorSensor.getLeftAlignSensorColor(), TAPE_COLOR)&&
-                colorSensor.colorsMatch(colorSensor.getRightAlignSensorColor(), TAPE_COLOR);
+        return colorSensor.leftAlignSensorDetectsTape()&&
+                colorSensor.rightAlignSensorDetectsTape();
     }
 }
