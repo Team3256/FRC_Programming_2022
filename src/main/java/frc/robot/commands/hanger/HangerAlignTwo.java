@@ -1,6 +1,5 @@
 package frc.robot.commands.hanger;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.helper.Limelight;
 import frc.robot.helper.MuxedColorSensor;
@@ -8,6 +7,8 @@ import frc.robot.subsystems.SwerveDrive;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_ROTATION_VOLTAGE;
 
 public class HangerAlignTwo extends CommandBase {
     private final SwerveDrive swerve;
@@ -23,7 +24,6 @@ public class HangerAlignTwo extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -31,10 +31,10 @@ public class HangerAlignTwo extends CommandBase {
     public void execute() {
         //rotate swerve around fixed sensor
         if (colorSensor.leftAlignSensorDetectsTape()){
-            swerve.fixedLeftRotate();
+            swerve.fixedLeftRotate(HANGER_ALIGN_ROTATION_VOLTAGE);
         }
         else if (colorSensor.rightAlignSensorDetectsTape()){
-            swerve.fixedLeftRotate();
+            swerve.fixedLeftRotate(HANGER_ALIGN_ROTATION_VOLTAGE);
         }
     }
 
