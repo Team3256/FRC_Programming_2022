@@ -10,6 +10,8 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_FEET_PER_SECOND;
+
 public class HangerAlignOne extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
@@ -30,7 +32,7 @@ public class HangerAlignOne extends CommandBase {
     @Override
     public void execute() {
         //move swerve backwards
-        swerve.drive(new ChassisSpeeds(0, -50, 0));
+        swerve.drive(new ChassisSpeeds(0, HANGER_ALIGN_FEET_PER_SECOND, 0));
     }
 
     // Called once the command ends or is interrupted.

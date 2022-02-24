@@ -9,6 +9,8 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_RADIANS_PER_SECOND;
+
 public class HangerAlignTwo extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
@@ -31,11 +33,11 @@ public class HangerAlignTwo extends CommandBase {
     public void execute() {
         //rotate swerve CW
         if (colorSensor.leftAlignSensorDetectsTape()){
-            swerve.drive(new ChassisSpeeds(0,0,5));
+            swerve.drive(new ChassisSpeeds(0,0,HANGER_ALIGN_RADIANS_PER_SECOND));
         }
         //rotate swerve CCW
         else if (colorSensor.rightAlignSensorDetectsTape()){
-            swerve.drive(new ChassisSpeeds(0,0,5));
+            swerve.drive(new ChassisSpeeds(0,0,-HANGER_ALIGN_RADIANS_PER_SECOND));
         }
     }
 
