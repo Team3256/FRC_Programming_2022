@@ -241,4 +241,15 @@ public class SwerveDrive extends SubsystemBase {
 
         outputToDashboard();
     }
+
+    public void forward(double feet){
+        drive(new ChassisSpeeds(0,feet,0));
+    }
+    public void backward(double feet){
+        drive(new ChassisSpeeds(0,-feet,0));
+    }
+    public void pivotTurn(double rad){
+        drive( new ChassisSpeeds(0,0,rad));
+    }
+    
 }
