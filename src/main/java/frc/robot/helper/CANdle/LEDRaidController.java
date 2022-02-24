@@ -40,7 +40,7 @@ public class LEDRaidController {
                 // Runs Instructions for a given Section
                 for (LEDInstruction instruction: instructions){
                     candle.setLEDs(
-                            instruction.color.r, instruction.color.g, instruction.color.b, instruction.color.w,
+                            instruction.LEDColor.r, instruction.LEDColor.g, instruction.LEDColor.b, instruction.LEDColor.w,
                             fromVirtualToGlobal(range, ledSectionName, instruction.startIdx), instruction.count
                     );
                 }

@@ -10,7 +10,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.helper.CANdle.helpers.*;
 import frc.robot.helper.CANdle.PatternGenerators.*;
-import java.util.HashMap;
+
 import java.util.LinkedHashMap;
 import frc.robot.hardware.TalonConfiguration;
 import java.util.logging.Level;
@@ -293,10 +293,10 @@ public final class Constants {
         };
     }
     public static class PatternGeneratorConstants{
-        public static final Color RED_BALL_COLOR = Color.fromRGB(255,0,0);
-        public static final Color BLUE_BALL_COLOR = Color.fromRGB(0,0,255);
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
 
-        public static final Color AUTO_AIM_COLOR = Color.fromRGB(0, 255, 0);
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
     }
 
     public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;

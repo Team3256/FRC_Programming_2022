@@ -1,6 +1,6 @@
 package frc.robot.helper.CANdle.PatternGenerators;
 
-import frc.robot.helper.CANdle.helpers.Color;
+import frc.robot.helper.CANdle.helpers.LEDColor;
 import frc.robot.helper.CANdle.helpers.HashMapFiller;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 
@@ -12,10 +12,10 @@ import static frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerato
 import static java.util.Map.entry;
 
 public class BallColorPatternGenerator implements PatternGenerator {
-    private final HashMap<BallColor, Color> colorToConstantColor = HashMapFiller.populateHashMap(
-            entry(RED, RED_BALL_COLOR),
-            entry(BLUE, BLUE_BALL_COLOR),
-            entry(NONE, Color.off)
+    private final HashMap<BallColor, LEDColor> colorToConstantColor = HashMapFiller.populateHashMap(
+            entry(RED, RED_BALL_LED_COLOR),
+            entry(BLUE, BLUE_BALL_LED_COLOR),
+            entry(NONE, LEDColor.off)
     );
 
     BallColor ball1Color = BallColor.NONE;
@@ -33,7 +33,7 @@ public class BallColorPatternGenerator implements PatternGenerator {
 
         // For now, just turn off if spoofed
         if (isSpoofed) {
-            ledInstructions.add(new LEDInstruction(Color.off, 0, ledCount));
+            ledInstructions.add(new LEDInstruction(LEDColor.off, 0, ledCount));
             return ledInstructions;
         }
 

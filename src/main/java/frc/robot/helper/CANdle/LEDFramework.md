@@ -23,7 +23,7 @@ An LED Section includes percentage that defines the relative size and location o
 
 ## LED Instruction
 
-A data structure that defines a RGBW color and a block of LEDs to set to that color.
+A data structure that defines a RGBW LEDColor and a block of LEDs to set to that LEDColor.
 ```
 R: 0
 G: 255

@@ -1,11 +1,11 @@
 package frc.robot.helper.CANdle.PatternGenerators;
 
-import frc.robot.helper.CANdle.helpers.Color;
+import frc.robot.helper.CANdle.helpers.LEDColor;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 
 import java.util.ArrayList;
 
-import static frc.robot.Constants.PatternGeneratorConstants.AUTO_AIM_COLOR;
+import static frc.robot.Constants.PatternGeneratorConstants.AUTO_AIM_LED_COLOR;
 
 public class AutoAimPatternGenerator implements PatternGenerator {
 
@@ -24,7 +24,7 @@ public class AutoAimPatternGenerator implements PatternGenerator {
 
         ArrayList<LEDInstruction> ledInstructions = new ArrayList<>();
 
-        ledInstructions.add((ledsOn ? AUTO_AIM_COLOR : Color.off).toLedInstruction(0, ledCount));
+        ledInstructions.add((ledsOn ? AUTO_AIM_LED_COLOR : LEDColor.off).toLedInstruction(0, ledCount));
 
         return ledInstructions;
 
