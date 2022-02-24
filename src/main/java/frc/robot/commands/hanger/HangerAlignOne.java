@@ -15,7 +15,7 @@ import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_METERS_PER_SECOND
 public class HangerAlignOne extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
-    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(HangerAlignOne.class.getCanonicalName());
 
     public HangerAlignOne(SwerveDrive swerveDrive) {
         swerve = swerveDrive;
