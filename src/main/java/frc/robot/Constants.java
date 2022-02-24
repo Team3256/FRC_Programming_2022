@@ -8,9 +8,16 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.helper.CANdle.helpers.*;
+import frc.robot.helper.CANdle.PatternGenerators.*;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
-
+import java.util.LinkedHashMap;
+import frc.robot.hardware.TalonConfiguration;
 import java.util.logging.Level;
+
+import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
+import static java.util.Map.entry;
 
 public final class Constants {
 
@@ -243,7 +250,11 @@ public final class Constants {
         public static final double EXTEND_WAIT = 0; //in Seconds
         public static final double RETRACT_WAIT = 0.0; //in Seconds
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
-    
+
+        public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
+        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
+        public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }
 
     public static class ShooterConstants {
@@ -275,4 +286,35 @@ public final class Constants {
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
     }
+    public static class CANdleConstants{
+        public enum LEDSectionName {
+            BALL_COLOR, AUTO_AIM
+        }
+
+        public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
+        public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+
+        // Defines order of Sections (Thus LinkedHashMap)
+        public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
+            HashMapFiller.populateLinkedHashMap(
+                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+            );
+
+        // Defines Ranges
+        public static final LEDRange[] RANGES = {
+                new LEDRange(0, 10, 0),
+                new LEDRange(10,15, 180)
+        };
+    }
+    public static class PatternGeneratorConstants{
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
+
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
+    }
+
+    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
+
 }
