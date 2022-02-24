@@ -10,7 +10,7 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_FEET_PER_SECOND;
+import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_METERS_PER_SECOND;
 
 public class HangerAlignOne extends CommandBase {
     private final SwerveDrive swerve;
@@ -32,14 +32,14 @@ public class HangerAlignOne extends CommandBase {
     @Override
     public void execute() {
         //move swerve backwards
-        swerve.drive(new ChassisSpeeds(0, HANGER_ALIGN_FEET_PER_SECOND, 0));
+        swerve.backward(HANGER_ALIGN_METERS_PER_SECOND);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         //stop
-        swerve.drive(new ChassisSpeeds(0,0,0));
+        swerve.stop();
         logger.log(Level.INFO, "Hanger Align Part One Complete.");
         CommandScheduler.getInstance().schedule(new HangerAlignTwo(swerve));
     }
