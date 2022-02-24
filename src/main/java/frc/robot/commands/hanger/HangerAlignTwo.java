@@ -30,7 +30,14 @@ public class HangerAlignTwo extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        //move swerve backwards
+        //rotate swerve CW
+        if (colorSensor.leftAlignSensorDetectsTape()){
+            
+        }
+        //rotate swerve CCW
+        else if (colorSensor.rightAlignSensorDetectsTape()){
+
+        }
     }
 
     // Called once the command ends or is interrupted.
