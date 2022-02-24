@@ -1,5 +1,7 @@
 package frc.robot.helper;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.hal.I2CJNI;
 import edu.wpi.first.hal.simulation.I2CDataJNI;
@@ -7,6 +9,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
 
+import static frc.robot.Constants.HangerConstants.MAX_CONFIDENCE_DEVIATION;
+import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
 import static frc.robot.Constants.IDConstants.*;
 
 public class MuxedColorSensor {
@@ -50,6 +54,21 @@ public class MuxedColorSensor {
     public Color getRightAlignSensorColor(){
         changeMuxPort(RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT);
         return rightAlignColorSensor.getColor();
+    }
+
+    private boolean colorsMatch(Color color1, Color color2){
+        ColorMatch colorMatcher = new ColorMatch();
+        colorMatcher.addColorMatch(color2);
+        ColorMatchResult result = colorMatcher.matchColor(color1);
+        return (1-result.confidence)<MAX_CONFIDENCE_DEVIATION;
+    }
+
+    public boolean leftAlignSensorDetectsTape(){
+        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR);
+    }
+
+    public boolean rightAlignSensorDetectsTape(){
+        return colorsMatch(getRightAlignSensorColor(), TAPE_COLOR);
     }
 
     /**

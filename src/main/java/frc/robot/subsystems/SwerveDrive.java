@@ -241,4 +241,25 @@ public class SwerveDrive extends SubsystemBase {
 
         outputToDashboard();
     }
+
+    public void forward(double meters){
+        drive(new ChassisSpeeds(0,meters,0));
+    }
+    public void backward(double meters){
+        drive(new ChassisSpeeds(0,-meters,0));
+    }
+    public void pivotTurn(double rad){
+        drive( new ChassisSpeeds(0,0,rad));
+    }
+    public void fixedRightRotate(int volts){
+        frontLeftModule.set(deadzoneMotor(volts), 0);
+        backLeftModule.set(deadzoneMotor(volts), 0);
+    }
+    public void fixedLeftRotate(int volts){
+        frontRightModule.set(deadzoneMotor(volts), 0);
+        backRightModule.set(deadzoneMotor(volts), 0);
+    }
+    public void stop(){
+        drive(new ChassisSpeeds(0,0,0));
+    }
 }
