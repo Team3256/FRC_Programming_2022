@@ -99,6 +99,9 @@ public final class Constants {
 
     public static class IDConstants {
 
+        public static final String ROBORIO_CAN_BUS = "rio";
+        public static final String MANI_CAN_BUS = "mani";
+
         public static final int DRIVETRAIN_PIGEON_ID = 4;
 
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 5;
@@ -124,6 +127,8 @@ public final class Constants {
 
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+
+        public static final int INTAKE_MOTOR_ID = 33;
 
 
         public static final int TURRET_ID = 34;

@@ -14,12 +14,12 @@ public class TalonFXFactory {
     private static TalonConfiguration defaultTalonFXConfig = new TalonConfiguration();
     private static TalonConfiguration defaultFollowerTalonFXConfig = new TalonConfiguration();
 
-    public static TalonFX createTalonFX(int id) {
-        return createTalonFX(id, defaultTalonFXConfig);
+    public static TalonFX createTalonFX(int id, String canBus) {
+        return createTalonFX(id, defaultTalonFXConfig, canBus);
     }
 
-    public static TalonFX createTalonFX(int id, TalonConfiguration config) {
-        TalonFX motor = new LazyTalonFX(id);
+    public static TalonFX createTalonFX(int id, TalonConfiguration config, String canBus) {
+        TalonFX motor = new LazyTalonFX(id, canBus);
 
         motor.clearMotionProfileHasUnderrun();
         motor.clearMotionProfileTrajectories();
@@ -37,12 +37,12 @@ public class TalonFXFactory {
         return motor;
     }
 
-    public static TalonFX createFollowerTalonFX(int id, int master) {
-        return createFollowerTalonFX(id, master, defaultFollowerTalonFXConfig);
+    public static TalonFX createFollowerTalonFX(int id, int master, String canBus) {
+        return createFollowerTalonFX(id, master, defaultFollowerTalonFXConfig, canBus);
     }
 
-    public static TalonFX createFollowerTalonFX(int id, int master, TalonConfiguration config) {
-        TalonFX motor = createTalonFX(id, config);
+    public static TalonFX createFollowerTalonFX(int id, int master, TalonConfiguration config, String canBus) {
+        TalonFX motor = createTalonFX(id, config, canBus);
         motor.set(ControlMode.Follower, master);
         return motor;
     }

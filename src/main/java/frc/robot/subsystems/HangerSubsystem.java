@@ -27,13 +27,15 @@ public class HangerSubsystem extends SubsystemBase {
     public HangerSubsystem() {
         masterTalonMotor = TalonFXFactory.createTalonFX(
                 HANGER_MASTER_TALON_ID,
-                MASTER_CONFIG
+                MASTER_CONFIG,
+                ROBORIO_CAN_BUS
         );
 
         followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
                 HANGER_FOLLOWER_TALON_ID,
                 HANGER_MASTER_TALON_ID,
-                FOLLOWER_CONFIG
+                FOLLOWER_CONFIG,
+                ROBORIO_CAN_BUS
         );
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
