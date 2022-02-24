@@ -1,6 +1,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helper.Limelight;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import static frc.robot.helper.Limelight.*;
@@ -16,10 +17,20 @@ public class AutoAimShooter extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        Limelight.enable();
+    }
+
+    @Override
     public void execute() {
         double distanceToTarget = getRawDistanceToTarget();
 
         flywheelSubsystem.autoAim(distanceToTarget);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        Limelight.disable();
     }
 
     @Override

@@ -7,12 +7,10 @@
 
 package frc.robot;
 
+import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.TestCANCommand;
-import frc.robot.commands.TestLimelight;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.logging.RobotLogger;
 
@@ -38,6 +36,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    RobotLogger.setup();
     logger.info("Robot Disabled");
     RobotLogger.closeFiles();
     robotContainer.sendTrajectoryToDashboard();
@@ -61,7 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    robotContainer.autoOutputToDashboard();
+    robotContainer.robotOutputToDashboard();
   }
 
   @Override
@@ -75,7 +74,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    robotContainer.autoOutputToDashboard();
+    robotContainer.robotOutputToDashboard();
   }
 
   @Override

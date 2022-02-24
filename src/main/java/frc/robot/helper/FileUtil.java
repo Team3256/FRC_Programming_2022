@@ -43,7 +43,7 @@ public class FileUtil {
             try {
                 polynomialFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, e.getMessage(), e);
             }
         }
     }
