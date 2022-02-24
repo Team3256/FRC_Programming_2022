@@ -237,8 +237,8 @@ public final class Constants {
 
         public static final Color TAPE_COLOR = new Color(0,0,0);
         public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
-        public static final double HANGER_ALIGN_RADIANS_PER_SECOND = 0.1;
-        public static final double HANGER_ALIGN_FEET_PER_SECOND = 0.2;
+        public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 5;
+        public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }
 
     public static class ShooterConstants {
