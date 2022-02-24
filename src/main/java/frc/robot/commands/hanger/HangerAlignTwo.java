@@ -13,7 +13,7 @@ import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_ROTATION_VOLTAGE;
 public class HangerAlignTwo extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
-    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(HangerAlignTwo.class.getCanonicalName());
 
     public HangerAlignTwo(SwerveDrive swerveDrive) {
         swerve = swerveDrive;
