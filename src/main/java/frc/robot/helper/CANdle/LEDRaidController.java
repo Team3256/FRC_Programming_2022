@@ -3,24 +3,29 @@ package frc.robot.helper.CANdle;
 // get ranges and secions from constants file
 
 import com.ctre.phoenix.led.CANdle;
-import frc.robot.Constants;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import frc.robot.helper.CANdle.helpers.LEDRange;
+import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.POKERFACE_ANGLE_MARGIN_OF_ERROR;
 import static frc.robot.Constants.CANdleConstants.*;
 
 public class LEDRaidController {
     private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
 
     boolean updateQueued = false;
+
     CANdle candle;
 
+    SwerveDrive swerveDrive;
+
     // constructor
-    public LEDRaidController(CANdle candle) {
+    public LEDRaidController(CANdle candle, SwerveDrive swerveDrive) {
         this.candle = candle;
+        this.swerveDrive = swerveDrive;
     }
 
     /**
@@ -65,8 +70,16 @@ public class LEDRaidController {
     }
 
     private boolean isSpoofed(LEDRange range){
-        //Does Math to calc if spoofed based on rotation
-        return false;
+
+        // 180 + Robot Heading, wrapping around if necessary
+        double robotInverseHeading0to360 = (swerveDrive.getGyroscopeRotation().getDegrees() + 180) % 360 ;
+        if (robotInverseHeading0to360 < 0)
+            robotInverseHeading0to360 += 360;
+
+        if ( Math.abs(robotInverseHeading0to360 - range.degreesFromForward) <= POKERFACE_ANGLE_MARGIN_OF_ERROR)
+            return false;
+        else
+            return true;
     }
 
     private int fromVirtualToGlobal(LEDRange range,Section section, int virtualAddress){

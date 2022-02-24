@@ -248,12 +248,15 @@ public final class Constants {
 
         //Defines sRanges
         public static final LEDRange[] RANGES = {
-                new LEDRange(0, 10),
-                new LEDRange(10,15)
+                new LEDRange(0, 10, 0),
+                new LEDRange(10,15, 180)
         };
     }
     public static class PatternGeneratorConstants{
         public static final Color RED_BALL_COLOR = Color.fromRGB(1,0,0);
         public static final Color BLUE_BALL_COLOR = Color.fromRGB(0,0,1);
     }
+
+    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+
 }

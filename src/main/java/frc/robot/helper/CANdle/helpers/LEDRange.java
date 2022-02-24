@@ -14,10 +14,16 @@ public class LEDRange {
     public int upper;
 
     /**
+     * Degrees of range from the forward direction (+ is clockwise)
+     */
+    public double degreesFromForward;
+
+    /**
      * @param lower Inclusive Index of LED
      * @param upper Exclusive Index of LED
+     * @param degreesFromForward Degrees of range from the forward direction (+ is clockwise)
      */
-    public LEDRange(int lower, int upper) {
+    public LEDRange(int lower, int upper, double degreesFromForward) {
         if (lower > upper) {
             logger.warning(String.format("Lower bound %d is greater than upper bound %d, assigning both to upper", lower, upper));
             this.lower = upper;
@@ -26,6 +32,7 @@ public class LEDRange {
             this.lower = lower;
             this.upper = upper;
         }
+        this.degreesFromForward = degreesFromForward;
     }
     public int getLength(){
         return upper-lower;
