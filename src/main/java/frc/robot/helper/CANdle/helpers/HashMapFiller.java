@@ -5,6 +5,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class HashMapFiller {
+
+    /**
+     * @param entries Entries defined via entry(), in order to initialize HashMap. (Ex. entry(Key, Value) )
+     * @return New LinkedHashMap of entries provided
+     */
     public static <K,V> LinkedHashMap<K,V> populateLinkedHashMap(Map.Entry<K, V>... entries){
 
         LinkedHashMap<K,V> outputHashMap = new LinkedHashMap<>();
@@ -14,6 +19,11 @@ public class HashMapFiller {
         }
         return outputHashMap;
     }
+
+    /**
+     * @param entries Entries defined via entry(), in order to initialize HashMap. (Ex. entry(Key, Value) )
+     * @return New HashMap of entries provided
+     */
     public static <K,V> HashMap<K,V> populateHashMap(Map.Entry<K, V>... entries){
 
         HashMap<K,V> outputHashMap = new HashMap<>();

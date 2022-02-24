@@ -18,7 +18,6 @@ public class BallColorPatternGenerator implements PatternGenerator {
             entry(NONE, Color.off)
     );
 
-
     BallColor ball1Color = BallColor.NONE;
     BallColor ball2Color = BallColor.NONE;
 
@@ -38,7 +37,7 @@ public class BallColorPatternGenerator implements PatternGenerator {
             return ledInstructions;
         }
 
-        //Deal with Odd / Even LED Counts
+        // Deal with Odd / Even LED Counts
         int ball1SectionLen = ledCount / 2;
         int ball2Sectionlen = ledCount % 2 == 0 ? ledCount / 2 : ledCount / 2 +1;
 
@@ -55,6 +54,5 @@ public class BallColorPatternGenerator implements PatternGenerator {
     public enum BallColor {
         RED, BLUE, NONE
     }
-
 }
 

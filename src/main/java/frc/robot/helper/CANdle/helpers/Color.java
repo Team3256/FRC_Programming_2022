@@ -11,12 +11,12 @@ public class Color {
     }
 
     public LEDInstruction toLedInstruction(int startIdx, int count){
-        return new LEDInstruction(this ,startIdx, count);
+        return new LEDInstruction(this, startIdx, count);
     }
 
-    public static final Color off = new Color(0,0,0, 0);
+    public static final Color off = new Color(0, 0, 0, 0);
 
     public static Color fromRGB(int r, int g, int b){
-        return new Color(r,g,b,0);
+        return new Color(r, g, b, 0);
     }
 }
