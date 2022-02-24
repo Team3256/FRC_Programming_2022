@@ -6,16 +6,15 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.helper.CANdle.Color;
-import frc.robot.helper.CANdle.HashMapFiller;
-import frc.robot.helper.CANdle.LEDRange;
+import frc.robot.helper.CANdle.helpers.Color;
+import frc.robot.helper.CANdle.helpers.HashMapFiller;
+import frc.robot.helper.CANdle.helpers.LEDRange;
 import frc.robot.helper.CANdle.PatternGenerators.AutoAimPatternGenerator;
 import frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerator;
 import frc.robot.helper.CANdle.PatternGenerators.PatternGenerator;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Vector;
 import java.util.logging.Level;
 
 import static frc.robot.Constants.CANdleConstants.Section.*;

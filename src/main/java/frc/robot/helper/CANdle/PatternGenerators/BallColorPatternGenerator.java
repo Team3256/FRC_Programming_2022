@@ -1,8 +1,8 @@
 package frc.robot.helper.CANdle.PatternGenerators;
 
-import frc.robot.helper.CANdle.Color;
-import frc.robot.helper.CANdle.HashMapFiller;
-import frc.robot.helper.CANdle.LEDInstruction;
+import frc.robot.helper.CANdle.helpers.Color;
+import frc.robot.helper.CANdle.helpers.HashMapFiller;
+import frc.robot.helper.CANdle.helpers.LEDInstruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
