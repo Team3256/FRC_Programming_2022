@@ -11,13 +11,12 @@ import frc.robot.helper.CANdle.helpers.HashMapFiller;
 import frc.robot.helper.CANdle.helpers.LEDRange;
 import frc.robot.helper.CANdle.PatternGenerators.AutoAimPatternGenerator;
 import frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerator;
-import frc.robot.helper.CANdle.PatternGenerators.PatternGenerator;
+import frc.robot.helper.CANdle.helpers.LEDSectionAttributes;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
-import static frc.robot.Constants.CANdleConstants.Section.*;
+import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
 import static java.util.Map.entry;
 
 public final class Constants {
@@ -224,29 +223,21 @@ public final class Constants {
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
     }
     public static class CANdleConstants{
-        public enum Section {
+        public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM
         }
 
         public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
         public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
 
-        //Defines order of Sections (Thus LinkedHashMap)
-        public static final LinkedHashMap<Section, PatternGenerator> SECTIONS_TO_GENERATOR =
+        // Defines order of Sections (Thus LinkedHashMap)
+        public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
             HashMapFiller.populateLinkedHashMap(
-                entry(BALL_COLOR, BALL_PATTERN),
-                entry(AUTO_AIM, AUTO_AIM_PATTERN)
+                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
             );
 
-        //All Doubles Must add to 1
-        public static final HashMap<Section, Double> SECTIONS_TO_PERCENTAGE =
-                HashMapFiller.populateHashMap(
-                    entry(BALL_COLOR, 0.7),
-                    entry(AUTO_AIM, 0.3)
-                );
-
-
-        //Defines sRanges
+        // Defines Ranges
         public static final LEDRange[] RANGES = {
                 new LEDRange(0, 10, 0),
                 new LEDRange(10,15, 180)

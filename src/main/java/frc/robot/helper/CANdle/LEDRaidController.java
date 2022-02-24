@@ -22,7 +22,6 @@ public class LEDRaidController {
 
     SwerveDrive swerveDrive;
 
-    // constructor
     public LEDRaidController(CANdle candle, SwerveDrive swerveDrive) {
         this.candle = candle;
         this.swerveDrive = swerveDrive;
@@ -48,21 +47,21 @@ public class LEDRaidController {
 
     private void update() {
         for (LEDRange range: RANGES){
-            for (Section section: SECTIONS_TO_GENERATOR.keySet()){
+            for (LEDSectionName ledSectionName : SECTIONS.keySet()){
 
-                //Gets the instruction array from Pattern Generator
+                // Gets the instruction array from Pattern Generator
                 // +0.5 needed to find closest int for a given percentage
                 ArrayList<LEDInstruction> instructions =
-                        SECTIONS_TO_GENERATOR.get(section)
+                        SECTIONS.get(ledSectionName).patternGenerator
                                 .getLEDInstructions(
                                         isSpoofed(range),
-                                        (int)(range.getLength() * SECTIONS_TO_PERCENTAGE.get(section) + 0.5));
+                                        (int)(range.getLength() * SECTIONS.get(ledSectionName).getPercentageRange() + 0.5));
 
-                //Runs Instructions for a given Section
+                // Runs Instructions for a given Section
                 for (LEDInstruction instruction: instructions){
                     candle.setLEDs(
                             instruction.color.r, instruction.color.g, instruction.color.b, instruction.color.w,
-                            fromVirtualToGlobal(range, section, instruction.startIdx), instruction.count
+                            fromVirtualToGlobal(range, ledSectionName, instruction.startIdx), instruction.count
                     );
                 }
             }
@@ -80,19 +79,8 @@ public class LEDRaidController {
             return true;
     }
 
-    private int fromVirtualToGlobal(LEDRange range,Section section, int virtualAddress){
-
-        double startingPercentage = 0;
-        //Find the Starting Percentage of Range
-        for (Section sectionSearch: SECTIONS_TO_GENERATOR.keySet()){
-            if (section == sectionSearch){
-                break;
-            } else {
-                startingPercentage += SECTIONS_TO_PERCENTAGE.get(sectionSearch);
-            }
-        }
-
-        int sectionStartOffsetInRange = (int)(range.getLength() * startingPercentage + 0.5);
+    private int fromVirtualToGlobal(LEDRange range, LEDSectionName ledSectionName, int virtualAddress){
+        int sectionStartOffsetInRange = (int)(range.getLength() * SECTIONS.get(ledSectionName).percentageStart + 0.5);
 
         return range.lower + sectionStartOffsetInRange + virtualAddress;
     }

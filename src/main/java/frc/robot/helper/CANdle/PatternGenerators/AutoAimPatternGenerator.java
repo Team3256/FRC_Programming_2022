@@ -5,8 +5,13 @@ import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import java.util.ArrayList;
 
 public class AutoAimPatternGenerator implements PatternGenerator {
+
     @Override
     public ArrayList<LEDInstruction> getLEDInstructions(boolean isSpoofed, int ledCount) {
         return null;
+    }
+
+    public void update(){
+
     }
 }
