@@ -3,15 +3,21 @@ package frc.robot.commands.hanger;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.LimelightAutocorrectStepCommand;
+import frc.robot.helper.Limelight;
 import frc.robot.helper.MuxedColorSensor;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
 
 public class HangerAlignOne extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
+    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
+
     public HangerAlignOne(SwerveDrive swerveDrive) {
         swerve = swerveDrive;
         // Use addRequirements() here to declare subsystem dependencies.
@@ -32,6 +38,7 @@ public class HangerAlignOne extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        logger.log(Level.INFO, "Hanger Align Part One Complete.");
         CommandScheduler.getInstance().schedule(new HangerAlignTwo(swerve));
     }
 

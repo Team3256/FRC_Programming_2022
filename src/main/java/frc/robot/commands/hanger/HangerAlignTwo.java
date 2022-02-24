@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.helper.MuxedColorSensor;
 import frc.robot.subsystems.SwerveDrive;
 
+import java.util.logging.Level;
+
 import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
 
 public class HangerAlignTwo extends CommandBase {
@@ -30,7 +32,7 @@ public class HangerAlignTwo extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
+        logger.log(Level.INFO, "Hanger Align Part One Complete.");
     }
 
     // Returns true when the command should end.
