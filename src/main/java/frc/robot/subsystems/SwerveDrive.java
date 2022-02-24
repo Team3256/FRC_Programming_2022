@@ -242,14 +242,21 @@ public class SwerveDrive extends SubsystemBase {
         outputToDashboard();
     }
 
-    public void forward(double feet){
-        drive(new ChassisSpeeds(0,feet,0));
+    public void forward(double meters){
+        drive(new ChassisSpeeds(0,meters,0));
     }
-    public void backward(double feet){
-        drive(new ChassisSpeeds(0,-feet,0));
+    public void backward(double meters){
+        drive(new ChassisSpeeds(0,-meters,0));
     }
     public void pivotTurn(double rad){
         drive( new ChassisSpeeds(0,0,rad));
     }
-    
+    public void fixedRightRotate(){
+        frontLeftModule.set(deadzoneMotor(5), 0);
+        backLeftModule.set(deadzoneMotor(5), 0);
+    }
+    public void fixedLeftRotate(){
+        frontLeftModule.set(deadzoneMotor(5), 0);
+        backLeftModule.set(deadzoneMotor(5), 0);
+    }
 }
