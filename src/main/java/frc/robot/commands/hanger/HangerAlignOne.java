@@ -1,6 +1,8 @@
 package frc.robot.commands.hanger;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.LimelightAutocorrectStepCommand;
 import frc.robot.helper.MuxedColorSensor;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
@@ -30,13 +32,13 @@ public class HangerAlignOne extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
-        intake.off();
+        CommandScheduler.getInstance().schedule(new HangerAlignTwo(swerve));
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return
+        return colorSensor.colorsMatch(colorSensor.getLeftAlignSensorColor(), TAPE_COLOR)||
+                colorSensor.colorsMatch(colorSensor.getRightAlignSensorColor(), TAPE_COLOR);
     }
 }

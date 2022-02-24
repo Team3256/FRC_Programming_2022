@@ -61,7 +61,7 @@ public class MuxedColorSensor {
         ColorMatchResult result = colorMatcher.matchColor(color1);
         return 1-result.confidence<MAX_CONFIDENCE_DEVIATION;
     }
-    
+
     /**
      * Changes the Mux to Select certain I2C port
      * @param port Port from 0..9
