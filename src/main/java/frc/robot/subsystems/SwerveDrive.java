@@ -259,4 +259,7 @@ public class SwerveDrive extends SubsystemBase {
         frontLeftModule.set(deadzoneMotor(5), 0);
         backLeftModule.set(deadzoneMotor(5), 0);
     }
+    public void stop(){
+        drive(new ChassisSpeeds(0,0,0));
+    }
 }
