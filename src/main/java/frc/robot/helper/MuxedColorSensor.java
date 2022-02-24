@@ -56,20 +56,21 @@ public class MuxedColorSensor {
         return rightAlignColorSensor.getColor();
     }
 
-    public boolean colorsMatch(Color color1, Color color2){
+    private boolean colorsMatch(Color color1, Color color2){
         ColorMatch colorMatcher = new ColorMatch();
         colorMatcher.addColorMatch(color2);
         ColorMatchResult result = colorMatcher.matchColor(color1);
         return (1-result.confidence)<MAX_CONFIDENCE_DEVIATION;
     }
 
+    public boolean leftAlignSensorDetectsTape(){
+        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR);
+    }
+
     public boolean rightAlignSensorDetectsTape(){
         return colorsMatch(getRightAlignSensorColor(), TAPE_COLOR);
     }
 
-    public boolean leftAlignSensorDetectsTape(){
-        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR);
-    }
     /**
      * Changes the Mux to Select certain I2C port
      * @param port Port from 0..9
