@@ -34,7 +34,7 @@ public class HangerAlignTwo extends CommandBase {
             swerve.fixedLeftRotate(HANGER_ALIGN_ROTATION_VOLTAGE);
         }
         else if (colorSensor.rightAlignSensorDetectsTape()){
-            swerve.fixedLeftRotate(HANGER_ALIGN_ROTATION_VOLTAGE);
+            swerve.fixedRightRotate(HANGER_ALIGN_ROTATION_VOLTAGE);
         }
     }
 
