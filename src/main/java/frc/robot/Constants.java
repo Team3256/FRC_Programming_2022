@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
 import java.util.logging.Level;
@@ -233,7 +234,11 @@ public final class Constants {
         public static final double EXTEND_WAIT = 0; //in Seconds
         public static final double RETRACT_WAIT = 0.0; //in Seconds
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
-    
+
+        public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
+        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
+        public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }
 
     public static class ShooterConstants {
