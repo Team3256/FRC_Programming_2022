@@ -1,5 +1,6 @@
 package frc.robot.commands.hanger;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.helper.Limelight;
@@ -29,11 +30,14 @@ public class HangerAlignOne extends CommandBase {
     @Override
     public void execute() {
         //move swerve backwards
+        swerve.drive(new ChassisSpeeds(0, -50, 0));
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        //stop
+        swerve.drive(new ChassisSpeeds(0,0,0));
         logger.log(Level.INFO, "Hanger Align Part One Complete.");
         CommandScheduler.getInstance().schedule(new HangerAlignTwo(swerve));
     }
