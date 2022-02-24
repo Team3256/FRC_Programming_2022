@@ -45,7 +45,7 @@ public class HangerAlignOne extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return colorSensor.colorsMatch(colorSensor.getLeftAlignSensorColor(), TAPE_COLOR)||
-                colorSensor.colorsMatch(colorSensor.getRightAlignSensorColor(), TAPE_COLOR);
+        return colorSensor.leftAlignSensorDetectsTape()||
+                colorSensor.rightAlignSensorDetectsTape();
     }
 }
