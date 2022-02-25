@@ -38,10 +38,10 @@ public class FileUtil {
     }
     public static void createFileIfDoesNotExist(String fileName){
         String filePath = getFilePath(fileName);
-        File polynomialFile = new File(filePath);
-        if (!polynomialFile.isFile()) {
+        File file = new File(filePath);
+        if (!file.isFile()) {
             try {
-                polynomialFile.createNewFile();
+                file.createNewFile();
             } catch (IOException e) {
                 logger.log(Level.WARNING, e.getMessage(), e);
             }
@@ -49,5 +49,15 @@ public class FileUtil {
     }
     public static String getFilePath(String fileName){
         return Paths.get(Filesystem.getDeployDirectory().toString(),fileName).toString();
+    }
+    public static boolean fileExists(String fileName){
+        String filePath = getFilePath(fileName);
+        File file = new File(filePath);
+        return file.isFile();
+    }
+    public static void deleteFile(String fileName){
+        String filePath = getFilePath(fileName);
+        File file = new File(filePath);
+        file.delete();
     }
 }

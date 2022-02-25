@@ -42,7 +42,14 @@ public class PolynomialTest {
     }
 
     @Test
-    public void checkPolynomialDefault(){
-        Polynomial testReadPolynomial;
+    public void checkDNEFileRead(){
+        Polynomial testReadPolynomial = (Polynomial) FileUtil.readObjectFromFile("NonExistent.txt");
+        assertTrue(testReadPolynomial==null);
+    }
+
+    @Test
+    public void checkCreateFile(){
+        Polynomial testWritePolynomial = new Polynomial(new double[]{3,2,5,6});
+        FileUtil.writeObjectToFile("NewFile.txt", testWritePolynomial);
     }
 }
