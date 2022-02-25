@@ -42,8 +42,8 @@ public final class Constants {
         public static final double TURRET_TOLERANCE_TX = 0.5;
         public static final double GEAR_RATIO = 0.25;
     }
-    public static class FeederConstants {
-        public static final double DEFAULT_FEEDER_SPEED = 50;
+    public static class TransferConstants {
+        public static final double DEFAULT_TRANSFER_SPEED = 50;
         public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
