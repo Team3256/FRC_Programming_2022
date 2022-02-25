@@ -44,7 +44,8 @@ public final class Constants {
     }
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 50;
-        public static final int MAX_BALL_COUNT = 2; //change later
+        public static final int MAX_BALL_COUNT = 2;
+        public static final int STARTING_BALL_COUNT = 1;
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;

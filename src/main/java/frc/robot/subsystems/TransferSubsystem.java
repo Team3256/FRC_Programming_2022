@@ -22,14 +22,15 @@ import java.util.logging.Logger;
 import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.TransferConstants;
+import static frc.robot.Constants.TransferConstants.STARTING_BALL_COUNT;
 
 public class TransferSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(TransferSubsystem.class.getCanonicalName());
 
     private final TalonFX transferMotor;
-    private DigitalInput transferStartIRSensor;
-    private DigitalInput transferStopIRSensor;
-    private DigitalInput transferEndIRSensor;
+    private final DigitalInput transferStartIRSensor;
+    private final DigitalInput transferStopIRSensor;
+    private final DigitalInput transferEndIRSensor;
 
 
     private double currentBallCount;
@@ -41,11 +42,12 @@ public class TransferSubsystem extends SubsystemBase {
         transferStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);
         transferEndIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_END_CHANNEL);
 
-        SmartDashboard.setDefaultNumber("Starting Ball Count", TransferConstants.MAX_BALL_COUNT);
-        currentBallCount = SmartDashboard.getNumber("Starting Ball Count", TransferConstants.MAX_BALL_COUNT);
+        SmartDashboard.setDefaultNumber("Starting Ball Count", STARTING_BALL_COUNT);
+        currentBallCount = SmartDashboard.getNumber("Starting Ball Count", TransferConstants.STARTING_BALL_COUNT);
 
         transferIndexSetup();
         logger.info("Transfer Initialized");
+        logger.config("Starting Ball Count Initialized to: " + currentBallCount);
     }
     public void on(){
         transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.DEFAULT_TRANSFER_SPEED);
@@ -83,18 +85,11 @@ public class TransferSubsystem extends SubsystemBase {
 
         new Button(this::isTransferStopIRBroken).whenReleased(new TransferOff(this));
 
-        new Button(this::isTransferEndIRBroken).whenActive(new InstantCommand(() -> {
-            currentBallCount--;
-        }));
+        new Button(this::isTransferEndIRBroken).whenActive(new InstantCommand(() -> currentBallCount--));
     }
+
     public void off(){
         transferMotor.set(TalonFXControlMode.PercentOutput, 0);
         logger.info("Transfer Off");
-    }
-
-    @Override
-    public void periodic() {
-        super.periodic();
-        CommandScheduler.getInstance().run();
     }
 }
