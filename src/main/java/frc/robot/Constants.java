@@ -93,8 +93,8 @@ public final class Constants {
         public static double TRANSLATION_FF = 0.3;
 
         public static double P_THETA_CONTROLLER = 7.5;
-        public static double I_THETA_CONTROLLER = 0.06;
-        public static double D_THETA_CONTROLLER = 1;
+        public static double I_THETA_CONTROLLER = 0.02;
+        public static double D_THETA_CONTROLLER = 1.2;
     }
 
     public static class IDConstants {

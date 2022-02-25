@@ -48,6 +48,16 @@ public class TrajectoryFactory {
         return getCommand(trajectory);
     }
 
+    public Command createPathPlannerCommand(String path, double max_vel, double max_accel) {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
+        return getCommand(trajectory);
+    }
+
+    public Command createPathPlannerCommand(String path, double max_vel, double max_accel, double thetakp, double thetaki, double thetakd) {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
+        return getCommand(trajectory, thetakp, thetaki, thetakd);
+    }
+
     public Command createCommand(String jsonFilePath) {
         Trajectory trajectory = generateTrajectoryFromJSON(jsonFilePath);
         ThetaSupplier thetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds());
@@ -153,9 +163,13 @@ public class TrajectoryFactory {
     }
 
     private Command getCommand(PathPlannerTrajectory trajectory) {
+        return getCommand(trajectory, P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER);
+    }
+
+    private Command getCommand(PathPlannerTrajectory trajectory, double thetakp, double thetaki, double thetakd) {
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
-                        P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
+                        thetakp, thetaki, thetakd, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-2 * Math.PI, 2 * Math.PI);
 
         return new PPTrajectoryFollowCommand(

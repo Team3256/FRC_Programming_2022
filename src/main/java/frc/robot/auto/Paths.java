@@ -12,17 +12,33 @@ public class Paths {
     }
 
     /* --------------------------------------------- */
-    /* |               ANYWHERE: TARMAC            | */
+    /* |          ANYWHERE: TARMAC (TAXIS)         | */
     /* --------------------------------------------- */
 
     public static Command get0BallTaxi() {
-        Command taxiSegment = trajectoryFactory.createPathPlannerCommand("1BallTaxi-StartAnywhere");
+        Command taxiSegment = trajectoryFactory.createPathPlannerCommand(
+                "1BallTaxi-StartTarmac",
+                1,
+                1,
+                1,
+                0,
+                0
+        );
+
         return taxiSegment
                 .andThen(new WaitCommand(0.1));
     }
 
     public static Command get1BallTaxi() {
-        Command taxiSegment = trajectoryFactory.createPathPlannerCommand("1BallTaxi-StartAnywhere");
+        Command taxiSegment = trajectoryFactory.createPathPlannerCommand(
+                "1BallTaxi-StartTarmac",
+                1,
+                1,
+                1,
+                0,
+                0
+        );
+
         return taxiSegment
                 .andThen(new WaitCommand(1.5)); // shoot
     }

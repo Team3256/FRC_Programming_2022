@@ -23,6 +23,12 @@ public class AutoChooser {
         Command doNothing = new DefaultDriveCommandRobotOriented(drive);
         autoChooser.setDefaultOption("Do Nothing", doNothing);
 
+        Command zeroBallTaxi = Paths.get0BallTaxi();
+        autoChooser.addOption("0 Ball Taxi | Start Tarmac | Any Side", zeroBallTaxi);
+
+        Command oneBallTaxi = Paths.get1BallTaxi();
+        autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
+
         Command twoBallTarmac2BallSide = Paths.get2BallStartTarmac2BallSide();
         autoChooser.addOption("2 Ball | Start Tarmac | 2 Ball Side", twoBallTarmac2BallSide);
 
