@@ -90,7 +90,7 @@ public class RobotContainer {
         SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -127,11 +127,11 @@ public class RobotContainer {
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
         // "B" button increases the preset number
-        new Button(controller::getXButton)
+        new Button(operatorController::getXButton)
                 .whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
 
         rightBumper.whenHeld(new IntakeOn(intake));
-        bButton.whenHeld(new SetShooterFromPresetNumber(flywheelSubsystem));
+        operatorBButton.whenHeld(new SetShooterFromPresetNumber(flywheelSubsystem));
     }
 
     public Command getAutonomousCommand() {
