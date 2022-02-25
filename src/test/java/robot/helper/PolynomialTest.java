@@ -51,5 +51,12 @@ public class PolynomialTest {
     public void checkCreateFile(){
         Polynomial testWritePolynomial = new Polynomial(new double[]{3,2,5,6});
         FileUtil.writeObjectToFile("NewFile.txt", testWritePolynomial);
+        assertTrue(FileUtil.fileExists("NewFile.txt"));
+    }
+
+    @Test
+    public void checkDeleteFile(){
+        FileUtil.deleteFile("NewFile.txt");
+        assertFalse(FileUtil.fileExists("NewFile.txt"));
     }
 }
