@@ -23,10 +23,7 @@ public class SetShooterFromTriggerDebug extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if (interrupted) {
-            flywheelSubsystem.stop();
-            flywheelSubsystem.stopHood();
-        }
+        flywheelSubsystem.stopFlywheel();
     }
 
     @Override

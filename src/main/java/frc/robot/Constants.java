@@ -4,12 +4,25 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
+import frc.robot.helper.CANdle.helpers.*;
+import frc.robot.helper.CANdle.PatternGenerators.*;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.hardware.TalonConfiguration;
+import java.util.LinkedHashMap;
+import frc.robot.hardware.TalonConfiguration;
 import java.util.logging.Level;
 
+import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
+import static java.util.Map.entry;
+
 public final class Constants {
+
+    public static final boolean DEBUG = false;
+
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
@@ -17,9 +30,9 @@ public final class Constants {
         public static final int POLYNOMIAL_DEGREE = 5;
     }
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 29.5;
+        public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 30;
+        public static final double MOUNTING_ANGLE_DEG = 43;
     }
     public static class TurretConstants {
         public static final double kP = 0;
@@ -27,11 +40,14 @@ public final class Constants {
         public static final double kD = 0;
         public static final double DEFAULT_TURRET_SPEED = 50;
         public static final double TURRET_TOLERANCE_TX = 0.5;
+        public static final double GEAR_RATIO = 0.25;
     }
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
+        public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
+        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
@@ -49,6 +65,32 @@ public final class Constants {
         private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
                 Math.hypot(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
+        //Swerve Turret
+
+        public static final boolean SWERVE_TURRET_TUNING = false;
+
+
+        //Non-final Allow for Changing via Smart Dashboard
+        public static double SWERVE_TURRET_KP = 0.1;
+        public static double SWERVE_TURRET_KI = 0;
+        public static double SWERVE_TURRET_KD = 0;
+
+        public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
+        public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
+        public static double SWERVE_TURRET_STATIONARY_KD = 0;
+
+        public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
+
+        public static double SWERVE_TURRET_OPERATOR_DEADZONE = 0.4;
+        public static double SWERVE_TURRET_OPERATOR_INFLUENCE = 1;
+
+        public static final double TURN_TOLERANCE = 0.1;
+        public static final double TURN_RATE_TOLERANCE = 1;
+
+        // TELEOP
+        public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
+
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
@@ -93,8 +135,6 @@ public final class Constants {
         public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
 
-
-
         public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
       
         public static final int[] SPARK_MAX_IDS = new int[]{};
@@ -123,7 +163,21 @@ public final class Constants {
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 0;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 1;
+
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 2; //change later
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
+        public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
+
+        // I2C
+        public static final byte I2C_MUX_ADDRESS = 0x70;
+        public static final int I2C_COLOR_SENSOR_FIXED_ADDRESS = 0x52;
+
+
+        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 0;
+        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
+
 
     }
 
@@ -173,7 +227,17 @@ public final class Constants {
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
-        public static final boolean INVERT_MOTOR = false;
+        public static final InvertType INVERT_TYPE = InvertType.None;
+
+        public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
+                HANGER_MASTER_TALON_PID_P,
+                HANGER_MASTER_TALON_PID_I,
+                HANGER_MASTER_TALON_PID_D,
+                HANGER_MASTER_TALON_PID_F
+        );
+
+        public static TalonConfiguration MASTER_CONFIG = new TalonConfiguration(PIDF_CONSTANTS, INVERT_TYPE, NeutralMode.Brake);
+        public static TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
@@ -186,7 +250,11 @@ public final class Constants {
         public static final double EXTEND_WAIT = 0; //in Seconds
         public static final double RETRACT_WAIT = 0.0; //in Seconds
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
-    
+
+        public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
+        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
+        public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }
 
     public static class ShooterConstants {
@@ -203,6 +271,12 @@ public final class Constants {
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
 
+        //PID
+        public static final double SHOOTER_MASTER_TALON_PID_P = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_I = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_D = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_F = 0;
+
         public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
         public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
 
@@ -215,4 +289,35 @@ public final class Constants {
         // Presets
         public static final int MAX_PRESETS = 6; // TODO: Set max possible presets that we have.
     }
+    public static class CANdleConstants{
+        public enum LEDSectionName {
+            BALL_COLOR, AUTO_AIM
+        }
+
+        public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
+        public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+
+        // Defines order of Sections (Thus LinkedHashMap)
+        public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
+            HashMapFiller.populateLinkedHashMap(
+                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+            );
+
+        // Defines Ranges
+        public static final LEDRange[] RANGES = {
+                new LEDRange(0, 10, 0),
+                new LEDRange(10,15, 180)
+        };
+    }
+    public static class PatternGeneratorConstants{
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
+
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
+    }
+
+    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
+
 }

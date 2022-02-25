@@ -7,9 +7,19 @@ import frc.robot.helper.Limelight;
 public class TestLimelight extends CommandBase {
 
     @Override
+    public void initialize() {
+        Limelight.enable();
+    }
+
+    @Override
     public void execute() {
         SmartDashboard.putNumber("distance to target:", Limelight.getTunedDistanceToTarget());
         SmartDashboard.putNumber("(tuned) distance to target:", Limelight.getRawDistanceToTarget());
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        Limelight.disable();
     }
 
     @Override
