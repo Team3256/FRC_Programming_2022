@@ -1,8 +1,11 @@
-package frc.robot.helper;
+package frc.robot.hardware;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.helper.FileUtil;
+import frc.robot.helper.Polynomial;
+
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
