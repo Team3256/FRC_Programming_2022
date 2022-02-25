@@ -46,6 +46,15 @@ public final class Constants {
         public static final double DEFAULT_TRANSFER_SPEED = 50;
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
+
+        public static final int MIN_BALL_COLOR_PROXIMITY = 5; // Raw Proximity value 0 - 2047
+
+        public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
+        public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
+
+        public static final double MAX_BALL_COLOR_DEVIATION = 0.01;
+
+
     }
     public static class SwerveConstants {
         public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
@@ -253,7 +262,7 @@ public final class Constants {
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
 
         public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
-        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final double MAX_TAPE_COLOR_CONFIDENCE_DEVIATION = 0.01;
         public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
         public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }

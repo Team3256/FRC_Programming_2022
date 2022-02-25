@@ -1,5 +1,6 @@
 package frc.robot.helper.CANdle.PatternGenerators;
 
+import frc.robot.helper.BallColor;
 import frc.robot.helper.CANdle.helpers.LEDColor;
 import frc.robot.helper.CANdle.helpers.HashMapFiller;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static frc.robot.Constants.PatternGeneratorConstants.*;
-import static frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerator.BallColor.*;
+import static frc.robot.helper.BallColor.*;
 import static java.util.Map.entry;
 
 public class BallColorPatternGenerator implements PatternGenerator {
@@ -49,10 +50,6 @@ public class BallColorPatternGenerator implements PatternGenerator {
 
     private LEDInstruction generateLEDInstruction(BallColor ballColor, int startIdx, int endIdx) {
         return colorToConstantColor.get(ballColor).toLedInstruction(startIdx, endIdx);
-    }
-
-    public enum BallColor {
-        RED, BLUE, NONE
     }
 }
 
