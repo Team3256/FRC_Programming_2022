@@ -24,7 +24,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 public class FlywheelSubsystem extends SubsystemBase {
     private int currentPresetNumber = 0;
     private ArrayList<ShooterPreset> allPresets = new ArrayList<ShooterPreset>();
-    private ShooterPreset currentPreset;
 
     private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
 
@@ -282,7 +281,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void shootSelectedPreset() {
-        currentPreset = getPreset();
+        ShooterPreset currentPreset = getPreset();
         this.setSpeed(currentPreset.currentState.rpmVelocity);
         this.setHoodAngle(currentPreset.currentState.hoodAngle);
     }
