@@ -292,7 +292,6 @@ public final class Constants {
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
 
         // Presets
-        public static final int MAX_PRESETS = 6; // TODO: Set max possible presets that we have.
         public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
             new ShooterPreset(100, 1.23, "Default 1"), // TODO: Change this to accurate numbers (given testing)
             new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
