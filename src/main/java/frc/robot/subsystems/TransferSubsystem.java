@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.MuxedColorSensor;
 import frc.robot.hardware.TalonFXFactory;
-import frc.robot.commands.transfer.TransferOn;
+import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferOff;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,7 +45,8 @@ public class TransferSubsystem extends SubsystemBase {
     private int redColorCountVote = 0;
 
     private boolean isDetectingBallColor = false;
-    private boolean isReversedRunning = false;
+    private boolean isReversed = false;
+    private boolean isAutoIndexEnabled = true;
 
     DriverStation.Alliance alliance;
 
@@ -78,20 +79,21 @@ public class TransferSubsystem extends SubsystemBase {
         logger.config("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
-    public void on(){
-        isReversedRunning = false;
+    public void forward(){
+        isReversed = false;
         transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.DEFAULT_TRANSFER_SPEED);
         logger.info("Transfer On");
     }
 
-    public void reverse(){
-        isReversedRunning = true;
-        transferMotor.set(TalonFXControlMode.PercentOutput, REVERSE_TRANSFER_SPEED);
-        logger.info("Transfer Reversed");
+    public void manualReverse(){
+        isReversed = true;
+        isAutoIndexEnabled = false;
+        transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
+        logger.info("Transfer Manually Reversed");
     }
 
     public void off(){
-        isReversedRunning = false;
+        isReversed = false;
         transferMotor.set(TalonFXControlMode.PercentOutput, 0);
         logger.info("Transfer Off");
     }
@@ -115,25 +117,25 @@ public class TransferSubsystem extends SubsystemBase {
     public void transferIndexSetup(){
 
         // Starts Index / Counting Process when First Detecting Ball
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversedRunning))
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
                 .whenActive(new ParallelCommandGroup(
                         new InstantCommand(this::ballIndexStart),
-                        new TransferOn(this)
+                        new TransferIndexForward(this)
                 ));
 
 
         // Stop Running Transfer when past end mark, also evaluates color
-        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversedRunning))
+        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversed))
                 .whenInactive(new ParallelCommandGroup(
                     new InstantCommand(this::ballIndexEnd),
                     new TransferOff(this)));
 
         // Subtract Balls shot out of shooter
-        new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversedRunning))
+        new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversed))
                 .whenInactive(new InstantCommand(this::removeShotBallFromIndex));
 
         // When Reversed, Subtract Balls that leave
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->isReversedRunning))
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()-> isReversed))
                 .whenActive(new InstantCommand(this::removeBallEjectedOutOfIntake));
     }
 

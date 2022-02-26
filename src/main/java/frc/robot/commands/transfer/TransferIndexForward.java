@@ -6,11 +6,15 @@ package frc.robot.commands.transfer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TransferSubsystem;
 
-public class TransferOn extends CommandBase {
+public class TransferIndexForward extends CommandBase {
 
     private final TransferSubsystem transfer;
 
-    public TransferOn(TransferSubsystem subsystem) {
+    /**
+     * If manually controlled, set as not interruptable, so that auto index commands don't take control.
+     * @param subsystem Transfer Subsystem
+     */
+    public TransferIndexForward(TransferSubsystem subsystem) {
         transfer = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
@@ -19,7 +23,12 @@ public class TransferOn extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        transfer.on();
+        transfer.forward();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        transfer.off();
     }
 
     // Returns true when the command should end.
