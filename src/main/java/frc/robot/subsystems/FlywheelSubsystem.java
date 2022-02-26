@@ -71,16 +71,10 @@ public class FlywheelSubsystem extends SubsystemBase {
       
         getVelocityInterpolatingFunctionFromPoints();
         getHoodAngleInterpolatingFunctionFromPoints();
-
-        createPresets();
-    }
-
-    private void createPresets() {
-        // TODO: Create all presets
     }
 
     private ShooterPreset getPreset() {
-        return allPresets.get(currentPresetNumber);
+        return ALL_SHOOTER_PRESETS.get(currentPresetNumber);
     }
 
     /**
