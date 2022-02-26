@@ -29,8 +29,7 @@ import static frc.robot.Constants.CANdleConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.TransferConstants;
-import static frc.robot.Constants.TransferConstants.MIN_BALL_COLOR_PROXIMITY;
-import static frc.robot.Constants.TransferConstants.STARTING_BALL_COUNT;
+import static frc.robot.Constants.TransferConstants.*;
 import static frc.robot.helper.BallColor.*;
 
 public class TransferSubsystem extends SubsystemBase {
@@ -84,6 +83,11 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Transfer On");
     }
 
+    public void reverse(){
+        transferMotor.set(TalonFXControlMode.PercentOutput, REVERSE_TRANSFER_SPEED);
+        logger.info("Transfer Reversed");
+    }
+
     public boolean isTransferStartIRBroken() {
         return transferStartIRSensor.get();
     }
@@ -121,7 +125,7 @@ public class TransferSubsystem extends SubsystemBase {
         currentBallCount++;
 
         if(isFull()){
-            logger.info("Transfer is full");
+            logger.info("Indexing while Transfer is full!");
         }
     }
 

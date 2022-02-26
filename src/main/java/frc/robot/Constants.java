@@ -43,7 +43,8 @@ public final class Constants {
         public static final double GEAR_RATIO = 0.25;
     }
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 50;
+        public static final double DEFAULT_TRANSFER_SPEED = 0.5;
+        public static final double REVERSE_TRANSFER_SPEED = -0.5;
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
