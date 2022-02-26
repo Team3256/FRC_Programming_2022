@@ -20,16 +20,10 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.shooter.IncreasePresetForShooter;
-import frc.robot.commands.shooter.SetShooterFromPresetNumber;
-import frc.robot.subsystems.HangerSubsystem;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.Constants.SwerveConstants;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.hardware.Limelight;
+import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.awt.Robot;
