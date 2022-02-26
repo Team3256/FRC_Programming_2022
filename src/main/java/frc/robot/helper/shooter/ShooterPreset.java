@@ -6,7 +6,7 @@ public class ShooterPreset {
 
     /**
      * @param v velocity in rpm (velocity)
-     * @param t hoodAngle in radians (theta)
+     * @param t hoodAngle in motorSensorUnits (theta)
      * @param name preset name to be given to the operator on selection
      */
     public ShooterPreset(double v, double t, String name) {
