@@ -10,13 +10,13 @@ import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
+import frc.robot.helper.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -293,22 +293,3 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 }
 
-class ShooterState {
-    public double rpmVelocity;
-    public double hoodAngle;
-
-    public ShooterState(double v, double t) {
-        this.rpmVelocity = v;
-        this.hoodAngle = t;
-    }
-}
-
-class ShooterPreset {
-    public ShooterState currentState;
-    public double distanceToTarget;
-
-    public ShooterPreset(double v, double t, double d) {
-        currentState = new ShooterState(v, t);
-        this.distanceToTarget = d;
-    }
-}
