@@ -103,15 +103,15 @@ public class TransferSubsystem extends SubsystemBase {
     public void transferIndexSetup(){
         new Trigger(this::isTransferStartIRBroken)
                 .whenActive(new ParallelCommandGroup(
-                        new InstantCommand(()->ballIndexStart()),
+                        new InstantCommand(this::ballIndexStart),
                         new TransferOn(this)
                 ));
 
         new Trigger(this::isTransferStopIRBroken).whenInactive(new ParallelCommandGroup(
-                new InstantCommand(()-> ballIndexEnd()),
+                new InstantCommand(this::ballIndexEnd),
                 new TransferOff(this)));
 
-        new Trigger(this::isTransferEndIRBroken).whenInactive(new InstantCommand(() -> ballShot()));
+        new Trigger(this::isTransferEndIRBroken).whenInactive(new InstantCommand(this::removeShotBallFromIndex));
     }
 
     private void ballIndexStart(){
@@ -157,11 +157,6 @@ public class TransferSubsystem extends SubsystemBase {
         }
     }
 
-    private void ballShot(){
-        currentBallCount--;
-        removeShotBallFromIndex();
-    }
-
     private void addBallToIndex(BallColor ballColor){
 
         if (ballColor == RED && alliance == Blue)
@@ -185,6 +180,8 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void removeShotBallFromIndex(){
+        currentBallCount--;
+
         if (ballColorIndex.getLast() == NONE)
             logger.warning("No Ball At end of index!");
 
