@@ -23,7 +23,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
     private int currentPresetNumber = 0;
-    private ArrayList<ShooterPreset> allPresets = new ArrayList<ShooterPreset>();
 
     private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
 
