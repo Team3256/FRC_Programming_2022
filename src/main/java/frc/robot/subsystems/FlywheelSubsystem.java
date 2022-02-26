@@ -10,7 +10,8 @@ import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
-import frc.robot.helper.ShooterState;
+import frc.robot.helper.shooter.ShooterPreset;
+import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
 
 import java.util.ArrayList;

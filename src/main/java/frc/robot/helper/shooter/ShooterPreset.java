@@ -1,4 +1,4 @@
-package frc.robot.helper;
+package frc.robot.helper.shooter;
 
 public class ShooterPreset {
     public String presetName;
