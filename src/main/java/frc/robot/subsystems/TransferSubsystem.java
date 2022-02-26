@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -34,7 +33,6 @@ import static frc.robot.helper.BallColor.*;
 
 public class TransferSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(TransferSubsystem.class.getCanonicalName());
-    private final MuxedColorSensor muxedColorSensor = MuxedColorSensor.getInstance();
 
     private final TalonFX transferMotor;
     private final DigitalInput transferStartIRSensor;
@@ -177,7 +175,7 @@ public class TransferSubsystem extends SubsystemBase {
         else if (redColorCountVote > blueColorCountVote) {
             addBallToIndex(RED);
         }
-        else if (redColorCountVote < blueColorCountVote) {
+        else {
            addBallToIndex(BLUE);
         }
     }
