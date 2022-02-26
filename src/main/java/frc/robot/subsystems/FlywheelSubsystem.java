@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
@@ -270,13 +271,22 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInSensorUnits  * 10 / 2048;
     }
 
-    public String increasePreset() {
+    public void increasePreset() {
         currentPresetNumber += 1;
         if (currentPresetNumber > ALL_SHOOTER_PRESETS.size()) {
             currentPresetNumber = 0;
         }
 
-        return getPreset().presetName;
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
+    }
+    
+    public void decreasePreset() {
+        currentPresetNumber -= 1;
+        if (currentPresetNumber == -1) {
+            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
+        }
+
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
     }
 
     public void shootSelectedPreset() {

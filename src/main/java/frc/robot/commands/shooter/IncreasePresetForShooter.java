@@ -17,9 +17,7 @@ public class IncreasePresetForShooter extends CommandBase {
 
     @Override
     public void initialize() {
-        String name = flywheelSubsystem.increasePreset();
-        Logger logger = Logger.getLogger(Robot.class.getCanonicalName());
-        logger.info("Current Preset: " + name);
+        flywheelSubsystem.increasePreset();
     }
 
     @Override
