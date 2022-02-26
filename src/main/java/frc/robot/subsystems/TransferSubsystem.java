@@ -183,7 +183,6 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void addBallToIndex(BallColor ballColor){
-
         logger.info("Ball Indexed Into Transfer");
 
         if (ballColor == RED && alliance == Blue)
@@ -207,7 +206,6 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void removeShotBallFromIndex(){
-
         logger.info("Ball Leaving Transfer by Shooting");
 
         currentBallCount--;
@@ -222,12 +220,17 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void removeBallEjectedOutOfIntake(){
-
         logger.info("Ball Leaving Transfer out of Intake");
 
         currentBallCount--;
-        ballColorIndex.removeFirst();
 
+        if (ballColorIndex.get(0) == NONE){
+            // Only Ball is Indexed 2nd, Removes the NONE and the Ball
+            ballColorIndex.remove(0);
+            ballColorIndex.remove(1);
+        } else {
+            ballColorIndex.removeFirst();
+        }
     }
 
     private void updateBallLEDPattern(){
