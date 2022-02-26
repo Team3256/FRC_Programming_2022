@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonConfiguration;
+import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.*;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -39,17 +42,26 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
 
     public FlywheelSubsystem() {
+        TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
+        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
+        MASTER_CONFIG.INVERT_TYPE = InvertType.InvertMotorOutput;
+        MASTER_CONFIG.PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
+                SHOOTER_MASTER_TALON_PID_P,
+                SHOOTER_MASTER_TALON_PID_I,
+                SHOOTER_MASTER_TALON_PID_D,
+                SHOOTER_MASTER_TALON_PID_F
+        );
 
-        masterLeftShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_LEFT);
-        followerRightShooterMotor = new TalonFX(PID_SHOOTER_MOTOR_ID_RIGHT);
+        TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
 
-        masterLeftShooterMotor.setInverted(InvertType.InvertMotorOutput);
-        followerRightShooterMotor.setInverted(InvertType.None);
-
-        followerRightShooterMotor.follow(masterLeftShooterMotor);
-
-        followerRightShooterMotor.setNeutralMode(NeutralMode.Coast);
-        masterLeftShooterMotor.setNeutralMode(NeutralMode.Coast);
+        masterLeftShooterMotor = TalonFXFactory.createTalonFX(
+                PID_SHOOTER_MOTOR_ID_LEFT,
+                MASTER_CONFIG
+        );
+        followerRightShooterMotor = TalonFXFactory.createFollowerTalonFX(PID_SHOOTER_MOTOR_ID_RIGHT,
+                PID_SHOOTER_MOTOR_ID_RIGHT,
+                FOLLOWER_CONFIG
+        );
 
         hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
         limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
@@ -133,10 +145,18 @@ public class FlywheelSubsystem extends SubsystemBase {
         return limitSwitch.get();
     }
     /**
-     * Disables powers to motors, motors change to neutral/coast mode
+     * Disables powers to flywheel motor, motors change to neutral/coast mode
      */
-    public void stop() {
+    public void stopFlywheel() {
         masterLeftShooterMotor.neutralOutput();
+    }
+
+    /**
+     * Disables both the shooter hood and motors
+     */
+    public void stopFullShooter() {
+        stopFlywheel();
+        stopHood();
     }
 
     /*

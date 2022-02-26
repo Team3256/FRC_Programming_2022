@@ -1,16 +1,21 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.Limelight;
 
 import static frc.robot.Constants.IDConstants;
 import static frc.robot.Constants.TurretConstants;
+import static frc.robot.Constants.TurretConstants.GEAR_RATIO;
 
 public class TurretSubsystem extends PIDSubsystem {
-    private final TalonFX turretMotor = new TalonFX(IDConstants.TURRET_ID);
+    private final TalonFX turretMotor;
 
     /**
      * PID coefficients (kp - proportional ki - integral kd - derivative)
@@ -21,6 +26,13 @@ public class TurretSubsystem extends PIDSubsystem {
         getController().setTolerance(TurretConstants.TURRET_TOLERANCE_TX);
         this.setSetpoint(0);
         this.disable();
+      
+        turretMotor = TalonFXFactory.createTalonFX(IDConstants.TURRET_ID);
+      
+        turretMotor.config_kF(0, 0);
+        turretMotor.config_kP(0, 0.05);
+        turretMotor.config_kI(0, 0.0);
+        turretMotor.config_kD(0, 0);
     }
 
     //NOTE: enable, disable PID methods built in
@@ -34,8 +46,25 @@ public class TurretSubsystem extends PIDSubsystem {
         this.disable();
         turretMotor.set(TalonFXControlMode.PercentOutput, TurretConstants.DEFAULT_TURRET_SPEED);
     }
+    public void ninetyDegreeTurn() {
+        turretMotor.setSelectedSensorPosition(0.0);
+        turretMotor.set(TalonFXControlMode.Position, 0.25*GEAR_RATIO*(2048));
+    }
+
+    public void stop() {
+        this.disable();
+        turretMotor.set(TalonFXControlMode.Disabled, 1);
+    }
     public void autoAlign(){
         this.enable();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        SmartDashboard.putNumber("Turret Position", turretMotor.getSelectedSensorPosition());
+        if (turretMotor.getControlMode() == TalonFXControlMode.Position.toControlMode())
+            SmartDashboard.putNumber("Turret Target", turretMotor.getClosedLoopTarget());
     }
 
     /**
