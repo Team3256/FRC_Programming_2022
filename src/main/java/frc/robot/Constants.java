@@ -12,8 +12,13 @@ import frc.robot.helper.CANdle.helpers.*;
 import frc.robot.helper.CANdle.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
+
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import frc.robot.hardware.TalonConfiguration;
+
+import frc.robot.helper.shooter.ShooterPreset;
+
+import java.util.List;
 import java.util.logging.Level;
 
 import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
@@ -285,6 +290,12 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+
+        // Presets
+        public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
+            new ShooterPreset(100, 1.23, "Default 1"), // TODO: Change this to accurate numbers (given testing)
+            new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
+        ); // TODO: Create all shooter presets
     }
     public static class CANdleConstants{
         public enum LEDSectionName {

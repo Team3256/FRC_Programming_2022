@@ -24,6 +24,13 @@ import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
+import frc.robot.commands.hanger.AutoHang;
+import frc.robot.commands.shooter.IncreasePresetForShooter;
+import frc.robot.commands.shooter.SetShooterFromPresetNumber;
+import frc.robot.subsystems.HangerSubsystem;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.Constants.SwerveConstants;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.Limelight;
@@ -33,6 +40,12 @@ import frc.robot.subsystems.SwerveDrive;
 import java.awt.Robot;
 
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
+
+import java.awt.Robot;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import frc.robot.subsystems.FlywheelSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +57,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -75,7 +89,7 @@ public class RobotContainer {
         SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -111,8 +125,11 @@ public class RobotContainer {
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
+        // "B" button increases the preset number
+
+        rightBumper.whenHeld(new IntakeOn(intake));
     }
-  
+
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
@@ -141,13 +158,7 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void robotOutputToDashboard() {
-        SmartDashboard.putNumber("Modified Left Y", modifyAxis(driverController.getLeftY()));
-        SmartDashboard.putNumber("Unmodified Left Y", (driverController.getLeftY()));
-        SmartDashboard.putNumber("Modified Left X", modifyAxis(driverController.getLeftX()));
-        SmartDashboard.putNumber("Unmodified Left X", (driverController.getLeftX()));
-        SmartDashboard.putNumber("Modified Right X", modifyAxis(driverController.getRightX()));
-        SmartDashboard.putNumber("Unmodified Right X", (driverController.getRightX()));
+    public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }

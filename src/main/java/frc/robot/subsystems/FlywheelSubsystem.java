@@ -5,20 +5,26 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
+import frc.robot.helper.shooter.ShooterPreset;
+import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    private int currentPresetNumber = 0;
+
     private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
 
     private final TalonFX masterLeftShooterMotor;
@@ -66,6 +72,10 @@ public class FlywheelSubsystem extends SubsystemBase {
         getHoodAngleInterpolatingFunctionFromPoints();
     }
 
+    private ShooterPreset getPreset() {
+        return ALL_SHOOTER_PRESETS.get(currentPresetNumber);
+    }
+
     /**
      * @param distance distance to hoop
      */
@@ -73,8 +83,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         ShooterState ikShooterState = ballInverseKinematics(distance);
 
         ShooterState correctedShooterState = new ShooterState(
-                getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
-                getHoodValueFromCalibration(ikShooterState.velocity, ikShooterState.theta));
+                getAngularVelocityFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle),
+                getHoodValueFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle));
 
         applyShooterState(correctedShooterState);
     }
@@ -191,8 +201,8 @@ public class FlywheelSubsystem extends SubsystemBase {
      * sets hood angle and velocity
      */
     private void applyShooterState(ShooterState shooterState) {
-        setSpeed(shooterState.velocity);
-        setHoodAngle(shooterState.theta);
+        setSpeed(shooterState.rpmVelocity);
+        setHoodAngle(shooterState.hoodAngle);
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
@@ -260,14 +270,29 @@ public class FlywheelSubsystem extends SubsystemBase {
         double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return velocityInSensorUnits  * 10 / 2048;
     }
-}
 
-class ShooterState {
-    public double velocity;
-    public double theta;
+    public void increasePreset() {
+        currentPresetNumber += 1;
+        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
+            currentPresetNumber = 0;
+        }
 
-    public ShooterState(double v, double t) {
-        this.velocity = v;
-        this.theta = t;
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
+    }
+    
+    public void decreasePreset() {
+        currentPresetNumber -= 1;
+        if (currentPresetNumber == -1) {
+            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
+        }
+
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
+    }
+
+    public void shootSelectedPreset() {
+        ShooterPreset currentPreset = getPreset();
+        this.setSpeed(currentPreset.shooterState.rpmVelocity);
+        this.setHoodAngle(currentPreset.shooterState.hoodAngle);
     }
 }
+
