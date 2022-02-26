@@ -291,8 +291,8 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void shootSelectedPreset() {
         ShooterPreset currentPreset = getPreset();
-        this.setSpeed(currentPreset.currentState.rpmVelocity);
-        this.setHoodAngle(currentPreset.currentState.hoodAngle);
+        this.setSpeed(currentPreset.shooterState.rpmVelocity);
+        this.setHoodAngle(currentPreset.shooterState.hoodAngle);
     }
 }
 

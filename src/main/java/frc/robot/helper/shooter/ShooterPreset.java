@@ -2,7 +2,7 @@ package frc.robot.helper.shooter;
 
 public class ShooterPreset {
     public String presetName;
-    public ShooterState currentState;
+    public ShooterState shooterState;
 
     /**
      * @param velocity velocity in rpm (velocity)
@@ -11,6 +11,6 @@ public class ShooterPreset {
      */
     public ShooterPreset(double velocity, double hoodAngleTheta, String name) {
         this.presetName = name;
-        currentState = new ShooterState(velocity, hoodAngleTheta);
+        shooterState = new ShooterState(velocity, hoodAngleTheta);
     }
 }
