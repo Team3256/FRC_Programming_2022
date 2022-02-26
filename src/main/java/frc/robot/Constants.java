@@ -44,10 +44,11 @@ public final class Constants {
     }
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 50;
+
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
 
-        public static final int MIN_BALL_COLOR_PROXIMITY = 5; // Raw Proximity value 0 - 2047
+        public static final int MIN_BALL_COLOR_PROXIMITY = 1500; // Raw Proximity value 0 - 2047 (0 being far away)
 
         public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
         public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color

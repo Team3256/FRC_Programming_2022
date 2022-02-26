@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -130,9 +131,8 @@ public class TransferSubsystem extends SubsystemBase {
     private void ballColorSamplingPeriodic() {
         double proximity = MuxedColorSensor.getInstance().getBallSensorProximity();
 
-        if (proximity <= MIN_BALL_COLOR_PROXIMITY){
+        if (proximity >= MIN_BALL_COLOR_PROXIMITY){
             BallColor ballColor = MuxedColorSensor.getInstance().ballSensorDetection();
-
             if (ballColor == BLUE)
                 blueColorCountVote++;
             else if (ballColor == RED)
