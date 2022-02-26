@@ -60,6 +60,7 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDrive() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
+        pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
         // FIXME Setup motor configuration
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
@@ -128,6 +129,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
+        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
         this.chassisSpeeds = chassisSpeeds;
     }
 
