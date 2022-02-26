@@ -278,13 +278,13 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInSensorUnits  * 10 / 2048;
     }
 
-    public double increasePreset() {
+    public String increasePreset() {
         currentPresetNumber += 1;
         if (currentPresetNumber > MAX_PRESETS) {
             currentPresetNumber = 0;
         }
 
-        return getPreset().distanceToTarget;
+        return getPreset().presetName;
     }
 
     public void shootSelectedPreset() {
