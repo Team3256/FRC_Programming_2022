@@ -115,6 +115,8 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     public void transferIndexSetup(){
+
+        // Starts Index / Counting Process when First Detecting Ball
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversedRunning))
                 .whenActive(new ParallelCommandGroup(
                         new InstantCommand(this::ballIndexStart),
@@ -122,11 +124,13 @@ public class TransferSubsystem extends SubsystemBase {
                 ));
 
 
+        // Stop Running Transfer when past end mark, also evaluates color
         new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversedRunning))
                 .whenInactive(new ParallelCommandGroup(
                     new InstantCommand(this::ballIndexEnd),
                     new TransferOff(this)));
 
+        // Subtract Balls shot out of shooter
         new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversedRunning))
                 .whenInactive(new InstantCommand(this::removeShotBallFromIndex));
 
