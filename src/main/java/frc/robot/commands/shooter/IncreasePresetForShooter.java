@@ -22,14 +22,6 @@ public class IncreasePresetForShooter extends CommandBase {
         logger.info("Current Preset: " + name);
     }
 
-//    @Override
-//    public void end(boolean interrupted) {
-//        if (interrupted) {
-//            flywheelSubsystem.stopFlywheel();
-//            flywheelSubsystem.stopHood();
-//        }
-//    }
-
     @Override
     public boolean isFinished() {
         return true;
