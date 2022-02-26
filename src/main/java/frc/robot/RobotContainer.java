@@ -57,7 +57,6 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final FlywheelSubsystem flywheelSubsystem = new FlywheelSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
@@ -127,11 +126,8 @@ public class RobotContainer {
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
         // "B" button increases the preset number
-        new Button(operatorController::getXButton)
-                .whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
 
         rightBumper.whenHeld(new IntakeOn(intake));
-        operatorBButton.whenHeld(new SetShooterFromPresetNumber(flywheelSubsystem));
     }
 
     public Command getAutonomousCommand() {
