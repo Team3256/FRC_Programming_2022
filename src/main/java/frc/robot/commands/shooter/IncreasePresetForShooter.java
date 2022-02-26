@@ -12,7 +12,6 @@ public class IncreasePresetForShooter extends CommandBase {
 
     public IncreasePresetForShooter(FlywheelSubsystem m_flywheelSubsystem) {
         flywheelSubsystem = m_flywheelSubsystem;
-        addRequirements(flywheelSubsystem);
     }
 
     @Override

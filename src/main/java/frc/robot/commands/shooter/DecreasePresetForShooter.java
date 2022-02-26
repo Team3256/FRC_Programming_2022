@@ -8,7 +8,6 @@ public class DecreasePresetForShooter extends CommandBase {
 
     public DecreasePresetForShooter(FlywheelSubsystem m_flywheelSubsystem) {
         flywheelSubsystem = m_flywheelSubsystem;
-        addRequirements(flywheelSubsystem);
     }
 
     @Override
