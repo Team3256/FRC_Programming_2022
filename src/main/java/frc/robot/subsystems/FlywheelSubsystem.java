@@ -273,7 +273,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void increasePreset() {
         currentPresetNumber += 1;
-        if (currentPresetNumber > ALL_SHOOTER_PRESETS.size()) {
+        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
             currentPresetNumber = 0;
         }
 
