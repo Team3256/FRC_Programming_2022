@@ -77,8 +77,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         ShooterState ikShooterState = ballInverseKinematics(distance);
 
         ShooterState correctedShooterState = new ShooterState(
-                getAngularVelocityFromCalibration(ikShooterState.velocity, ikShooterState.theta),
-                getHoodValueFromCalibration(ikShooterState.velocity, ikShooterState.theta));
+                getAngularVelocityFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle),
+                getHoodValueFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle));
 
         applyShooterState(correctedShooterState);
     }
@@ -187,8 +187,8 @@ public class FlywheelSubsystem extends SubsystemBase {
      * sets hood angle and velocity
      */
     private void applyShooterState(ShooterState shooterState) {
-        setSpeed(shooterState.velocity);
-        setHoodAngle(shooterState.theta);
+        setSpeed(shooterState.rpmVelocity);
+        setHoodAngle(shooterState.hoodAngle);
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
@@ -268,29 +268,27 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void shootSelectedPreset() {
         currentPreset = getPreset();
-        this.setSpeed(currentPreset.rpmVelocity);
-        this.setHoodAngle(currentPreset.hoodAngle);
+        this.setSpeed(currentPreset.currentState.rpmVelocity);
+        this.setHoodAngle(currentPreset.currentState.hoodAngle);
     }
 }
 
 class ShooterState {
-    public double velocity;
-    public double theta;
+    public double rpmVelocity;
+    public double hoodAngle;
 
     public ShooterState(double v, double t) {
-        this.velocity = v;
-        this.theta = t;
+        this.rpmVelocity = v;
+        this.hoodAngle = t;
     }
 }
 
 class ShooterPreset {
-    public double hoodAngle;
-    public double rpmVelocity;
+    public ShooterState currentState;
     public double distanceToTarget;
 
     public ShooterPreset(double v, double t, double d) {
-        this.hoodAngle = t;
-        this.rpmVelocity = v;
+        currentState = new ShooterState(v, t);
         this.distanceToTarget = d;
     }
 }
