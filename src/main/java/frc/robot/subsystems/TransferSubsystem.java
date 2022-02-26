@@ -45,7 +45,9 @@ public class TransferSubsystem extends SubsystemBase {
     // To avoid single bad reading skewing data
     private int blueColorCountVote = 0;
     private int redColorCountVote = 0;
+
     private boolean isDetectingBallColor = false;
+    private boolean isReversedRunning = false;
 
     DriverStation.Alliance alliance;
 
@@ -79,13 +81,21 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     public void on(){
+        isReversedRunning = false;
         transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.DEFAULT_TRANSFER_SPEED);
         logger.info("Transfer On");
     }
 
     public void reverse(){
+        isReversedRunning = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, REVERSE_TRANSFER_SPEED);
         logger.info("Transfer Reversed");
+    }
+
+    public void off(){
+        isReversedRunning = false;
+        transferMotor.set(TalonFXControlMode.PercentOutput, 0);
+        logger.info("Transfer Off");
     }
 
     public boolean isTransferStartIRBroken() {
@@ -105,17 +115,24 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     public void transferIndexSetup(){
-        new Trigger(this::isTransferStartIRBroken)
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversedRunning))
                 .whenActive(new ParallelCommandGroup(
                         new InstantCommand(this::ballIndexStart),
                         new TransferOn(this)
                 ));
 
-        new Trigger(this::isTransferStopIRBroken).whenInactive(new ParallelCommandGroup(
-                new InstantCommand(this::ballIndexEnd),
-                new TransferOff(this)));
 
-        new Trigger(this::isTransferEndIRBroken).whenInactive(new InstantCommand(this::removeShotBallFromIndex));
+        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversedRunning))
+                .whenInactive(new ParallelCommandGroup(
+                    new InstantCommand(this::ballIndexEnd),
+                    new TransferOff(this)));
+
+        new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversedRunning))
+                .whenInactive(new InstantCommand(this::removeShotBallFromIndex));
+
+        // When Reversed, Subtract Balls that leave
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->isReversedRunning))
+                .whenActive(new InstantCommand(this::removeBallEjectedOutOfIntake));
     }
 
     private void ballIndexStart(){
@@ -163,6 +180,8 @@ public class TransferSubsystem extends SubsystemBase {
 
     private void addBallToIndex(BallColor ballColor){
 
+        logger.info("Ball Indexed Into Transfer");
+
         if (ballColor == RED && alliance == Blue)
             wrongBallColorDetected(ballColor);
 
@@ -184,6 +203,9 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void removeShotBallFromIndex(){
+
+        logger.info("Ball Leaving Transfer by Shooting");
+
         currentBallCount--;
 
         if (ballColorIndex.getLast() == NONE)
@@ -193,6 +215,15 @@ public class TransferSubsystem extends SubsystemBase {
         ballColorIndex.addFirst(NONE);
 
         updateBallLEDPattern();
+    }
+
+    private void removeBallEjectedOutOfIntake(){
+
+        logger.info("Ball Leaving Transfer out of Intake");
+
+        currentBallCount--;
+        ballColorIndex.removeFirst();
+
     }
 
     private void updateBallLEDPattern(){
@@ -207,11 +238,6 @@ public class TransferSubsystem extends SubsystemBase {
                 "(Alliance: " + alliance +
                 ", Ball Color Intaken: " + ballColorDetected +
                 ")");
-    }
-
-    public void off(){
-        transferMotor.set(TalonFXControlMode.PercentOutput, 0);
-        logger.info("Transfer Off");
     }
 
     @Override
