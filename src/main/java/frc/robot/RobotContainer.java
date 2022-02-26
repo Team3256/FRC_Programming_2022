@@ -20,6 +20,14 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
+import frc.robot.commands.hanger.AutoHang;
+import frc.robot.commands.shooter.IncreasePresetForShooter;
+import frc.robot.commands.shooter.SetShooterFromPresetNumber;
+import frc.robot.subsystems.HangerSubsystem;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.Constants.SwerveConstants;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.SwerveDrive;
@@ -38,6 +46,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -105,8 +114,11 @@ public class RobotContainer {
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
+        // "B" button increases the preset number
+
+        rightBumper.whenHeld(new IntakeOn(intake));
     }
-  
+
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
@@ -135,13 +147,7 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void robotOutputToDashboard() {
-        SmartDashboard.putNumber("Modified Left Y", modifyAxis(driverController.getLeftY()));
-        SmartDashboard.putNumber("Unmodified Left Y", (driverController.getLeftY()));
-        SmartDashboard.putNumber("Modified Left X", modifyAxis(driverController.getLeftX()));
-        SmartDashboard.putNumber("Unmodified Left X", (driverController.getLeftX()));
-        SmartDashboard.putNumber("Modified Right X", modifyAxis(driverController.getRightX()));
-        SmartDashboard.putNumber("Unmodified Right X", (driverController.getRightX()));
+    public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }
