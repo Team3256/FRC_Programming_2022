@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
@@ -28,6 +29,7 @@ public class TurretSubsystem extends PIDSubsystem {
         this.disable();
       
         turretMotor = TalonFXFactory.createTalonFX(IDConstants.TURRET_ID);
+        turretMotor.setNeutralMode(NeutralMode.Brake);
       
         turretMotor.config_kF(0, 0);
         turretMotor.config_kP(0, 0.05);
@@ -44,7 +46,7 @@ public class TurretSubsystem extends PIDSubsystem {
 
     public void manualRight(){
         this.disable();
-        turretMotor.set(TalonFXControlMode.PercentOutput, TurretConstants.DEFAULT_TURRET_SPEED);
+        turretMotor.setNeutralMode(NeutralMode.Brake);
     }
     public void ninetyDegreeTurn() {
         turretMotor.setSelectedSensorPosition(0.0);
