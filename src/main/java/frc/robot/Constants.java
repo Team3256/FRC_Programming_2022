@@ -168,6 +168,8 @@ public final class Constants {
         public static final int HANGER_MASTER_TALON_ID = 36;
         public static final int HANGER_FOLLOWER_TALON_ID = 37;
 
+        public static final int INTAKE_ID = 40;
+
         //Pneumatic IDs
         public static final int HANGER_SOLENOID_LEFT_FORWARD = 1;
         public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
@@ -272,6 +274,13 @@ public final class Constants {
         public static final double MAX_TAPE_COLOR_CONFIDENCE_DEVIATION = 0.01;
         public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
         public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
+    }
+
+    public static class IntakeConstants {
+        public static final double INTAKE_FORWARD_SPEED = 0.5;
+        public static final double INTAKE_BACKWARD_SPEED = -0.5;
+
+
     }
 
     public static class ShooterConstants {
