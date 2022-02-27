@@ -94,7 +94,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     public void off(){
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.PercentOutput, 0);
+        transferMotor.neutralOutput();
         logger.info("Transfer Off");
     }
 
