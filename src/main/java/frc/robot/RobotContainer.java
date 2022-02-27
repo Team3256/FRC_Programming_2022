@@ -40,7 +40,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -110,7 +110,7 @@ public class RobotContainer {
                 .whenPressed(defaultDriveCommand);
         // "B" button increases the preset number
 
-        rightBumper.whenHeld(new IntakeOn(intake));
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
     public Command getAutonomousCommand() {
@@ -118,7 +118,7 @@ public class RobotContainer {
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return null;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
 
@@ -152,24 +152,29 @@ public class RobotContainer {
 
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
-            if (value > 0.0) {
-                return (value - deadband) / (1.0 - deadband);
-            } else {
-                return (value + deadband) / (1.0 - deadband);
-            }
+            return value;
+//            if (value > 0.0) {
+//                return (value - deadband) / (1.0 - deadband);
+//            } else {
+//                return (value + deadband) / (1.0 - deadband);
+//            }
         } else {
             return 0.0;
         }
     }
 
     private static double modifyAxis(double value) {
-        double deadband = 0.1;
+        double deadband = 0.05;
         value = deadband(value, deadband);
 
         if (value == 0) {
             return 0;
         }
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
+
+        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
+//
+        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
 
         return value;
     }

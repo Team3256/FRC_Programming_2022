@@ -60,6 +60,7 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDrive() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
+        pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
         // FIXME Setup motor configuration
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
@@ -128,6 +129,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
+        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
         this.chassisSpeeds = chassisSpeeds;
     }
 
@@ -160,24 +162,46 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backLeftOptimized = optimizeModuleState(desiredStates[2], backLeftModule.getSteerAngle());
         SwerveModuleState backRightOptimized = optimizeModuleState(desiredStates[3], backRightModule.getSteerAngle());
 
-      if (Constants.DEBUG) {
-            SmartDashboard.putNumber("Desired Front Left Voltage", frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
-            SmartDashboard.putNumber("Desired Front Right Voltage", frontRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
-            SmartDashboard.putNumber("Desired Back Left Voltage", backLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
-            SmartDashboard.putNumber("Desired Back Right Voltage", backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
+        if (Constants.DEBUG) {
+              SmartDashboard.putNumber("Desired Front Left Voltage", frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
+              SmartDashboard.putNumber("Desired Front Right Voltage", frontRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
+              SmartDashboard.putNumber("Desired Back Left Voltage", backLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
+              SmartDashboard.putNumber("Desired Back Right Voltage", backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
+        }
 
-      }
-        frontLeftModule.set(deadzoneMotor(frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE), frontLeftOptimized.angle.getRadians());
-        frontRightModule.set(deadzoneMotor(frontRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE), frontRightOptimized.angle.getRadians());
-        backLeftModule.set(deadzoneMotor(backLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE), backLeftOptimized.angle.getRadians());
-        backRightModule.set(deadzoneMotor(backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE), backRightOptimized.angle.getRadians());
+
+        frontLeftModule.set(
+                deadzoneMotor(frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
+                willDeadzoneMotor(frontLeftOptimized.speedMetersPerSecond) ? frontLeftModule.getSteerAngle() : frontLeftOptimized.angle.getRadians()
+        );
+
+        frontRightModule.set(
+                deadzoneMotor(frontRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
+                willDeadzoneMotor(frontRightOptimized.speedMetersPerSecond) ? frontRightModule.getSteerAngle() : frontRightOptimized.angle.getRadians()
+        );
+
+        backRightModule.set(
+                deadzoneMotor(backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
+                willDeadzoneMotor(backRightOptimized.speedMetersPerSecond) ? backRightModule.getSteerAngle() : backRightOptimized.angle.getRadians()
+        );
+
+        backLeftModule.set(
+                deadzoneMotor(backLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
+                willDeadzoneMotor(backLeftOptimized.speedMetersPerSecond) ? backLeftModule.getSteerAngle() : backLeftOptimized.angle.getRadians()
+        );
+    }
+
+    private boolean willDeadzoneMotor(double speed) {
+        return Math.abs(speed / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE) < DRIVETRAIN_MOTOR_DEADZONE_VOLTS;
     }
 
     private double deadzoneMotor(double volts) {
         if (Math.abs(volts) < DRIVETRAIN_MOTOR_DEADZONE_VOLTS) {
             return 0;
         }
-        return (((MAX_VOLTAGE - DRIVETRAIN_MOTOR_DEADZONE_VOLTS)/MAX_VOLTAGE) * volts) + DRIVETRAIN_MOTOR_DEADZONE_VOLTS;
+
+        final double SIGNED_DEADZONE = Math.copySign(DRIVETRAIN_MOTOR_DEADZONE_VOLTS, volts);
+        return (((MAX_VOLTAGE - SIGNED_DEADZONE)/MAX_VOLTAGE) * volts) + Math.copySign(SIGNED_DEADZONE, volts);
     }
 
     public void outputToDashboard() {

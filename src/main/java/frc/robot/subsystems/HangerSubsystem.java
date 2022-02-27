@@ -120,7 +120,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void stopMotors() {
-        masterTalonMotor.set(ControlMode.PercentOutput, 0);
+        masterTalonMotor.neutralOutput();
     }
 
 }
