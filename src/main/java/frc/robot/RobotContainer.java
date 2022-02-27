@@ -7,30 +7,19 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
-import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.shooter.IncreasePresetForShooter;
-import frc.robot.commands.shooter.SetShooterFromPresetNumber;
-import frc.robot.subsystems.HangerSubsystem;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.Constants.SwerveConstants;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.Limelight;
@@ -40,12 +29,6 @@ import frc.robot.subsystems.SwerveDrive;
 import java.awt.Robot;
 
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
-
-import java.awt.Robot;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import frc.robot.subsystems.FlywheelSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -57,7 +40,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -127,7 +110,7 @@ public class RobotContainer {
                 .whenPressed(defaultDriveCommand);
         // "B" button increases the preset number
 
-        rightBumper.whenHeld(new IntakeOn(intake));
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
     public Command getAutonomousCommand() {
