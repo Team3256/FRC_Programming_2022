@@ -19,7 +19,7 @@ public class IntakeOn extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        intake.on();
+        intake.forwardOn();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
