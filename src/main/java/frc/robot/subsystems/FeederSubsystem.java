@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -47,6 +48,7 @@ public class FeederSubsystem extends SubsystemBase {
         transferIndexSetup();
         logger.info("Feeder Initialized");
     }
+
     public void on(){
         feederMotor.set(TalonFXControlMode.PercentOutput, FeederConstants.DEFAULT_FEEDER_SPEED);
         logger.info("Feeder On");
@@ -88,7 +90,7 @@ public class FeederSubsystem extends SubsystemBase {
         }));
     }
     public void off(){
-        feederMotor.set(TalonFXControlMode.PercentOutput, 0);
+        feederMotor.neutralOutput();
         logger.info("Feeder Off");
     }
 
