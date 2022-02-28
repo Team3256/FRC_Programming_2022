@@ -46,7 +46,6 @@ public class TransferSubsystem extends SubsystemBase {
 
     private boolean isDetectingBallColor = false;
     private boolean isReversed = false;
-    private boolean isAutoIndexEnabled = true;
 
     DriverStation.Alliance alliance;
 
@@ -87,7 +86,6 @@ public class TransferSubsystem extends SubsystemBase {
 
     public void manualReverse(){
         isReversed = true;
-        isAutoIndexEnabled = false;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
         logger.info("Transfer Manually Reversed");
     }
@@ -111,7 +109,7 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     public boolean isFull(){
-        return currentBallCount == TransferConstants.MAX_BALL_COUNT;
+        return currentBallCount >= TransferConstants.MAX_BALL_COUNT;
     }
 
     public void transferIndexSetup(){

@@ -10,10 +10,10 @@ public class TransferOff extends CommandBase {
 
     private final TransferSubsystem transfer;
 
-    public TransferOff(TransferSubsystem subsystem) {
-        transfer = subsystem;
+    public TransferOff(TransferSubsystem transferSubsystem) {
+        transfer = transferSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(transferSubsystem);
     }
 
     // Called when the command is initially scheduled.

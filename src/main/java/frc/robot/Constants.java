@@ -48,8 +48,8 @@ public final class Constants {
         public static final double GEAR_RATIO = 0.25;
     }
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.5;
-        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5;
+        public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
@@ -280,8 +280,8 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double INTAKE_FORWARD_SPEED = 0.5;
-        public static final double INTAKE_BACKWARD_SPEED = -0.5;
+        public static final double INTAKE_FORWARD_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
 
 
     }

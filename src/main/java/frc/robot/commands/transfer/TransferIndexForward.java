@@ -12,12 +12,12 @@ public class TransferIndexForward extends CommandBase {
 
     /**
      * If manually controlled, set as not interruptable, so that auto index commands don't take control.
-     * @param subsystem Transfer Subsystem
+     * @param transferSubsystem Transfer Subsystem
      */
-    public TransferIndexForward(TransferSubsystem subsystem) {
-        transfer = subsystem;
+    public TransferIndexForward(TransferSubsystem transferSubsystem) {
+        transfer = transferSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(transferSubsystem);
     }
 
     // Called when the command is initially scheduled.
