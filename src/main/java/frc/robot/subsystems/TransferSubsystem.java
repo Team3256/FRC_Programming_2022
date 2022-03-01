@@ -96,14 +96,25 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Transfer Off");
     }
 
+    /**
+     * @return Returns whether the IR sensor at the front of the transfer's line of sight is broken.
+     */
     public boolean isTransferStartIRBroken() {
         return transferStartIRSensor.get();
     }
 
+    /**
+     * @return Returns whether the IR sensor in the middle of the transfer's line of sight is broken,
+     * which signifies when the ball should stop.
+     */
     public boolean isTransferStopIRBroken() {
         return transferStopIRSensor.get();
     }
 
+    /**
+     * @return Returns whether the IR sensor at the end of the transfer's line of sight is broken,
+     * which signifies when the ball leaves the transfer via the shooter
+     */
     public boolean isTransferEndIRBroken() {
         return transferEndIRSensor.get();
     }
