@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
-    SmartDashboard.putData(robotContainer.getCommandChooser());
   }
 
   @Override
@@ -37,45 +36,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    RobotLogger.setup();
+   // RobotLogger.setup();
     logger.info("Robot Disabled");
-    RobotLogger.closeFiles();
-    robotContainer.sendTrajectoryToDashboard();
+    //RobotLogger.closeFiles();
   }
 
   @Override
   public void disabledPeriodic() {}
 
-  @Override
-  public void autonomousInit() {
-    RobotLogger.setup();
-    logger.info("Auto Enabled");
-    robotContainer.resetPose();
-//    robotContainer.sendTrajectoryToDashboard();
-    autonomousCommand = robotContainer.getAutonomousCommand();
-
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
-    }
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-    robotContainer.autoOutputToDashboard();
-  }
 
   @Override
   public void teleopInit() {
-    RobotLogger.setup();
+   // RobotLogger.setup();
     logger.info("TeleOp Enabled");
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-  }
-
-  @Override
-  public void teleopPeriodic() {
-    robotContainer.autoOutputToDashboard();
   }
 
   @Override

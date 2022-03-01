@@ -74,7 +74,6 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        RobotContainer.setCurrentTrajectory(trajectory);
         this.controller.reset();
         driveSubsystem.resetOdometry(this.startPose);
         timer.reset();

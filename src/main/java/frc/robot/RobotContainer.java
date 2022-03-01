@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -13,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
@@ -22,12 +25,15 @@ import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.hardware.Limelight;
+import frc.robot.helper.BallColor;
+import frc.robot.helper.CANdle.CANdleSystem;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.awt.Robot;
 
+import static frc.robot.Constants.CANdleConstants.BALL_PATTERN;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 
 /**
@@ -39,115 +45,19 @@ import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
-    private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-
-    private final Field2d field = new Field2d();
-
-    private final XboxController driverController = new XboxController(0);
-    private final XboxController operatorController = new XboxController(1);
-    private static Trajectory currentTrajectory = new Trajectory();
+    CANdleSystem caNdleSystem = new CANdleSystem(null);
 
     /**
      *
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
-        Limelight.init();
-
-
-        configureButtonBindings();
-    }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
-
-        SmartDashboard.putData(CommandScheduler.getInstance());
-        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        caNdleSystem.init();
 
 
-        // Drivetrain Command
-        // Set up the default command for the drivetrain.
-        // The controls are for field-oriented driving:
-        // Left stick Y axis -> forward and backwards movement
-        // Left stick X axis -> left and right movement
-        // Right stick X axis -> rotationx
+        new Button(new XboxController(0)::getAButton).whenPressed(new InstantCommand(()->BALL_PATTERN.update(BallColor.BLUE, BallColor.RED)));
 
-        Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
-                drivetrainSubsystem,
-                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        );
-
-        // Automatically Schedule Command when nothing else is scheduled
-        drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
-
-
-
-        // A button zeros the gyroscope
-        new Button(driverController::getAButton)
-                .whenPressed(drivetrainSubsystem::zeroGyroscope);
-
-        // Left Bumper Enables Auto Align
-        leftBumper.whenPressed(
-                new AutoAlignDriveContinuousCommand(
-                        drivetrainSubsystem,
-                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ), true);
-        //Any Significant Movement in driver's X interrupt auto align
-        new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
-                .whenPressed(defaultDriveCommand);
-        // "B" button increases the preset number
-
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
-    }
-
-    public Command getAutonomousCommand() {
-        return AutoChooser.getCommand();
-    }
-
-    public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
-    }
-
-
-    public Trajectory getTrajectory() {
-       return currentTrajectory;
-    }
-
-    public static void setCurrentTrajectory(Trajectory newTrajectory) {
-        currentTrajectory = newTrajectory;
-    }
-
-    private void configureShooter() {
-        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
-        rightTrigger.setThreshold(0.01);
-
-
-    }
-
-    public void sendTrajectoryToDashboard() {
-        field.getObject("traj").setTrajectory(getTrajectory());
-    }
-
-    public void autoOutputToDashboard() {
-        field.setRobotPose(drivetrainSubsystem.getPose());
-        SmartDashboard.putData("Field", field);
-    }
-
-    public void resetPose() {
-        drivetrainSubsystem.resetOdometry(new Pose2d());
     }
 
     private static double deadband(double value, double deadband) {

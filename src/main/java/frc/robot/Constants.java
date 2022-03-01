@@ -164,7 +164,7 @@ public final class Constants {
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
 
 
-        public static final int TURRET_ID = 34;
+        public static final int CANDLE_ID = 34;
         public static final int FEEDER_MOTOR_ID = 35;
 
         public static final int HOOD_MOTOR_ID = 0;
@@ -337,21 +337,21 @@ public final class Constants {
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
             HashMapFiller.populateLinkedHashMap(
-                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
-                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                entry(BALL_COLOR, new LEDSectionAttributes(0, 1, AUTO_AIM_PATTERN))
+             //   entry(AUTO_AIM, new LEDSectionAttributes(0.5, 1, AUTO_AIM_PATTERN))
             );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
-                new LEDRange(0, 10, 0),
-                new LEDRange(10,15, 180)
+              //  new LEDRange(0, 4, 180),
+                new LEDRange(350,436, 180) // Only can address up to 127 at a time
         };
     }
     public static class PatternGeneratorConstants{
-        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
-        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(10,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,10);
 
-        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 10, 0);
     }
 
     public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;

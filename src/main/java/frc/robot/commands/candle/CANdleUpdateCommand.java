@@ -21,9 +21,9 @@ public class CANdleUpdateCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (counter == 0)
+       // if (counter == 0)
             raidController.update();
-        counter = (counter + 1 ) % CYCLES_PER_CANDLE_UPDATE;
+        //counter = (counter + 1 ) % CYCLES_PER_CANDLE_UPDATE;
     }
 
     @Override
