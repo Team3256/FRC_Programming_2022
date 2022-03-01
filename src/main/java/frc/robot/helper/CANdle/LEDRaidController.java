@@ -3,6 +3,7 @@ package frc.robot.helper.CANdle;
 // get ranges and secions from constants file
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdleConfiguration;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import frc.robot.helper.CANdle.helpers.LEDRange;
 import frc.robot.subsystems.SwerveDrive;
@@ -23,6 +24,12 @@ public class LEDRaidController {
     public LEDRaidController(CANdle candle, SwerveDrive swerveDrive) {
         this.candle = candle;
         this.swerveDrive = swerveDrive;
+
+        CANdleConfiguration candleConfig = new CANdleConfiguration();
+        candleConfig.stripType = LED_STRIP_TYPE;
+        candleConfig.brightnessScalar = LED_BRIGHTNESS_SCALAR;
+
+        candle.configAllSettings(candleConfig);
     }
 
     public void update() {

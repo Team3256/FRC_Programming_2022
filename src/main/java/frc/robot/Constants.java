@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -322,6 +323,10 @@ public final class Constants {
         ); // TODO: Create all shooter presets
     }
     public static class CANdleConstants{
+
+        public static final CANdle.LEDStripType LED_STRIP_TYPE = CANdle.LEDStripType.GRB;  // For 5m Addressable Strips
+        public static final double LED_BRIGHTNESS_SCALAR = 1.0;  // Scalar from 0.0 - 1.0
+
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM
         }
