@@ -21,6 +21,7 @@ import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -83,9 +84,9 @@ public class RobotContainer {
 
         Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
                 drivetrainSubsystem,
-                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
         // Automatically Schedule Command when nothing else is scheduled
@@ -101,9 +102,9 @@ public class RobotContainer {
         leftBumper.whenPressed(
                 new AutoAlignDriveContinuousCommand(
                         drivetrainSubsystem,
-                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
                 ), true);
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
@@ -150,32 +151,4 @@ public class RobotContainer {
         drivetrainSubsystem.resetOdometry(new Pose2d());
     }
 
-    private static double deadband(double value, double deadband) {
-        if (Math.abs(value) > deadband) {
-            return value;
-//            if (value > 0.0) {
-//                return (value - deadband) / (1.0 - deadband);
-//            } else {
-//                return (value + deadband) / (1.0 - deadband);
-//            }
-        } else {
-            return 0.0;
-        }
-    }
-
-    private static double modifyAxis(double value) {
-        double deadband = 0.05;
-        value = deadband(value, deadband);
-
-        if (value == 0) {
-            return 0;
-        }
-
-        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
-//
-        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
-
-        return value;
-    }
 }
