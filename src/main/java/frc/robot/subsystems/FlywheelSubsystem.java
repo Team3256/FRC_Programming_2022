@@ -223,7 +223,7 @@ public class FlywheelSubsystem extends SubsystemBase {
             data = velocityTrainingPoints.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
-            angularVelocityTrain[i][i] = data.calibratedTraining;
+            angularVelocityTrain[i][i] = data.calibratedHoodAngleTraining;
         }
 
         velocityInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
@@ -241,7 +241,7 @@ public class FlywheelSubsystem extends SubsystemBase {
             data = hoodAngleTrainingPoints.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
-            hoodValTrain[i][i] = data.calibratedTraining;
+            hoodValTrain[i][i] = data.calibratedHoodAngleTraining;
         }
 
         hoodAngleInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
