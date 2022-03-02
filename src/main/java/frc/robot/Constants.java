@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import frc.robot.helper.shooter.ShooterPreset;
+import frc.robot.helper.shooter.TrainingDataPoint;
 
 import java.util.List;
 import java.util.logging.Level;
