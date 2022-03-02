@@ -4,11 +4,13 @@ public class TrainingDataPoint {
     public double velocityTraining;
     public double exitAngleTraining;
     public double calibratedHoodAngleTraining;
+    public double calibratedVelocityTraining;
 
-    public TrainingDataPoint(double vTrain, double thetaTraining, double calibTraining) {
+    public TrainingDataPoint(double vTrain, double thetaTraining, double calibTrainingAngle, double calibTrainingVelocity) {
         velocityTraining = vTrain;
         exitAngleTraining = thetaTraining;
-        calibratedHoodAngleTraining = calibTraining;
+        calibratedHoodAngleTraining = calibTrainingAngle;
+        calibratedVelocityTraining = calibTrainingVelocity;
     }
 
 

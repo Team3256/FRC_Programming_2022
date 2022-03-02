@@ -306,7 +306,7 @@ public final class Constants {
 
         // Velocity Training Points
         public static final List<TrainingDataPoint> VELOCITY_TRAINING_DATA = Arrays.asList(
-                new TrainingDataPoint(100, 123, 1.23) // TODO: Change this to actual calibrated training (given test)
+                new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
     }
     public static class CANdleConstants{
