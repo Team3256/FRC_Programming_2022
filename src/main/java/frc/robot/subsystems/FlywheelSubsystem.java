@@ -11,6 +11,7 @@ import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.CSVShooting.TrainingDataPoint;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
@@ -25,7 +26,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 public class FlywheelSubsystem extends SubsystemBase {
     private int currentPresetNumber = 0;
 
-    private static final Logger logger = Logger.getLogger(FlywheelSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(FlywheelSubsystem.class.getCanonicalName());
 
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;

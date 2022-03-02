@@ -1,8 +1,10 @@
 package frc.robot.helper.CANdle.helpers;
+import frc.robot.helper.logging.RobotLogger;
+
 import java.util.logging.Logger;
 
 public class LEDRange {
-    private static final Logger logger = Logger.getLogger(LEDRange.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(LEDRange.class.getCanonicalName());
     /**
      * Inclusive Index of LED
      */

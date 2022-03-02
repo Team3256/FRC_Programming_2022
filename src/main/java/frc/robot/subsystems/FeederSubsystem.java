@@ -18,6 +18,8 @@ import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.helper.logging.RobotLogger;
+
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants;
@@ -25,7 +27,7 @@ import static frc.robot.Constants.IDConstants;
 import static frc.robot.Constants.FeederConstants;
 
 public class FeederSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(FeederSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(FeederSubsystem.class.getCanonicalName());
 
     private final TalonFX feederMotor;
     private DigitalInput feederStartIRSensor;

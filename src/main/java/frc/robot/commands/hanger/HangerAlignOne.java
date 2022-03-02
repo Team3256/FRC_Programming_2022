@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.hardware.MuxedColorSensor;
 import frc.robot.helper.Limelight;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.logging.Level;
@@ -15,7 +16,7 @@ import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_METERS_PER_SECOND
 public class HangerAlignOne extends CommandBase {
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
-    private static final Logger logger = Logger.getLogger(HangerAlignOne.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(HangerAlignOne.class.getCanonicalName());
 
     public HangerAlignOne(SwerveDrive swerveDrive) {
         swerve = swerveDrive;
@@ -40,7 +41,7 @@ public class HangerAlignOne extends CommandBase {
     public void end(boolean interrupted) {
         //stop
         swerve.stop();
-        logger.log(Level.INFO, "Hanger Align Part One Complete.");
+        logger.info("Hanger Align Part One Complete.");
         CommandScheduler.getInstance().schedule(new HangerAlignTwo(swerve));
     }
 

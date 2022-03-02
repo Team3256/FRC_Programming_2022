@@ -4,13 +4,14 @@ import edu.wpi.first.hal.PowerDistributionFaults;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 import org.apache.commons.math3.analysis.function.Power;
 
 import java.util.logging.Logger;
 
 public class BrownoutWatcher extends CommandBase {
-    private static final Logger logger = Logger.getLogger(BrownoutWatcher.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(BrownoutWatcher.class.getCanonicalName());
 
     PowerDistribution powerDistribution = new PowerDistribution();
 
