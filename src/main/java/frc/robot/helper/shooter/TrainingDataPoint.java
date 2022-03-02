@@ -1,4 +1,4 @@
-package frc.robot.helper.CSVShooting;
+package frc.robot.helper.shooter;
 
 public class TrainingDataPoint {
     public double velocityTraining;
