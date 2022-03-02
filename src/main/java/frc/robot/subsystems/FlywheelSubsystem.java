@@ -218,7 +218,7 @@ public class FlywheelSubsystem extends SubsystemBase {
             data = ALL_SHOOTER_CALIB_TRAINING.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
-            angularVelocityTrain[i][i] = data.calibratedHoodAngleTraining;
+            angularVelocityTrain[i][i] = data.calibratedVelocityTraining;
         }
 
         velocityInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
