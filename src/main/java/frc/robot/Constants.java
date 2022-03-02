@@ -327,6 +327,9 @@ public final class Constants {
         public static final CANdle.LEDStripType LED_STRIP_TYPE = CANdle.LEDStripType.GRB;  // For 5m Addressable Strips
         public static final double LED_BRIGHTNESS_SCALAR = 1.0;  // Scalar from 0.0 - 1.0
 
+        public static final int MAX_LED_INSTRUCTION_BLOCK_SIZE = 120;  // In LED Count
+        public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
+
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM
         }

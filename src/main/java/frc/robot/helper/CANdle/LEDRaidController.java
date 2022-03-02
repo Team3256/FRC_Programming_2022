@@ -27,7 +27,6 @@ public class LEDRaidController {
 
     CANdle candle;
     Timer timer = new Timer();
-    public static Timer testTimer = new Timer();
 
     private int maxLeds = 0;
 
@@ -45,8 +44,6 @@ public class LEDRaidController {
 
         candle.configAllSettings(candleConfig);
 
-
-
         // Zero Out all LEDs on Startup
         for (LEDRange range: RANGES){
             if (maxLeds < range.upper)
@@ -59,57 +56,70 @@ public class LEDRaidController {
 
     public void update() {
 
-        if(DriverStation.isDisabled() && isEnabled) {
+        if(DriverStation.isDisabled() && isEnabled) {  // Just got Disabled
             isEnabled = false;
-            // TODO: Disabled Lights go here
-            candle.setLEDs(0,0,0,0, 0, maxLeds);
+            disabledLights();
             return;
-        } else if (DriverStation.isDisabled() && !isEnabled){
+
+        } else if (DriverStation.isDisabled() && !isEnabled){  // Robot Is Disabled
             return;
-        } else if (!isEnabled) {
-            // Just Enabled
+
+        } else if (!isEnabled) {  // Just Enabled
             isEnabled = true;
-            for (LEDSectionName ledSectionName : SECTIONS.keySet()){
+            for (LEDSectionName ledSectionName : SECTIONS.keySet())
                 SECTIONS.get(ledSectionName).patternGenerator.reset();
-            }
+
+            candle.setLEDs(0,0,0,0, 0, maxLeds);  // Turn off LEDs
+            timer.reset();  // Wait for Cooldown
         }
 
-        if(!timer.hasElapsed(0.03)) {
+        // Wait if running too quickly
+        if(!timer.hasElapsed(MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS)) {
             return;
         }
-        testTimer.reset();
-        testTimer.start();
+
+
+        // Check Pattern Generators for Updates ------
+
+        // Check what Sections need Updating
         LinkedHashMap<LEDSectionName, LEDSectionAttributes> sectionsNeedUpdate = new LinkedHashMap<>();
         for (LEDSectionName ledSectionName : SECTIONS.keySet()){
             if (SECTIONS.get(ledSectionName).patternGenerator.shouldUpdate())
                 sectionsNeedUpdate.put(ledSectionName, SECTIONS.get(ledSectionName));
         }
 
+        // Update Sections + Get Instructions, Put into FIFO Queue
         for (LEDRange range: RANGES){
             for (LEDSectionName ledSectionName : sectionsNeedUpdate.keySet()){
 
-                // Gets the instruction array from Pattern Generator
-                // +0.5 needed to find closest int for a given percentage
+                // Get Instructions from Pattern
+                // +0.5 needed to find the closest int for a given percentage
                 ArrayList<LEDInstruction> instructions =
                         SECTIONS.get(ledSectionName).patternGenerator
                                 .getLEDInstructions(
                                         isSpoofed(range),
                                         (int)(range.getLength() * SECTIONS.get(ledSectionName).getPercentageRange() + 0.5));
 
-                // Runs Instructions for a given Section
+                // Adds Instructions to FIFO Queue
                 for (LEDInstruction instruction: instructions) {
-                    ledInstructionLinkedList.add(new LEDInstruction(instruction.ledColor, fromVirtualToGlobal(range, ledSectionName, instruction.startIdx), instruction.count));
+
+                    // If big, Splits up Instructions greater than 120 leds, since CANdle can't handle it
+                    if (instruction.count > MAX_LED_INSTRUCTION_BLOCK_SIZE){
+                        addSplitInstructions(instruction, range, ledSectionName);
+                    } else {
+                        ledInstructionLinkedList.add(new LEDInstruction(
+                                instruction.ledColor,
+                                fromVirtualToGlobal(range, ledSectionName, instruction.startIdx),
+                                instruction.count));
+                    }
                 }
             }
         }
 
+        // Actually Run CANdle Commands, 1 at a time
         LEDInstruction caNdleInstruction = ledInstructionLinkedList.pollFirst();
 
         if (caNdleInstruction != null) {
-
-            System.out.println(String.format("Setting CAN to: R:%d, G: %d, B:%d| StartIdx: %d, Count: %d",caNdleInstruction.ledColor.r, caNdleInstruction.ledColor.g,
-                    caNdleInstruction.ledColor.b, caNdleInstruction.ledColor.w,
-                    caNdleInstruction.startIdx, caNdleInstruction.count));
             ErrorCode error = candle.setLEDs(
                     caNdleInstruction.ledColor.r, caNdleInstruction.ledColor.g,
                     caNdleInstruction.ledColor.b, caNdleInstruction.ledColor.w,
@@ -117,16 +127,16 @@ public class LEDRaidController {
 
                     );
 
-
-
             if (!error.equals(ErrorCode.OK))
-                System.out.println(error);
+                logger.warning(error.toString());
         }
 
         timer.reset();
-        timer.start();
-        if (testTimer.get() > 0.01)
-            System.out.println("TestTimer!" + testTimer.get());
+    }
+
+    private void disabledLights(){
+        // Just turn off Lights when Disabled
+        candle.setLEDs(0,0,0,0, 0, maxLeds);
     }
 
     private boolean isSpoofed(LEDRange range){
@@ -136,6 +146,34 @@ public class LEDRaidController {
 
         return !(Math.abs(robotInverseHeading0to360 - range.degreesFromForward) <= POKERFACE_ANGLE_MARGIN_OF_ERROR);
     }
+
+    private void addSplitInstructions (LEDInstruction instruction, LEDRange range, LEDSectionName ledSectionName){
+        int startIdx = instruction.startIdx;
+        int count = MAX_LED_INSTRUCTION_BLOCK_SIZE;
+
+        while (true){
+
+            ledInstructionLinkedList.add(new LEDInstruction(
+                    instruction.ledColor,
+                    fromVirtualToGlobal(range, ledSectionName, startIdx),
+                    count));
+
+
+            startIdx += MAX_LED_INSTRUCTION_BLOCK_SIZE;
+
+            // If at end of Instruction, Make last one shorter
+            if (instruction.count - startIdx < MAX_LED_INSTRUCTION_BLOCK_SIZE ) {
+                count -= instruction.count - startIdx;
+            }
+
+            // If out of range, we're done
+            if (startIdx > instruction.count){
+                return;
+            }
+
+        }
+    }
+
 
     private int fromVirtualToGlobal(LEDRange range, LEDSectionName ledSectionName, int virtualAddress){
         int sectionStartOffsetInRange = (int)(range.getLength() * SECTIONS.get(ledSectionName).percentageStart + 0.5);
