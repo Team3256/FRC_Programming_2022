@@ -303,6 +303,11 @@ public final class Constants {
             new ShooterPreset(100, 1.23, "Default 1"), // TODO: Change this to accurate numbers (given testing)
             new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
         ); // TODO: Create all shooter presets
+
+        // Velocity Training Points
+        public static final List<TrainingDataPoint> VELOCITY_TRAINING_DATA = Arrays.asList(
+                new TrainingDataPoint(100, 123, 1.23) // TODO: Change this to actual calibrated training (given test)
+        ); // TODO: Create all training data
     }
     public static class CANdleConstants{
         public enum LEDSectionName {
