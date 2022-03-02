@@ -8,13 +8,28 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.helper.CANdle.helpers.*;
+import frc.robot.helper.CANdle.PatternGenerators.*;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import frc.robot.helper.shooter.ShooterPreset;
+
+import java.util.List;
 import java.util.logging.Level;
+
+import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
+import static java.util.Map.entry;
 
 public final class Constants {
 
     public static final boolean DEBUG = false;
+    public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
+
+
 
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
@@ -40,14 +55,17 @@ public final class Constants {
         public static final int MAX_BALL_COUNT = 2; //change later
     }
     public static class SwerveConstants {
-        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.55;
+        public static final boolean INVERT_TURN = true;
+        public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.4;
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(168.8379); //357
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(233.1738); //179
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(349.8926);
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(52.8223); //179
+        public static final double GYRO_YAW_OFFSET = -45; // degrees
+
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(200.91796875);
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(118.125);
 
         public static final double MAX_METERS_PER_SECOND = 10;
 
@@ -61,25 +79,35 @@ public final class Constants {
 
         //Swerve Turret
 
-        public static final boolean SWERVE_TURRET_TUNING = false;
+        public static final boolean SWERVE_TURRET_TUNING = true;
 
 
         //Non-final Allow for Changing via Smart Dashboard
         public static double SWERVE_TURRET_KP = 0.1;
         public static double SWERVE_TURRET_KI = 0;
         public static double SWERVE_TURRET_KD = 0;
-        public static boolean IS_TUNING_SWERVE_TURRET = true;
+
+        public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
+        public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
+        public static double SWERVE_TURRET_STATIONARY_KD = 0;
 
         public static double SWERVE_TURRET_STATIONARY_MIN = 0.4;
 
-        public static final double TURN_TOLERANCE = 0;
-        public static final double TURN_RATE_TOLERANCE = 0;
+        public static double SWERVE_TURRET_OPERATOR_DEADZONE = 0.4;
+        public static double SWERVE_TURRET_OPERATOR_INFLUENCE = 1;
+
+        public static final double TURN_TOLERANCE = 0.1;
+        public static final double TURN_RATE_TOLERANCE = 1;
+
+        // TELEOP
+        public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
+
     }
     public static class AutoConstants {
         public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 2;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 2;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 22;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
@@ -92,9 +120,9 @@ public final class Constants {
 
         public static double TRANSLATION_FF = 0.3;
 
-        public static double P_THETA_CONTROLLER = 1.8;
-        public static double I_THETA_CONTROLLER = 0.01;
-        public static double D_THETA_CONTROLLER = 0;
+        public static double P_THETA_CONTROLLER = 7.5;
+        public static double I_THETA_CONTROLLER = 0.02;
+        public static double D_THETA_CONTROLLER = 1.2;
     }
 
     public static class IDConstants {
@@ -238,7 +266,11 @@ public final class Constants {
         public static final double EXTEND_WAIT = 0; //in Seconds
         public static final double RETRACT_WAIT = 0.0; //in Seconds
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
-    
+
+        public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
+        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
+        public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
     }
 
     public static class ShooterConstants {
@@ -269,5 +301,42 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+
+        // Presets
+        public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
+            new ShooterPreset(100, 1.23, "Default 1"), // TODO: Change this to accurate numbers (given testing)
+            new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
+        ); // TODO: Create all shooter presets
     }
+    public static class CANdleConstants{
+        public enum LEDSectionName {
+            BALL_COLOR, AUTO_AIM
+        }
+
+        public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
+        public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+
+        // Defines order of Sections (Thus LinkedHashMap)
+        public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
+            HashMapFiller.populateLinkedHashMap(
+                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+            );
+
+        // Defines Ranges
+        public static final LEDRange[] RANGES = {
+                new LEDRange(0, 10, 0),
+                new LEDRange(10,15, 180)
+        };
+    }
+    public static class PatternGeneratorConstants{
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
+
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
+    }
+
+    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
+
 }

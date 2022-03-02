@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
@@ -30,6 +28,8 @@ import frc.robot.subsystems.SwerveDrive;
 
 import java.awt.Robot;
 
+import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -44,7 +44,8 @@ public class RobotContainer {
 
     private final Field2d field = new Field2d();
 
-    private final XboxController controller = new XboxController(0);
+    private final XboxController driverController = new XboxController(0);
+    private final XboxController operatorController = new XboxController(1);
     private static Trajectory currentTrajectory = new Trajectory();
 
     /**
@@ -56,18 +57,6 @@ public class RobotContainer {
 
         Limelight.init();
 
-        // Set up the default command for the drivetrain.
-        // The controls are for field-oriented driving:
-        // Left stick Y axis -> forward and backwards movement
-        // Left stick X axis -> left and right movement
-        // Right stick X axis -> rotationx
-
-       drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommandFieldOriented(
-                drivetrainSubsystem,
-                () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(controller.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        ));
 
         configureButtonBindings();
     }
@@ -79,34 +68,57 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        Button rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
-        Button leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
 
-        // Back button zeros the gyroscope
-        new Button(controller::getAButton)
-                .whenPressed(drivetrainSubsystem::zeroGyroscope);
-      
-        leftBumper.whenHeld(
-            new SequentialCommandGroup(
-                //Sets Tuning Constants from Smart Dashboard
-                new InstantCommand(AutoAlignDriveContinuousCommand::tuningSetup),
-                new AutoAlignDriveContinuousCommand(
-                        drivetrainSubsystem,
-                        () -> -modifyAxis(controller.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(controller.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ))
+        SmartDashboard.putData(CommandScheduler.getInstance());
+        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+
+        // Drivetrain Command
+        // Set up the default command for the drivetrain.
+        // The controls are for field-oriented driving:
+        // Left stick Y axis -> forward and backwards movement
+        // Left stick X axis -> left and right movement
+        // Right stick X axis -> rotationx
+
+        Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
+                drivetrainSubsystem,
+                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        // Automatically Schedule Command when nothing else is scheduled
+        drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
 
+
+
+        // A button zeros the gyroscope
+        new Button(driverController::getAButton)
+                .whenPressed(drivetrainSubsystem::zeroGyroscope);
+
+        // Left Bumper Enables Auto Align
+        leftBumper.whenPressed(
+                new AutoAlignDriveContinuousCommand(
+                        drivetrainSubsystem,
+                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                ), true);
+        //Any Significant Movement in driver's X interrupt auto align
+        new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
+                .whenPressed(defaultDriveCommand);
+        // "B" button increases the preset number
+
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
-  
+
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return null;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
 
@@ -119,7 +131,7 @@ public class RobotContainer {
     }
 
     private void configureShooter() {
-        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(controller, XboxController.Axis.kRightTrigger.value);
+        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
 
 
@@ -129,13 +141,7 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void robotOutputToDashboard() {
-        SmartDashboard.putNumber("Modified Left Y", modifyAxis(controller.getLeftY()));
-        SmartDashboard.putNumber("Unmodified Left Y", (controller.getLeftY()));
-        SmartDashboard.putNumber("Modified Left X", modifyAxis(controller.getLeftX()));
-        SmartDashboard.putNumber("Unmodified Left X", (controller.getLeftX()));
-        SmartDashboard.putNumber("Modified Right X", modifyAxis(controller.getRightX()));
-        SmartDashboard.putNumber("Unmodified Right X", (controller.getRightX()));
+    public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }
@@ -146,24 +152,29 @@ public class RobotContainer {
 
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
-            if (value > 0.0) {
-                return (value - deadband) / (1.0 - deadband);
-            } else {
-                return (value + deadband) / (1.0 - deadband);
-            }
+            return value;
+//            if (value > 0.0) {
+//                return (value - deadband) / (1.0 - deadband);
+//            } else {
+//                return (value + deadband) / (1.0 - deadband);
+//            }
         } else {
             return 0.0;
         }
     }
 
     private static double modifyAxis(double value) {
-        double deadband = 0.1;
+        double deadband = 0.05;
         value = deadband(value, deadband);
 
         if (value == 0) {
             return 0;
         }
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
+
+        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
+//
+        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
 
         return value;
     }

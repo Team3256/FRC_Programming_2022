@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import static frc.robot.Constants.IDConstants.INTAKE_MOTOR_ID;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
 
     private final TalonFX intakeMotor;
     public IntakeSubsystem() {

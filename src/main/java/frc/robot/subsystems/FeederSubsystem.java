@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,6 +18,8 @@ import frc.robot.commands.feeder.FeederOn;
 import frc.robot.commands.feeder.FeederOff;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.helper.logging.RobotLogger;
+
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants;
@@ -25,7 +28,7 @@ import static frc.robot.Constants.FeederConstants;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 
 public class FeederSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(FeederSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(FeederSubsystem.class.getCanonicalName());
 
     private final TalonFX feederMotor;
     private DigitalInput feederStartIRSensor;
@@ -48,6 +51,7 @@ public class FeederSubsystem extends SubsystemBase {
         transferIndexSetup();
         logger.info("Feeder Initialized");
     }
+
     public void on(){
         feederMotor.set(TalonFXControlMode.PercentOutput, FeederConstants.DEFAULT_FEEDER_SPEED);
         logger.info("Feeder On");
@@ -89,7 +93,7 @@ public class FeederSubsystem extends SubsystemBase {
         }));
     }
     public void off(){
-        feederMotor.set(TalonFXControlMode.PercentOutput, 0);
+        feederMotor.neutralOutput();
         logger.info("Feeder Off");
     }
 
