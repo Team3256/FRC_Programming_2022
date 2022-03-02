@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
-import frc.robot.helper.CSVShooting.ReadTrainingFromCSV;
 import frc.robot.helper.shooter.TrainingDataPoint;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterPreset;
@@ -33,9 +32,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
-
-    private List<TrainingDataPoint> velocityTrainingPoints;
-    private List<TrainingDataPoint> hoodAngleTrainingPoints;
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
@@ -212,15 +208,14 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     private void getVelocityInterpolatingFunctionFromPoints(){
-        velocityTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(VEL_CALIB_FILENAME);
 
-        double[] vValTrain = new double[velocityTrainingPoints.size()];
-        double[] thetaValTrain = new double[velocityTrainingPoints.size()];
-        double[][] angularVelocityTrain = new double[velocityTrainingPoints.size()][velocityTrainingPoints.size()];
+        double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[][] angularVelocityTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()][ALL_SHOOTER_CALIB_TRAINING.size()];
 
         TrainingDataPoint data;
-        for (int i = 0; i < velocityTrainingPoints.size(); i++) {
-            data = velocityTrainingPoints.get(i);
+        for (int i = 0; i < ALL_SHOOTER_CALIB_TRAINING.size(); i++) {
+            data = ALL_SHOOTER_CALIB_TRAINING.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
             angularVelocityTrain[i][i] = data.calibratedHoodAngleTraining;
@@ -230,15 +225,13 @@ public class FlywheelSubsystem extends SubsystemBase {
                 .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
     }
     private void getHoodAngleInterpolatingFunctionFromPoints(){
-        hoodAngleTrainingPoints = ReadTrainingFromCSV.readDataFromCSV(HOOD_CALIB_FILENAME);
-
-        double[] vValTrain = new double[hoodAngleTrainingPoints.size()];
-        double[] thetaValTrain = new double[hoodAngleTrainingPoints.size()];
-        double[][] hoodValTrain = new double[hoodAngleTrainingPoints.size()][hoodAngleTrainingPoints.size()];
+        double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[][] hoodValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()][ALL_SHOOTER_CALIB_TRAINING.size()];
 
         TrainingDataPoint data;
-        for (int i = 0; i < hoodAngleTrainingPoints.size(); i++) {
-            data = hoodAngleTrainingPoints.get(i);
+        for (int i = 0; i < ALL_SHOOTER_CALIB_TRAINING.size(); i++) {
+            data = ALL_SHOOTER_CALIB_TRAINING.get(i);
             vValTrain[i] = data.velocityTraining;
             thetaValTrain[i] = data.exitAngleTraining;
             hoodValTrain[i][i] = data.calibratedHoodAngleTraining;

@@ -305,7 +305,7 @@ public final class Constants {
         ); // TODO: Create all shooter presets
 
         // Velocity Training Points
-        public static final List<TrainingDataPoint> VELOCITY_TRAINING_DATA = Arrays.asList(
+        public static final List<TrainingDataPoint> ALL_SHOOTER_CALIB_TRAINING = Arrays.asList(
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
     }
