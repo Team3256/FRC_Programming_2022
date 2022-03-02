@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
+import frc.robot.helper.logging.RobotLogger;
+
 import java.util.logging.Logger;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
@@ -16,7 +18,7 @@ import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
 public class HangerSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(HangerSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(HangerSubsystem.class.getCanonicalName());
 
     private final TalonFX masterTalonMotor;
     private final TalonFX followerTalonMotor;

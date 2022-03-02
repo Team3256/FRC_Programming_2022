@@ -1,119 +1,155 @@
 package frc.robot.helper.logging;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import static frc.robot.Constants.LoggingConstants.*;
-import static java.util.logging.Level.OFF;
+import static frc.robot.Constants.DEBUG;
+import static frc.robot.Constants.LOG_DEBUG_TO_CONSOLE;
 
 public class RobotLogger {
 
-    //Does not Allow Instances
-    private RobotLogger(){}
-    static private Logger globalLogger;
+    private final String className;
+
+    // Shared between all Robot Logger Instances
+    private static final DataLog log = DataLogManager.getLog();
+    private static StringLogEntry debug;
+    private static StringLogEntry info;
+    private static StringLogEntry warning;
+    private static StringLogEntry severe;
 
     /**
-     * Sets Up Logging Format and Output
+     * Initializes local logger for individual class
+     * @param className Name of class, usually can get via {@code MyClass.class.getCanonicalName()}
      */
-    static public void setup() {
+    public RobotLogger(String className){
+        this.className = className;
 
-        String homePath = Filesystem.getOperatingDirectory().getAbsolutePath();
-
-        // get the global logger to configure it, applies to all loggers
-        globalLogger = Logger.getLogger("");
-
-
-
-        //If Running Unit Tests / Simulation
-        if (!RobotBase.isReal()) {
-            globalLogger.setLevel(OFF);
-            globalLogger.getHandlers()[0].setLevel(OFF);
+        // If Already Initialized, Don't Reinitialize
+        if (info != null)
             return;
-        }
-      
-        globalLogger.setLevel(LOG_LEVEL);
-        globalLogger.getHandlers()[0].setLevel(CONSOLE_LEVEL);
-      
-        if (Paths.get("/U").toFile().exists()) {
-            normalLog("/U"); // USB Defaults to /U for Mounting
-        } else {
-            System.err.println("NO USB DRIVE");
 
-            if (FORCE_NORMAL_INTERNAL) {
-                System.err.println("Forcing Normal Logging to Internal");
-                normalLog(homePath);
-            } else {
-                emergencyLog();
+        if (DEBUG)
+            debug = new StringLogEntry(log, "messages/debug");
+
+        info = new StringLogEntry(log, "messages/info");
+        warning = new StringLogEntry(log, "messages/warning");
+        severe = new StringLogEntry(log, "messages/severe");
+    }
+
+    /**
+     * Initializes WPILib Logger, should be placed in robotInit()
+     */
+    public static void init(){
+        DataLogManager.start();
+        DataLogManager.logNetworkTables(true);
+    }
+
+    /**
+     * Message that only gets logged to file with DEBUG enabled.
+     * Separate Constant to set whether it gets logged to DriverStation.
+     *
+     * @param message Message to be logged
+     */
+    public void debug(String message){
+        if (DEBUG) {
+            debug.append(getClassName() + message);
+            if (LOG_DEBUG_TO_CONSOLE){
+                System.out.println(getClassName() + message);
             }
         }
-
     }
 
     /**
-     * Logs to USB Drive with HTML + Text
+     * Helper method that logs an object's toString.
+     *
+     * Message only gets logged to file with DEBUG enabled.
+     * Separate Constant to set whether it gets logged to DriverStation.
+     *
+     * @param objName Name of Object
+     * @param obj Object that toString() will be called on
      */
-    static private void normalLog(String pathToLogInto){
-        Path txtFilePath = Paths.get(pathToLogInto, TXT_FILE_NAME);
-        Path htmlFilePath = Paths.get(pathToLogInto, HTML_FILE_NAME);
+    public void debug(String objName, Object obj) {
+        debug(getClassName() + objName + ": " + obj);
+    }
 
-        try {
-            FileHandler fileTxtHandler = new FileHandler(
-                    txtFilePath.toString(), TXT_LOG_MAX_SIZE, TXT_LOG_MAX_FILES, false);
-            FileHandler fileHTMLHandler = new FileHandler(
-                    htmlFilePath.toString(), HTML_LOG_MAX_SIZE, HTML_LOG_MAX_FILES, false);
+    /**
+     * Always gets logged to file. Won't be printed to DriverStation unless DEBUG is enabled.
+     *
+     * @param message Message to log
+     */
+    public void info(String message){
+        info.append(getClassName() + message);
 
-
-            fileTxtHandler.setFormatter(new OneLineFormatter());
-            globalLogger.addHandler(fileTxtHandler);
-
-            fileHTMLHandler.setFormatter(new HtmlFormatter());
-            globalLogger.addHandler(fileHTMLHandler);
-
-        } catch(IOException e){
-            System.err.println("Normal Log FAILED - IOException - Going to Emergency Log");
-            e.printStackTrace();
-            emergencyLog();
+        if (DEBUG){
+            System.out.println(getClassName() + message);
         }
     }
 
     /**
-     * When normal Logging Fails, Log minimally to Internal Storage
+     * Always Gets Printed to both DriverStation and Log File
+     *
+     * @param message Message to log as warning
      */
-    static private void emergencyLog() {
-        for (int i = 0; i < 3; i++)
-            System.err.println("Emergency LOG - Logging to Internal");
-
-        try {
-            String homePath = Filesystem.getOperatingDirectory().getAbsolutePath();
-
-            Path emergencyTxtPath = Paths.get(homePath, TXT_FILE_NAME);
-            FileHandler fileTxtHandler = new FileHandler(
-                    emergencyTxtPath.toString(), EMERGENCY_TXT_MAX_SIZE, EMERGENCY_TXT_MAX_FILES, false);
-
-            fileTxtHandler.setFormatter(new OneLineFormatter());
-            globalLogger.addHandler(fileTxtHandler);
-
-        } catch (IOException e){
-            System.err.println("EMERGENCY LOG FAILED - CANT CREATE FILE");
-            e.printStackTrace();
-            System.err.println("LOGGING ONLY TO CONSOLE");
-        }
-    }
-    static public void closeFiles(){
-        if (globalLogger == null)
-            setup();
-
-        for (Handler handler : globalLogger.getHandlers()){
-            handler.close();
-        }
+    public void warning(String message){
+        warning.append(getClassName() + message);
+        DriverStation.reportWarning(getClassName() + message, true);
     }
 
+    /**
+     * Always Gets Printed to both DriverStation and Log File, also prints stacktrace on newline
+     *
+     * @param message Message to log as warning
+     * @param throwable Throwable Exception to Print Stacktrace
+     */
+    public void warning(String message, Throwable throwable) {
+        StringWriter finalMsg = new StringWriter();
+
+        finalMsg.append(getClassName() + message);
+        finalMsg.append("\n");
+
+        // Stack Trace Requires Print Writer
+        PrintWriter printWriter = new PrintWriter(finalMsg);
+        throwable.printStackTrace(printWriter);
+
+
+        warning.append(finalMsg.toString());
+        DriverStation.reportWarning(getClassName() + message, throwable.getStackTrace());
+    }
+
+    /**
+     * Always Gets Printed to both DriverStation and Log File
+     *
+     * @param message Message to log as severe
+     */
+    public void severe(String message){
+        severe.append(getClassName() + message);
+        DriverStation.reportError(getClassName() + message, true);
+    }
+
+    /**Always Gets Printed to both DriverStation and Log File
+     *
+     * @param message Message to log as severe
+     * @param throwable Throwable Exception to Print Stacktrace
+     */
+    public void severe(String message, Throwable throwable){
+        StringWriter finalMsg = new StringWriter();
+
+        finalMsg.append(getClassName() + message);
+        finalMsg.append("\n");
+
+        // Stack Trace Requires Print Writer
+        PrintWriter printWriter = new PrintWriter(finalMsg);
+        throwable.printStackTrace(printWriter);
+
+        severe.append(finalMsg.toString());
+    }
+
+    private String getClassName(){
+        return "[ " + className + " ] ";
+    }
 }

@@ -17,7 +17,6 @@ public class AutoAimShooterTest {
 
     @Before
     public void setUp() {
-        RobotLogger.setup(); //Don't write any debug values
         commandScheduler = CommandScheduler.getInstance();
         commandScheduler.cancelAll();
     }

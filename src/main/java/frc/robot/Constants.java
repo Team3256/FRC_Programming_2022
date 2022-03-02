@@ -27,6 +27,9 @@ import static java.util.Map.entry;
 public final class Constants {
 
     public static final boolean DEBUG = false;
+    public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
+
+
 
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
