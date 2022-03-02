@@ -7,6 +7,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.helper.CANdle.helpers.LEDColor;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import frc.robot.helper.CANdle.helpers.LEDRange;
 import frc.robot.helper.CANdle.helpers.LEDSectionAttributes;
@@ -140,11 +141,8 @@ public class LEDRaidController {
     }
 
     private boolean isSpoofed(LEDRange range){
-
+        return false;
         // 180 + Robot Heading, wrapping around if necessary
-        double robotInverseHeading0to360 = swerveDrive.getPose().getRotation().getDegrees() + 180;
-
-        return !(Math.abs(robotInverseHeading0to360 - range.degreesFromForward) <= POKERFACE_ANGLE_MARGIN_OF_ERROR);
     }
 
     private void addSplitInstructions (LEDInstruction instruction, LEDRange range, LEDSectionName ledSectionName){
@@ -163,7 +161,7 @@ public class LEDRaidController {
 
             // If at end of Instruction, Make last one shorter
             if (instruction.count - startIdx < MAX_LED_INSTRUCTION_BLOCK_SIZE ) {
-                count -= instruction.count - startIdx;
+                count = instruction.count - startIdx;
             }
 
             // If out of range, we're done
