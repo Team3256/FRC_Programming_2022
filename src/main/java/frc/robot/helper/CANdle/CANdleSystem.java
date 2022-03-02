@@ -13,12 +13,13 @@ public class CANdleSystem {
     CANdle candle;
     LEDRaidController ledRaidController;
 
+    SwerveDrive swerveDrive;
 
     public CANdleSystem(SwerveDrive swerveDrive) {
         candle = new CANdle(CANDLE_ID);
+        this.swerveDrive = swerveDrive;
         this.ledRaidController = new LEDRaidController(candle, swerveDrive);
     }
-
 
     public void init(){
         CommandScheduler.getInstance().schedule(new CANdleUpdateCommand(ledRaidController));
