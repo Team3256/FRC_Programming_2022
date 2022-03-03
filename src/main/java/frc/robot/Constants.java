@@ -126,73 +126,78 @@ public final class Constants {
     }
 
     public static class IDConstants {
-
-        public static final String ROBORIO_CAN_BUS = "rio";
-        public static final String MANI_CAN_BUS = "mani";
-
-        public static final int DRIVETRAIN_PIGEON_ID = 4;
-
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 5;
-        public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 6;
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER_ID = 7;
-
-        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID = 8;
-        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR_ID = 9;
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_ID = 10;
-        
-        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR_ID = 11;
-        public static final int BACK_LEFT_MODULE_STEER_MOTOR_ID = 12;
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER_ID = 13;
-
-
-        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR_ID = 14;
-        public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 15;
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 16;
-
-        public static final int[] TALON_FX_IDS = new int[]{5, 6, 8, 9, 11, 12, 14, 15};
-      
+        public static final int[] TALON_FX_IDS = new int[]{2,4,5,7,8,10,11,13,14,16};
         public static final int[] SPARK_MAX_IDS = new int[]{};
 
-        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 7;
-        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 8;
+        public static final String ROBORIO_CAN_BUS = "rio";
 
-        public static final int INTAKE_MOTOR_ID = 33;
+        public static final int PNEUMATICS_HUB_ID = 17;
 
+        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR_ID = 16;
+        public static final int BACK_LEFT_MODULE_STEER_ENCODER_ID = 15;
+        public static final int BACK_LEFT_MODULE_STEER_MOTOR_ID = 14;
 
-        public static final int TURRET_ID = 34;
-        public static final int FEEDER_MOTOR_ID = 35;
+        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_ID = 13;
+        public static final int FRONT_LEFT_MODULE_STEER_ENCODER_ID = 12;
+        public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 11;
 
-        public static final int HOOD_MOTOR_ID = 0;
+        public static final int HANGER_LEFT_MASTER_TALON_ID = 10;
 
-        public static final int HANGER_MASTER_TALON_ID = 36;
-        public static final int HANGER_FOLLOWER_TALON_ID = 37;
+        public static final int DRIVETRAIN_PIGEON_ID = 9;
+
+        public static final int HANGER_RIGHT_FOLLOWER_TALON_ID = 8;
+
+        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID = 7;
+        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_ID = 6;
+        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR_ID = 5;
+
+        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR_ID = 4;
+        public static final int BACK_RIGHT_MODULE_STEER_ENCODER_ID = 3;
+        public static final int BACK_RIGHT_MODULE_STEER_MOTOR_ID = 2;
+
+        // Power Distribution Hub = 1 (Required + Hardcoded)
+
+        public static final String MANI_CAN_BUS = "mani";
+
+        public static final int INTAKE_MOTOR_ID = 6;
+
+        public static final int FEEDER_MOTOR_ID = 5;
+
+        public static final int HOOD_MOTOR_ID = 4;
+
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 3;
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 2;
+
+        public static final int CANDLE_ID = 1;
 
         //Pneumatic IDs
-        public static final int HANGER_SOLENOID_LEFT_FORWARD = 1;
-        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 2;
-        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 3;
-        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 4;
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD = 5;
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD = 6;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD = 5;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 6;
+        public static final int HANGER_SOLENOID_LEFT_FORWARD = 8;
+        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 7;
+
+        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 6;
+        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 5;
+
+        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD = 4;
+        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD = 3;
+        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD = 2;
+        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 1;
 
         // DIO Channels
-        public static final int HANGER_LIMITSWITCH_CHANNEL = 0;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 1;
+        public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
 
-        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 2; //change later
-        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 3; //change later
-        public static final int IR_TRANSFER_END_CHANNEL = 4; //change later
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 3;
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 2;
+        public static final int IR_TRANSFER_END_CHANNEL = 1;
 
         // I2C
         public static final byte I2C_MUX_ADDRESS = 0x70;
         public static final int I2C_COLOR_SENSOR_FIXED_ADDRESS = 0x52;
 
 
-        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 0;
-        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 3;
         public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
+        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
 
 
     }
