@@ -331,17 +331,17 @@ public final class Constants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
 
         public enum LEDSectionName {
-            BALL_COLOR, AUTO_AIM
+            BALL_COLOR, AUTO_AIM, DEBUG_SECTION
         }
 
         public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
         public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+        public static final DebugLEDWalkUpPatternGenerator DEBUG_LED = new DebugLEDWalkUpPatternGenerator();
 
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
             HashMapFiller.populateLinkedHashMap(
-                entry(BALL_COLOR, new LEDSectionAttributes(0, .5, BALL_PATTERN)),
-                entry(AUTO_AIM, new LEDSectionAttributes(0.5, 1, AUTO_AIM_PATTERN))
+                entry(DEBUG_SECTION, new LEDSectionAttributes(0, 1, DEBUG_LED))
             );
 
         // Defines Ranges
