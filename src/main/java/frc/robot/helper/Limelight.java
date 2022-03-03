@@ -12,7 +12,6 @@ import static frc.robot.Constants.LimelightConstants.*;
 public class Limelight {
     private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
-    private static Polynomial corrector;
 
     //Doesn't Allow Instancing
     private Limelight(){}
@@ -31,8 +30,6 @@ public class Limelight {
 
         if(getLimelightValue("tx").getDouble(1000) == 1000)
             logger.warning("Limelight Not Responding");
-      
-        readCorrectorFromFile();
     }
     /**
      * @param value
