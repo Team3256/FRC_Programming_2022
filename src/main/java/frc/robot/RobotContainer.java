@@ -20,14 +20,22 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
+import frc.robot.commands.hanger.AutoHang;
+import frc.robot.commands.hanger.HangerAlignOne;
+import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.commands.shooter.AutoAimShooter;
+import frc.robot.commands.shooter.DecreasePresetForShooter;
+import frc.robot.commands.shooter.IncreasePresetForShooter;
+import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
+import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.helper.Limelight;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.*;
 
 import java.awt.Robot;
 
+import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 
 /**
@@ -39,8 +47,14 @@ import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
-    private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    private SwerveDrive drivetrainSubsystem = null;
+
+    private FlywheelSubsystem flywheelSubsystem = null;
+    private FeederSubsystem feederSubsystem = null;
+    private IntakeSubsystem intakeSubsystem = null;
+
+    private HangerSubsystem hangerSubsystem = null;
+
 
     private final Field2d field = new Field2d();
 
@@ -55,8 +69,32 @@ public class RobotContainer {
     public RobotContainer() {
         CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
-        Limelight.init();
 
+        // Initialize Active Subsystems
+        if (LIMELIGHT)
+            Limelight.init();
+        if (DRIVETRAIN)
+            initializeDrivetrain();
+        if (SHOOTER)
+            initializeShooter();
+        if (TRANSFER)
+            initializeTransfer();
+        if (INTAKE)
+            initializeIntake();
+        if (HANGER)
+            initializeHanger();
+
+        // Configure Enabled Subsystems
+        if (DRIVETRAIN)
+            configureDrivetrain();
+        if (SHOOTER)
+            configureShooter();
+        if (TRANSFER)
+            configureTransfer();
+        if (INTAKE)
+            configureIntake();
+        if (HANGER)
+            configureHanger();
 
         configureButtonBindings();
     }
@@ -70,47 +108,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         SmartDashboard.putData(CommandScheduler.getInstance());
-        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
 
-        // Drivetrain Command
-        // Set up the default command for the drivetrain.
-        // The controls are for field-oriented driving:
-        // Left stick Y axis -> forward and backwards movement
-        // Left stick X axis -> left and right movement
-        // Right stick X axis -> rotationx
-
-        Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
-                drivetrainSubsystem,
-                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        );
-
-        // Automatically Schedule Command when nothing else is scheduled
-        drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
-
-
-
-        // A button zeros the gyroscope
-        new Button(driverController::getAButton)
-                .whenPressed(drivetrainSubsystem::zeroGyroscope);
-
-        // Left Bumper Enables Auto Align
-        leftBumper.whenPressed(
-                new AutoAlignDriveContinuousCommand(
-                        drivetrainSubsystem,
-                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ), true);
-        //Any Significant Movement in driver's X interrupt auto align
-        new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
-                .whenPressed(defaultDriveCommand);
-        // "B" button increases the preset number
-
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
     public Command getAutonomousCommand() {
@@ -130,12 +128,115 @@ public class RobotContainer {
         currentTrajectory = newTrajectory;
     }
 
+    private void initializeDrivetrain() {
+        this.drivetrainSubsystem = new SwerveDrive();
+    }
+
+    private void initializeShooter() {
+        this.flywheelSubsystem = new FlywheelSubsystem();
+    }
+
+    private void initializeTransfer() {
+        this.feederSubsystem = new FeederSubsystem();
+    }
+
+    private void initializeIntake() {
+        this.intakeSubsystem = new IntakeSubsystem();
+    }
+
+    private void initializeHanger() {
+        this.hangerSubsystem = new HangerSubsystem();
+    }
+
+    private void configureDrivetrain() {
+        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
+
+        // Drivetrain Command
+        // Set up the default command for the drivetrain.
+        // The controls are for field-oriented driving:
+        // Left stick Y axis -> forward and backwards movement
+        // Left stick X axis -> left and right movement
+        // Right stick X axis -> rotationx
+
+        Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
+                drivetrainSubsystem,
+                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        );
+
+        // Automatically Schedule Command when nothing else is scheduled
+        drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
+
+        // A button zeros the gyroscope
+        driverAButton.whenPressed(drivetrainSubsystem::zeroGyroscope);
+
+        // Left Bumper Enables Auto Align
+        leftBumper.whenPressed(
+                new AutoAlignDriveContinuousCommand(
+                        drivetrainSubsystem,
+                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                ), true);
+
+        //Any Significant Movement in driver's X interrupt auto align
+        new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
+                .whenPressed(defaultDriveCommand);
+    }
+
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
 
+        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
 
+        if (LIMELIGHT)
+            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
+
+        dPadUp.whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
+        dPadDown.whenPressed(new DecreasePresetForShooter(flywheelSubsystem));
     }
+
+    private void configureDebugShooter(){
+        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+        rightTrigger.setThreshold(0.01);
+
+        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+    }
+
+    private void configureTransfer() {
+        DPadButton dPadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+
+        dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in
+    }
+
+    private void configureIntake() {
+        JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+    }
+
+    private void configureHanger() {
+        JoystickButton operatorMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+        JoystickButton operatorMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+
+        JoystickButton driverMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+        JoystickButton driverMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+
+        operatorMiddleButtonLeft.or(operatorMiddleButtonRight).whenActive(new HangerExtend(hangerSubsystem));
+
+        if (BOTTOM_COLOR_SENSORS)
+            driverMiddleButtonLeft.whenActive(new HangerAlignOne(drivetrainSubsystem));
+
+        driverMiddleButtonRight.whenActive(new AutoHang(hangerSubsystem));
+    }
+
+
 
     public void sendTrajectoryToDashboard() {
         field.getObject("traj").setTrajectory(getTrajectory());

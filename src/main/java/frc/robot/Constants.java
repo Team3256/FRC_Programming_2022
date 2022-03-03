@@ -30,6 +30,21 @@ public final class Constants {
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
 
+    public static class SubsystemEnableFlags {
+        public static final boolean LIMELIGHT = false;
+
+        public static final boolean SHOOTER = false;
+        public static final boolean TRANSFER = false;
+        public static final boolean INTAKE = false;
+
+        public static final boolean HANGER = false;
+
+        public static final boolean DRIVETRAIN = false;
+
+        public static final boolean BALL_COLOR_SENSOR = false;
+        public static final boolean BOTTOM_COLOR_SENSORS = false;
+    }
+
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
