@@ -87,6 +87,12 @@ public class FlywheelSubsystem extends SubsystemBase {
         applyShooterState(correctedShooterState);
     }
 
+    public void simpleAutoAim(double distance) {
+        ShooterState ikShooterState = ballInverseKinematics(distance);
+        ShooterState correctedShooterState = new ShooterState(getFlywheelRPMFromInterpolator(distance), getHoodAngleFromInterpolator(distance));
+        applyShooterState(correctedShooterState);
+    }
+
     /**
      * @param velocity Angular Velocity in (rev/s)
      * Flywheel speed is set by integrated PID controller
