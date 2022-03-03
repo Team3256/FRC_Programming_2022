@@ -30,8 +30,6 @@ public final class Constants {
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
 
-
-
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
@@ -319,7 +317,10 @@ public final class Constants {
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
     }
-    public static class CANdleConstants{
+    public static class CANdleConstants {
+        public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+        public static final int CYCLES_PER_CANDLE_UPDATE = 10;
+
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM
         }
@@ -329,16 +330,17 @@ public final class Constants {
 
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
-            HashMapFiller.populateLinkedHashMap(
-                entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
-                entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
-            );
+                HashMapFiller.populateLinkedHashMap(
+                        entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                        entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
                 new LEDRange(0, 10, 0),
-                new LEDRange(10,15, 180)
+                new LEDRange(10, 15, 180)
         };
+
     }
     public static class PatternGeneratorConstants{
         public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
@@ -346,8 +348,5 @@ public final class Constants {
 
         public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
     }
-
-    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
-    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
 
 }

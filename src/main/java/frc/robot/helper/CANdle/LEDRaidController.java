@@ -9,9 +9,8 @@ import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
-import static frc.robot.Constants.POKERFACE_ANGLE_MARGIN_OF_ERROR;
+import static frc.robot.Constants.CANdleConstants.POKERFACE_ANGLE_MARGIN_OF_ERROR;
 import static frc.robot.Constants.CANdleConstants.*;
 
 public class LEDRaidController {
