@@ -100,13 +100,6 @@ public class Limelight {
         return degrees * Math.PI/180.0;
     }
 
-    public static void readCorrectorFromFile(){
-        corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILENAME);
-        //if corrector does not exist, set it to default polynomial y=x
-        if (corrector==null) corrector=new Polynomial(new double[]{0,1});
-    }
-
-
     /**
      * Disables the LEDs on the Limelight, LEDs should be off when limelight not in use.
      */
