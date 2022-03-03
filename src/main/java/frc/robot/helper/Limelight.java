@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import java.util.logging.Logger;
 
+import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_DISTANCE_TUNER;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 import static frc.robot.Constants.LimelightConstants.*;
 
@@ -90,7 +91,7 @@ public class Limelight {
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return corrector.getOutput(getRawDistanceToTarget());
+        return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
     }
     /**
      * @param degrees
