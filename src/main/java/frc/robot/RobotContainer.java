@@ -7,22 +7,18 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.BrownoutWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
-import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.JoystickAnalogButton;
@@ -44,6 +40,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private final Field2d field = new Field2d();
 
@@ -75,7 +72,7 @@ public class RobotContainer {
         SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -111,14 +108,17 @@ public class RobotContainer {
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
+        // "B" button increases the preset number
+
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
-  
+
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return null;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
 
@@ -141,13 +141,7 @@ public class RobotContainer {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
-    public void robotOutputToDashboard() {
-        SmartDashboard.putNumber("Modified Left Y", modifyAxis(driverController.getLeftY()));
-        SmartDashboard.putNumber("Unmodified Left Y", (driverController.getLeftY()));
-        SmartDashboard.putNumber("Modified Left X", modifyAxis(driverController.getLeftX()));
-        SmartDashboard.putNumber("Unmodified Left X", (driverController.getLeftX()));
-        SmartDashboard.putNumber("Modified Right X", modifyAxis(driverController.getRightX()));
-        SmartDashboard.putNumber("Unmodified Right X", (driverController.getRightX()));
+    public void autoOutputToDashboard() {
         field.setRobotPose(drivetrainSubsystem.getPose());
         SmartDashboard.putData("Field", field);
     }
@@ -158,24 +152,29 @@ public class RobotContainer {
 
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
-            if (value > 0.0) {
-                return (value - deadband) / (1.0 - deadband);
-            } else {
-                return (value + deadband) / (1.0 - deadband);
-            }
+            return value;
+//            if (value > 0.0) {
+//                return (value - deadband) / (1.0 - deadband);
+//            } else {
+//                return (value + deadband) / (1.0 - deadband);
+//            }
         } else {
             return 0.0;
         }
     }
 
     private static double modifyAxis(double value) {
-        double deadband = 0.1;
+        double deadband = 0.05;
         value = deadband(value, deadband);
 
         if (value == 0) {
             return 0;
         }
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), 3), value);
+
+        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
+//
+        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
 
         return value;
     }

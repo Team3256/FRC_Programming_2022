@@ -5,6 +5,7 @@ package frc.robot.helper.CANdle;
 import com.ctre.phoenix.led.CANdle;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import frc.robot.helper.CANdle.helpers.LEDRange;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import static frc.robot.Constants.POKERFACE_ANGLE_MARGIN_OF_ERROR;
 import static frc.robot.Constants.CANdleConstants.*;
 
 public class LEDRaidController {
-    private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(LEDRaidController.class.getCanonicalName());
 
     CANdle candle;
 

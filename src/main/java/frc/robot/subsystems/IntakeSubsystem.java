@@ -4,29 +4,36 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonFXFactory;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class IntakeSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(IntakeSubsystem.class.getCanonicalName());
+import static frc.robot.Constants.IDConstants.INTAKE_MOTOR_ID;
+import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 
-    private final CANSparkMax intakeMotor;
+public class IntakeSubsystem extends SubsystemBase {
+    private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
+
+    private final TalonFX intakeMotor;
     public IntakeSubsystem() {
-        intakeMotor = new CANSparkMax(33, CANSparkMaxLowLevel.MotorType.kBrushless);
+        intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, MANI_CAN_BUS);
         logger.info("Intake Initialized");
     }
 
 
     public void on(){
         logger.info("Intake on");
-        intakeMotor.set(1);
+        intakeMotor.set(ControlMode.PercentOutput, 1);
     }
     public void off(){
-        intakeMotor.stopMotor();
+        intakeMotor.neutralOutput();
         logger.info("Intake off");
     }
 }

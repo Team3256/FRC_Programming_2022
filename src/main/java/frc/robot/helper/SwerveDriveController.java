@@ -71,8 +71,11 @@ public class SwerveDriveController {
         double thetaFF =
                 thetaController.calculate(currentRotation, angleRef.getRadians());
 
-        if (Constants.DEBUG)
-            SmartDashboard.putNumber("Theta FF", thetaFF * 180/ Math.PI);
+
+        if (Constants.DEBUG || true) {
+            SmartDashboard.putNumber("Theta Current", currentRotation * 180 / Math.PI);
+            SmartDashboard.putNumber("Theta Setpoint", angleRef.getDegrees());
+        }
 
         poseError = poseRef.relativeTo(currentPose);
         rotationError = angleRef.minus(currentPose.getRotation());
