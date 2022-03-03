@@ -6,11 +6,11 @@ public class TrainingDataPoint {
     public double calibratedHoodAngleTraining;
     public double calibratedVelocityTraining;
 
-    public TrainingDataPoint(double vTrain, double thetaTraining, double calibTrainingAngle, double calibTrainingVelocity) {
-        velocityTraining = vTrain;
-        exitAngleTraining = thetaTraining;
-        calibratedHoodAngleTraining = calibTrainingAngle;
-        calibratedVelocityTraining = calibTrainingVelocity;
+    public TrainingDataPoint(double exitBallVelocity, double exitBallAngle, double hoodAngle, double flywheelRPM) {
+        velocityTraining = exitBallVelocity;
+        exitAngleTraining = exitBallAngle;
+        calibratedHoodAngleTraining = hoodAngle;
+        calibratedVelocityTraining = flywheelRPM;
     }
 
 
