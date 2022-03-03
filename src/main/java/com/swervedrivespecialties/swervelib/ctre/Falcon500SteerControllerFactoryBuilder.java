@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import frc.robot.hardware.LazyTalonFX;
 
 import static com.swervedrivespecialties.swervelib.ctre.CtreUtils.checkCtreError;
+import static frc.robot.Constants.IDConstants.ROBORIO_CAN_BUS;
 
 public final class Falcon500SteerControllerFactoryBuilder {
     private static final int CAN_TIMEOUT_MS = 250;
@@ -116,7 +117,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 motorConfiguration.supplyCurrLimit.enable = true;
             }
 
-            TalonFX motor = new LazyTalonFX(steerConfiguration.getMotorPort());
+            TalonFX motor = new LazyTalonFX(steerConfiguration.getMotorPort(), ROBORIO_CAN_BUS);
             checkCtreError(motor.configAllSettings(motorConfiguration, CAN_TIMEOUT_MS), "Failed to configure Falcon 500 settings");
 
             if (hasVoltageCompensation()) {

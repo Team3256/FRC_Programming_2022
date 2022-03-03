@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.FeederConstants;
+import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 
 public class FeederSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(FeederSubsystem.class.getCanonicalName());
@@ -38,7 +39,7 @@ public class FeederSubsystem extends SubsystemBase {
     private double currentBallCount;
 
     public FeederSubsystem() {
-        feederMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID);
+        feederMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID, MANI_CAN_BUS);
       
         feederStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         feederStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);

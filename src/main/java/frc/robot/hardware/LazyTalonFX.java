@@ -7,8 +7,8 @@ public class LazyTalonFX extends TalonFX {
     double lastSetValue = Double.NaN;
     protected TalonFXControlMode lastSetControlMode = null;
 
-    public LazyTalonFX(int id) {
-        super(id);
+    public LazyTalonFX(int id, String canBus) {
+        super(id, canBus);
     }
 
     @Override

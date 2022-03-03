@@ -2,16 +2,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
-
-import java.util.logging.Logger;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import static frc.robot.Constants.HangerConstants.*;
@@ -30,20 +26,22 @@ public class HangerSubsystem extends SubsystemBase {
 
     public HangerSubsystem() {
         masterTalonMotor = TalonFXFactory.createTalonFX(
-                HANGER_MASTER_TALON_ID,
-                MASTER_CONFIG
+                HANGER_LEFT_MASTER_TALON_ID,
+                MASTER_CONFIG,
+                ROBORIO_CAN_BUS
         );
 
         followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
-                HANGER_FOLLOWER_TALON_ID,
-                HANGER_MASTER_TALON_ID,
-                FOLLOWER_CONFIG
+                HANGER_RIGHT_FOLLOWER_TALON_ID,
+                HANGER_LEFT_MASTER_TALON_ID,
+                FOLLOWER_CONFIG,
+                ROBORIO_CAN_BUS
         );
 
-        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
-        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
-        leftAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD, HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD);
-        rightAirBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
+        leftSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
+        rightSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
+        leftAirBrake = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD, HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD);
+        rightAirBrake = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
         engageAirBrake();
 
         logger.info("Hanger Initialized");
