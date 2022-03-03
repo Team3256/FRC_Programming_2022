@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 import java.util.LinkedHashMap;
 import frc.robot.hardware.TalonConfiguration;
+import frc.robot.helper.Polynomial;
+
 import java.util.logging.Level;
 
 import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
@@ -28,6 +30,7 @@ public final class Constants {
         public static final int PACES = 40;
         public static final String POLYNOMIAL_FILENAME = "Polynomial.txt";
         public static final int POLYNOMIAL_DEGREE = 5;
+        public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[1]);
     }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 24.5;
