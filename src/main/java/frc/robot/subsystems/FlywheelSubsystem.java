@@ -88,9 +88,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void simpleAutoAim(double distance) {
-        ShooterState ikShooterState = ballInverseKinematics(distance);
-        ShooterState correctedShooterState = new ShooterState(getFlywheelRPMFromInterpolator(distance), getHoodAngleFromInterpolator(distance));
-        applyShooterState(correctedShooterState);
+        ShooterState shooterState = new ShooterState(getFlywheelRPMFromInterpolator(distance), getHoodAngleFromInterpolator(distance));
+        applyShooterState(shooterState);
     }
 
     /**

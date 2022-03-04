@@ -8,11 +8,9 @@ import static frc.robot.helper.Limelight.*;
 
 public class AutoAimShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
-    //TODO: Add limelight subsystem definition
 
     public AutoAimShooter(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
-        //TODO: Add limelight subsystem initation
         addRequirements(flywheelSubsystem);
     }
 
@@ -23,7 +21,7 @@ public class AutoAimShooter extends CommandBase {
 
     @Override
     public void execute() {
-        double distanceToTarget = getRawDistanceToTarget();
+        double distanceToTarget = getTunedDistanceToTarget();
 
         flywheelSubsystem.autoAim(distanceToTarget);
     }
