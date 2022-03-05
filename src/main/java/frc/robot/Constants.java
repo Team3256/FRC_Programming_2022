@@ -16,10 +16,14 @@ import frc.robot.hardware.TalonConfiguration;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import frc.robot.hardware.TalonConfiguration;
+import frc.robot.helper.Polynomial;
+
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
 
 import java.util.List;
+
 import java.util.logging.Level;
 
 import static frc.robot.Constants.LEDConstants.LEDSectionName.*;
@@ -29,28 +33,36 @@ public final class Constants {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
+
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
+    public static class SubsystemEnableFlags {
+        public static final boolean LIMELIGHT = false;
+
+        public static final boolean SHOOTER = false;
+        public static final boolean TRANSFER = false;
+        public static final boolean INTAKE = false;
+
+        public static final boolean HANGER = false;
+
+        public static final boolean DRIVETRAIN = false;
+
+        public static final boolean BALL_COLOR_SENSOR = false;
+        public static final boolean BOTTOM_COLOR_SENSORS = false;
+    }
 
     public static class LimelightAutoCorrectConstants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
-        public static final String POLYNOMIAL_FILENAME = "Polynomial.txt";
         public static final int POLYNOMIAL_DEGREE = 5;
+        public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[]{0,1,0,0,0}); // TODO: Put actual polynomial coefficients here
     }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
         public static final double MOUNTING_ANGLE_DEG = 43;
     }
-    public static class TurretConstants {
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double DEFAULT_TURRET_SPEED = 50;
-        public static final double TURRET_TOLERANCE_TX = 0.5;
-        public static final double GEAR_RATIO = 0.25;
-    }
+
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
@@ -174,9 +186,9 @@ public final class Constants {
 
         public static final String MANI_CAN_BUS = "mani";
 
-        public static final int CANDLE_ID = 34;
-        public static final int FEEDER_MOTOR_ID = 35;
         public static final int INTAKE_MOTOR_ID = 6;
+
+        public static final int TRANSFER_MOTOR_ID = 5;
 
         public static final int HOOD_MOTOR_ID = 4;
 
@@ -353,14 +365,14 @@ public final class Constants {
 
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
-            HashMapFiller.populateLinkedHashMap(
-                entry(AUTO_AIM, new LEDSectionAttributes(0, 1, AUTO_AIM_PATTERN))
-            );
+                HashMapFiller.populateLinkedHashMap(
+                    entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                    entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
-              //  new LEDRange(0, 4, 180),
-                    new LEDRange(0,200, 180) // Only can address up to 127 at a time
+                    new LEDRange(0,200, 180)
         };
     }
 
