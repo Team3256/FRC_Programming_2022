@@ -99,7 +99,6 @@ public class RobotContainer {
         if (HANGER)
             configureHanger();
 
-        configureButtonBindings();
     }
 
     /**
@@ -108,11 +107,6 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
-
-        SmartDashboard.putData(CommandScheduler.getInstance());
-
-    }
 
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
