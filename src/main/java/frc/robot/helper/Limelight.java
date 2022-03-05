@@ -8,7 +8,6 @@ import frc.robot.helper.logging.RobotLogger;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_DISTANCE_TUNER;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
