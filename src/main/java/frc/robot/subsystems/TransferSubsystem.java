@@ -55,7 +55,7 @@ public class TransferSubsystem extends SubsystemBase {
     private double currentBallCount;
 
     public TransferSubsystem() {
-        transferMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID, MANI_CAN_BUS);
+        transferMotor = TalonFXFactory.createTalonFX(IDConstants.TRANSFER_MOTOR_ID, MANI_CAN_BUS);
       
         transferStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         transferStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);

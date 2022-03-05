@@ -62,14 +62,7 @@ public final class Constants {
         public static final double TARGET_HEIGHT_INCHES = 98;
         public static final double MOUNTING_ANGLE_DEG = 43;
     }
-    public static class TurretConstants {
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double DEFAULT_TURRET_SPEED = 50;
-        public static final double TURRET_TOLERANCE_TX = 0.5;
-        public static final double GEAR_RATIO = 0.25;
-    }
+
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
@@ -194,6 +187,8 @@ public final class Constants {
         public static final String MANI_CAN_BUS = "mani";
 
         public static final int INTAKE_MOTOR_ID = 6;
+
+        public static final int TRANSFER_MOTOR_ID = 5;
 
         public static final int HOOD_MOTOR_ID = 4;
 
