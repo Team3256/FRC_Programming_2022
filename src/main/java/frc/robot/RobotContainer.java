@@ -17,12 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
-import frc.robot.commands.BrownoutWatcher;
+import frc.robot.commands.PDHFaultWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -53,7 +53,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CommandScheduler.getInstance().schedule(new BrownoutWatcher());
+        CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
 
         Limelight.init();
 
@@ -72,7 +72,7 @@ public class RobotContainer {
         SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.

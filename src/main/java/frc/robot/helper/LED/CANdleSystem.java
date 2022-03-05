@@ -1,17 +1,22 @@
-package frc.robot.helper.CANdle;
+package frc.robot.helper.LED;
 
 import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.candle.CANdleUpdateCommand;
 import frc.robot.subsystems.SwerveDrive;
 
+import static frc.robot.Constants.IDConstants.CANDLE_ID;
+
 public class CANdleSystem {
 
     LEDRaidController ledRaidController;
 
-    public CANdleSystem(CANdle candle, SwerveDrive swerveDrive) {
-        this.ledRaidController = new LEDRaidController(candle, swerveDrive);
+    SwerveDrive swerveDrive;
+
+    public CANdleSystem(SwerveDrive swerveDrive) {
+        this.ledRaidController = new LEDRaidController(swerveDrive);
     }
+
     public void init(){
         CommandScheduler.getInstance().schedule(new CANdleUpdateCommand(ledRaidController));
     }

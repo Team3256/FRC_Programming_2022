@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static frc.robot.Constants.IDConstants.INTAKE_ID;
+import static frc.robot.Constants.IntakeConstants.*;
 
 import static frc.robot.Constants.IDConstants.INTAKE_MOTOR_ID;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
@@ -27,11 +29,15 @@ public class IntakeSubsystem extends SubsystemBase {
         logger.info("Intake Initialized");
     }
 
-
-    public void on(){
+    public void forwardOn(){
         logger.info("Intake on");
-        intakeMotor.set(ControlMode.PercentOutput, 1);
+        intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
+
+    public void reverseOn(){
+        intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
+    }
+
     public void off(){
         intakeMotor.neutralOutput();
         logger.info("Intake off");
