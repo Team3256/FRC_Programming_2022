@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
     RobotLogger.setup();
     logger.info("Robot Disabled");
     RobotLogger.closeFiles();
-    robotContainer.sendTrajectoryToDashboard();
+    robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
   }
 
   @Override
@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    robotContainer.autoOutputToDashboard();
+    robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    robotContainer.autoOutputToDashboard();
+    robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
   }
 
   @Override

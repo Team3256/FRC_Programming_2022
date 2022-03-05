@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import org.opencv.core.Mat;
 import frc.robot.Constants;
 import org.apache.commons.math3.analysis.function.Constant;
@@ -209,10 +211,15 @@ public class SwerveDrive extends SubsystemBase {
         field.getObject("traj").setTrajectory(getTrajectory());
     }
 
+    public Trajectory getTrajectory() {
+        return RobotContainer.currentTrajectory;
+    }
+
     public void autoOutputToDashboard(Field2d field) {
         field.setRobotPose(this.getPose());
         SmartDashboard.putData("Field", field);
     }
+
 
     public void outputToDashboard() {
 

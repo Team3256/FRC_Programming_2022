@@ -47,7 +47,7 @@ public class RobotContainer {
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
-    private static Trajectory currentTrajectory = new Trajectory();
+    public static Trajectory currentTrajectory = new Trajectory();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -118,11 +118,6 @@ public class RobotContainer {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
-
-    public Trajectory getTrajectory() {
-       return currentTrajectory;
-    }
-
     public static void setCurrentTrajectory(Trajectory newTrajectory) {
         currentTrajectory = newTrajectory;
     }
@@ -130,18 +125,5 @@ public class RobotContainer {
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
-
-
     }
-
-    public void sendTrajectoryToDashboard() {
-        field.getObject("traj").setTrajectory(getTrajectory());
-    }
-
-    public void autoOutputToDashboard() {
-        field.setRobotPose(drivetrainSubsystem.getPose());
-        SmartDashboard.putData("Field", field);
-    }
-
-
 }
