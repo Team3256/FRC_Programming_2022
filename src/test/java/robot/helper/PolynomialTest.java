@@ -32,31 +32,4 @@ public class PolynomialTest {
         //8*6 + 4*5 + 2*2 +3 = 75
         assertTrue(testPolynomial.getOutput(2)==75);
     }
-
-    @Test
-    public void checkPolynomialIO(){
-        Polynomial testWritePolynomial = new Polynomial(new double[]{3,2,5,6});
-        FileUtil.writeObjectToFile("Polynomial.txt", testWritePolynomial);
-        Polynomial testReadPolynomial = (Polynomial) FileUtil.readObjectFromFile("Polynomial.txt");
-        assertTrue(testReadPolynomial.getOutput(2)==75);
-    }
-
-    @Test
-    public void checkDNEFileRead(){
-        Polynomial testReadPolynomial = (Polynomial) FileUtil.readObjectFromFile("NonExistent.txt");
-        assertTrue(testReadPolynomial==null);
-    }
-
-    @Test
-    public void checkCreateFile(){
-        Polynomial testWritePolynomial = new Polynomial(new double[]{3,2,5,6});
-        FileUtil.writeObjectToFile("NewFile.txt", testWritePolynomial);
-        assertTrue(FileUtil.fileExists("NewFile.txt"));
-    }
-
-    @Test
-    public void checkDeleteFile(){
-        FileUtil.deleteFile("NewFile.txt");
-        assertFalse(FileUtil.fileExists("NewFile.txt"));
-    }
 }
