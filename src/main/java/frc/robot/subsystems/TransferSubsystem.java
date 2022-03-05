@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.*;
+import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
@@ -56,7 +57,7 @@ public class TransferSubsystem extends SubsystemBase {
     private double currentBallCount;
 
     public TransferSubsystem() {
-        transferMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID);
+        transferMotor = TalonFXFactory.createTalonFX(IDConstants.FEEDER_MOTOR_ID, MANI_CAN_BUS);
       
         transferStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         transferStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);

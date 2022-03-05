@@ -31,11 +31,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void forwardOn(){
         logger.info("Intake on");
-        intakeMotor.set(ControlMode.PercentOutput, 1);
+        intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
     public void reverseOn(){
-        intakeMotor.set(INTAKE_BACKWARD_SPEED                   );
+        intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
     }
 
     public void off(){

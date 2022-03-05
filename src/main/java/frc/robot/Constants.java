@@ -178,14 +178,10 @@ public final class Constants {
         public static final int FEEDER_MOTOR_ID = 35;
         public static final int INTAKE_MOTOR_ID = 6;
 
-        public static final int FEEDER_MOTOR_ID = 5;
-
         public static final int HOOD_MOTOR_ID = 4;
 
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 3;
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 2;
-
-        public static final int CANDLE_ID = 1;
 
         public static final int INTAKE_ID = 40;
 
@@ -345,12 +341,7 @@ public final class Constants {
         );
     }
     public static class LEDConstants {
-
-        public static final CANdle.LEDStripType LED_STRIP_TYPE = CANdle.LEDStripType.GRB;  // For 5m Addressable Strips
-        public static final double LED_BRIGHTNESS_SCALAR = 1.0;  // Scalar from 0.0 - 1.0
-
-        public static final int MAX_LED_INSTRUCTION_BLOCK_SIZE = 120;  // In LED Count
-        public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
+         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
 
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM, DEBUG_SECTION
