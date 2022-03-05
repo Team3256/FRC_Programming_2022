@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
-
+    public static final double TIME_INTERVAL = 1;
 
 
     public static class LimelightAutoCorrectConstants {
