@@ -40,24 +40,22 @@ import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
-    private final SwerveDrive drivetrainSubsystem = new SwerveDrive();
+    public final SwerveDrive drivetrainSubsystem = new SwerveDrive();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
-    private final Field2d field = new Field2d();
+    public final Field2d field = new Field2d();
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
     private static Trajectory currentTrajectory = new Trajectory();
 
     /**
-     *
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         CommandScheduler.getInstance().schedule(new BrownoutWatcher());
 
         Limelight.init();
-
 
         configureButtonBindings();
     }
@@ -91,8 +89,6 @@ public class RobotContainer {
 
         // Automatically Schedule Command when nothing else is scheduled
         drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
-
-
 
         // A button zeros the gyroscope
         new Button(driverController::getAButton)
@@ -147,8 +143,5 @@ public class RobotContainer {
         SmartDashboard.putData("Field", field);
     }
 
-    public void resetPose() {
-        drivetrainSubsystem.resetOdometry(new Pose2d());
-    }
 
 }

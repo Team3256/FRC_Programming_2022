@@ -6,11 +6,6 @@ public class ControllerUtil {
     public static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
             return value;
-//            if (value > 0.0) {
-//                return (value - deadband) / (1.0 - deadband);
-//            } else {
-//                return (value + deadband) / (1.0 - deadband);
-//            }
         } else {
             return 0.0;
         }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -202,6 +203,15 @@ public class SwerveDrive extends SubsystemBase {
 
         final double SIGNED_DEADZONE = Math.copySign(DRIVETRAIN_MOTOR_DEADZONE_VOLTS, volts);
         return (((MAX_VOLTAGE - SIGNED_DEADZONE)/MAX_VOLTAGE) * volts) + Math.copySign(SIGNED_DEADZONE, volts);
+    }
+
+    public void sendTrajectoryToDashboard(Field2d field) {
+        field.getObject("traj").setTrajectory(getTrajectory());
+    }
+
+    public void autoOutputToDashboard(Field2d field) {
+        field.setRobotPose(this.getPose());
+        SmartDashboard.putData("Field", field);
     }
 
     public void outputToDashboard() {

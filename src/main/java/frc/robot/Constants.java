@@ -34,11 +34,13 @@ public final class Constants {
         public static final String POLYNOMIAL_FILENAME = "Polynomial.txt";
         public static final int POLYNOMIAL_DEGREE = 5;
     }
+
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
         public static final double MOUNTING_ANGLE_DEG = 43;
     }
+
     public static class TurretConstants {
         public static final double kP = 0;
         public static final double kI = 0;
@@ -47,10 +49,12 @@ public final class Constants {
         public static final double TURRET_TOLERANCE_TX = 0.5;
         public static final double GEAR_RATIO = 0.25;
     }
+
     public static class FeederConstants {
         public static final double DEFAULT_FEEDER_SPEED = 50;
         public static final int MAX_BALL_COUNT = 2; //change later
     }
+
     public static class SwerveConstants {
         public static final boolean INVERT_TURN = true;
         public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.4;
