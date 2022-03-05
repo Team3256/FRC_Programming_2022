@@ -1,4 +1,4 @@
-package frc.robot.helper.CANdle;
+package frc.robot.helper.LED;
 
 // get ranges and secions from constants file
 
@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.helper.CANdle.helpers.LEDInstruction;
-import frc.robot.helper.CANdle.helpers.LEDRange;
-import frc.robot.helper.CANdle.helpers.LEDSectionAttributes;
+import frc.robot.helper.LED.helpers.LEDInstruction;
+import frc.robot.helper.LED.helpers.LEDRange;
+import frc.robot.helper.LED.helpers.LEDSectionAttributes;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
@@ -23,9 +23,7 @@ import static frc.robot.Constants.IDConstants.LED_STRIP_PWM_PORT;
 import static frc.robot.Constants.LEDConstants.*;
 
 public class LEDRaidController {
-
     private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
-    private LinkedList<LEDInstruction> ledInstructionLinkedList = new LinkedList<>();
 
     private AddressableLED addressableLED;
     private AddressableLEDBuffer buffer;
@@ -38,7 +36,7 @@ public class LEDRaidController {
 
     SwerveDrive swerveDrive;
 
-    public LEDRaidController(CANdle candle, SwerveDrive swerveDrive) {
+    public LEDRaidController(SwerveDrive swerveDrive) {
 
 
         // Get Max Num of LEDs
@@ -52,16 +50,12 @@ public class LEDRaidController {
         buffer = new AddressableLEDBuffer(maxLeds);
         addressableLED.setData(new AddressableLEDBuffer(maxLeds));
 
-        this.candle = candle;
         this.swerveDrive = swerveDrive;
 
-        CANdleConfiguration candleConfig = new CANdleConfiguration();
-        candleConfig.stripType = LED_STRIP_TYPE;
-        candleConfig.brightnessScalar = LED_BRIGHTNESS_SCALAR;
-
-        candle.configAllSettings(candleConfig);
-
         timer.start();
+
+        // Start Sending Values to LEDs
+        addressableLED.start();
     }
 
     public void update() {
@@ -79,7 +73,7 @@ public class LEDRaidController {
             for (LEDSectionName ledSectionName : SECTIONS.keySet())
                 SECTIONS.get(ledSectionName).patternGenerator.reset();
 
-            candle.setLEDs(0,0,0,0, 0, maxLeds);  // Turn off LEDs
+            disabledLights(); // Turn off LEDs
             timer.reset();  // Wait for Cooldown
         }
 
@@ -113,74 +107,28 @@ public class LEDRaidController {
                 // Adds Instructions to FIFO Queue
                 for (LEDInstruction instruction: instructions) {
 
-                    // If big, Splits up Instructions greater than 120 leds, since CANdle can't handle it
-                    if (instruction.count > MAX_LED_INSTRUCTION_BLOCK_SIZE){
-                        addSplitInstructions(instruction, range, ledSectionName);
-                    } else {
-                        ledInstructionLinkedList.add(new LEDInstruction(
-                                instruction.ledColor,
-                                fromVirtualToGlobal(range, ledSectionName, instruction.startIdx),
-                                instruction.count));
-                    }
+                    int startIdx = fromVirtualToGlobal(range, ledSectionName, instruction.startIdx);
+
+                    for (int i = startIdx; i < startIdx + instruction.count; i++)
+                        buffer.setRGB(
+                                i, instruction.ledColor.r, instruction.ledColor.g,
+                                instruction.ledColor.b);
                 }
             }
         }
-
-        // Actually Run CANdle Commands, 1 at a time
-        LEDInstruction caNdleInstruction = ledInstructionLinkedList.pollFirst();
-
-        if (caNdleInstruction != null) {
-            ErrorCode error = candle.setLEDs(
-                    caNdleInstruction.ledColor.r, caNdleInstruction.ledColor.g,
-                    caNdleInstruction.ledColor.b, caNdleInstruction.ledColor.w,
-                    caNdleInstruction.startIdx, caNdleInstruction.count
-
-                    );
-
-            if (!error.equals(ErrorCode.OK))
-                logger.warning(error.toString());
-        }
-
         timer.reset();
     }
 
     private void disabledLights(){
         // Just turn off Lights when Disabled
-        candle.setLEDs(0,0,0,0, 0, maxLeds);
+        for (int i = 0; i < maxLeds; i++)
+            buffer.setRGB(i, 0,0,0);  // Turn off LEDs
     }
 
     private boolean isSpoofed(LEDRange range){
         return false;
         // 180 + Robot Heading, wrapping around if necessary
     }
-
-    private void addSplitInstructions (LEDInstruction instruction, LEDRange range, LEDSectionName ledSectionName){
-        int startIdx = instruction.startIdx;
-        int count = MAX_LED_INSTRUCTION_BLOCK_SIZE;
-
-        while (true){
-
-            ledInstructionLinkedList.add(new LEDInstruction(
-                    instruction.ledColor,
-                    fromVirtualToGlobal(range, ledSectionName, startIdx),
-                    count));
-
-
-            startIdx += MAX_LED_INSTRUCTION_BLOCK_SIZE;
-
-            // If at end of Instruction, Make last one shorter
-            if (instruction.count - startIdx < MAX_LED_INSTRUCTION_BLOCK_SIZE ) {
-                count = instruction.count - startIdx;
-            }
-
-            // If out of range, we're done
-            if (startIdx > instruction.count){
-                return;
-            }
-
-        }
-    }
-
 
     private int fromVirtualToGlobal(LEDRange range, LEDSectionName ledSectionName, int virtualAddress){
         int sectionStartOffsetInRange = (int)(range.getLength() * SECTIONS.get(ledSectionName).percentageStart + 0.5);

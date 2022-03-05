@@ -25,13 +25,13 @@ public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
 
   @Override
-  public void testInit() {
-    new CANdleSystem(null).init();
-    new Button(new XboxController(0)::getAButton).whenPressed(new InstantCommand(()->BALL_PATTERN.update(BallColor.BLUE, BallColor.RED)));
+  public void robotInit() {
+    robotContainer = new RobotContainer();
+    SmartDashboard.putData(robotContainer.getCommandChooser());
   }
 
   @Override
-  public void testPeriodic() {
+  public void robotPeriodic() {
     CommandScheduler.getInstance().run();
   }
 

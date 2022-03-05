@@ -1,8 +1,8 @@
-package frc.robot.helper.CANdle.PatternGenerators;
+package frc.robot.helper.LED.PatternGenerators;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.helper.CANdle.helpers.LEDColor;
-import frc.robot.helper.CANdle.helpers.LEDInstruction;
+import frc.robot.helper.LED.helpers.LEDColor;
+import frc.robot.helper.LED.helpers.LEDInstruction;
 
 import java.util.ArrayList;
 

@@ -236,3 +236,5 @@ gradle-app.setting
 *.java___jb_tmp___
 
 local.properties
+/FRC_20220303_015744.wpilog
+/FRC_TBD_595e3f3ca97c0083.wpilog

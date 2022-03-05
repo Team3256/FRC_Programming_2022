@@ -1,4 +1,4 @@
-package frc.robot.helper.CANdle.helpers;
+package frc.robot.helper.LED.helpers;
 
 public class LEDColor {
     public int r,g,b,w;

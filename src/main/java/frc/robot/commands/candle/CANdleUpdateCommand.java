@@ -1,9 +1,7 @@
 package frc.robot.commands.candle;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.helper.CANdle.LEDRaidController;
-
-import static frc.robot.Constants.CYCLES_PER_CANDLE_UPDATE;
+import frc.robot.helper.LED.LEDRaidController;
 
 public class CANdleUpdateCommand extends CommandBase {
 

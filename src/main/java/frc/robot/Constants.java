@@ -9,8 +9,8 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.helper.CANdle.helpers.*;
-import frc.robot.helper.CANdle.PatternGenerators.*;
+import frc.robot.helper.LED.helpers.*;
+import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
@@ -350,7 +350,7 @@ public final class Constants {
         // Defines Ranges
         public static final LEDRange[] RANGES = {
               //  new LEDRange(0, 4, 180),
-                    new LEDRange(0,436, 180) // Only can address up to 127 at a time
+                    new LEDRange(0,150, 180) // Only can address up to 127 at a time
         };
     }
 
