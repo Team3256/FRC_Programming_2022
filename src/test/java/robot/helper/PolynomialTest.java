@@ -1,7 +1,6 @@
 package robot.helper;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.helper.FileUtil;
 import frc.robot.helper.Polynomial;
 import org.junit.Before;
 import org.junit.Test;
