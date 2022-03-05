@@ -105,7 +105,7 @@ public final class Constants {
 
     }
     public static class AutoConstants {
-        public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
+        public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 22;

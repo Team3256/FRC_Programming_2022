@@ -1,12 +1,8 @@
 package frc.robot.auto;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
-import frc.robot.helper.ThetaSupplier;
-import frc.robot.helper.UniformThetaSupplier;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
