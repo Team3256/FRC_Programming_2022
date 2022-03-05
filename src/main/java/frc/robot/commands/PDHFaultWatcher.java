@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.IDConstants.*;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 import org.apache.commons.math3.analysis.function.Power;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 public class PDHFaultWatcher extends CommandBase {
     private static final RobotLogger logger = new RobotLogger(PDHFaultWatcher.class.getCanonicalName());
 
-    PowerDistribution powerDistribution = new PowerDistribution();
+    PowerDistribution powerDistribution = new PowerDistribution(PDH_ID, PowerDistribution.ModuleType.kRev);
     Timer timer = new Timer();
 
     boolean isBrownoutLogged = false;
@@ -166,7 +167,7 @@ public class PDHFaultWatcher extends CommandBase {
     @Override
     public void execute() {
         PowerDistributionStickyFaults stickyFaults = powerDistribution.getStickyFaults();
-        if(timer.advanceIfElapsed(TIME_INTERVAL)){
+        if(timer.advanceIfElapsed(PDH_FAULT_WATCHER_INTERVAL)){
             long start = System.currentTimeMillis();
             checkFaults(stickyFaults);
             long end = System.currentTimeMillis();

@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
-    public static final double TIME_INTERVAL = 1;
+    public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
 
     public static class LimelightAutoCorrectConstants {
@@ -134,6 +134,8 @@ public final class Constants {
 
         public static final int PNEUMATICS_HUB_ID = 17;
 
+        public static final int PDH_ID = 0;
+
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR_ID = 16;
         public static final int BACK_LEFT_MODULE_STEER_ENCODER_ID = 15;
         public static final int BACK_LEFT_MODULE_STEER_MOTOR_ID = 14;
@@ -220,7 +222,6 @@ public final class Constants {
         public static boolean FORCE_NORMAL_INTERNAL = false;
 
         // ******************************* //
-
 
         //Max Number of Files
         public static final int TXT_LOG_MAX_FILES = 40;
