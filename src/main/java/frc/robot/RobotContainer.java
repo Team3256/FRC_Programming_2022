@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -53,13 +52,11 @@ import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
-    public final SwerveDrive drivetrainSubsystem = new SwerveDrive();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    private SwerveDrive drivetrainSubsystem = null;
+    public SwerveDrive drivetrainSubsystem = null;
+    private IntakeSubsystem intakeSubsystem = null;
 
     private FlywheelSubsystem flywheelSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
-    private IntakeSubsystem intakeSubsystem = null;
 
     private HangerSubsystem hangerSubsystem = null;
 
@@ -125,11 +122,6 @@ public class RobotContainer {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
-
-    public Trajectory getTrajectory() {
-       return currentTrajectory;
-    }
-
     public static void setCurrentTrajectory(Trajectory newTrajectory) {
         currentTrajectory = newTrajectory;
     }
@@ -157,7 +149,7 @@ public class RobotContainer {
     private void configureDrivetrain() {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -196,17 +188,6 @@ public class RobotContainer {
         rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
-    public Command getAutonomousCommand() {
-        return AutoChooser.getCommand();
-    }
-
-    public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
-    }
-
-    public static void setCurrentTrajectory(Trajectory newTrajectory) {
-        currentTrajectory = newTrajectory;
-    }
 
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
@@ -284,49 +265,5 @@ public class RobotContainer {
         driverMiddleButtonRight
                 .and(endgame)
                 .whenActive(new AutoHang(hangerSubsystem));
-    }
-
-
-
-    public void sendTrajectoryToDashboard() {
-        field.getObject("traj").setTrajectory(getTrajectory());
-    }
-
-    public void autoOutputToDashboard() {
-        field.setRobotPose(drivetrainSubsystem.getPose());
-        SmartDashboard.putData("Field", field);
-    }
-
-    public void resetPose() {
-        drivetrainSubsystem.resetOdometry(new Pose2d());
-    }
-
-    private static double deadband(double value, double deadband) {
-        if (Math.abs(value) > deadband) {
-            return value;
-//            if (value > 0.0) {
-//                return (value - deadband) / (1.0 - deadband);
-//            } else {
-//                return (value + deadband) / (1.0 - deadband);
-//            }
-        } else {
-            return 0.0;
-        }
-    }
-
-    private static double modifyAxis(double value) {
-        double deadband = 0.05;
-        value = deadband(value, deadband);
-
-        if (value == 0) {
-            return 0;
-        }
-
-        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
-//
-        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
-
-        return value;
     }
 }

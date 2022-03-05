@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     logger.info("Auto Enabled");
     new ResetPoseCommand(robotContainer.drivetrainSubsystem).schedule();
-//    robotContainer.sendTrajectoryToDashboard();
+    robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
