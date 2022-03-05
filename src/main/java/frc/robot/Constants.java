@@ -22,7 +22,7 @@ import frc.robot.helper.shooter.ShooterPreset;
 import java.util.List;
 import java.util.logging.Level;
 
-import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.*;
 import static java.util.Map.entry;
 
 public final class Constants {
@@ -201,6 +201,9 @@ public final class Constants {
         public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
         public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
 
+        // PWM
+        public static final int LED_STRIP_PWM_PORT = 0;
+
 
     }
 
@@ -322,7 +325,7 @@ public final class Constants {
             new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
         ); // TODO: Create all shooter presets
     }
-    public static class CANdleConstants{
+    public static class LEDConstants {
 
         public static final CANdle.LEDStripType LED_STRIP_TYPE = CANdle.LEDStripType.GRB;  // For 5m Addressable Strips
         public static final double LED_BRIGHTNESS_SCALAR = 1.0;  // Scalar from 0.0 - 1.0

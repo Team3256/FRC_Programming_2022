@@ -8,7 +8,7 @@ import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.CANdleConstants.AUTO_AIM_PATTERN;
+import static frc.robot.Constants.LEDConstants.AUTO_AIM_PATTERN;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class AutoAlignDriveCommand extends PIDCommand {

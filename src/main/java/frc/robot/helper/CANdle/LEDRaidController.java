@@ -5,9 +5,10 @@ package frc.robot.helper.CANdle;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.helper.CANdle.helpers.LEDColor;
 import frc.robot.helper.CANdle.helpers.LEDInstruction;
 import frc.robot.helper.CANdle.helpers.LEDRange;
 import frc.robot.helper.CANdle.helpers.LEDSectionAttributes;
@@ -18,15 +19,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.POKERFACE_ANGLE_MARGIN_OF_ERROR;
-import static frc.robot.Constants.CANdleConstants.*;
+import static frc.robot.Constants.IDConstants.LED_STRIP_PWM_PORT;
+import static frc.robot.Constants.LEDConstants.*;
 
 public class LEDRaidController {
 
     private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
     private LinkedList<LEDInstruction> ledInstructionLinkedList = new LinkedList<>();
 
-    CANdle candle;
+    private AddressableLED addressableLED;
+    private AddressableLEDBuffer buffer;
+
     Timer timer = new Timer();
 
     private int maxLeds = 0;
@@ -36,6 +39,19 @@ public class LEDRaidController {
     SwerveDrive swerveDrive;
 
     public LEDRaidController(CANdle candle, SwerveDrive swerveDrive) {
+
+
+        // Get Max Num of LEDs
+        for (LEDRange range: RANGES){
+            if (maxLeds < range.upper)
+                maxLeds = range.upper;
+        }
+
+        addressableLED = new AddressableLED(LED_STRIP_PWM_PORT);
+        addressableLED.setLength(maxLeds);
+        buffer = new AddressableLEDBuffer(maxLeds);
+        addressableLED.setData(new AddressableLEDBuffer(maxLeds));
+
         this.candle = candle;
         this.swerveDrive = swerveDrive;
 
@@ -44,13 +60,6 @@ public class LEDRaidController {
         candleConfig.brightnessScalar = LED_BRIGHTNESS_SCALAR;
 
         candle.configAllSettings(candleConfig);
-
-        // Zero Out all LEDs on Startup
-        for (LEDRange range: RANGES){
-            if (maxLeds < range.upper)
-                maxLeds = range.upper;
-        }
-        ledInstructionLinkedList.add(new LEDInstruction(0,0,0,0,0, maxLeds));
 
         timer.start();
     }

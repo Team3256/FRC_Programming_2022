@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.*;
-import static frc.robot.Constants.CANdleConstants.BALL_PATTERN;
+import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.TransferConstants;

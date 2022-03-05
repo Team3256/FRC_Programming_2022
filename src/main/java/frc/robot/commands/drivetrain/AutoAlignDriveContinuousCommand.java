@@ -8,7 +8,7 @@ import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.CANdleConstants.AUTO_AIM_PATTERN;
+import static frc.robot.Constants.LEDConstants.AUTO_AIM_PATTERN;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class AutoAlignDriveContinuousCommand extends CommandBase {
