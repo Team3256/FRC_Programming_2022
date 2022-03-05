@@ -12,7 +12,7 @@ public class AutoChooser {
 
     public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intakeSubsystem) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
-        Paths.initialize(drive);
+        Paths.initialize(drive, intakeSubsystem);
 
         autoChooser = new SendableChooser<>();
 
