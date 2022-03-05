@@ -2,6 +2,7 @@ package frc.robot.helper;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.hardware.Limelight;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -9,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FileUtil {
-    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
 
     public static void writeObjectToFile(String fileName, Object obj){
         String filePath = getFilePath(fileName);
@@ -19,7 +20,7 @@ public class FileUtil {
             out.writeObject(obj);
             out.close();
         } catch (IOException e){
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.warning(e.getMessage(), e);
         }
     }
     public static Object readObjectFromFile(String fileName){
@@ -31,7 +32,7 @@ public class FileUtil {
             ret = in.readObject();
             in.close();
         } catch (Exception e){
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.warning(e.getMessage(), e);
         }
         return ret;
     }
@@ -42,7 +43,7 @@ public class FileUtil {
             try {
                 polynomialFile.createNewFile();
             } catch (IOException e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
+                logger.warning(e.getMessage(), e);
             }
         }
     }

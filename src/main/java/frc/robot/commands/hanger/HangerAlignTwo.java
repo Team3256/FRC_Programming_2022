@@ -2,6 +2,7 @@ package frc.robot.commands.hanger;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.MuxedColorSensor;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.logging.Level;
@@ -10,9 +11,9 @@ import java.util.logging.Logger;
 import static frc.robot.Constants.HangerConstants.HANGER_ALIGN_ROTATION_VOLTAGE;
 
 public class HangerAlignTwo extends CommandBase {
+    private static final RobotLogger logger = new RobotLogger(HangerAlignTwo.class.getCanonicalName());
     private final SwerveDrive swerve;
     private final MuxedColorSensor colorSensor = MuxedColorSensor.getInstance();
-    private static final Logger logger = Logger.getLogger(HangerAlignTwo.class.getCanonicalName());
 
     public HangerAlignTwo(SwerveDrive swerveDrive) {
         swerve = swerveDrive;
@@ -42,7 +43,7 @@ public class HangerAlignTwo extends CommandBase {
     public void end(boolean interrupted) {
         //stop
         swerve.stop();
-        logger.log(Level.INFO, "Hanger Align Part Two Complete.");
+        logger.info("Hanger Align Part Two Complete.");
     }
 
     // Returns true when the command should end.

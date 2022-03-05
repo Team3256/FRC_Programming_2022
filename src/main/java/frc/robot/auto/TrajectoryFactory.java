@@ -16,8 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.commands.PPTrajectoryFollowCommand;
 import frc.robot.commands.TrajectoryFollowCommand;
-import frc.robot.helper.ThetaSupplier;
-import frc.robot.helper.UniformThetaSupplier;
+import frc.robot.helper.auto.AutoCommandRunner;
+import frc.robot.helper.auto.ThetaSupplier;
+import frc.robot.helper.auto.UniformThetaSupplier;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.io.IOException;
@@ -41,6 +42,13 @@ public class TrajectoryFactory {
     public Command createPathPlannerCommand(String path, Pose2d startPose) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
         return getCommand(trajectory, startPose);
+    }
+
+    public Command createPathPlannerCommand(String path, AutoCommandRunner autoCommandRunner) {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
+        PPTrajectoryFollowCommand command = getCommand(trajectory);
+        command.setAutoCommandRunner(autoCommandRunner);
+        return command;
     }
 
     public Command createPathPlannerCommand(String path) {
@@ -162,11 +170,11 @@ public class TrajectoryFactory {
         );
     }
 
-    private Command getCommand(PathPlannerTrajectory trajectory) {
+    private PPTrajectoryFollowCommand getCommand(PathPlannerTrajectory trajectory) {
         return getCommand(trajectory, P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER);
     }
 
-    private Command getCommand(PathPlannerTrajectory trajectory, double thetakp, double thetaki, double thetakd) {
+    private PPTrajectoryFollowCommand getCommand(PathPlannerTrajectory trajectory, double thetakp, double thetaki, double thetakd) {
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
                         thetakp, thetaki, thetakd, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);
@@ -181,7 +189,7 @@ public class TrajectoryFactory {
         );
     }
 
-    private Command getCommand(PathPlannerTrajectory trajectory, Pose2d startPose) {
+    private PPTrajectoryFollowCommand getCommand(PathPlannerTrajectory trajectory, Pose2d startPose) {
         ProfiledPIDController thetaController =
                 new ProfiledPIDController(
                         P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, Constants.AutoConstants.THETA_CONTROLLER_CONSTRAINTS);

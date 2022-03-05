@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Constants.IDConstants;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.HangerSubsystem;
 
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import static frc.robot.Constants.IDConstants.*;
  * A Class to test if CAN devices are online
  */
 public class CANTest {
-    private static final Logger logger = Logger.getLogger(CANTest.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(CANTest.class.getCanonicalName());
 
 
 

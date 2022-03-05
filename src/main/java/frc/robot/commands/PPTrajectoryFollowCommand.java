@@ -7,17 +7,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.helper.SwerveDriveController;
+import frc.robot.helper.auto.AutoCommandRunner;
+import frc.robot.helper.auto.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
-
-import java.util.function.Function;
 
 public class PPTrajectoryFollowCommand extends CommandBase {
     private final Timer timer = new Timer();
@@ -26,6 +24,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
     private final SwerveDrive driveSubsystem;
     private final double trajectoryDuration;
     private final Pose2d startPose;
+    private AutoCommandRunner autoCommandRunner;
 
     public PPTrajectoryFollowCommand(
             PathPlannerTrajectory trajectory,
@@ -67,9 +66,14 @@ public class PPTrajectoryFollowCommand extends CommandBase {
                 yController,
                 thetaController
         );
+
         this.driveSubsystem = driveSubsystem;
         this.startPose = startPose;
         addRequirements(driveSubsystem);
+    }
+
+    public void setAutoCommandRunner(AutoCommandRunner commandRunner) {
+        this.autoCommandRunner = commandRunner;
     }
 
     @Override
@@ -98,6 +102,10 @@ public class PPTrajectoryFollowCommand extends CommandBase {
             SmartDashboard.putNumber("Desired Position", Units.metersToInches(desiredPose.getX()));
         }
 
+        if (autoCommandRunner != null) {
+            autoCommandRunner.execute(desiredPose);
+        }
+
         driveSubsystem.drive(controller.calculate(currentPose, desiredPose, desiredLinearVelocity, desiredRotation));
     }
 
@@ -108,6 +116,9 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted){
+        if (autoCommandRunner != null) {
+            autoCommandRunner.end();
+        }
         driveSubsystem.drive(new ChassisSpeeds());
     }
 }

@@ -1,15 +1,15 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.hardware.Limelight;
+import frc.robot.helper.Limelight;
 import frc.robot.subsystems.FlywheelSubsystem;
 
-import static frc.robot.hardware.Limelight.*;
+import static frc.robot.helper.Limelight.*;
 
-public class AutoAimShooter extends CommandBase {
+public class SimpleAutoAimShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
 
-    public AutoAimShooter(FlywheelSubsystem flywheelSubsystem) {
+    public SimpleAutoAimShooter(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
         addRequirements(flywheelSubsystem);
     }
@@ -23,7 +23,7 @@ public class AutoAimShooter extends CommandBase {
     public void execute() {
         double distanceToTarget = getTunedDistanceToTarget();
 
-        flywheelSubsystem.autoAim(distanceToTarget);
+        flywheelSubsystem.simpleAutoAim(distanceToTarget);
     }
 
     @Override
