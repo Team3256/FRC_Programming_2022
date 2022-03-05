@@ -40,7 +40,7 @@ public final class Constants {
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
         public static final int POLYNOMIAL_DEGREE = 5;
-        public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[]{0,0,0,0,0}); // TODO: Put actual polynomial coefficients here
+        public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[]{0,1,0,0,0}); // TODO: Put actual polynomial coefficients here
     }
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 24.5;
