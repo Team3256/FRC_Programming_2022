@@ -12,13 +12,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.helper.SwerveDriveController;
+import frc.robot.helper.auto.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
-import java.util.ConcurrentModificationException;
 import java.util.function.Function;
-
-import static frc.robot.Constants.AutoConstants.*;
 
 public class TrajectoryFollowCommand extends CommandBase {
     private final Timer timer = new Timer();

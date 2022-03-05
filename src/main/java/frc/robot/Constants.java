@@ -29,7 +29,9 @@ public final class Constants {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
-
+  
+  
+    public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = false;
 
@@ -118,7 +120,7 @@ public final class Constants {
 
     }
     public static class AutoConstants {
-        public static double MIN_SPACE_BETWEEN_POINTS = 0.5;
+        public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 22;
@@ -146,6 +148,8 @@ public final class Constants {
         public static final String ROBORIO_CAN_BUS = "rio";
 
         public static final int PNEUMATICS_HUB_ID = 17;
+
+        public static final int PDH_ID = 0;
 
         public static final int BACK_LEFT_MODULE_DRIVE_MOTOR_ID = 16;
         public static final int BACK_LEFT_MODULE_STEER_ENCODER_ID = 15;
@@ -191,11 +195,6 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_FORWARD = 6;
         public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 5;
 
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD = 4;
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD = 3;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD = 2;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 1;
-
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
         public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
@@ -233,7 +232,6 @@ public final class Constants {
         public static boolean FORCE_NORMAL_INTERNAL = false;
 
         // ******************************* //
-
 
         //Max Number of Files
         public static final int TXT_LOG_MAX_FILES = 40;
@@ -278,6 +276,7 @@ public final class Constants {
 
         public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
         public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
+        public static final double ADJUSTMENT_RETRACT_DISTANCE = 0.0; //in Rotations of Spool
 
         public static final double RETRACT_PERCENT_SPEED = 0.0;
 

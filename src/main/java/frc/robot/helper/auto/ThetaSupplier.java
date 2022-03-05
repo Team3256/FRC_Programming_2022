@@ -1,4 +1,4 @@
-package frc.robot.helper;
+package frc.robot.helper.auto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
