@@ -8,8 +8,8 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.helper.CANdle.helpers.*;
-import frc.robot.helper.CANdle.PatternGenerators.*;
+import frc.robot.helper.LED.helpers.*;
+import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
@@ -22,16 +22,16 @@ import frc.robot.helper.shooter.TrainingDataPoint;
 import java.util.List;
 import java.util.logging.Level;
 
-import static frc.robot.Constants.CANdleConstants.LEDSectionName.*;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.*;
 import static java.util.Map.entry;
 
 public final class Constants {
 
     public static final boolean DEBUG = false;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
-  
-  
+
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
+
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = false;
 
@@ -66,9 +66,21 @@ public final class Constants {
         public static final double TURRET_TOLERANCE_TX = 0.5;
         public static final double GEAR_RATIO = 0.25;
     }
-    public static class FeederConstants {
-        public static final double DEFAULT_FEEDER_SPEED = 50;
-        public static final int MAX_BALL_COUNT = 2; //change later
+    public static class TransferConstants {
+        public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
+
+        public static final int MAX_BALL_COUNT = 2;
+        public static final int STARTING_BALL_COUNT = 1;
+
+        public static final int MIN_BALL_COLOR_PROXIMITY = 1500; // Raw Proximity value 0 - 2047 (0 being far away)
+
+        public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
+        public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
+
+        public static final double MAX_BALL_COLOR_DEVIATION = 0.01;
+
+
     }
     public static class SwerveConstants {
         public static final boolean INVERT_TURN = true;
@@ -179,14 +191,12 @@ public final class Constants {
 
         public static final int INTAKE_MOTOR_ID = 6;
 
-        public static final int FEEDER_MOTOR_ID = 5;
-
         public static final int HOOD_MOTOR_ID = 4;
 
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 3;
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 2;
 
-        public static final int CANDLE_ID = 1;
+        public static final int INTAKE_ID = 40;
 
         //Pneumatic IDs
         public static final int HANGER_SOLENOID_LEFT_FORWARD = 8;
@@ -211,6 +221,9 @@ public final class Constants {
         public static final byte BALL_COLOR_SENSOR_MUX_PORT = 3;
         public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
         public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+
+        // PWM
+        public static final int LED_STRIP_PWM_PORT = 0;
 
 
     }
@@ -286,9 +299,14 @@ public final class Constants {
         public static final double PARTIAL_EXTEND_WAIT = 0; //in Seconds
 
         public static final Color TAPE_COLOR = new Color(0.251413600330047,0.476727327560996,0.272224140677223);
-        public static final double MAX_CONFIDENCE_DEVIATION = 0.01;
+        public static final double MAX_TAPE_COLOR_CONFIDENCE_DEVIATION = 0.01;
         public static final int HANGER_ALIGN_ROTATION_VOLTAGE = 2;
         public static final double HANGER_ALIGN_METERS_PER_SECOND = 0.1;
+    }
+
+    public static class IntakeConstants {
+        public static final double INTAKE_FORWARD_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
     }
 
     public static class ShooterConstants {
@@ -335,36 +353,38 @@ public final class Constants {
                 new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
         );
     }
-    public static class CANdleConstants {
-        public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
-        public static final int CYCLES_PER_CANDLE_UPDATE = 10;
+    public static class LEDConstants {
+         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
 
         public enum LEDSectionName {
-            BALL_COLOR, AUTO_AIM
+            BALL_COLOR, AUTO_AIM, DEBUG_SECTION
         }
 
         public static final BallColorPatternGenerator BALL_PATTERN = new BallColorPatternGenerator();
         public static final AutoAimPatternGenerator AUTO_AIM_PATTERN = new AutoAimPatternGenerator();
+        public static final DebugLEDWalkUpPatternGenerator DEBUG_LED = new DebugLEDWalkUpPatternGenerator();
 
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
                 HashMapFiller.populateLinkedHashMap(
-                        entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
-                        entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                    entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                    entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
                 );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
-                new LEDRange(0, 10, 0),
-                new LEDRange(10, 15, 180)
+                    new LEDRange(0,200, 180)
         };
-
     }
+
     public static class PatternGeneratorConstants{
-        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(255,0,0);
-        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,255);
+        public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(10,0,0);
+        public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,10);
 
-        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 255, 0);
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 100, 0);
     }
+
+    public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
+    public static final int CYCLES_PER_CANDLE_UPDATE = 10;
 
 }

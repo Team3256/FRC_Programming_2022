@@ -26,12 +26,15 @@ import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.hardware.Limelight;
 import frc.robot.commands.shooter.AutoAimShooter;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
 import frc.robot.commands.shooter.IncreasePresetForShooter;
 import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 import frc.robot.helper.Limelight;
 import frc.robot.subsystems.*;
 
@@ -152,7 +155,7 @@ public class RobotContainer {
     private void configureDrivetrain() {
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
+
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.

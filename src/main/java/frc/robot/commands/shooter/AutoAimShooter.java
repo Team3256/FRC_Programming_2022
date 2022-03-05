@@ -1,10 +1,10 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.helper.Limelight;
+import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.FlywheelSubsystem;
 
-import static frc.robot.helper.Limelight.*;
+import static frc.robot.hardware.Limelight.*;
 
 public class AutoAimShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;

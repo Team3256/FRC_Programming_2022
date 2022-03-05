@@ -1,14 +1,13 @@
 package frc.robot.helper;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 
 public class FileUtil {
     private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());

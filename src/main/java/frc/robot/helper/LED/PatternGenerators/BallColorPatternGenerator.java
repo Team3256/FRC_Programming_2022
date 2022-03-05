@@ -1,14 +1,15 @@
-package frc.robot.helper.CANdle.PatternGenerators;
+package frc.robot.helper.LED.PatternGenerators;
 
-import frc.robot.helper.CANdle.helpers.LEDColor;
-import frc.robot.helper.CANdle.helpers.HashMapFiller;
-import frc.robot.helper.CANdle.helpers.LEDInstruction;
+import frc.robot.helper.BallColor;
+import frc.robot.helper.LED.helpers.LEDColor;
+import frc.robot.helper.LED.helpers.HashMapFiller;
+import frc.robot.helper.LED.helpers.LEDInstruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static frc.robot.Constants.PatternGeneratorConstants.*;
-import static frc.robot.helper.CANdle.PatternGenerators.BallColorPatternGenerator.BallColor.*;
+import static frc.robot.helper.BallColor.*;
 import static java.util.Map.entry;
 
 public class BallColorPatternGenerator implements PatternGenerator {
@@ -21,9 +22,21 @@ public class BallColorPatternGenerator implements PatternGenerator {
     BallColor ball1Color = BallColor.NONE;
     BallColor ball2Color = BallColor.NONE;
 
+    BallColor prevBall1Color = null;
+    BallColor prevBall2Color = null;
+
     public void update(BallColor ball1Color, BallColor ball2Color){
         this.ball1Color = ball1Color;
         this.ball2Color = ball2Color;
+    }
+
+    @Override
+    public void reset() {
+        ball1Color = BallColor.NONE;
+        ball2Color = BallColor.NONE;
+
+        prevBall1Color = RED;
+        prevBall2Color = RED;
     }
 
     @Override
@@ -44,15 +57,18 @@ public class BallColorPatternGenerator implements PatternGenerator {
         ledInstructions.add(generateLEDInstruction(ball1Color, 0, ball1SectionLen));
         ledInstructions.add(generateLEDInstruction(ball2Color, ball1SectionLen, ball2Sectionlen));
 
+        prevBall1Color = ball1Color;
+        prevBall2Color = ball2Color;
+
         return ledInstructions;
+    }
+
+    public boolean shouldUpdate(){
+        return prevBall1Color != ball1Color || prevBall2Color  != ball2Color;
     }
 
     private LEDInstruction generateLEDInstruction(BallColor ballColor, int startIdx, int endIdx) {
         return colorToConstantColor.get(ballColor).toLedInstruction(startIdx, endIdx);
-    }
-
-    public enum BallColor {
-        RED, BLUE, NONE
     }
 }
 
