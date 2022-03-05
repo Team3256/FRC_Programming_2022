@@ -21,8 +21,8 @@ import frc.robot.commands.PDHFaultWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.helper.Limelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -72,7 +72,7 @@ public class RobotContainer {
         SmartDashboard.putData(CommandScheduler.getInstance());
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        Button operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.

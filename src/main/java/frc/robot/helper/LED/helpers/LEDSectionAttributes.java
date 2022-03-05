@@ -1,6 +1,6 @@
-package frc.robot.helper.CANdle.helpers;
+package frc.robot.helper.LED.helpers;
 
-import frc.robot.helper.CANdle.PatternGenerators.PatternGenerator;
+import frc.robot.helper.LED.PatternGenerators.PatternGenerator;
 
 public class LEDSectionAttributes {
 

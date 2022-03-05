@@ -6,13 +6,18 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.hal.I2CJNI;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.helper.BallColor;
+import frc.robot.subsystems.TransferSubsystem;
 
 
-import static frc.robot.Constants.HangerConstants.MAX_CONFIDENCE_DEVIATION;
-import static frc.robot.Constants.HangerConstants.TAPE_COLOR;
+import java.util.logging.Logger;
+
+import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
+import static frc.robot.Constants.TransferConstants.*;
 
 public class MuxedColorSensor {
+    private static final Logger logger = Logger.getLogger(MuxedColorSensor.class.getCanonicalName());
 
     //Singleton Design Pattern
     private static MuxedColorSensor instance;
@@ -55,19 +60,42 @@ public class MuxedColorSensor {
         return rightAlignColorSensor.getColor();
     }
 
-    private boolean colorsMatch(Color color1, Color color2){
+    private boolean colorsMatch(Color color1, Color color2, double maxConfidenceDeviation){
         ColorMatch colorMatcher = new ColorMatch();
         colorMatcher.addColorMatch(color2);
         ColorMatchResult result = colorMatcher.matchColor(color1);
-        return (1-result.confidence)<MAX_CONFIDENCE_DEVIATION;
+        return (1 - result.confidence) < maxConfidenceDeviation;
+    }
+
+    public BallColor ballSensorDetection(){
+        Color detectedColor = getBallSensorColor();
+
+        boolean isRedBallDetected = colorsMatch(detectedColor, RED_BALL_COLOR, MAX_BALL_COLOR_DEVIATION);
+        boolean isBlueBallDetected = colorsMatch(detectedColor, BLUE_BALL_COLOR, MAX_BALL_COLOR_DEVIATION);
+
+        if (isBlueBallDetected && isRedBallDetected) {
+            logger.warning("Both RED and Blue Ball Detected! Color: ( " +
+                    detectedColor.red + ", " +
+                    detectedColor.green + ", " +
+                    detectedColor.blue + ") \n" +
+                    "Proximity: " + getBallSensorProximity());
+            return BallColor.NONE;
+        }
+
+        if (isRedBallDetected)
+            return BallColor.RED;
+        else if (isBlueBallDetected)
+            return BallColor.BLUE;
+        else
+            return BallColor.NONE;
     }
 
     public boolean leftAlignSensorDetectsTape(){
-        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR);
+        return colorsMatch(getLeftAlignSensorColor(), TAPE_COLOR, MAX_TAPE_COLOR_CONFIDENCE_DEVIATION);
     }
 
     public boolean rightAlignSensorDetectsTape(){
-        return colorsMatch(getRightAlignSensorColor(), TAPE_COLOR);
+        return colorsMatch(getRightAlignSensorColor(), TAPE_COLOR, MAX_TAPE_COLOR_CONFIDENCE_DEVIATION);
     }
 
     /**
