@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.helper.logging.RobotLogger;
 import org.opencv.core.Mat;
 import frc.robot.Constants;
 import org.apache.commons.math3.analysis.function.Constant;
@@ -32,7 +33,7 @@ import static frc.robot.Constants.IDConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(SwerveDrive.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
 
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(

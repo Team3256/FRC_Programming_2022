@@ -1,7 +1,8 @@
-package frc.robot.helper;
+package frc.robot.helper.auto;
 
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.helper.auto.ThetaSupplier;
 
 public class UniformThetaSupplier implements ThetaSupplier {
     private double trajectoryDuration;

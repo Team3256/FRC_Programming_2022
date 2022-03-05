@@ -2,27 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.feeder;
+package frc.robot.commands.transfer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.TransferSubsystem;
 
-public class FeederOn extends CommandBase {
+public class TransferOff extends CommandBase {
 
-    private final FeederSubsystem feeder;
+    private final TransferSubsystem transferSubsystem;
 
-    public FeederOn(FeederSubsystem subsystem) {
-        feeder = subsystem;
+    public TransferOff(TransferSubsystem transferSubsystem) {
+        this.transferSubsystem = transferSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(transferSubsystem);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        feeder.on();
+        transferSubsystem.off();
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;

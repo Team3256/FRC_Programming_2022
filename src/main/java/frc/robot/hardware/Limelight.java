@@ -1,17 +1,18 @@
-package frc.robot.helper;
+package frc.robot.hardware;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.helper.logging.RobotLogger;
+
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_DISTANCE_TUNER;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
-    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
-    private static Polynomial corrector;
 
     //Doesn't Allow Instancing
     private Limelight(){}
@@ -30,8 +31,6 @@ public class Limelight {
 
         if(getLimelightValue("tx").getDouble(1000) == 1000)
             logger.warning("Limelight Not Responding");
-      
-        readCorrectorFromFile();
     }
     /**
      * @param value
@@ -90,7 +89,7 @@ public class Limelight {
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return corrector.getOutput(getRawDistanceToTarget());
+        return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
     }
     /**
      * @param degrees
@@ -100,15 +99,8 @@ public class Limelight {
         return degrees * Math.PI/180.0;
     }
 
-    public static void readCorrectorFromFile(){
-        corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILENAME);
-        //if corrector does not exist, set it to default polynomial y=x
-        if (corrector==null) corrector=new Polynomial(new double[]{0,1});
-    }
-
-
     /**
-     * Disables the LEDs on the Limelight, LEDs should be off when limelight not in use.
+     *  Methods that enable and disable the limelight
      */
     public static void disable(){
         Limelight.getLimelightValue("ledMode").setNumber(1);
