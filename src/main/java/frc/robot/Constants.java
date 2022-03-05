@@ -178,11 +178,6 @@ public final class Constants {
         public static final int HANGER_SOLENOID_RIGHT_FORWARD = 6;
         public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 5;
 
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD = 4;
-        public static final int HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD = 3;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD = 2;
-        public static final int HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD = 1;
-
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
         public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
@@ -265,6 +260,7 @@ public final class Constants {
 
         public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
         public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
+        public static final double ADJUSTMENT_RETRACT_DISTANCE = 0.0; //in Rotations of Spool
 
         public static final double RETRACT_PERCENT_SPEED = 0.0;
 

@@ -12,7 +12,6 @@ public class HangerPartial extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        hanger.disengageAirBrake();
         hanger.extendPartial();
     }
 
@@ -24,7 +23,6 @@ public class HangerPartial extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        hanger.engageAirBrake();
         hanger.stopMotors();
     }
 

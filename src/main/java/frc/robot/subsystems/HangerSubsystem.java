@@ -20,8 +20,7 @@ public class HangerSubsystem extends SubsystemBase {
     private final TalonFX followerTalonMotor;
     private final DoubleSolenoid leftSolenoid;
     private final DoubleSolenoid rightSolenoid;
-    private final DoubleSolenoid leftAirBrake;
-    private final DoubleSolenoid rightAirBrake;
+
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
     public HangerSubsystem() {
@@ -40,24 +39,8 @@ public class HangerSubsystem extends SubsystemBase {
 
         leftSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_FORWARD, HANGER_SOLENOID_LEFT_BACKWARD);
         rightSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_FORWARD, HANGER_SOLENOID_RIGHT_BACKWARD);
-        leftAirBrake = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_LEFT_AIRBRAKE_FORWARD, HANGER_SOLENOID_LEFT_AIRBRAKE_BACKWARD);
-        rightAirBrake = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_RIGHT_AIRBRAKE_FORWARD, HANGER_SOLENOID_RIGHT_AIRBRAKE_BACKWARD);
-        engageAirBrake();
 
         logger.info("Hanger Initialized");
-    }
-    public void engageAirBrake() {
-        logger.info("Engaging Airbrake");
-        leftAirBrake.set(kForward);
-        rightAirBrake.set(kForward);
-        //TODO: CHECK THIS
-    }
-
-    public void disengageAirBrake() {
-        logger.info("Disengaging Airbrake");
-        leftAirBrake.set(kReverse);
-        rightAirBrake.set(kReverse);
-        //TODO: CHECK THIS
     }
 
     public void extend() {
@@ -85,6 +68,15 @@ public class HangerSubsystem extends SubsystemBase {
     public void pneumaticSlant() {
         leftSolenoid.set(kReverse);
         rightSolenoid.set(kReverse);
+    }
+
+    public void adjustRetract() {
+
+        // Reset Position, because we are at limit switch
+        masterTalonMotor.getSensorCollection().setIntegratedSensorPosition(0,0);
+
+        double distance = ADJUSTMENT_RETRACT_DISTANCE * 2048 * GEAR_RATIO;
+        masterTalonMotor.set(ControlMode.Position, distance);
     }
 
     /**
