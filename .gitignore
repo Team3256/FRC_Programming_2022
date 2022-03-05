@@ -236,3 +236,5 @@ gradle-app.setting
 *.java___jb_tmp___
 
 local.properties
+
+*.wpilog
