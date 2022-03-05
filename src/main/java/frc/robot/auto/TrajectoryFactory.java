@@ -66,6 +66,13 @@ public class TrajectoryFactory {
         return getCommand(trajectory, thetakp, thetaki, thetakd);
     }
 
+    public Command createPathPlannerCommand(String path, AutoCommandRunner runner, double max_vel, double max_accel, double thetakp, double thetaki, double thetakd) {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
+        PPTrajectoryFollowCommand command = getCommand(trajectory, thetakp, thetaki, thetakd);
+        command.setAutoCommandRunner(runner);
+        return command;
+    }
+
     public Command createCommand(String jsonFilePath) {
         Trajectory trajectory = generateTrajectoryFromJSON(jsonFilePath);
         ThetaSupplier thetaSupplier = new UniformThetaSupplier(trajectory.getTotalTimeSeconds());
