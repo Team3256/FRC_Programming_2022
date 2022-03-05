@@ -344,13 +344,13 @@ public final class Constants {
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
             HashMapFiller.populateLinkedHashMap(
-                entry(DEBUG_SECTION, new LEDSectionAttributes(0, 1, DEBUG_LED))
+                entry(AUTO_AIM, new LEDSectionAttributes(0, 1, AUTO_AIM_PATTERN))
             );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
               //  new LEDRange(0, 4, 180),
-                    new LEDRange(0,150, 180) // Only can address up to 127 at a time
+                    new LEDRange(0,200, 180) // Only can address up to 127 at a time
         };
     }
 
@@ -358,7 +358,7 @@ public final class Constants {
         public static final LEDColor RED_BALL_LED_COLOR = LEDColor.fromRGB(10,0,0);
         public static final LEDColor BLUE_BALL_LED_COLOR = LEDColor.fromRGB(0,0,10);
 
-        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 10, 0);
+        public static final LEDColor AUTO_AIM_LED_COLOR = LEDColor.fromRGB(0, 100, 0);
     }
 
     public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;

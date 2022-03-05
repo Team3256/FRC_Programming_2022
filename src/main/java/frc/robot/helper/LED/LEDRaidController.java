@@ -48,7 +48,7 @@ public class LEDRaidController {
         addressableLED = new AddressableLED(LED_STRIP_PWM_PORT);
         addressableLED.setLength(maxLeds);
         buffer = new AddressableLEDBuffer(maxLeds);
-        addressableLED.setData(new AddressableLEDBuffer(maxLeds));
+        addressableLED.setData(buffer);
 
         this.swerveDrive = swerveDrive;
 
@@ -109,13 +109,16 @@ public class LEDRaidController {
 
                     int startIdx = fromVirtualToGlobal(range, ledSectionName, instruction.startIdx);
 
-                    for (int i = startIdx; i < startIdx + instruction.count; i++)
+                    for (int i = startIdx; i < startIdx + instruction.count; i++) {
                         buffer.setRGB(
                                 i, instruction.ledColor.r, instruction.ledColor.g,
                                 instruction.ledColor.b);
+                    }
                 }
             }
         }
+
+        addressableLED.setData(buffer);
         timer.reset();
     }
 
