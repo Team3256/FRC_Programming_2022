@@ -2,13 +2,11 @@ package frc.robot.helper.LED;
 
 // get ranges and secions from constants file
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.helper.LED.helpers.LEDInstruction;
 import frc.robot.helper.LED.helpers.LEDRange;
 import frc.robot.helper.LED.helpers.LEDSectionAttributes;
@@ -16,7 +14,6 @@ import frc.robot.subsystems.SwerveDrive;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.LED_STRIP_PWM_PORT;
@@ -56,28 +53,23 @@ public class LEDRaidController {
 
         // Start Sending Values to LEDs
         addressableLED.start();
-    }
 
-    public void update() {
-
-        if(DriverStation.isDisabled() && isEnabled) {  // Just got Disabled
-            isEnabled = false;
+        new Trigger(DriverStation::isDisabled).whenActive(()->{
             disabledLights();
-            return;
-
-        } else if (DriverStation.isDisabled() && !isEnabled){  // Robot Is Disabled
-            return;
-
-        } else if (!isEnabled) {  // Just Enabled
-            isEnabled = true;
+            timer.reset();
+            timer.stop();
+        });
+        new Trigger(DriverStation::isEnabled).whenActive(()->{
+            // Figure out which Patterns need updating
             for (LEDSectionName ledSectionName : SECTIONS.keySet())
                 SECTIONS.get(ledSectionName).patternGenerator.reset();
 
-            disabledLights(); // Turn off LEDs
-            timer.reset();  // Wait for Cooldown
-        }
+            timer.start();
+        });
+    }
 
-        // Wait if running too quickly
+    public void update() {
+        // Wait if running too quickly / Disabled (Since we reset timer)
         if(!timer.hasElapsed(MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS)) {
             return;
         }
@@ -107,7 +99,7 @@ public class LEDRaidController {
                 // Adds Instructions to FIFO Queue
                 for (LEDInstruction instruction: instructions) {
 
-                    int startIdx = fromVirtualToGlobal(range, ledSectionName, instruction.startIdx);
+                    int startIdx = fromVirtualIndexToGlobalIndex(range, ledSectionName, instruction.startIdx);
 
                     for (int i = startIdx; i < startIdx + instruction.count; i++) {
                         buffer.setRGB(
@@ -133,7 +125,16 @@ public class LEDRaidController {
         // 180 + Robot Heading, wrapping around if necessary
     }
 
-    private int fromVirtualToGlobal(LEDRange range, LEDSectionName ledSectionName, int virtualAddress){
+    /**
+     * Transforms the Virtual Address Space (0-led section count) to global (0 - max led count).
+     * This is based on the sections and ranges defined in Constants.java
+     *
+     * @param range Range of virtual address to transform
+     * @param ledSectionName Section of virtual address to transform
+     * @param virtualAddress Start Index of address to transform
+     * @return Global Start Index to transform
+     */
+    private int fromVirtualIndexToGlobalIndex(LEDRange range, LEDSectionName ledSectionName, int virtualAddress){
         int sectionStartOffsetInRange = (int)(range.getLength() * SECTIONS.get(ledSectionName).percentageStart + 0.5);
 
         return range.lower + sectionStartOffsetInRange + virtualAddress;

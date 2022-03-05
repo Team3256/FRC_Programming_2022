@@ -23,14 +23,12 @@ import frc.robot.helper.BallColor;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import static edu.wpi.first.wpilibj.DriverStation.Alliance.*;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
-import static frc.robot.helper.BallColor.*;
 
 public class TransferSubsystem extends SubsystemBase {
     private static final Logger logger = Logger.getLogger(TransferSubsystem.class.getCanonicalName());
@@ -72,7 +70,7 @@ public class TransferSubsystem extends SubsystemBase {
 
         // Add Same Color of Ball when starting out
         if (currentBallCount == 1)
-            addBallToIndex(DriverStation.getAlliance() == Blue ? BLUE : RED);
+            addBallToIndex(DriverStation.getAlliance() == DriverStation.Alliance.Blue ? BallColor.BLUE : BallColor.RED);
 
         transferIndexSetup();
         logger.info("Transfer Initialized");
@@ -168,9 +166,9 @@ public class TransferSubsystem extends SubsystemBase {
 
         if (proximity >= MIN_BALL_COLOR_PROXIMITY){
             BallColor ballColor = MuxedColorSensor.getInstance().ballSensorDetection();
-            if (ballColor == BLUE)
+            if (ballColor == BallColor.BLUE)
                 blueColorCountVote++;
-            else if (ballColor == RED)
+            else if (ballColor == BallColor.RED)
                 redColorCountVote++;
         }
     }
@@ -185,31 +183,31 @@ public class TransferSubsystem extends SubsystemBase {
             logger.warning("Blue and Red Ball Counts are the same!\nCount: " + redColorCountVote);
 
         else if (redColorCountVote > blueColorCountVote) {
-            addBallToIndex(RED);
+            addBallToIndex(BallColor.RED);
         }
         else {
-           addBallToIndex(BLUE);
+           addBallToIndex(BallColor.BLUE);
         }
     }
 
     private void addBallToIndex(BallColor ballColor){
         logger.info("Ball Indexed Into Transfer");
 
-        if (ballColor == RED && alliance == Blue)
+        if (ballColor == BallColor.RED && alliance == DriverStation.Alliance.Blue)
             wrongBallColorDetected(ballColor);
 
-        if (ballColor == BLUE && alliance == Red)
+        if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
             wrongBallColorDetected(ballColor);
 
         // Keep 2nd Ball in 2nd Place, if there is one
-        if (ballColorIndex.get(0) == NONE){
+        if (ballColorIndex.get(0) == BallColor.NONE){
             ballColorIndex.set(0, ballColor);
         } else {
             ballColorIndex.addFirst(ballColor);
         }
 
         // Remove extra NONEs
-        if (ballColorIndex.getLast() == NONE)
+        if (ballColorIndex.getLast() == BallColor.NONE)
             ballColorIndex.removeLast();
 
         updateBallLEDPattern();
@@ -220,11 +218,11 @@ public class TransferSubsystem extends SubsystemBase {
 
         currentBallCount--;
 
-        if (ballColorIndex.getLast() == NONE)
+        if (ballColorIndex.getLast() == BallColor.NONE)
             logger.warning("No Ball At end of index!");
 
         ballColorIndex.removeLast();
-        ballColorIndex.addFirst(NONE);
+        ballColorIndex.addFirst(BallColor.NONE);
 
         updateBallLEDPattern();
     }
@@ -234,7 +232,7 @@ public class TransferSubsystem extends SubsystemBase {
 
         currentBallCount--;
 
-        if (ballColorIndex.get(0) == NONE){
+        if (ballColorIndex.get(0) == BallColor.NONE){
             // Only Ball is Indexed 2nd, Removes the NONE and the Ball
             ballColorIndex.remove(0);
             ballColorIndex.remove(1);
@@ -244,8 +242,8 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void updateBallLEDPattern(){
-        BallColor firstBallColor = ballColorIndex.size() < 1 ? NONE : ballColorIndex.get(0);
-        BallColor secondBallColor = ballColorIndex.size() < 2 ? NONE : ballColorIndex.get(1);
+        BallColor firstBallColor = ballColorIndex.size() < 1 ? BallColor.NONE : ballColorIndex.get(0);
+        BallColor secondBallColor = ballColorIndex.size() < 2 ? BallColor.NONE : ballColorIndex.get(1);
 
         BALL_PATTERN.update(firstBallColor, secondBallColor);
     }

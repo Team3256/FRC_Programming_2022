@@ -22,8 +22,8 @@ public class BallColorPatternGenerator implements PatternGenerator {
     BallColor ball1Color = BallColor.NONE;
     BallColor ball2Color = BallColor.NONE;
 
-    BallColor prevBall1Color = RED;
-    BallColor prevBall2Color = RED;
+    BallColor prevBall1Color = null;
+    BallColor prevBall2Color = null;
 
     public void update(BallColor ball1Color, BallColor ball2Color){
         this.ball1Color = ball1Color;

@@ -8,14 +8,14 @@ import frc.robot.subsystems.TransferSubsystem;
 
 public class TransferIndexForward extends CommandBase {
 
-    private final TransferSubsystem transfer;
+    private final TransferSubsystem transferSubsystem;
 
     /**
      * If manually controlled, set as not interruptable, so that auto index commands don't take control.
      * @param transferSubsystem Transfer Subsystem
      */
     public TransferIndexForward(TransferSubsystem transferSubsystem) {
-        transfer = transferSubsystem;
+        this.transferSubsystem = transferSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(transferSubsystem);
     }
@@ -23,12 +23,12 @@ public class TransferIndexForward extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        transfer.forward();
+        transferSubsystem.forward();
     }
 
     @Override
     public void end(boolean interrupted) {
-        transfer.off();
+        transferSubsystem.off();
     }
 
     // Returns true when the command should end.

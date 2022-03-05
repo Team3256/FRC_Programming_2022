@@ -8,10 +8,10 @@ import frc.robot.subsystems.TransferSubsystem;
 
 public class TransferOff extends CommandBase {
 
-    private final TransferSubsystem transfer;
+    private final TransferSubsystem transferSubsystem;
 
     public TransferOff(TransferSubsystem transferSubsystem) {
-        transfer = transferSubsystem;
+        this.transferSubsystem = transferSubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(transferSubsystem);
     }
@@ -19,7 +19,7 @@ public class TransferOff extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        transfer.off();
+        transferSubsystem.off();
     }
 
     @Override

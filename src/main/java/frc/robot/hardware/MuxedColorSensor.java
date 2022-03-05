@@ -64,7 +64,7 @@ public class MuxedColorSensor {
         ColorMatch colorMatcher = new ColorMatch();
         colorMatcher.addColorMatch(color2);
         ColorMatchResult result = colorMatcher.matchColor(color1);
-        return (1-result.confidence)<maxConfidenceDeviation;
+        return (1 - result.confidence) < maxConfidenceDeviation;
     }
 
     public BallColor ballSensorDetection(){
