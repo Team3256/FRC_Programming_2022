@@ -3,15 +3,13 @@ package frc.robot.helper;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.helper.logging.RobotLogger;
-
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
-    private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
     private static Polynomial corrector;
 
@@ -108,17 +106,13 @@ public class Limelight {
         if (corrector==null) corrector=new Polynomial(new double[]{0,1});
     }
 
-
     /**
-     * Disables the LEDs on the Limelight, LEDs should be off when limelight not in use.
+     *  Methods that enable and disable the limelight
      */
     public static void disable(){
         Limelight.getLimelightValue("ledMode").setNumber(1);
     }
 
-    /**
-     * Enables the LEDs on the limelight, LEDs should be on when limelight is in use.
-     */
     public static void enable(){
         Limelight.getLimelightValue("ledMode").setNumber(3);
     }

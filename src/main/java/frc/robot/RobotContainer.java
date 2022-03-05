@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,6 +24,7 @@ import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.AutoHang;
 import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
+import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.AutoAimShooter;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
@@ -57,7 +59,6 @@ public class RobotContainer {
 
 
     private final Field2d field = new Field2d();
-
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
     private static Trajectory currentTrajectory = new Trajectory();
@@ -225,10 +226,22 @@ public class RobotContainer {
         JoystickButton operatorMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kBack.value);
         JoystickButton operatorMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
 
-        JoystickButton driverMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kStart.value);
-        JoystickButton driverMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+        DPadButton operatorDpadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton operatorDpadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+
+        DPadButton driverDpadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
+        DPadButton driverDpadButtonRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
+
+        DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
+        DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
 
         operatorMiddleButtonLeft.or(operatorMiddleButtonRight).whenActive(new HangerExtend(hangerSubsystem));
+        operatorDpadButtonLeft.or(operatorDpadButtonRight).whenActive(new HangerRetract(hangerSubsystem));
+        driverDpadButtonLeft.or(driverDpadButtonRight).whenActive(new HangerExtend(hangerSubsystem));
+        driverDpadButtonUp.or(driverDpadButtonDown).whenActive(new HangerRetract(hangerSubsystem));
+
+        JoystickButton driverMiddleButtonLeft = new JoystickButton(driverController, XboxController.Button.kStart.value);
+        JoystickButton driverMiddleButtonRight = new JoystickButton(driverController, XboxController.Button.kStart.value);
 
         if (BOTTOM_COLOR_SENSORS)
             driverMiddleButtonLeft.whenActive(new HangerAlignOne(drivetrainSubsystem));
