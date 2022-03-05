@@ -238,20 +238,22 @@ public class RobotContainer {
         DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
         DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
 
+        Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
+
         operatorMiddleButtonLeft.or(operatorMiddleButtonRight)
-                .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                .and(endgame)
                 .whenActive(new HangerExtend(hangerSubsystem));
 
         operatorDpadButtonLeft.or(operatorDpadButtonRight)
-                .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                .and(endgame)
                 .whenActive(new HangerRetract(hangerSubsystem));
 
         driverDpadButtonLeft.or(driverDpadButtonRight)
-                .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                .and(endgame)
                 .whenActive(new HangerExtend(hangerSubsystem));
 
         driverDpadButtonUp.or(driverDpadButtonDown)
-                .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                .and(endgame)
                 .whenActive(new HangerRetract(hangerSubsystem));
 
         JoystickButton driverMiddleButtonLeft = new JoystickButton(driverController, XboxController.Button.kStart.value);
@@ -259,11 +261,11 @@ public class RobotContainer {
 
         if (BOTTOM_COLOR_SENSORS)
             driverMiddleButtonLeft
-                    .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                    .and(endgame)
                     .whenActive(new HangerAlignOne(drivetrainSubsystem));
 
         driverMiddleButtonRight
-                .and(new Trigger(()->DriverStation.getMatchTime() < 40))
+                .and(endgame)
                 .whenActive(new AutoHang(hangerSubsystem));
     }
 
