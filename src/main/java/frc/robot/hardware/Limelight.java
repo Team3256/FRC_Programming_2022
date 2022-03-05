@@ -7,13 +7,12 @@ import frc.robot.helper.logging.RobotLogger;
 
 import java.util.logging.Logger;
 
-import static frc.robot.Constants.LimelightAutoCorrectConstants.POLYNOMIAL_FILENAME;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_DISTANCE_TUNER;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
     private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
-    private static Polynomial corrector;
 
     //Doesn't Allow Instancing
     private Limelight(){}
@@ -32,8 +31,6 @@ public class Limelight {
 
         if(getLimelightValue("tx").getDouble(1000) == 1000)
             logger.warning("Limelight Not Responding");
-      
-        readCorrectorFromFile();
     }
     /**
      * @param value
@@ -92,7 +89,7 @@ public class Limelight {
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return corrector.getOutput(getRawDistanceToTarget());
+        return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
     }
     /**
      * @param degrees
@@ -100,12 +97,6 @@ public class Limelight {
      */
     public static double toRadians(double degrees){
         return degrees * Math.PI/180.0;
-    }
-
-    public static void readCorrectorFromFile(){
-        corrector=(Polynomial) FileUtil.readObjectFromFile(POLYNOMIAL_FILENAME);
-        //if corrector does not exist, set it to default polynomial y=x
-        if (corrector==null) corrector=new Polynomial(new double[]{0,1});
     }
 
     /**
