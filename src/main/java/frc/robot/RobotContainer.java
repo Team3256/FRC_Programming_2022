@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,7 +34,6 @@ import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
-import frc.robot.helper.Limelight;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -55,7 +53,7 @@ public class RobotContainer {
     private SwerveDrive drivetrainSubsystem = null;
 
     private FlywheelSubsystem flywheelSubsystem = null;
-    private FeederSubsystem feederSubsystem = null;
+    private TransferSubsystem transferSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
     private HangerSubsystem hangerSubsystem = null;
@@ -141,7 +139,7 @@ public class RobotContainer {
     }
 
     private void initializeTransfer() {
-        this.feederSubsystem = new FeederSubsystem();
+        this.transferSubsystem = new TransferSubsystem();
     }
 
     private void initializeIntake() {
@@ -153,7 +151,7 @@ public class RobotContainer {
     }
 
     private void configureDrivetrain() {
-        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
 
 

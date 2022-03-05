@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.candle.CANdleUpdateCommand;
 import frc.robot.subsystems.SwerveDrive;
 
-import static frc.robot.Constants.IDConstants.CANDLE_ID;
-
 public class CANdleSystem {
 
     LEDRaidController ledRaidController;
