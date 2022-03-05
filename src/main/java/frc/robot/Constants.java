@@ -331,6 +331,10 @@ public final class Constants {
         public static final List<TrainingDataPoint> ALL_SHOOTER_CALIB_TRAINING = Arrays.asList(
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
+
+        public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
+                new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
+        );
     }
     public static class CANdleConstants {
         public static final double POKERFACE_ANGLE_MARGIN_OF_ERROR = 45;
