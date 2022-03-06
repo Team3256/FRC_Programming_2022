@@ -75,7 +75,7 @@ public final class Constants {
 
         public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
 
-    public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
+        public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
 
         public static final double MAX_BALL_COLOR_DEVIATION = 0.01;
 

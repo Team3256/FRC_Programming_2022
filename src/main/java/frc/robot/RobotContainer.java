@@ -88,8 +88,10 @@ public class RobotContainer {
             initializeHanger();
 
         // Configure Enabled Subsystems
-        if (DRIVETRAIN)
+        if (DRIVETRAIN) {
             configureDrivetrain();
+            SmartDashboard.putData(getCommandChooser());
+        }
         if (SHOOTER)
             configureShooter();
         if (TRANSFER)
