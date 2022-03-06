@@ -23,7 +23,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
     private final SwerveDriveController controller;
     private final SwerveDrive driveSubsystem;
     private final double trajectoryDuration;
-    private final Pose2d startPose;
+    private Pose2d startPose;
     private AutoCommandRunner autoCommandRunner;
 
     public PPTrajectoryFollowCommand(
@@ -76,11 +76,19 @@ public class PPTrajectoryFollowCommand extends CommandBase {
         this.autoCommandRunner = commandRunner;
     }
 
+    public void setFirstSegment(boolean first) {
+        if (!first) {
+            this.startPose = null;
+        }
+    }
+
     @Override
     public void initialize() {
         RobotContainer.setCurrentTrajectory(trajectory);
         this.controller.reset();
-        driveSubsystem.resetOdometry(this.startPose);
+        if (this.startPose != null) { // use existing pose for more accuracy if not first path
+            driveSubsystem.resetOdometry(this.startPose);
+        }
         timer.reset();
         timer.start();
     }
