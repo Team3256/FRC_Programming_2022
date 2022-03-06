@@ -200,11 +200,11 @@ public final class Constants {
         public static final int INTAKE_ID = 40;
 
         //Pneumatic IDs
-        public static final int HANGER_SOLENOID_LEFT_FORWARD = 8;
-        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 7;
+        public static final int HANGER_SOLENOID_FORWARD = 4;
+        public static final int HANGER_SOLENOID_BACKWARD = 3;
 
-        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 6;
-        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 5;
+        public static final int INTAKE_SOLENOID_FORWARD = 2; // forward is down
+        public static final int INTAKE_SOLENOID_BACKWARD = 1; //backward is up
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
