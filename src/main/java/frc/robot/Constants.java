@@ -57,6 +57,7 @@ public final class Constants {
         public static final int POLYNOMIAL_DEGREE = 5;
         public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[]{0,1,0,0,0}); // TODO: Put actual polynomial coefficients here
     }
+
     public static class LimelightConstants {
         public static final double MOUNTING_HEIGHT_INCHES = 24.5;
         public static final double TARGET_HEIGHT_INCHES = 98;
@@ -73,12 +74,13 @@ public final class Constants {
         public static final int MIN_BALL_COLOR_PROXIMITY = 1500; // Raw Proximity value 0 - 2047 (0 being far away)
 
         public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
+
         public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
 
         public static final double MAX_BALL_COLOR_DEVIATION = 0.01;
 
-
     }
+
     public static class SwerveConstants {
         public static final boolean INVERT_TURN = true;
         public static final double DRIVETRAIN_MOTOR_DEADZONE_VOLTS = 0.4;
@@ -198,11 +200,11 @@ public final class Constants {
         public static final int INTAKE_ID = 40;
 
         //Pneumatic IDs
-        public static final int HANGER_SOLENOID_LEFT_FORWARD = 8;
-        public static final int HANGER_SOLENOID_LEFT_BACKWARD = 7;
+        public static final int HANGER_SOLENOID_FORWARD = 4;
+        public static final int HANGER_SOLENOID_BACKWARD = 3;
 
-        public static final int HANGER_SOLENOID_RIGHT_FORWARD = 6;
-        public static final int HANGER_SOLENOID_RIGHT_BACKWARD = 5;
+        public static final int INTAKE_SOLENOID_FORWARD = 2; // forward is down
+        public static final int INTAKE_SOLENOID_BACKWARD = 1; //backward is up
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
