@@ -129,6 +129,7 @@ public final class Constants {
 
     }
     public static class AutoConstants {
+        public static final boolean AUTO_DEBUG = true;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;

@@ -41,6 +41,7 @@ import frc.robot.subsystems.*;
 
 import java.awt.Robot;
 
+import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
 import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 
@@ -276,12 +277,16 @@ public class RobotContainer {
 
 
     public void sendTrajectoryToDashboard() {
-        //field.getObject("traj").setTrajectory(getTrajectory());
+        if (AUTO_DEBUG) {
+            field.getObject("traj").setTrajectory(currentTrajectory);
+        }
     }
 
-    public void autoOutputToDashboard() {
-      //  field.setRobotPose(drivetrainSubsystem.getPose());
-       // SmartDashboard.putData("Field", field);
+    public void outputPoseToDashboard() {
+        if (DRIVETRAIN && AUTO_DEBUG) {
+          field.setRobotPose(drivetrainSubsystem.getPose());
+          SmartDashboard.putData("Field", field);
+        }
     }
 
     public void resetPose() {
@@ -289,16 +294,7 @@ public class RobotContainer {
     }
 
     private static double deadband(double value, double deadband) {
-        if (Math.abs(value) > deadband) {
-            return value;
-//            if (value > 0.0) {
-//                return (value - deadband) / (1.0 - deadband);
-//            } else {
-//                return (value + deadband) / (1.0 - deadband);
-//            }
-        } else {
-            return 0.0;
-        }
+        return (Math.abs(value) > deadband) ? value : 0.0;
     }
 
     private static double modifyAxis(double value) {
