@@ -27,6 +27,7 @@ import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.hardware.Limelight;
 import frc.robot.commands.shooter.AutoAimShooter;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
@@ -71,7 +72,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
+      //  CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
 
 
         // Initialize Active Subsystems
@@ -92,7 +93,8 @@ public class RobotContainer {
         if (DRIVETRAIN)
             configureDrivetrain();
         if (SHOOTER)
-            configureShooter();
+            configureDebugShooter();
+           // configureShooter();
         if (TRANSFER)
             configureTransfer();
         if (INTAKE)
@@ -116,11 +118,13 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return AutoChooser.getCommand();
+       // return AutoChooser.getCommand();
+        return null;
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
+    //    return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
+        return null;
     }
 
 
@@ -213,10 +217,10 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        DPadButton dPadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton dPadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
         DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
 
-        dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in
+        dPadButtonLeft.whenHeld(new TransferManualReverse(transferSubsystem)); // TODO: Add Transfer Code when Merged in
     }
 
     private void configureIntake() {
@@ -272,12 +276,12 @@ public class RobotContainer {
 
 
     public void sendTrajectoryToDashboard() {
-        field.getObject("traj").setTrajectory(getTrajectory());
+        //field.getObject("traj").setTrajectory(getTrajectory());
     }
 
     public void autoOutputToDashboard() {
-        field.setRobotPose(drivetrainSubsystem.getPose());
-        SmartDashboard.putData("Field", field);
+      //  field.setRobotPose(drivetrainSubsystem.getPose());
+       // SmartDashboard.putData("Field", field);
     }
 
     public void resetPose() {

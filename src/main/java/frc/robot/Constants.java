@@ -39,8 +39,8 @@ public final class Constants {
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = false;
 
-        public static final boolean SHOOTER = false;
-        public static final boolean TRANSFER = false;
+        public static final boolean SHOOTER = true;
+        public static final boolean TRANSFER = true;
         public static final boolean INTAKE = false;
 
         public static final boolean HANGER = false;
@@ -186,14 +186,14 @@ public final class Constants {
 
         public static final String MANI_CAN_BUS = "mani";
 
-        public static final int INTAKE_MOTOR_ID = 6;
+        public static final int INTAKE_MOTOR_ID = 5;
 
-        public static final int TRANSFER_MOTOR_ID = 5;
+        public static final int TRANSFER_MOTOR_ID = 4;
 
-        public static final int HOOD_MOTOR_ID = 4;
+        public static final int HOOD_MOTOR_ID = 3;
 
-        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 3;
-        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 2;
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 2;
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
 
         public static final int INTAKE_ID = 40;
 
