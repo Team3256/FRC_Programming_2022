@@ -106,6 +106,14 @@ public class HangerSubsystem extends SubsystemBase {
         return getPosition() >= PARTIAL_DISTANCE;
     }
 
+    /**
+     * check if master talon motor or follower talon motor has reached or exceeded current threshold (in Amps)
+     * @return returns true if either talon or follower talon motor has reached or exceeded current threshold
+     */
+    public boolean isCurrentSpiking() {
+        return masterTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD || followerTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+    }
+
     public void stopMotors() {
         masterTalonMotor.neutralOutput();
     }
