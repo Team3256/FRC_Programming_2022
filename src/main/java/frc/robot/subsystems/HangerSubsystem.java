@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
@@ -110,4 +111,13 @@ public class HangerSubsystem extends SubsystemBase {
         masterTalonMotor.neutralOutput();
     }
 
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Hanger Position", masterTalonMotor.getSelectedSensorPosition());
+    }
+
+    public void zero(){
+        masterTalonMotor.getSensorCollection().setIntegratedSensorPosition(0,0);
+    }
 }

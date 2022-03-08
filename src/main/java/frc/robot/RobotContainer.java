@@ -21,10 +21,7 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.PDHFaultWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.hanger.HangerAlignOne;
-import frc.robot.commands.hanger.HangerExtend;
-import frc.robot.commands.hanger.HangerRetract;
+import frc.robot.commands.hanger.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.hardware.Limelight;
@@ -220,46 +217,57 @@ public class RobotContainer {
     }
 
     private void configureHanger() {
-        JoystickButton operatorMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kBack.value);
-        JoystickButton operatorMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+//        JoystickButton operatorMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kBack.value);
+//        JoystickButton operatorMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+//
+//        DPadButton operatorDpadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+//        DPadButton operatorDpadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+//
+//        DPadButton driverDpadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
+//        DPadButton driverDpadButtonRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
+//
+//        DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
+//        DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
+//
+//        Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
+//
+//        operatorMiddleButtonLeft.or(operatorMiddleButtonRight)
+//                .and(endgame)
+//                .whenActive(new HangerExtend(hangerSubsystem));
+//
+//        operatorDpadButtonLeft.or(operatorDpadButtonRight)
+//                .and(endgame)
+//                .whenActive(new HangerRetract(hangerSubsystem));
+//
+//        driverDpadButtonLeft.or(driverDpadButtonRight)
+//                .and(endgame)
+//                .whenActive(new HangerExtend(hangerSubsystem));
+//
+//        driverDpadButtonUp.or(driverDpadButtonDown)
+//                .and(endgame)
+//                .whenActive(new HangerRetract(hangerSubsystem));
+//
+//        JoystickButton driverMiddleButtonLeft = new JoystickButton(driverController, XboxController.Button.kStart.value);
+//        JoystickButton driverMiddleButtonRight = new JoystickButton(driverController, XboxController.Button.kStart.value);
+//
+//        if (BOTTOM_COLOR_SENSORS)
+//            driverMiddleButtonLeft
+//                    .and(endgame)
+//                    .whenActive(new HangerAlignOne(drivetrainSubsystem));
+//
+//        driverMiddleButtonRight
+//                .and(endgame)
+//                .whenActive(new AutoHang(hangerSubsystem));
 
-        DPadButton operatorDpadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton operatorDpadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        //---PID tuning
+        JoystickButton driverYButton = new JoystickButton(driverController, XboxController.Button.kY.value);
+        driverYButton.whenPressed(new ZeroHanger(hangerSubsystem));
 
-        DPadButton driverDpadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
-        DPadButton driverDpadButtonRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
+        JoystickButton driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
+        driverAButton.whenHeld(new HangerRetractTest(hangerSubsystem));
 
-        DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
-        DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
-
-        Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
-
-        operatorMiddleButtonLeft.or(operatorMiddleButtonRight)
-                .and(endgame)
-                .whenActive(new HangerExtend(hangerSubsystem));
-
-        operatorDpadButtonLeft.or(operatorDpadButtonRight)
-                .and(endgame)
-                .whenActive(new HangerRetract(hangerSubsystem));
-
-        driverDpadButtonLeft.or(driverDpadButtonRight)
-                .and(endgame)
-                .whenActive(new HangerExtend(hangerSubsystem));
-
-        driverDpadButtonUp.or(driverDpadButtonDown)
-                .and(endgame)
-                .whenActive(new HangerRetract(hangerSubsystem));
-
-        JoystickButton driverMiddleButtonLeft = new JoystickButton(driverController, XboxController.Button.kStart.value);
-        JoystickButton driverMiddleButtonRight = new JoystickButton(driverController, XboxController.Button.kStart.value);
-
-        if (BOTTOM_COLOR_SENSORS)
-            driverMiddleButtonLeft
-                    .and(endgame)
-                    .whenActive(new HangerAlignOne(drivetrainSubsystem));
-
-        driverMiddleButtonRight
-                .and(endgame)
-                .whenActive(new AutoHang(hangerSubsystem));
+        JoystickButton driverXButton = new JoystickButton(driverController, XboxController.Button.kX.value);
+        driverXButton.whenHeld(new HangerExtend(hangerSubsystem));
+        //---PID tuning end
     }
 }
