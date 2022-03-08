@@ -23,7 +23,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
 
     private final TalonFX intakeMotor;
-    private final DoubleSolenoid rightIntakeSolenoid;
+
+  private final DoubleSolenoid rightIntakeSolenoid;
     private final DoubleSolenoid leftIntakeSolenoid;
 
     public IntakeSubsystem() {
@@ -31,6 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         leftIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_LEFT_SOLENOID_FORWARD, INTAKE_LEFT_SOLENOID_BACKWARD);
         rightIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_RIGHT_SOLENOID_FORWARD, INTAKE_RIGHT_SOLENOID_BACKWARD);
+
         logger.info("Intake Initialized");
 
         solenoidRetract();
@@ -48,6 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void forwardOn(){
         logger.info("Intake on");
+        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
@@ -57,6 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void off(){
         intakeMotor.neutralOutput();
+        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         logger.info("Intake off");
     }
 }

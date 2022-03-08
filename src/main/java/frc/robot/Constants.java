@@ -39,9 +39,11 @@ public final class Constants {
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = false;
 
-        public static final boolean SHOOTER = false;
-        public static final boolean TRANSFER = false;
+      
+        public static final boolean SHOOTER = true;
+        public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
+
 
         public static final boolean HANGER = true;
 
@@ -131,6 +133,7 @@ public final class Constants {
 
     }
     public static class AutoConstants {
+        public static final boolean AUTO_DEBUG = true;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
@@ -190,9 +193,13 @@ public final class Constants {
 
         public static final int INTAKE_MOTOR_ID = 5;
 
+
         public static final int TRANSFER_MOTOR_ID = 4;
 
         public static final int HOOD_MOTOR_ID = 3;
+
+        public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 2;
+        public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
 
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 2;
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
@@ -300,6 +307,8 @@ public final class Constants {
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 0.0; //in Rotations of Spool
 
         public static final double RETRACT_PERCENT_SPEED = 0.0;
+
+        public static final double CURRENT_THRESHOLD = 0.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds

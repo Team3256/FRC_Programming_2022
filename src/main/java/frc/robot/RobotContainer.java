@@ -29,6 +29,7 @@ import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.hardware.Limelight;
 import frc.robot.commands.shooter.AutoAimShooter;
+import frc.robot.helper.ControllerUtil;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
 import frc.robot.commands.shooter.IncreasePresetForShooter;
 import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
@@ -60,11 +61,11 @@ public class RobotContainer {
 
     private HangerSubsystem hangerSubsystem = null;
 
-
     public final Field2d field = new Field2d();
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
     public static Trajectory currentTrajectory = new Trajectory();
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -100,7 +101,6 @@ public class RobotContainer {
             configureIntake();
         if (HANGER)
             configureHanger();
-
     }
 
     /**
@@ -121,6 +121,7 @@ public class RobotContainer {
     public static void setCurrentTrajectory(Trajectory newTrajectory) {
         currentTrajectory = newTrajectory;
     }
+
 
     private void initializeDrivetrain() {
         this.drivetrainSubsystem = new SwerveDrive();
@@ -147,6 +148,7 @@ public class RobotContainer {
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         Button rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
+
         // Drivetrain Command
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
@@ -183,6 +185,7 @@ public class RobotContainer {
 
         leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
+
     }
 
 
@@ -208,7 +211,7 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        DPadButton dPadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton dPadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
         DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
 
         dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in

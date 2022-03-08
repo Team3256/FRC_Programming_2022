@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.FlywheelSubsystem;
 
-import static frc.robot.hardware.Limelight.getTunedDistanceToTarget;
+import static frc.robot.hardware.Limelight.getRawDistanceToTarget;
 
 public class SimpleAutoAimShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
@@ -21,7 +21,7 @@ public class SimpleAutoAimShooter extends CommandBase {
 
     @Override
     public void execute() {
-        double distanceToTarget = getTunedDistanceToTarget();
+        double distanceToTarget = getRawDistanceToTarget();
 
         flywheelSubsystem.simpleAutoAim(distanceToTarget);
     }

@@ -46,7 +46,7 @@ public class RobotLogger {
      */
     public static void init(){
         DataLogManager.start();
-        DataLogManager.logNetworkTables(true);
+        DataLogManager.logNetworkTables(false);
     }
 
     /**

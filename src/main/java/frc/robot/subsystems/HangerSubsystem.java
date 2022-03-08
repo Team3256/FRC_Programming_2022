@@ -18,8 +18,10 @@ public class HangerSubsystem extends SubsystemBase {
 
     private final TalonFX masterTalonMotor;
     private final TalonFX followerTalonMotor;
+  
     private final DoubleSolenoid leftHangerSolenoid;
     private final DoubleSolenoid rightHangerSolenoid;
+
 
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
@@ -41,6 +43,7 @@ public class HangerSubsystem extends SubsystemBase {
         rightHangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_RIGHT_SOLENOID_FORWARD, HANGER_RIGHT_SOLENOID_BACKWARD);
 
         pneumaticUpright();
+
 
         logger.info("Hanger Initialized");
     }
@@ -110,6 +113,14 @@ public class HangerSubsystem extends SubsystemBase {
      */
     public boolean isPartialPositionReached() {
         return getPosition() >= PARTIAL_DISTANCE;
+    }
+
+    /**
+     * check if master talon motor or follower talon motor has reached or exceeded current threshold (in Amps)
+     * @return returns true if either talon or follower talon motor has reached or exceeded current threshold
+     */
+    public boolean isCurrentSpiking() {
+        return masterTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD || followerTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
     public void stopMotors() {

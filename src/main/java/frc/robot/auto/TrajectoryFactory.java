@@ -51,6 +51,14 @@ public class TrajectoryFactory {
         return command;
     }
 
+    public Command createPathPlannerCommand(String path, AutoCommandRunner autoCommandRunner, boolean firstSegment) {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
+        PPTrajectoryFollowCommand command = getCommand(trajectory);
+        command.setFirstSegment(firstSegment);
+        command.setAutoCommandRunner(autoCommandRunner);
+        return command;
+    }
+
     public Command createPathPlannerCommand(String path) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
         return getCommand(trajectory);

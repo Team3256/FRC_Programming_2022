@@ -25,14 +25,20 @@ public class AutoChooser {
         Command oneBallTaxi = Paths.get1BallTaxi();
         autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
-        Command twoBallTarmac2BallSide = Paths.get2BallStartTarmac2BallSide();
-        autoChooser.addOption("2 Ball | Start Tarmac | 2 Ball Side", twoBallTarmac2BallSide);
+        Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
+        autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
 
-        Command threeBallTarmac2BallSide = Paths.get3BallStartTarmac2BallSide();
-        autoChooser.addOption("3 Ball | Start Tarmac | 2 Ball Side", threeBallTarmac2BallSide);
+        Command threeBallTarmacEdge2BallSide = Paths.get3BallFarTarmac2BallSide();
+        autoChooser.addOption("3 Ball | Start Edge Tarmac | 2 Ball Side", threeBallTarmacEdge2BallSide);
 
-        Command fourBallTarmac2BallSide = Paths.get4BallStartTarmac2BallSide();
-        autoChooser.addOption("4 Ball | Start Tarmac | 2 Ball Side", fourBallTarmac2BallSide);
+        Command fourBallTarmacEdge2BallSide = Paths.get4BallFarTarmac2BallSide();
+        autoChooser.addOption("4/5 Ball | Start Edge Tarmac | 2 Ball Side", fourBallTarmacEdge2BallSide);
+
+        Command twoBallTarmacMid2BallSide = Paths.get2BallMidTarmac2BallSide();
+        autoChooser.addOption("2 Ball Knock Red | Start Mid Tarmac | 2 Ball Side", twoBallTarmacMid2BallSide);
+
+        Command fourBallTarmacMid2BallSide = Paths.get4BallMidTarmac2BallSide();
+        autoChooser.addOption("4 Ball | Start Mid Tarmac | 2 Ball Side", fourBallTarmacMid2BallSide);
 
         return autoChooser;
     }

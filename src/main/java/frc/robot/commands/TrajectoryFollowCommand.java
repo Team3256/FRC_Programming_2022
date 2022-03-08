@@ -17,6 +17,8 @@ import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.Function;
 
+import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
+
 public class TrajectoryFollowCommand extends CommandBase {
     private final Timer timer = new Timer();
     private final Trajectory trajectory;
@@ -75,7 +77,10 @@ public class TrajectoryFollowCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        RobotContainer.setCurrentTrajectory(trajectory);
+        if (AUTO_DEBUG) {
+            driveSubsystem.setTrajectory(trajectory);
+        }
+
         this.controller.reset();
         driveSubsystem.resetOdometry(this.startPose);
         timer.reset();

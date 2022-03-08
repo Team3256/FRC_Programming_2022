@@ -13,7 +13,7 @@ public class TestLimelight extends CommandBase {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("distance to target:", Limelight.getTunedDistanceToTarget());
+        SmartDashboard.putNumber("distance to target:", Limelight.getRawDistanceToTarget());
         SmartDashboard.putNumber("(tuned) distance to target:", Limelight.getRawDistanceToTarget());
     }
 

@@ -10,11 +10,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import frc.robot.commands.drivetrain.ResetPoseCommand;
 import frc.robot.helper.logging.RobotLogger;
 
 import static frc.robot.Constants.DEBUG;
 import static frc.robot.Constants.SubsystemEnableFlags.DRIVETRAIN;
+
+import frc.robot.helper.logging.RobotLogger;
+
 
 public class Robot extends TimedRobot {
   private static final RobotLogger logger = new RobotLogger(Robot.class.getCanonicalName());
@@ -36,7 +40,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     logger.info("Robot Disabled");
+
     if(DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
+
   }
 
   @Override
@@ -45,11 +51,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.info("Auto Enabled");
+    
     if (DRIVETRAIN) {
       new ResetPoseCommand(robotContainer.drivetrainSubsystem).schedule();
       if (DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
       autonomousCommand = robotContainer.getAutonomousCommand();
     }
+
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();

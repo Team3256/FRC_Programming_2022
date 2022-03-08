@@ -17,13 +17,15 @@ import frc.robot.helper.auto.AutoCommandRunner;
 import frc.robot.helper.auto.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
+import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
+
 public class PPTrajectoryFollowCommand extends CommandBase {
     private final Timer timer = new Timer();
     private final PathPlannerTrajectory trajectory;
     private final SwerveDriveController controller;
     private final SwerveDrive driveSubsystem;
     private final double trajectoryDuration;
-    private final Pose2d startPose;
+    private Pose2d startPose;
     private AutoCommandRunner autoCommandRunner;
 
     public PPTrajectoryFollowCommand(
@@ -76,11 +78,22 @@ public class PPTrajectoryFollowCommand extends CommandBase {
         this.autoCommandRunner = commandRunner;
     }
 
+    public void setFirstSegment(boolean first) {
+        if (!first) {
+            this.startPose = null;
+        }
+    }
+
     @Override
     public void initialize() {
-        RobotContainer.setCurrentTrajectory(trajectory);
+        if (AUTO_DEBUG) {
+            driveSubsystem.setTrajectory(trajectory);
+        }
+        if (this.startPose != null) { // use existing pose for more accuracy if not first path
+            driveSubsystem.resetOdometry(this.startPose);
+        }
+
         this.controller.reset();
-        driveSubsystem.resetOdometry(this.startPose);
         timer.reset();
         timer.start();
     }

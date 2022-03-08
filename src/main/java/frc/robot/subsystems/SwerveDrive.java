@@ -56,6 +56,7 @@ public class SwerveDrive extends SubsystemBase {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private Pose2d curr_velocity = new Pose2d();
+    private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
 
@@ -221,7 +222,6 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putData("Field", field);
     }
 
-
     public void outputToDashboard() {
 
         if (Constants.DEBUG) {
@@ -238,6 +238,8 @@ public class SwerveDrive extends SubsystemBase {
 
             SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
 
+            field.setRobotPose(getPose());
+            SmartDashboard.putData("Field", field);
         }
     }
 
@@ -287,12 +289,15 @@ public class SwerveDrive extends SubsystemBase {
     public void forward(double meters){
         drive(new ChassisSpeeds(0,meters,0));
     }
+
     public void backward(double meters){
         drive(new ChassisSpeeds(0,-meters,0));
     }
+
     public void pivotTurn(double rad){
         drive( new ChassisSpeeds(0,0,rad));
     }
+
     public void fixedRightRotate(int volts){
         frontLeftModule.set(deadzoneMotor(volts), 0);
         backLeftModule.set(deadzoneMotor(volts), 0);
