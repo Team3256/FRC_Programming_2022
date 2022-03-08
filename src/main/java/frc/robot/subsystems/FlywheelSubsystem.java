@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
+import frc.robot.helper.shooter.ShooterPresetSelector;
 import frc.robot.helper.shooter.TrainingDataPoint;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterPreset;
@@ -92,6 +93,11 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void simpleAutoAim(double distance) {
         ShooterState shooterState = new ShooterState(getFlywheelRPMFromInterpolator(distance), getHoodAngleFromInterpolator(distance));
         applyShooterState(shooterState);
+    }
+
+    public void autoPresetAutoAim(double distance) {
+        ShooterPreset preset = ShooterPresetSelector.findClosesPreset(distance);
+        applyShooterState(preset.shooterState);
     }
 
     /**
@@ -309,23 +315,23 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInSensorUnits  * 10 / 2048;
     }
 
-    public void increasePreset() {
-        currentPresetNumber += 1;
-        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
-            currentPresetNumber = 0;
-        }
-
-        SmartDashboard.putString("Preset: ", getPreset().presetName);
-    }
-    
-    public void decreasePreset() {
-        currentPresetNumber -= 1;
-        if (currentPresetNumber == -1) {
-            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
-        }
-
-        SmartDashboard.putString("Preset: ", getPreset().presetName);
-    }
+//    public void increasePreset() {
+//        currentPresetNumber += 1;
+//        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
+//            currentPresetNumber = 0;
+//        }
+//
+//        SmartDashboard.putString("Preset: ", getPreset().presetName);
+//    }
+//
+//    public void decreasePreset() {
+//        currentPresetNumber -= 1;
+//        if (currentPresetNumber == -1) {
+//            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
+//        }
+//
+//        SmartDashboard.putString("Preset: ", getPreset().presetName);
+//    }
 
     public void shootSelectedPreset() {
         ShooterPreset currentPreset = getPreset();
