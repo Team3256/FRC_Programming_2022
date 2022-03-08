@@ -10,10 +10,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,6 +55,7 @@ public class SwerveDrive extends SubsystemBase {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private Pose2d curr_velocity = new Pose2d();
+    private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
 
@@ -205,8 +208,11 @@ public class SwerveDrive extends SubsystemBase {
         return (((MAX_VOLTAGE - SIGNED_DEADZONE)/MAX_VOLTAGE) * volts) + Math.copySign(SIGNED_DEADZONE, volts);
     }
 
-    public void outputToDashboard() {
+    public void setTrajectory(Trajectory trajectory) {
+        field.getObject("traj").setTrajectory(trajectory);
+    }
 
+    public void outputToDashboard() {
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
@@ -221,6 +227,8 @@ public class SwerveDrive extends SubsystemBase {
 
             SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
 
+            field.setRobotPose(getPose());
+            SmartDashboard.putData("Field", field);
         }
     }
 

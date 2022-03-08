@@ -53,9 +53,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-    robotContainer.outputPoseToDashboard();
-  }
+  public void autonomousPeriodic() { }
 
   @Override
   public void teleopInit() {
@@ -66,9 +64,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-    robotContainer.outputPoseToDashboard();
-  }
+  public void teleopPeriodic() { }
 
   @Override
   public void testInit() {

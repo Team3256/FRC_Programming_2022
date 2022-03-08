@@ -62,8 +62,6 @@ public class RobotContainer {
 
     private HangerSubsystem hangerSubsystem = null;
 
-
-    private final Field2d field = new Field2d();
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
     private static Trajectory currentTrajectory = new Trajectory();
@@ -272,21 +270,6 @@ public class RobotContainer {
         driverMiddleButtonRight
                 .and(endgame)
                 .whenActive(new AutoHang(hangerSubsystem));
-    }
-
-
-
-    public void sendTrajectoryToDashboard() {
-        if (AUTO_DEBUG) {
-            field.getObject("traj").setTrajectory(currentTrajectory);
-        }
-    }
-
-    public void outputPoseToDashboard() {
-        if (DRIVETRAIN && AUTO_DEBUG) {
-          field.setRobotPose(drivetrainSubsystem.getPose());
-          SmartDashboard.putData("Field", field);
-        }
     }
 
     public void resetPose() {
