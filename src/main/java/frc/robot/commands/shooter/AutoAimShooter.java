@@ -21,7 +21,7 @@ public class AutoAimShooter extends CommandBase {
 
     @Override
     public void execute() {
-        double distanceToTarget = getTunedDistanceToTarget();
+        double distanceToTarget = getRawDistanceToTarget();
 
         flywheelSubsystem.autoAim(distanceToTarget);
     }
