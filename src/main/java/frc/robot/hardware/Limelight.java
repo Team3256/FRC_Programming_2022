@@ -89,7 +89,8 @@ public class Limelight {
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
+        return getRawDistanceToTarget();
+        //return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
     }
     /**
      * @param degrees
