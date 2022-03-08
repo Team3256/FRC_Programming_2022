@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -27,9 +26,9 @@ import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.hardware.Limelight;
 import frc.robot.commands.shooter.AutoAimShooter;
+import frc.robot.helper.ControllerUtil;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
 import frc.robot.commands.shooter.IncreasePresetForShooter;
 import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
@@ -41,7 +40,6 @@ import frc.robot.subsystems.*;
 
 import java.awt.Robot;
 
-import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
 import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 
@@ -54,24 +52,22 @@ import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
-    private SwerveDrive drivetrainSubsystem = null;
+    public SwerveDrive drivetrainSubsystem = null;
+    private IntakeSubsystem intakeSubsystem = null;
 
     private FlywheelSubsystem flywheelSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
-    private IntakeSubsystem intakeSubsystem = null;
 
     private HangerSubsystem hangerSubsystem = null;
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
-    private static Trajectory currentTrajectory = new Trajectory();
 
     /**
-     *
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-      //  CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
+        CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
 
 
         // Initialize Active Subsystems
@@ -89,19 +85,18 @@ public class RobotContainer {
             initializeHanger();
 
         // Configure Enabled Subsystems
-        if (DRIVETRAIN)
+        if (DRIVETRAIN) {
             configureDrivetrain();
+            SmartDashboard.putData(getCommandChooser());
+        }
         if (SHOOTER)
-            configureDebugShooter();
-           // configureShooter();
+            configureShooter();
         if (TRANSFER)
             configureTransfer();
         if (INTAKE)
             configureIntake();
         if (HANGER)
             configureHanger();
-
-        configureButtonBindings();
     }
 
     /**
@@ -110,29 +105,13 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
-
-        SmartDashboard.putData(CommandScheduler.getInstance());
-
-    }
 
     public Command getAutonomousCommand() {
-       // return AutoChooser.getCommand();
-        return null;
+        return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-    //    return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
-        return null;
-    }
-
-
-    public Trajectory getTrajectory() {
-       return currentTrajectory;
-    }
-
-    public static void setCurrentTrajectory(Trajectory newTrajectory) {
-        currentTrajectory = newTrajectory;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
     }
 
     private void initializeDrivetrain() {
@@ -158,7 +137,7 @@ public class RobotContainer {
     private void configureDrivetrain() {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-
+        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -169,9 +148,9 @@ public class RobotContainer {
 
         Command defaultDriveCommand = new DefaultDriveCommandFieldOriented(
                 drivetrainSubsystem,
-                () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
         // Automatically Schedule Command when nothing else is scheduled
@@ -184,14 +163,17 @@ public class RobotContainer {
         leftBumper.whenPressed(
                 new AutoAlignDriveContinuousCommand(
                         drivetrainSubsystem,
-                        () -> -modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
                 ), true);
 
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
+        // "B" button increases the preset number
+
+        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
     private void configureShooter() {
@@ -219,7 +201,7 @@ public class RobotContainer {
         DPadButton dPadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
         DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
 
-        dPadButtonLeft.whenHeld(new TransferManualReverse(transferSubsystem)); // TODO: Add Transfer Code when Merged in
+        dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in
     }
 
     private void configureIntake() {

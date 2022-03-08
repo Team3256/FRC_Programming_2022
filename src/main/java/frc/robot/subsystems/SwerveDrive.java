@@ -213,6 +213,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void outputToDashboard() {
+
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
@@ -278,12 +279,15 @@ public class SwerveDrive extends SubsystemBase {
     public void forward(double meters){
         drive(new ChassisSpeeds(0,meters,0));
     }
+
     public void backward(double meters){
         drive(new ChassisSpeeds(0,-meters,0));
     }
+
     public void pivotTurn(double rad){
         drive( new ChassisSpeeds(0,0,rad));
     }
+
     public void fixedRightRotate(int volts){
         frontLeftModule.set(deadzoneMotor(volts), 0);
         backLeftModule.set(deadzoneMotor(volts), 0);
