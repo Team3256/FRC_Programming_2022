@@ -18,7 +18,8 @@ public class HangerSubsystem extends SubsystemBase {
 
     private final TalonFX masterTalonMotor;
     private final TalonFX followerTalonMotor;
-    private final DoubleSolenoid hangerSolenoid;
+    private final DoubleSolenoid leftHangerSolenoid;
+    private final DoubleSolenoid rightHangerSolenoid;
 
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
@@ -36,7 +37,9 @@ public class HangerSubsystem extends SubsystemBase {
                 ROBORIO_CAN_BUS
         );
 
-        hangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_FORWARD, HANGER_SOLENOID_BACKWARD);
+        leftHangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_LEFT_SOLENOID_FORWARD, HANGER_LEFT_SOLENOID_BACKWARD);
+        rightHangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_RIGHT_SOLENOID_FORWARD, HANGER_RIGHT_SOLENOID_BACKWARD);
+
         pneumaticUpright();
 
         logger.info("Hanger Initialized");
@@ -60,11 +63,13 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void pneumaticUpright() {
-        hangerSolenoid.set(kForward);
+        leftHangerSolenoid.set(kForward);
+        rightHangerSolenoid.set(kForward);
     }
 
     public void pneumaticSlant() {
-        hangerSolenoid.set(kReverse);
+        leftHangerSolenoid.set(kReverse);
+        rightHangerSolenoid.set(kReverse);
     }
 
     public void adjustRetract() {
