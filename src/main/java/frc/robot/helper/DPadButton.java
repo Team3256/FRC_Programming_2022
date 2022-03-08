@@ -1,6 +1,7 @@
 package frc.robot.helper;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.helper.logging.RobotLogger;
 
 /**
  * DPad Buttons are weird, called POV buttons they do not fully
@@ -9,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
  * This class allows us to use the buttons as normal buttons.
  */
 public class DPadButton extends Button {
+    RobotLogger logger = new RobotLogger(DPadButton.class.getCanonicalName());
 
     GenericHID joystick;
     Direction direction;
@@ -30,6 +32,11 @@ public class DPadButton extends Button {
 
     public boolean get() {
         int dPadValue = joystick.getPOV();
+        if ((dPadValue == direction.direction) || (dPadValue == (direction.direction + 45) % 360)
+                || (dPadValue == (direction.direction + 315) % 360)){
+            logger.info("DPAD Pressed " + direction);
+
+        }
         return (dPadValue == direction.direction) || (dPadValue == (direction.direction + 45) % 360)
                 || (dPadValue == (direction.direction + 315) % 360);
     }

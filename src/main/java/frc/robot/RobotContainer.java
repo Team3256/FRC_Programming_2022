@@ -27,12 +27,12 @@ import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
+import frc.robot.commands.intake.IntakeReverse;
+import frc.robot.commands.shooter.*;
+import frc.robot.commands.transfer.TransferIndexForward;
+import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.hardware.Limelight;
-import frc.robot.commands.shooter.AutoAimShooter;
 import frc.robot.helper.ControllerUtil;
-import frc.robot.commands.shooter.DecreasePresetForShooter;
-import frc.robot.commands.shooter.IncreasePresetForShooter;
-import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -68,7 +68,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
+       // CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
 
 
         // Initialize Active Subsystems
@@ -88,10 +88,11 @@ public class RobotContainer {
         // Configure Enabled Subsystems
         if (DRIVETRAIN) {
             configureDrivetrain();
-            SmartDashboard.putData(getCommandChooser());
+            if (getCommandChooser() != null)
+                SmartDashboard.putData(getCommandChooser());
         }
         if (SHOOTER)
-            configureShooter();
+            configureDebugShooter();
         if (TRANSFER)
             configureTransfer();
         if (INTAKE)
@@ -108,11 +109,17 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        return AutoChooser.getCommand();
+        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
+            return AutoChooser.getCommand();
+        else
+            return null;
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
+        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
+            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem);
+        else
+            return null;
     }
 
     private void initializeDrivetrain() {
@@ -172,9 +179,6 @@ public class RobotContainer {
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .whenPressed(defaultDriveCommand);
-        // "B" button increases the preset number
-
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
     private void configureShooter() {
@@ -193,22 +197,30 @@ public class RobotContainer {
 
     private void configureDebugShooter(){
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+        JoystickAnalogButton aButton = new JoystickAnalogButton(driverController, XboxController.Button.kA.value);
+
         rightTrigger.setThreshold(0.01);
 
         rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+        aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem));
+
+
     }
 
     private void configureTransfer() {
-        DPadButton dPadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
-        DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        DPadButton dPadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
+        DPadButton dPadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
 
-        dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in
+        dPadButtonDown.whenHeld(new TransferManualReverse(transferSubsystem), false);
+        dPadButtonUp.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
 
     private void configureIntake() {
         JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        JoystickButton bButton = new JoystickButton(driverController, XboxController.Button.kB.value);
 
         rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        bButton.whenHeld(new IntakeReverse(intakeSubsystem));
     }
 
     private void configureHanger() {

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.MuxedColorSensor;
+import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferOff;
@@ -27,6 +30,7 @@ import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
+import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
 import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
 
@@ -55,7 +59,12 @@ public class TransferSubsystem extends SubsystemBase {
     private double currentBallCount;
 
     public TransferSubsystem() {
-        transferMotor = TalonFXFactory.createTalonFX(IDConstants.TRANSFER_MOTOR_ID, MANI_CAN_BUS);
+        TalonConfiguration talonConfiguration = new TalonConfiguration(
+                new TalonConfiguration.TalonFXPIDFConfig(),
+                InvertType.InvertMotorOutput,
+                NeutralMode.Brake);
+
+        transferMotor = TalonFXFactory.createTalonFX(IDConstants.TRANSFER_MOTOR_ID, talonConfiguration, MANI_CAN_BUS);
       
         transferStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         transferStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);
@@ -123,6 +132,10 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     public void transferIndexSetup(){
+
+        // If no IR Sensors, Disable all Sensors
+        if (!IR_SENSORS)
+            return;
 
         // Starts Index / Counting Process when First Detecting Ball
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
@@ -199,8 +212,9 @@ public class TransferSubsystem extends SubsystemBase {
         if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
             wrongBallColorDetected(ballColor);
 
+
         // Keep 2nd Ball in 2nd Place, if there is one
-        if (ballColorIndex.get(0) == BallColor.NONE){
+        if (!ballColorIndex.isEmpty() && ballColorIndex.get(0) == BallColor.NONE){
             ballColorIndex.set(0, ballColor);
         } else {
             ballColorIndex.addFirst(ballColor);

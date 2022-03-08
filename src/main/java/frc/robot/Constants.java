@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import frc.robot.hardware.TalonConfiguration;
@@ -42,14 +41,16 @@ public final class Constants {
 
         public static final boolean SHOOTER = true;
         public static final boolean TRANSFER = true;
-        public static final boolean INTAKE = false;
+        public static final boolean INTAKE = true;
 
         public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = false;
+        public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
+
+        public static final boolean IR_SENSORS = false;
     }
 
     public static class LimelightAutoCorrectConstants {
@@ -88,7 +89,7 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = -45; // degrees
+        public static final double GYRO_YAW_OFFSET = -0; // degrees
 
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
@@ -98,8 +99,8 @@ public final class Constants {
         public static final double MAX_METERS_PER_SECOND = 10;
 
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-                 SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-                 SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+                SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+                SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
         private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
@@ -334,21 +335,16 @@ public final class Constants {
         public static final double SHOOTER_MASTER_TALON_PID_D = 0;
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
-        public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
-        public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
-
         // Hood Angle Constants
         public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
 
-        public static final double DELTA_DISTANCE_DATA = 2; // in feet
-        public static final double MAX_DISTANCE_DATA = 20; // in feet
         // Presets
         public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
-            new ShooterPreset(100, 1.23, 10, "Default 1"), // TODO: Change this to accurate numbers (given testing)
-            new ShooterPreset(200, 2.34, 12, "Default 2") // TODO: Change this to accurate numbers (given testing)
+                new ShooterPreset(100, 1.23, 10, "Default 1"), // TODO: Change this to accurate numbers (given testing)
+                new ShooterPreset(200, 2.34, 20, "Default 2") // TODO: Change this to accurate numbers (given testing)
         ); // TODO: Create all shooter presets
 
         // Velocity Training Points
@@ -361,7 +357,7 @@ public final class Constants {
         );
     }
     public static class LEDConstants {
-         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
+        public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
 
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM, DEBUG_SECTION
@@ -374,13 +370,13 @@ public final class Constants {
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
                 HashMapFiller.populateLinkedHashMap(
-                    entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
-                    entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                        entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                        entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
                 );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
-                    new LEDRange(0,200, 180)
+                new LEDRange(0,200, 180)
         };
     }
 
