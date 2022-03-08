@@ -31,9 +31,16 @@ public class IntakeSubsystem extends SubsystemBase {
         logger.info("Intake Initialized");
     }
 
+    public void solenoidExtend(){
+        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void solenoidRetract(){
+        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
     public void forwardOn(){
         logger.info("Intake on");
-        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
@@ -43,7 +50,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void off(){
         intakeMotor.neutralOutput();
-        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         logger.info("Intake off");
     }
 }

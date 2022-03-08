@@ -2,14 +2,18 @@ package frc.robot.commands.hanger;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.intake.IntakeDeployCommand;
 import frc.robot.subsystems.HangerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+
 import static frc.robot.Constants.HangerConstants.*;
 
 public class AutoHang extends SequentialCommandGroup {
     HangerSubsystem hanger;
-    public AutoHang(HangerSubsystem hanger) {
+    public AutoHang(HangerSubsystem hanger, IntakeSubsystem intake) {
         this.hanger = hanger;
         addCommands(
+                new IntakeDeployCommand(intake),
                 new HangerRetract(hanger),
                 new WaitCommand(RETRACT_WAIT),
                 new HangerPartial(hanger),

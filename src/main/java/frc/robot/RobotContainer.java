@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,6 +26,7 @@ import frc.robot.commands.hanger.AutoHang;
 import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
+import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.hardware.Limelight;
@@ -146,7 +148,7 @@ public class RobotContainer {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-
+        Button rightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
         // Drivetrain Command
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
@@ -167,8 +169,8 @@ public class RobotContainer {
         // A button zeros the gyroscope
         driverAButton.whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        // Left Bumper Enables Auto Align
-        leftBumper.whenPressed(
+        // Right Bumper Enables Auto Align
+        rightBumper.whenPressed(
                 new AutoAlignDriveContinuousCommand(
                         drivetrainSubsystem,
                         () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
@@ -181,7 +183,9 @@ public class RobotContainer {
                 .whenPressed(defaultDriveCommand);
         // "B" button increases the preset number
 
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        leftBumper.whenReleased(new IntakeOff(intakeSubsystem));
+
     }
 
 
@@ -260,6 +264,6 @@ public class RobotContainer {
 
         driverMiddleButtonRight
                 .and(endgame)
-                .whenActive(new AutoHang(hangerSubsystem));
+                .whenActive(new AutoHang(hangerSubsystem, intakeSubsystem));
     }
 }

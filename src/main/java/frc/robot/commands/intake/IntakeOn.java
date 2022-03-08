@@ -20,6 +20,7 @@ public class IntakeOn extends CommandBase {
     @Override
     public void initialize() {
         intake.forwardOn();
+        intake.solenoidExtend();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
