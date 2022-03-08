@@ -32,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
         leftIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_LEFT_SOLENOID_FORWARD, INTAKE_LEFT_SOLENOID_BACKWARD);
         rightIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_RIGHT_SOLENOID_FORWARD, INTAKE_RIGHT_SOLENOID_BACKWARD);
         logger.info("Intake Initialized");
+
+        solenoidRetract();
     }
 
     public void solenoidExtend(){

@@ -22,10 +22,8 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.PDHFaultWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.hanger.HangerAlignOne;
-import frc.robot.commands.hanger.HangerExtend;
-import frc.robot.commands.hanger.HangerRetract;
+import frc.robot.commands.hanger.*;
+import frc.robot.commands.intake.IntakeDeployCommand;
 import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.helper.ControllerUtil;
@@ -72,7 +70,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
+        //CommandScheduler.getInstance().schedule(new PDHFaultWatcher());
 
 
         // Initialize Active Subsystems
@@ -184,7 +182,6 @@ public class RobotContainer {
         // "B" button increases the preset number
 
         leftBumper.whenHeld(new IntakeOn(intakeSubsystem));
-        leftBumper.whenReleased(new IntakeOff(intakeSubsystem));
 
     }
 
@@ -236,7 +233,11 @@ public class RobotContainer {
         DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
         DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
 
-        Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
+        driverDpadButtonLeft.whenPressed(new SequentialCommandGroup(new IntakeDeployCommand(intakeSubsystem), new HangerPneumaticSlant(hangerSubsystem)));
+        driverDpadButtonRight.whenPressed(new HangerPneumaticUpright(hangerSubsystem));
+
+        /*
+                Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
 
         operatorMiddleButtonLeft.or(operatorMiddleButtonRight)
                 .and(endgame)
@@ -265,5 +266,7 @@ public class RobotContainer {
         driverMiddleButtonRight
                 .and(endgame)
                 .whenActive(new AutoHang(hangerSubsystem, intakeSubsystem));
+    }
+         */
     }
 }

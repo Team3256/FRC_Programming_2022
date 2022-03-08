@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.drivetrain.ResetPoseCommand;
 import frc.robot.helper.logging.RobotLogger;
 
+import static frc.robot.Constants.DEBUG;
+import static frc.robot.Constants.SubsystemEnableFlags.DRIVETRAIN;
+
 public class Robot extends TimedRobot {
   private static final RobotLogger logger = new RobotLogger(Robot.class.getCanonicalName());
 
@@ -33,7 +36,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     logger.info("Robot Disabled");
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
+    if(DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
   }
 
   @Override
@@ -42,9 +45,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.info("Auto Enabled");
-    new ResetPoseCommand(robotContainer.drivetrainSubsystem).schedule();
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
-    autonomousCommand = robotContainer.getAutonomousCommand();
+    if (DRIVETRAIN) {
+      new ResetPoseCommand(robotContainer.drivetrainSubsystem).schedule();
+      if (DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
+      autonomousCommand = robotContainer.getAutonomousCommand();
+    }
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -53,7 +58,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
+    if(DRIVETRAIN && DEBUG) robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
   }
 
   @Override
@@ -66,7 +71,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
+    if (DRIVETRAIN && DEBUG) robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
   }
 
   @Override

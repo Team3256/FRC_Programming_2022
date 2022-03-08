@@ -13,4 +13,9 @@ public class IntakeDeployCommand extends CommandBase {
     public void initialize() {
         intake.solenoidExtend();
     }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

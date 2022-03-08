@@ -33,6 +33,7 @@ public class IntakeOn extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         intake.off();
+        intake.solenoidRetract();
     }
 
     // Returns true when the command should end.
