@@ -34,8 +34,6 @@ import static frc.robot.Constants.IDConstants.*;
 public class SwerveDrive extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
 
-    private static double targetVelocity = 0;
-
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -306,11 +304,6 @@ public class SwerveDrive extends SubsystemBase {
         drive(new ChassisSpeeds(0,0,0));
     }
 
-
-
-    public void smoothDrive(){
-
-    }
     public double smoothVelocity(double currentVelocity, double targetVelocity, double acceleration, double time) {
         double delta = targetVelocity - currentVelocity;
         if (Math.abs(delta) < acceleration) {
