@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -26,9 +27,9 @@ import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.helper.ControllerUtil;
 import frc.robot.hardware.Limelight;
 import frc.robot.commands.shooter.AutoAimShooter;
+import frc.robot.helper.ControllerUtil;
 import frc.robot.commands.shooter.DecreasePresetForShooter;
 import frc.robot.commands.shooter.IncreasePresetForShooter;
 import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
@@ -60,11 +61,8 @@ public class RobotContainer {
 
     private HangerSubsystem hangerSubsystem = null;
 
-
-    public final Field2d field = new Field2d();
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
-    public static Trajectory currentTrajectory = new Trajectory();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -100,7 +98,6 @@ public class RobotContainer {
             configureIntake();
         if (HANGER)
             configureHanger();
-
     }
 
     /**
@@ -116,10 +113,6 @@ public class RobotContainer {
 
     public SendableChooser<Command> getCommandChooser() {
         return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem);
-    }
-
-    public static void setCurrentTrajectory(Trajectory newTrajectory) {
-        currentTrajectory = newTrajectory;
     }
 
     private void initializeDrivetrain() {
@@ -184,7 +177,6 @@ public class RobotContainer {
         rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
     }
 
-
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
@@ -207,7 +199,7 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        DPadButton dPadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton dPadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
         DPadButton dPadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
 
         dPadButtonLeft.whenHeld(null); // TODO: Add Transfer Code when Merged in
@@ -261,5 +253,29 @@ public class RobotContainer {
         driverMiddleButtonRight
                 .and(endgame)
                 .whenActive(new AutoHang(hangerSubsystem));
+    }
+
+    public void resetPose() {
+        drivetrainSubsystem.resetOdometry(new Pose2d());
+    }
+
+    private static double deadband(double value, double deadband) {
+        return (Math.abs(value) > deadband) ? value : 0.0;
+    }
+
+    private static double modifyAxis(double value) {
+        double deadband = 0.05;
+        value = deadband(value, deadband);
+
+        if (value == 0) {
+            return 0;
+        }
+
+        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
+//
+        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
+        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
+
+        return value;
     }
 }

@@ -14,28 +14,26 @@ public class SetShooterFromCustomDashboardConfig extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.setDefaultNumber("Custom Velocity", 100.0);
+        SmartDashboard.setDefaultNumber("Custom Velocity", 1);
         SmartDashboard.setDefaultNumber("Custom Hood Angle", 0.0);
     }
 
     @Override
     public void execute() {
-        double velocity = SmartDashboard.getNumber("Custom Velocity", 100.0);
+        double velocity = SmartDashboard.getNumber("Custom Velocity", 1);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0.0);
 
-        flywheelSubsystem.setSpeed(velocity);
+        flywheelSubsystem.setPercentSpeed(velocity);
         flywheelSubsystem.setHoodAngle(velocity);
     }
 
     @Override
     public void end(boolean interrupted) {
-        if (interrupted) {
-            flywheelSubsystem.stopFullShooter();
-        }
+        flywheelSubsystem.stopFullShooter();
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }

@@ -10,7 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.drivetrain.ResetPoseCommand;
 import frc.robot.helper.logging.RobotLogger;
 
 public class Robot extends TimedRobot {
@@ -33,7 +32,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     logger.info("Robot Disabled");
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
   }
 
   @Override
@@ -42,8 +40,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.info("Auto Enabled");
-    new ResetPoseCommand(robotContainer.drivetrainSubsystem).schedule();
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
+    robotContainer.resetPose();
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
@@ -52,9 +49,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
-  }
+  public void autonomousPeriodic() { }
 
   @Override
   public void teleopInit() {
@@ -65,9 +60,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-    robotContainer.drivetrainSubsystem.autoOutputToDashboard(robotContainer.field);
-  }
+  public void teleopPeriodic() { }
 
   @Override
   public void testInit() {

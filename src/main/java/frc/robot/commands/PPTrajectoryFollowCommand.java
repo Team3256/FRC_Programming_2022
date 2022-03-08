@@ -17,6 +17,8 @@ import frc.robot.helper.auto.AutoCommandRunner;
 import frc.robot.helper.auto.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
+import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
+
 public class PPTrajectoryFollowCommand extends CommandBase {
     private final Timer timer = new Timer();
     private final PathPlannerTrajectory trajectory;
@@ -84,11 +86,14 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        RobotContainer.setCurrentTrajectory(trajectory);
-        this.controller.reset();
+        if (AUTO_DEBUG) {
+            driveSubsystem.setTrajectory(trajectory);
+        }
         if (this.startPose != null) { // use existing pose for more accuracy if not first path
             driveSubsystem.resetOdometry(this.startPose);
         }
+
+        this.controller.reset();
         timer.reset();
         timer.start();
     }

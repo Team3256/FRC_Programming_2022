@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.helper.logging.RobotLogger;
 import org.opencv.core.Mat;
 import frc.robot.Constants;
@@ -56,6 +55,7 @@ public class SwerveDrive extends SubsystemBase {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private Pose2d curr_velocity = new Pose2d();
+    private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
 
@@ -208,19 +208,9 @@ public class SwerveDrive extends SubsystemBase {
         return (((MAX_VOLTAGE - SIGNED_DEADZONE)/MAX_VOLTAGE) * volts) + Math.copySign(SIGNED_DEADZONE, volts);
     }
 
-    public void sendTrajectoryToDashboard(Field2d field) {
-        field.getObject("traj").setTrajectory(getTrajectory());
+    public void setTrajectory(Trajectory trajectory) {
+        field.getObject("traj").setTrajectory(trajectory);
     }
-
-    public Trajectory getTrajectory() {
-        return RobotContainer.currentTrajectory;
-    }
-
-    public void autoOutputToDashboard(Field2d field) {
-        field.setRobotPose(this.getPose());
-        SmartDashboard.putData("Field", field);
-    }
-
 
     public void outputToDashboard() {
 
@@ -238,6 +228,8 @@ public class SwerveDrive extends SubsystemBase {
 
             SmartDashboard.putNumber("Gyro Rotation", pose.getRotation().getDegrees());
 
+            field.setRobotPose(getPose());
+            SmartDashboard.putData("Field", field);
         }
     }
 
@@ -287,12 +279,15 @@ public class SwerveDrive extends SubsystemBase {
     public void forward(double meters){
         drive(new ChassisSpeeds(0,meters,0));
     }
+
     public void backward(double meters){
         drive(new ChassisSpeeds(0,-meters,0));
     }
+
     public void pivotTurn(double rad){
         drive( new ChassisSpeeds(0,0,rad));
     }
+
     public void fixedRightRotate(int volts){
         frontLeftModule.set(deadzoneMotor(volts), 0);
         backLeftModule.set(deadzoneMotor(volts), 0);
