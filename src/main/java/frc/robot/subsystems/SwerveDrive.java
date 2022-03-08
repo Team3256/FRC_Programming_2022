@@ -34,6 +34,8 @@ import static frc.robot.Constants.IDConstants.*;
 public class SwerveDrive extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
 
+    private static double targetVelocity = 0;
+
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -135,6 +137,7 @@ public class SwerveDrive extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds) {
         chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
         this.chassisSpeeds = chassisSpeeds;
+
     }
 
     public Pose2d getPose() { return odometry.getPoseMeters();}
@@ -270,6 +273,9 @@ public class SwerveDrive extends SubsystemBase {
                 new Rotation2d(diff.getRotation().getRadians() / dt)
         );
 
+       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
+       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
+
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
 
@@ -298,5 +304,19 @@ public class SwerveDrive extends SubsystemBase {
     }
     public void stop(){
         drive(new ChassisSpeeds(0,0,0));
+    }
+
+
+
+    public void smoothDrive(){
+
+    }
+    public double smoothVelocity(double currentVelocity, double targetVelocity, double acceleration, double time) {
+        double delta = targetVelocity - currentVelocity;
+        if (Math.abs(delta) < acceleration) {
+            return targetVelocity;
+        } else {
+            return currentVelocity + Math.signum(delta) * acceleration * time;
+        }
     }
 }
