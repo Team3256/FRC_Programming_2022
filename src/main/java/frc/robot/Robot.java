@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     logger.info("Robot Disabled");
-    if(Constants.DEBUG) robotContainer.drivetrainSubsystem.sendTrajectoryToDashboard(robotContainer.field);
   }
 
   @Override
