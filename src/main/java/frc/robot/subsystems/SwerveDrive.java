@@ -25,6 +25,7 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
+import static frc.robot.helper.SmoothVelocity.smoothVelocity;
 
 
 public class SwerveDrive extends SubsystemBase {
@@ -54,7 +55,6 @@ public class SwerveDrive extends SubsystemBase {
     private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
-    private SmoothVelocity smoothVelocity = new SmoothVelocity();
     private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
@@ -267,10 +267,8 @@ public class SwerveDrive extends SubsystemBase {
                 new Rotation2d(diff.getRotation().getRadians() / dt)
         );
 
-
-
-       chassisSpeeds.vxMetersPerSecond =  smoothVelocity.smooth(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
-       chassisSpeeds.vyMetersPerSecond =  smoothVelocity.smooth(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
+       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
+       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

@@ -5,7 +5,7 @@ public class SmoothVelocity {
     public void SmoothVelocity() {
     }
 
-    public double smooth(double currentVelocity, double targetVelocity, double acceleration, double time) {
+    public static double smoothVelocity(double currentVelocity, double targetVelocity, double acceleration, double time) {
         double delta = targetVelocity - currentVelocity;
         if (Math.abs(delta) < acceleration) {
             return targetVelocity;
