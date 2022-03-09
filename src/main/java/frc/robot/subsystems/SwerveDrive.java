@@ -12,20 +12,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.logging.RobotLogger;
-import org.opencv.core.Mat;
 import frc.robot.Constants;
-import org.apache.commons.math3.analysis.function.Constant;
-import java.util.ConcurrentModificationException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Logger;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
@@ -62,10 +54,8 @@ public class SwerveDrive extends SubsystemBase {
     private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
-        // FIXME Setup motor configuration
+
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
