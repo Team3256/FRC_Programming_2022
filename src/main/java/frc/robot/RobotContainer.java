@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +18,9 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.hanger.HangerExtend;
-import frc.robot.commands.hanger.HangerRetract;
+import frc.robot.commands.hanger.HangerPneumaticSlant;
+import frc.robot.commands.hanger.HangerPneumaticUpright;
+import frc.robot.commands.hanger.HangerZeroRetract;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
@@ -219,8 +222,18 @@ public class RobotContainer {
         JoystickButton xButton = new JoystickButton(driverController, XboxController.Button.kX.value);
         JoystickButton kY =  new JoystickButton(driverController, XboxController.Button.kY.value);
 
-        xButton.whenHeld(new HangerRetract(hangerSubsystem));
-        kY.whenHeld(new HangerExtend(hangerSubsystem));
+        DPadButton dLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
+        DPadButton dRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
+        DPadButton dUp = new DPadButton(driverController, DPadButton.Direction.UP);
+        DPadButton dDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
+
+
+        xButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
+
+        dUp.whenHeld(new HangerExtend(hangerSubsystem));
+        // TODO: Add Climb
+        dLeft.whenActive(new HangerPneumaticSlant(hangerSubsystem));
+        dRight.whenActive(new HangerPneumaticUpright(hangerSubsystem));
     }
 
     public void resetPose() {

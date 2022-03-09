@@ -10,7 +10,7 @@ public class AutoHang extends SequentialCommandGroup {
     public AutoHang(HangerSubsystem hanger) {
         this.hanger = hanger;
         addCommands(
-                new HangerRetract(hanger),
+                new HangerZeroRetract(hanger),
                 new WaitCommand(RETRACT_WAIT),
                 new HangerPartial(hanger),
                 new WaitCommand(PARTIAL_EXTEND_WAIT),
@@ -18,7 +18,7 @@ public class AutoHang extends SequentialCommandGroup {
                 new HangerExtend(hanger),
                 new WaitCommand(EXTEND_WAIT),
                 new HangerPneumaticUpright(hanger),
-                new HangerRetract(hanger),
+                new HangerZeroRetract(hanger),
                 new WaitCommand(RETRACT_WAIT),
                 new HangerPartial(hanger),
                 new WaitCommand(PARTIAL_EXTEND_WAIT),
@@ -26,7 +26,7 @@ public class AutoHang extends SequentialCommandGroup {
                 new HangerExtend(hanger),
                 new WaitCommand(EXTEND_WAIT),
                 new HangerPneumaticUpright(hanger),
-                new HangerRetract(hanger),
+                new HangerZeroRetract(hanger),
                 new WaitCommand(RETRACT_WAIT)
         );
     }
