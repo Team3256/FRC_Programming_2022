@@ -85,9 +85,7 @@ public class RobotLogger {
     public void info(String message){
         info.append(getClassName() + message);
 
-        if (DEBUG){
-            System.out.println(getClassName() + message);
-        }
+        System.out.println(getClassName() + message);
     }
 
     /**
