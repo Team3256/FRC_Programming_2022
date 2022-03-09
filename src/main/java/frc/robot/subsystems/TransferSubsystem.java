@@ -144,7 +144,6 @@ public class TransferSubsystem extends SubsystemBase {
                         new TransferIndexForward(this)
                 ));
 
-
         // Stop Running Transfer when past end mark, also evaluates color
         new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversed))
                 .whenInactive(new ParallelCommandGroup(

@@ -31,7 +31,7 @@ public class HangerSubsystem extends SubsystemBase {
 
         followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
                 HANGER_RIGHT_FOLLOWER_TALON_ID,
-                HANGER_LEFT_MASTER_TALON_ID,
+                masterTalonMotor,
                 FOLLOWER_CONFIG,
                 ROBORIO_CAN_BUS
         );

@@ -57,12 +57,10 @@ public class FlywheelSubsystem extends SubsystemBase {
                 MANI_CAN_BUS
         );
         followerRightShooterMotor = TalonFXFactory.createFollowerTalonFX(PID_SHOOTER_MOTOR_ID_RIGHT,
-                PID_SHOOTER_MOTOR_ID_RIGHT,
+                masterLeftShooterMotor,
                 FOLLOWER_CONFIG,
                 MANI_CAN_BUS
         );
-
-        followerRightShooterMotor.follow(masterLeftShooterMotor);
 
        // hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
         limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
