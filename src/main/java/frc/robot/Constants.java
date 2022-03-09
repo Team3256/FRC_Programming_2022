@@ -43,14 +43,14 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
         public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
-        public static final boolean IR_SENSORS = false;
+        public static final boolean IR_SENSORS = true;
     }
 
     public static class LimelightAutoCorrectConstants {
@@ -173,11 +173,7 @@ public final class Constants {
         public static final int FRONT_LEFT_MODULE_STEER_ENCODER_ID = 12;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 11;
 
-        public static final int HANGER_LEFT_MASTER_TALON_ID = 10;
-
         public static final int DRIVETRAIN_PIGEON_ID = 9;
-
-        public static final int HANGER_RIGHT_FOLLOWER_TALON_ID = 8;
 
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID = 7;
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_ID = 6;
@@ -191,6 +187,11 @@ public final class Constants {
 
         public static final String MANI_CAN_BUS = "mani";
 
+
+        public static final int HANGER_RIGHT_FOLLOWER_TALON_ID = 7;
+
+        public static final int HANGER_LEFT_MASTER_TALON_ID = 6;
+
         public static final int INTAKE_MOTOR_ID = 5;
 
         public static final int TRANSFER_MOTOR_ID = 4;
@@ -200,22 +201,20 @@ public final class Constants {
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 2;
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
 
-        public static final int INTAKE_ID = 40;
-
         //Pneumatic IDs
         public static final int HANGER_SOLENOID_FORWARD = 4;
         public static final int HANGER_SOLENOID_BACKWARD = 3;
 
-        public static final int INTAKE_SOLENOID_FORWARD = 2; // forward is down
-        public static final int INTAKE_SOLENOID_BACKWARD = 1; //backward is up
+        public static final int INTAKE_SOLENOID_FORWARD = 12; // forward is down
+        public static final int INTAKE_SOLENOID_BACKWARD = 11; //backward is up
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
         public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
 
-        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 3;
-        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 2;
-        public static final int IR_TRANSFER_END_CHANNEL = 1;
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 9;
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 7;
+        public static final int IR_TRANSFER_END_CHANNEL = 0;
 
         // I2C
         public static final byte I2C_MUX_ADDRESS = 0x70;
@@ -272,12 +271,12 @@ public final class Constants {
 
     public static class HangerConstants {
 
-        public static final double HANGER_MASTER_TALON_PID_P = 0;
+        public static final double HANGER_MASTER_TALON_PID_P = 0.1;
         public static final double HANGER_MASTER_TALON_PID_I = 0;
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
-        public static final InvertType INVERT_TYPE = InvertType.None;
+        public static final InvertType INVERT_TYPE = InvertType.FollowMaster;
 
         public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
                 HANGER_MASTER_TALON_PID_P,
@@ -291,13 +290,13 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
-        public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
-        public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
-        public static final double ADJUSTMENT_RETRACT_DISTANCE = 0.0; //in Rotations of Spool
+        public static final double EXTEND_DISTANCE = 126391; // in Sensor units
+        public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
-        public static final double RETRACT_PERCENT_SPEED = 0.0;
+        public static final double RETRACT_PERCENT_SPEED = 0.1;
 
-        public static final double CURRENT_THRESHOLD = 0.0; //in Amps
+        public static final double CURRENT_THRESHOLD = 40.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds

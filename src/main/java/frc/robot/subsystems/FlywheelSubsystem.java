@@ -69,6 +69,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       
        // getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
+
     }
 
     private ShooterPreset getPreset() {
@@ -313,23 +314,23 @@ public class FlywheelSubsystem extends SubsystemBase {
         return velocityInSensorUnits  * 10 / 2048;
     }
 
-//    public void increasePreset() {
-//        currentPresetNumber += 1;
-//        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
-//            currentPresetNumber = 0;
-//        }
-//
-//        SmartDashboard.putString("Preset: ", getPreset().presetName);
-//    }
-//
-//    public void decreasePreset() {
-//        currentPresetNumber -= 1;
-//        if (currentPresetNumber == -1) {
-//            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
-//        }
-//
-//        SmartDashboard.putString("Preset: ", getPreset().presetName);
-//    }
+    public void increasePreset() {
+        currentPresetNumber += 1;
+        if (currentPresetNumber >= ALL_SHOOTER_PRESETS.size()) {
+            currentPresetNumber = 0;
+        }
+
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
+    }
+
+    public void decreasePreset() {
+        currentPresetNumber -= 1;
+        if (currentPresetNumber == -1) {
+            currentPresetNumber = ALL_SHOOTER_PRESETS.size();
+        }
+
+        SmartDashboard.putString("Preset: ", getPreset().presetName);
+    }
 
     public void shootSelectedPreset() {
         ShooterPreset currentPreset = getPreset();

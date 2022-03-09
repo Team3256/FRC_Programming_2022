@@ -5,25 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
-import frc.robot.commands.PDHFaultWatcher;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.AutoHang;
-import frc.robot.commands.hanger.HangerAlignOne;
 import frc.robot.commands.hanger.HangerExtend;
 import frc.robot.commands.hanger.HangerRetract;
 import frc.robot.commands.intake.IntakeOn;
@@ -35,8 +27,6 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -224,47 +214,13 @@ public class RobotContainer {
     }
 
     private void configureHanger() {
-        JoystickButton operatorMiddleButtonLeft = new JoystickButton(operatorController, XboxController.Button.kBack.value);
-        JoystickButton operatorMiddleButtonRight = new JoystickButton(operatorController, XboxController.Button.kStart.value);
+        //TODO: IF we are doing traversal, Ensure that Intake is Down with Commands
 
-        DPadButton operatorDpadButtonLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton operatorDpadButtonRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        JoystickButton xButton = new JoystickButton(driverController, XboxController.Button.kX.value);
+        JoystickButton kY =  new JoystickButton(driverController, XboxController.Button.kY.value);
 
-        DPadButton driverDpadButtonLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
-        DPadButton driverDpadButtonRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
-
-        DPadButton driverDpadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
-        DPadButton driverDpadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
-
-        Trigger endgame = new Trigger(()->DriverStation.getMatchTime() < 40);
-
-        operatorMiddleButtonLeft.or(operatorMiddleButtonRight)
-                .and(endgame)
-                .whenActive(new HangerExtend(hangerSubsystem));
-
-        operatorDpadButtonLeft.or(operatorDpadButtonRight)
-                .and(endgame)
-                .whenActive(new HangerRetract(hangerSubsystem));
-
-        driverDpadButtonLeft.or(driverDpadButtonRight)
-                .and(endgame)
-                .whenActive(new HangerExtend(hangerSubsystem));
-
-        driverDpadButtonUp.or(driverDpadButtonDown)
-                .and(endgame)
-                .whenActive(new HangerRetract(hangerSubsystem));
-
-        JoystickButton driverMiddleButtonLeft = new JoystickButton(driverController, XboxController.Button.kStart.value);
-        JoystickButton driverMiddleButtonRight = new JoystickButton(driverController, XboxController.Button.kStart.value);
-
-        if (BOTTOM_COLOR_SENSORS)
-            driverMiddleButtonLeft
-                    .and(endgame)
-                    .whenActive(new HangerAlignOne(drivetrainSubsystem));
-
-        driverMiddleButtonRight
-                .and(endgame)
-                .whenActive(new AutoHang(hangerSubsystem));
+        xButton.whenHeld(new HangerRetract(hangerSubsystem));
+        kY.whenHeld(new HangerExtend(hangerSubsystem));
     }
 
     public void resetPose() {

@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
@@ -26,24 +27,26 @@ public class HangerSubsystem extends SubsystemBase {
         masterTalonMotor = TalonFXFactory.createTalonFX(
                 HANGER_LEFT_MASTER_TALON_ID,
                 MASTER_CONFIG,
-                ROBORIO_CAN_BUS
+                MANI_CAN_BUS
         );
 
         followerTalonMotor = TalonFXFactory.createFollowerTalonFX(
                 HANGER_RIGHT_FOLLOWER_TALON_ID,
                 masterTalonMotor,
                 FOLLOWER_CONFIG,
-                ROBORIO_CAN_BUS
+                MANI_CAN_BUS
         );
 
         hangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_FORWARD, HANGER_SOLENOID_BACKWARD);
 
         logger.info("Hanger Initialized");
+
+        pneumaticUpright();
     }
 
     public void extend() {
         logger.info("Extending");
-        double distance = EXTEND_DISTANCE * 2048 * GEAR_RATIO;
+        double distance = EXTEND_DISTANCE;
         masterTalonMotor.set(ControlMode.Position, distance);
     }
 
@@ -54,7 +57,7 @@ public class HangerSubsystem extends SubsystemBase {
 
     public void extendPartial() {
         logger.info("Extending Partially");
-        double distance = PARTIAL_DISTANCE * 2048 * GEAR_RATIO;
+        double distance = PARTIAL_DISTANCE ;
         masterTalonMotor.set(ControlMode.Position, distance);
     }
 
@@ -67,11 +70,13 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     public void adjustRetract() {
-        // Reset Position, because we are at limit switch
-        masterTalonMotor.getSensorCollection().setIntegratedSensorPosition(0,0);
 
-        double distance = ADJUSTMENT_RETRACT_DISTANCE * 2048 * GEAR_RATIO;
+        double distance = ADJUSTMENT_RETRACT_DISTANCE;
         masterTalonMotor.set(ControlMode.Position, distance);
+    }
+
+    public void zeroHanger(){
+        masterTalonMotor.getSensorCollection().setIntegratedSensorPosition(0,0);
     }
 
     /**
@@ -87,7 +92,7 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns position of master talon in rotations of spool
      */
     public double getPosition() {
-        return (masterTalonMotor.getSelectedSensorPosition()/2048)/GEAR_RATIO;
+        return (masterTalonMotor.getSelectedSensorPosition());
     }
 
     /**
@@ -117,5 +122,4 @@ public class HangerSubsystem extends SubsystemBase {
     public void stopMotors() {
         masterTalonMotor.neutralOutput();
     }
-
 }

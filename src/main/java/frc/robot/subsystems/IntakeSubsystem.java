@@ -29,6 +29,8 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, MANI_CAN_BUS);
         intakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_FORWARD, INTAKE_SOLENOID_BACKWARD);
         logger.info("Intake Initialized");
+
+        off();
     }
 
     public void forwardOn(){
