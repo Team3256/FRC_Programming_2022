@@ -67,11 +67,6 @@ public class SwerveDrive extends SubsystemBase {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
         // FIXME Setup motor configuration
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
-                // This can either be STANDARD or FAST depending on your gear configuration
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_MOTOR_ID,
@@ -80,9 +75,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(2, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
@@ -91,9 +83,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(4, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 BACK_LEFT_MODULE_DRIVE_MOTOR_ID,
                 BACK_LEFT_MODULE_STEER_MOTOR_ID,
@@ -102,9 +91,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(6, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_MOTOR_ID,
