@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -52,23 +53,27 @@ public class HangerSubsystem extends SubsystemBase {
     public void retractContinuously() {
 
         logger.info("Retracting Continuously");
-        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
+        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractLeftContinuously(){
-        logger.info("Retracting Left Continuously");
+    public void retractLeftContinuouslyToZero(){
+        logger.info("Retracting Left Continuously for zero");
 
         // Stop Following if Following
         if (rightFollowerTalonMotor.getControlMode() == ControlMode.Follower)
             rightFollowerTalonMotor.set(ControlMode.PercentOutput, 0);
 
-        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
+        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractRightContinuously(){
-        logger.info("Retracting Right Continuously");
+    public void retractRightContinuouslyToZero(){
+        logger.info("Retracting Right Continuously for zero");
+        rightFollowerTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
+    }
 
-        rightFollowerTalonMotor.set(ControlMode.PercentOutput, -1 * RETRACT_PERCENT_SPEED);
+    public void retractToHang(){
+        logger.info("Retracting to Hang");
+        leftMasterTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {

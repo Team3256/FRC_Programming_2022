@@ -16,8 +16,8 @@ public class HangerZeroRetract extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        hanger.retractLeftContinuously();
-        hanger.retractRightContinuously();
+        hanger.retractLeftContinuouslyToZero();
+        hanger.retractRightContinuouslyToZero();
     }
 
     // Called every time the scheduler runs while the command is scheduled.

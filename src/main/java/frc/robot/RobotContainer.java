@@ -17,10 +17,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.hanger.HangerExtend;
-import frc.robot.commands.hanger.HangerPneumaticSlant;
-import frc.robot.commands.hanger.HangerPneumaticUpright;
-import frc.robot.commands.hanger.HangerZeroRetract;
+import frc.robot.commands.hanger.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
@@ -231,7 +228,7 @@ public class RobotContainer {
         xButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
 
         dUp.whenHeld(new HangerExtend(hangerSubsystem));
-        // TODO: Add Climb
+        dDown.whenActive(new HangerRetractForHang(hangerSubsystem));
         dLeft.whenActive(new HangerPneumaticSlant(hangerSubsystem));
         dRight.whenActive(new HangerPneumaticUpright(hangerSubsystem));
     }

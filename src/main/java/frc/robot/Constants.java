@@ -16,7 +16,6 @@ import frc.robot.hardware.TalonConfiguration;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-import frc.robot.hardware.TalonConfiguration;
 import frc.robot.helper.Polynomial;
 
 import frc.robot.helper.shooter.ShooterPreset;
@@ -294,7 +293,9 @@ public final class Constants {
         public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
-        public static final double RETRACT_PERCENT_SPEED = 0.1;
+        public static final double HANGER_ZEROING_PERCENT_SPEED = 0.3;
+
+        public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
 
         public static final double CURRENT_THRESHOLD = 40.0; //in Amps
 
