@@ -22,6 +22,7 @@ import frc.robot.commands.transfer.TransferOff;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.BallColor;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.util.LinkedList;
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
 
 public class TransferSubsystem extends SubsystemBase {
-    private static final Logger logger = Logger.getLogger(TransferSubsystem.class.getCanonicalName());
+    private static final RobotLogger logger = new RobotLogger(TransferSubsystem.class.getCanonicalName());
 
     private final TalonFX transferMotor;
     private final DigitalInput transferStartIRSensor;
@@ -83,7 +84,7 @@ public class TransferSubsystem extends SubsystemBase {
 
         transferIndexSetup();
         logger.info("Transfer Initialized");
-        logger.config("Starting Ball Count Initialized to: " + currentBallCount);
+        logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
     public void forward(){
@@ -140,15 +141,21 @@ public class TransferSubsystem extends SubsystemBase {
         // Starts Index / Counting Process when First Detecting Ball
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
                 .whenActive(new ParallelCommandGroup(
-                        new InstantCommand(this::ballIndexStart),
-                        new TransferIndexForward(this)
+                        new InstantCommand(this::ballIndexStart)
                 ));
 
         // Stop Running Transfer when past end mark, also evaluates color
-        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversed))
+        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversed)).and(new Trigger(() -> currentBallCount != 1))
                 .whenInactive(new ParallelCommandGroup(
-                    new InstantCommand(this::ballIndexEnd),
-                    new TransferOff(this)));
+                    new InstantCommand(this::ballIndexEnd)));
+
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(() -> this.currentBallCount == 1))
+                .whenInactive(new ParallelCommandGroup(
+                            new InstantCommand(this::ballIndexEnd),
+                            new InstantCommand(() -> logger.info("KADJKDJLKSAJDLKJSADLKSAJLKD")
+                            )
+                        )
+                );
 
         // Subtract Balls shot out of shooter
         new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversed))
@@ -160,10 +167,11 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void ballIndexStart(){
+
+        forward();
+        logger.info("Ball Count Start: "+currentBallCount);
         redColorCountVote = 0;
         blueColorCountVote = 0;
-
-        currentBallCount++;
 
         if(isFull()){
             logger.info("Indexing while Transfer is full!");
@@ -186,7 +194,10 @@ public class TransferSubsystem extends SubsystemBase {
     }
 
     private void ballIndexEnd(){
+        off();
         isDetectingBallColor = false;
+
+        currentBallCount++;
 
         if (redColorCountVote == 0 && blueColorCountVote == 0)
             logger.warning("No Ball Detected in Index!");
@@ -200,6 +211,8 @@ public class TransferSubsystem extends SubsystemBase {
         else {
            addBallToIndex(BallColor.BLUE);
         }
+
+        logger.info("Ball Count End: "+currentBallCount);
     }
 
     private void addBallToIndex(BallColor ballColor){
@@ -230,9 +243,13 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Ball Leaving Transfer by Shooting");
 
         currentBallCount--;
+        if (currentBallCount < 0) {
+            currentBallCount = 0;
+            logger.warning("No Ball At end of index!");
+        }
 
         if (ballColorIndex.getLast() == BallColor.NONE)
-            logger.warning("No Ball At end of index!");
+            logger.warning("No Ball Color At end of index!");
 
         ballColorIndex.removeLast();
         ballColorIndex.addFirst(BallColor.NONE);

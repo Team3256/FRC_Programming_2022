@@ -42,9 +42,9 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = true;
+        public static final boolean DRIVETRAIN = false;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
@@ -66,8 +66,8 @@ public final class Constants {
     }
 
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
-        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
+        public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.35; // In Percent -1.0 - 0.0
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
@@ -204,16 +204,20 @@ public final class Constants {
         public static final int HANGER_SOLENOID_FORWARD = 4;
         public static final int HANGER_SOLENOID_BACKWARD = 3;
 
-        public static final int INTAKE_SOLENOID_FORWARD = 12; // forward is down
-        public static final int INTAKE_SOLENOID_BACKWARD = 11; //backward is up
+        public static final int INTAKE_SOLENOID_LEFT_BACKWARD = 11; //backward is up
+        public static final int INTAKE_SOLENOID_RIGHT_BACKWARD = 10;
+
+        public static final int INTAKE_SOLENOID_LEFT_FORWARD = 12; // forward is down
+        public static final int INTAKE_SOLENOID_RIGHT_FORWARD = 13;
+
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
 
         public static final int IR_TRANSFER_BEGINNING_CHANNEL = 9;
         public static final int IR_TRANSFER_MIDDLE_CHANNEL = 7;
-        public static final int IR_TRANSFER_END_CHANNEL = 0;
+        public static final int IR_TRANSFER_END_CHANNEL = 2;
 
         // I2C
         public static final byte I2C_MUX_ADDRESS = 0x70;

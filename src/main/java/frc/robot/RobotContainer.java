@@ -174,15 +174,17 @@ public class RobotContainer {
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
+//
+//        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+//        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
+//
+//        if (LIMELIGHT)
+//            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
+//
+//        dPadUp.whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
+//        dPadDown.whenPressed(new DecreasePresetForShooter(flywheelSubsystem));
 
-        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
-
-        if (LIMELIGHT)
-            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
-
-        dPadUp.whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
-        dPadDown.whenPressed(new DecreasePresetForShooter(flywheelSubsystem));
+        rightTrigger.whenPressed(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
     }
 
     private void configureDebugShooter(){

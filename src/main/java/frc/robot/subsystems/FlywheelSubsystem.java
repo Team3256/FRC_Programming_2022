@@ -28,7 +28,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-    //private final TalonFX hoodAngleMotor;
+    private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
@@ -37,6 +37,12 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
     private PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Flywheel RPM", getVelocity());
+
+    }
 
     public FlywheelSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -62,10 +68,11 @@ public class FlywheelSubsystem extends SubsystemBase {
                 MANI_CAN_BUS
         );
 
-       // hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
+        hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
         limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
 
         logger.info("Flywheel Initialized");
+
       
        // getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
@@ -122,25 +129,25 @@ public class FlywheelSubsystem extends SubsystemBase {
      * motor moves to hoodAngle position
      */
     public void setHoodAngle(double hoodAngle) {
-     //   hoodAngleMotor.set(ControlMode.Position, hoodAngle);
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle);
     }
     /**
      * stops the hood motor
      */
     public void stopHood(){
-       // hoodAngleMotor.set(ControlMode.PercentOutput, 0);
+        hoodAngleMotor.neutralOutput();
     }
     /**
      * reverses the hood for zeroing the hood motor
      */
     public void hoodSlowReverse(){
-       // hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
+        hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
     }
     /**
      * zeros the hood motor sensor
      */
     public void zeroHoodMotor(){
-        //hoodAngleMotor.setSelectedSensorPosition(0);
+        hoodAngleMotor.setSelectedSensorPosition(0);
     }
     /**
      * checks if limit switch is pressed
