@@ -192,7 +192,9 @@ public class RobotContainer {
 
     private void configureDebugShooter(){
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+        JoystickAnalogButton leftTrigger  = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
         JoystickAnalogButton aButton = new JoystickAnalogButton(driverController, XboxController.Button.kA.value);
+
 
 //        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
 //        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
@@ -202,10 +204,9 @@ public class RobotContainer {
         rightTrigger.setThreshold(0.01);
 
         rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+        leftTrigger.whenHeld(new SetShooterFromLocationPreset(flywheelSubsystem));
         aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem));
 
-//        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
-//
 //        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
 //        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));

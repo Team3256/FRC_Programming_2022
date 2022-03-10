@@ -32,10 +32,8 @@ public class SetShooterFromLocationPreset extends CommandBase {
             flywheelSubsystem.setShooterLocationPreset(shooterLocationPreset);
         }
         shooterState = ALL_SHOOTER_PRESETS.get(flywheelSubsystem.getShooterLocationPreset()).shooterState;
-    }
 
-    @Override
-    public void execute() {
+
         flywheelSubsystem.setSpeed(shooterState.rpmVelocity);
         flywheelSubsystem.setHoodAngle(shooterState.hoodAngle);
     }
