@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Robot Remote Debug" type="Remote">
+    <module name="FRC_Programming_2022.main" />
+    <option name="USE_SOCKET_TRANSPORT" value="true" />
+    <option name="SERVER_MODE" value="false" />
+    <option name="SHMEM_ADDRESS" />
+    <option name="HOST" value="roborio-3256-frc.local" />
+    <option name="PORT" value="8349" />
+    <option name="AUTO_RESTART" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
