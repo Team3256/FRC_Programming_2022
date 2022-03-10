@@ -31,6 +31,7 @@ import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
+import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
 import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
 import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
@@ -151,11 +152,9 @@ public class TransferSubsystem extends SubsystemBase {
 
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(() -> this.currentBallCount == 1))
                 .whenInactive(new ParallelCommandGroup(
-                            new InstantCommand(this::ballIndexEnd),
-                            new InstantCommand(() -> logger.info("KADJKDJLKSAJDLKJSADLKSAJLKD")
+                            new InstantCommand(this::ballIndexEnd)
                             )
-                        )
-                );
+                        );
 
         // Subtract Balls shot out of shooter
         new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversed))
@@ -199,17 +198,18 @@ public class TransferSubsystem extends SubsystemBase {
 
         currentBallCount++;
 
-        if (redColorCountVote == 0 && blueColorCountVote == 0)
-            logger.warning("No Ball Detected in Index!");
+        if (BALL_COLOR_SENSOR) {
+            if (redColorCountVote == 0 && blueColorCountVote == 0)
+                logger.warning("No Ball Detected in Index!");
 
-        else if (redColorCountVote == blueColorCountVote)
-            logger.warning("Blue and Red Ball Counts are the same!\nCount: " + redColorCountVote);
+            else if (redColorCountVote == blueColorCountVote)
+                logger.warning("Blue and Red Ball Counts are the same!\nCount: " + redColorCountVote);
 
-        else if (redColorCountVote > blueColorCountVote) {
-            addBallToIndex(BallColor.RED);
-        }
-        else {
-           addBallToIndex(BallColor.BLUE);
+            else if (redColorCountVote > blueColorCountVote) {
+                addBallToIndex(BallColor.RED);
+            } else {
+                addBallToIndex(BallColor.BLUE);
+            }
         }
 
         logger.info("Ball Count End: "+currentBallCount);
@@ -218,25 +218,27 @@ public class TransferSubsystem extends SubsystemBase {
     private void addBallToIndex(BallColor ballColor){
         logger.info("Ball Indexed Into Transfer");
 
-        if (ballColor == BallColor.RED && alliance == DriverStation.Alliance.Blue)
-            wrongBallColorDetected(ballColor);
+        if (BALL_COLOR_SENSOR) {
+            if (ballColor == BallColor.RED && alliance == DriverStation.Alliance.Blue)
+                wrongBallColorDetected(ballColor);
 
-        if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
-            wrongBallColorDetected(ballColor);
+            if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
+                wrongBallColorDetected(ballColor);
 
 
-        // Keep 2nd Ball in 2nd Place, if there is one
-        if (!ballColorIndex.isEmpty() && ballColorIndex.get(0) == BallColor.NONE){
-            ballColorIndex.set(0, ballColor);
-        } else {
-            ballColorIndex.addFirst(ballColor);
+            // Keep 2nd Ball in 2nd Place, if there is one
+            if (!ballColorIndex.isEmpty() && ballColorIndex.get(0) == BallColor.NONE) {
+                ballColorIndex.set(0, ballColor);
+            } else {
+                ballColorIndex.addFirst(ballColor);
+            }
+
+            // Remove extra NONEs
+            if (ballColorIndex.getLast() == BallColor.NONE)
+                ballColorIndex.removeLast();
+
+            updateBallLEDPattern();
         }
-
-        // Remove extra NONEs
-        if (ballColorIndex.getLast() == BallColor.NONE)
-            ballColorIndex.removeLast();
-
-        updateBallLEDPattern();
     }
 
     private void removeShotBallFromIndex(){
@@ -248,13 +250,15 @@ public class TransferSubsystem extends SubsystemBase {
             logger.warning("No Ball At end of index!");
         }
 
-        if (ballColorIndex.getLast() == BallColor.NONE)
-            logger.warning("No Ball Color At end of index!");
+        if (BALL_COLOR_SENSOR) {
+            if (ballColorIndex.getLast() == BallColor.NONE)
+                logger.warning("No Ball Color At end of index!");
 
-        ballColorIndex.removeLast();
-        ballColorIndex.addFirst(BallColor.NONE);
+            ballColorIndex.removeLast();
+            ballColorIndex.addFirst(BallColor.NONE);
 
-        updateBallLEDPattern();
+            updateBallLEDPattern();
+        }
     }
 
     private void removeBallEjectedOutOfIntake(){
@@ -262,12 +266,14 @@ public class TransferSubsystem extends SubsystemBase {
 
         currentBallCount--;
 
-        if (ballColorIndex.get(0) == BallColor.NONE){
-            // Only Ball is Indexed 2nd, Removes the NONE and the Ball
-            ballColorIndex.remove(0);
-            ballColorIndex.remove(1);
-        } else {
-            ballColorIndex.removeFirst();
+        if (BALL_COLOR_SENSOR) {
+            if (ballColorIndex.get(0) == BallColor.NONE) {
+                // Only Ball is Indexed 2nd, Removes the NONE and the Ball
+                ballColorIndex.remove(0);
+                ballColorIndex.remove(1);
+            } else {
+                ballColorIndex.removeFirst();
+            }
         }
     }
 
