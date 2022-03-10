@@ -27,6 +27,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -174,29 +175,41 @@ public class RobotContainer {
     private void configureShooter() {
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         rightTrigger.setThreshold(0.01);
-//
-//        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-//        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
-//
-//        if (LIMELIGHT)
-//            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
-//
-//        dPadUp.whenPressed(new IncreasePresetForShooter(flywheelSubsystem));
-//        dPadDown.whenPressed(new DecreasePresetForShooter(flywheelSubsystem));
 
-        rightTrigger.whenPressed(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
+        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        DPadButton dPadLeft= new DPadButton(operatorController, DPadButton.Direction.LEFT);
+
+        if (LIMELIGHT)
+            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
+
+        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
+        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
+        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
+        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
     }
 
     private void configureDebugShooter(){
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         JoystickAnalogButton aButton = new JoystickAnalogButton(driverController, XboxController.Button.kA.value);
 
+//        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+//        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
+//        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+//        DPadButton dPadLeft= new DPadButton(operatorController, DPadButton.Direction.LEFT);
+
         rightTrigger.setThreshold(0.01);
 
         rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
         aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem));
 
-
+//        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+//
+//        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
+//        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
+//        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
+//        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
     }
 
     private void configureTransfer() {

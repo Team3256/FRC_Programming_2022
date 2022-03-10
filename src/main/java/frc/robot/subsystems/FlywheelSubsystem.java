@@ -21,6 +21,13 @@ import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
+    public enum ShooterLocationPreset {
+        FENDER,
+        TARMAC_SIDE_VERTEX,
+        TARMAC_MIDDLE_VERTEX,
+        TRUSS
+    }
+
     private int currentPresetNumber = 0;
 
     private static final RobotLogger logger = new RobotLogger(FlywheelSubsystem.class.getCanonicalName());
@@ -32,6 +39,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
+
+    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.FENDER;
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
@@ -104,6 +113,15 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void autoPresetAutoAim(double distance) {
         ShooterPreset preset = ShooterPresetSelector.findClosesPreset(distance);
         applyShooterState(preset.shooterState);
+    }
+
+    public void setShooterLocationPreset(ShooterLocationPreset preset) {
+        SmartDashboard.putString("Shooter Preset",preset.toString());
+        this.shooterLocationPreset = preset;
+    }
+
+    public ShooterLocationPreset getShooterLocationPreset() {
+        return this.shooterLocationPreset;
     }
 
     /**
