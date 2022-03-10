@@ -24,7 +24,7 @@ public class SetShooterFromCustomDashboardConfig extends CommandBase {
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0.0);
 
         flywheelSubsystem.setSpeed(velocity);
-        flywheelSubsystem.setHoodAngle(velocity);
+        flywheelSubsystem.setHoodAngle(hoodAngle);
     }
 
     @Override
