@@ -90,7 +90,7 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = -0; // degrees
+        public static final double GYRO_YAW_OFFSET = -45; // degrees
 
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
