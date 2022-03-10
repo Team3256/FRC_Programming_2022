@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import frc.robot.helper.Polynomial;
 
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
+import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 
 import java.util.List;
 
@@ -342,9 +344,11 @@ public final class Constants {
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
 
         // Presets
-        public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
-                new ShooterPreset(100, 1.23, 10, "Default 1"), // TODO: Change this to accurate numbers (given testing)
-                new ShooterPreset(200, 2.34, 20, "Default 2") // TODO: Change this to accurate numbers (given testing)
+        public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
+                entry(ShooterLocationPreset.FENDER,               new ShooterPreset(100, 1.23, 10, "Fender")),
+                entry(ShooterLocationPreset.TARMAC_MIDDLE_VERTEX, new ShooterPreset(200, 2.34, 20, "Tarmac Middle Vertex")),
+                entry(ShooterLocationPreset.TARMAC_SIDE_VERTEX,   new ShooterPreset(200, 2.34, 20, "Tarmac Side Vertex")),
+                entry(ShooterLocationPreset.TRUSS,                new ShooterPreset(200, 2.34, 20, "Truss"))
         ); // TODO: Create all shooter presets
 
         // Velocity Training Points
