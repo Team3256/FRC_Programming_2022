@@ -11,13 +11,18 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
+import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.hanger.*;
+import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
@@ -135,8 +140,9 @@ public class RobotContainer {
 
     private void configureDrivetrain() {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
-        Button leftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        Button rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+
 
         // Drivetrain Command
         // Set up the default command for the drivetrain.
@@ -152,24 +158,38 @@ public class RobotContainer {
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
+        driverLeftTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
+                drivetrainSubsystem,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        ));
+
+
+
         // Automatically Schedule Command when nothing else is scheduled
         drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
 
         // A button zeros the gyroscope
         driverAButton.whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        // Left Bumper Enables Auto Align
-        leftBumper.whenPressed(
-                new AutoAlignDriveContinuousCommand(
-                        drivetrainSubsystem,
-                        () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> -ControllerUtil.modifyAxis(operatorController.getRightX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
-                ), true);
+        Command autoAlign = new AutoAlignDriveContinuousCommand(
+                drivetrainSubsystem,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+        );
+
+        if(LIMELIGHT) {
+            // Left Bumper Enables Auto Align
+            driverLeftBumper.whenPressed(
+                autoAlign
+            );
+        }
 
         //Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
-                .whenPressed(defaultDriveCommand);
+                .cancelWhenActive(autoAlign);
     }
 
     private void configureShooter() {
@@ -181,20 +201,28 @@ public class RobotContainer {
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
         DPadButton dPadLeft= new DPadButton(operatorController, DPadButton.Direction.LEFT);
 
-        if (LIMELIGHT)
-            rightTrigger.whenHeld(new AutoAimShooter(flywheelSubsystem));
+        JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
+        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+
 
         dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
         dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
         dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
         dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
+
+        operatorRightTrigger.whenHeld( new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+        if (TRANSFER) {
+            operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+        }
     }
 
     private void configureDebugShooter(){
         JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
         JoystickAnalogButton leftTrigger  = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
-        JoystickAnalogButton aButton = new JoystickAnalogButton(driverController, XboxController.Button.kA.value);
+        JoystickButton aButton = new JoystickButton(driverController, XboxController.Button.kA.value);
 
+        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+        operatorLeftTrigger.setThreshold(0.1);
 
 //        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
 //        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
@@ -205,8 +233,9 @@ public class RobotContainer {
 
         rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
         leftTrigger.whenHeld(new SetShooterFromLocationPreset(flywheelSubsystem));
-        aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem));
+        aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
 
+        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
 //        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
 //        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
@@ -214,19 +243,33 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        DPadButton dPadButtonUp = new DPadButton(driverController, DPadButton.Direction.UP);
-        DPadButton dPadButtonDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
 
-        dPadButtonDown.whenHeld(new TransferManualReverse(transferSubsystem), false);
-        dPadButtonUp.whenHeld(new TransferIndexForward(transferSubsystem), false);
+        JoystickButton rightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+
+        rightBumper.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
 
     private void configureIntake() {
-        JoystickButton rightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        JoystickButton bButton = new JoystickButton(driverController, XboxController.Button.kB.value);
+        JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        //JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
-        rightBumper.whenHeld(new IntakeOn(intakeSubsystem));
-        bButton.whenHeld(new IntakeReverse(intakeSubsystem));
+        // Operator's Intake Up Button
+        //operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
+
+
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+
+        if (TRANSFER)
+            operatorBButton.whenHeld(
+                    new ParallelCommandGroup(
+                            new IntakeReverse(intakeSubsystem),
+                            new TransferManualReverse(transferSubsystem)
+                    )
+            );
+
+
+
     }
 
     private void configureHanger() {
@@ -243,7 +286,7 @@ public class RobotContainer {
 
         xButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
 
-        dUp.whenHeld(new HangerExtend(hangerSubsystem));
+        kY.whenHeld(new HangerExtend(hangerSubsystem));
         dDown.whenActive(new HangerRetractForHang(hangerSubsystem));
         dLeft.whenActive(new HangerPneumaticSlant(hangerSubsystem));
         dRight.whenActive(new HangerPneumaticUpright(hangerSubsystem));

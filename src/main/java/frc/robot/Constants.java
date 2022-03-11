@@ -38,7 +38,7 @@ public final class Constants {
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
     public static class SubsystemEnableFlags {
-        public static final boolean LIMELIGHT = false;
+        public static final boolean LIMELIGHT = true;
 
         public static final boolean SHOOTER = true;
         public static final boolean TRANSFER = true;
@@ -46,7 +46,7 @@ public final class Constants {
 
         public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = false;
+        public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
@@ -90,7 +90,7 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = -45; // degrees
+        public static final double GYRO_YAW_OFFSET = 135; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
         public static final double MAX_ACCELERATION = 0.5; // m/s^2
 
@@ -305,7 +305,7 @@ public final class Constants {
 
         public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
 
-        public static final double CURRENT_THRESHOLD = 40.0; //in Amps
+        public static final double CURRENT_THRESHOLD = 25.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds
@@ -319,7 +319,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double INTAKE_FORWARD_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double INTAKE_FORWARD_SPEED = 1; // In Percent 0.0 - 1.0
         public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
     }
 
@@ -344,7 +344,7 @@ public final class Constants {
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
         // Hood Angle Constants
-        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
+        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.50;
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;

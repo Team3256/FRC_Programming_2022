@@ -248,8 +248,8 @@ public class SwerveDrive extends SubsystemBase {
                 new Rotation2d(diff.getRotation().getRadians() / dt)
         );
 
-       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
-       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
+//       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
+//       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

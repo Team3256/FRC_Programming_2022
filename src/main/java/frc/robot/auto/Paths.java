@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.AutoPresetSelectorShooter;
+import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.helper.auto.AutoCommandMarker;
 import frc.robot.helper.auto.AutoCommandRunner;
@@ -92,7 +93,7 @@ public class Paths {
         );
 
         return twoBallTarmacSideSegment
-                .andThen(getShootCommand(1.5))
+                .andThen(getShootCommand(3))
                 .andThen(fourBallTarmacSideSegment)
                 .andThen(new WaitCommand(0.1));
     }
@@ -152,11 +153,11 @@ public class Paths {
 
 
         return twoBallTarmacSideSegment
-                .andThen(getShootCommand(1.5))
+                .andThen(getShootCommand(3))
                 .andThen(threeBallTarmacSideSegment)
-                .andThen(getShootCommand(1.5))
+                .andThen(getShootCommand(3))
                 .andThen(fourBallTarmacSideSegment)
-                .andThen(getShootCommand(1.5));
+                .andThen(getShootCommand(3));
     }
 
     /* --------------------------------------------- */
@@ -219,10 +220,18 @@ public class Paths {
 
     private static Command getShootCommand(double timeToShoot) {
         return
-                new ParallelDeadlineGroup(
-                    new WaitCommand(timeToShoot),
-                    new AutoPresetSelectorShooter(flywheelSubsystem),
-                    new TransferIndexForward(transferSubsystem)
+                new ParallelDeadlineGroup( // TODO dont be bad
+                    new WaitCommand(4),
+                    new SetShooterFromCustomDashboardConfig(flywheelSubsystem),
+                    new WaitCommand(1).andThen(new TransferIndexForward(transferSubsystem))
                 );
     }
 }
+
+
+
+
+
+
+
+

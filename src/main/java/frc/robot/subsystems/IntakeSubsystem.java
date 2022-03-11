@@ -43,6 +43,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void reverseOn(){
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
     }
 
