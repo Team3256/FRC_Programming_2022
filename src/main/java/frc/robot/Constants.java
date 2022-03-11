@@ -92,6 +92,8 @@ public final class Constants {
 
         public static final double GYRO_YAW_OFFSET = -45; // degrees
 
+        public static final double MAX_ACCELERATION = 0.5; // m/s^2
+
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(200.91796875);
