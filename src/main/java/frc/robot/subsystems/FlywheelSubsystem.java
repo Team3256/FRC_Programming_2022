@@ -377,6 +377,10 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     }
 
+    public ShooterState getFlywheelShooterStateFromPreset(){
+        return ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
