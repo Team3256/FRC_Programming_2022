@@ -40,7 +40,7 @@ import java.awt.Robot;
 import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 
-/**
+/**☺
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
@@ -193,9 +193,6 @@ public class RobotContainer {
     }
 
     private void configureShooter() {
-        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
-        rightTrigger.setThreshold(0.01);
-
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
         DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
@@ -244,18 +241,15 @@ public class RobotContainer {
 
     private void configureTransfer() {
 
-        JoystickButton rightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-
-        rightBumper.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
 
     private void configureIntake() {
         JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
         JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
-        //JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+        JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         // Operator's Intake Up Button
-        //operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
+        operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
         driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
@@ -275,21 +269,14 @@ public class RobotContainer {
     private void configureHanger() {
         //TODO: IF we are doing traversal, Ensure that Intake is Down with Commands
 
-        JoystickButton xButton = new JoystickButton(driverController, XboxController.Button.kX.value);
-        JoystickButton kY =  new JoystickButton(driverController, XboxController.Button.kY.value);
+        JoystickButton operatorAButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
+        JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
+        JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        DPadButton dLeft = new DPadButton(driverController, DPadButton.Direction.LEFT);
-        DPadButton dRight = new DPadButton(driverController, DPadButton.Direction.RIGHT);
-        DPadButton dUp = new DPadButton(driverController, DPadButton.Direction.UP);
-        DPadButton dDown = new DPadButton(driverController, DPadButton.Direction.DOWN);
+        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
 
-
-        xButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
-
-        kY.whenHeld(new HangerExtend(hangerSubsystem));
-        dDown.whenActive(new HangerRetractForHang(hangerSubsystem));
-        dLeft.whenActive(new HangerPneumaticSlant(hangerSubsystem));
-        dRight.whenActive(new HangerPneumaticUpright(hangerSubsystem));
+        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem));
+        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem));
     }
 
     public void resetPose() {

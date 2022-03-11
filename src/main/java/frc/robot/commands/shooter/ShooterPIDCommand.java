@@ -16,20 +16,42 @@ import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 public class ShooterPIDCommand extends CommandBase {
     private FlywheelSubsystem.ShooterLocationPreset shooterLocationPreset;
 
+    private PIDController flywheelController;
+
     private FlywheelSubsystem flywheelSubsystem;
     public ShooterPIDCommand(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
-        this.shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
+
+        flywheelController = new PIDController(0,0,0);
     }
 
     @Override
     public void initialize() {
-        super.initialize();
     }
 
     @Override
     public void execute() {
-        super.execute();
+        if (flywheelSubsystem.getShooterLocationPreset() != this.shooterLocationPreset){
+            this.shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
+
+            flywheelSubsystem.setHoodAngle(flywheelSubsystem.getFlywheelShooterStateFromPreset().hoodAngle);
+            flywheelController.setSetpoint(flywheelSubsystem.getFlywheelShooterStateFromPreset().rpmVelocity);
+        }
+
+        double pidOutput = flywheelController.calculate(flywheelSubsystem.getFlywheelRPM());
+
+
+        double KF_FLYWHEEL = 0;
+
+        double feedforward = flywheelSubsystem.getFlywheelRPM() * KF_FLYWHEEL;
+
+        double feedForwardedPidOutput = pidOutput + feedforward;
+
+        // Ensure it is never negative
+        double positiveFinalMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
+
+        flywheelSubsystem.setPercentSpeed(positiveFinalMotorOutput);
+
     }
 
     @Override
