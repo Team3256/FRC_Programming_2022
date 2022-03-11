@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
@@ -48,6 +49,11 @@ public class HangerSubsystem extends SubsystemBase {
         logger.info("Extending");
         double distance = EXTEND_DISTANCE;
         leftMasterTalonMotor.set(ControlMode.Position, distance);
+    }
+
+    public void extendContinuously() {
+        logger.info("Extending Continously");
+        rightFollowerTalonMotor.set(TalonFXControlMode.PercentOutput, 0.15);
     }
 
     public void retractContinuously() {
@@ -162,5 +168,11 @@ public class HangerSubsystem extends SubsystemBase {
         rightFollowerTalonMotor.follow(leftMasterTalonMotor);
 
         leftMasterTalonMotor.neutralOutput();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Left Supply",leftMasterTalonMotor.getSupplyCurrent());
+        SmartDashboard.putNumber("Right Supply", rightFollowerTalonMotor.getSupplyCurrent());
     }
 }

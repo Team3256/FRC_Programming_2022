@@ -1,8 +1,10 @@
 package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 public class ZeroHoodMotorCommand extends CommandBase {
+    private RobotLogger logger = new RobotLogger(ZeroHoodMotorCommand.class.getCanonicalName());
 
     private final FlywheelSubsystem flywheel;
 
@@ -19,6 +21,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        logger.info("Zeroing Hood Motor");
         flywheel.hoodSlowReverse();
     }
 

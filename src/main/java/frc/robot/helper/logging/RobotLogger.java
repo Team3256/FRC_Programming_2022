@@ -95,7 +95,7 @@ public class RobotLogger {
      */
     public void warning(String message){
         warning.append(getClassName() + message);
-        DriverStation.reportWarning(getClassName() + message, true);
+        DriverStation.reportWarning(getClassName() + message, false);
     }
 
     /**

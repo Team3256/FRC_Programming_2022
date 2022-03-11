@@ -35,8 +35,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-    //private final TalonFX hoodAngleMotor;
+    private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
+
+    private double zeroPoint = 0;
 
     private double currentTargetSpeed;
 
@@ -49,7 +51,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public FlywheelSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
-        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Brake;
+        MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Coast;
         MASTER_CONFIG.INVERT_TYPE = InvertType.InvertMotorOutput;
         MASTER_CONFIG.PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
                 SHOOTER_MASTER_TALON_PID_P,
@@ -71,10 +73,14 @@ public class FlywheelSubsystem extends SubsystemBase {
                 MANI_CAN_BUS
         );
 
-       // hoodAngleMotor = new TalonFX(HOOD_MOTOR_ID);
+
+        TalonConfiguration hoodConfig = new TalonConfiguration(new TalonConfiguration.TalonFXPIDFConfig(1,0,10,0), InvertType.None, NeutralMode.Brake);
+
+        hoodAngleMotor = TalonFXFactory.createTalonFX(HOOD_MOTOR_ID, hoodConfig, MANI_CAN_BUS);
         limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
 
         logger.info("Flywheel Initialized");
+
       
        // getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
@@ -109,7 +115,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void setShooterLocationPreset(ShooterLocationPreset preset) {
-        SmartDashboard.putString("Shooter Preset",preset.toString());
+        SmartDashboard.putString("Shooter Preset: ",preset.toString());
+        logger.info("Shooter Preset Changed to " + preset);
         this.shooterLocationPreset = preset;
     }
 
@@ -123,7 +130,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public void setSpeed(double velocity) {
         // formula for converting m/s to sensor units/100ms
-        currentTargetSpeed = velocity * 204.8; // rev/s * 1s/10 (100ms) * 2048su/1rev
+        currentTargetSpeed = fromRpmToSu(velocity); // rev/s * 1s/10 (100ms) * 2048su/1rev
         masterLeftShooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
     }
 
@@ -140,31 +147,32 @@ public class FlywheelSubsystem extends SubsystemBase {
      * motor moves to hoodAngle position
      */
     public void setHoodAngle(double hoodAngle) {
-     //   hoodAngleMotor.set(ControlMode.Position, hoodAngle);
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle - zeroPoint);
     }
     /**
      * stops the hood motor
      */
     public void stopHood(){
-       // hoodAngleMotor.set(ControlMode.PercentOutput, 0);
+        hoodAngleMotor.neutralOutput();
     }
     /**
      * reverses the hood for zeroing the hood motor
      */
     public void hoodSlowReverse(){
-       // hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
+        System.out.println("Slow Reverse Hood");
+        hoodAngleMotor.set(ControlMode.PercentOutput, HOOD_SLOW_REVERSE_PERCENT);
     }
     /**
      * zeros the hood motor sensor
      */
     public void zeroHoodMotor(){
-        //hoodAngleMotor.setSelectedSensorPosition(0);
+        zeroPoint = hoodAngleMotor.getSelectedSensorPosition();
     }
     /**
      * checks if limit switch is pressed
      */
     public boolean isHoodLimitSwitchPressed(){
-        return limitSwitch.get();
+        return !limitSwitch.get();
     }
     /**
      * Disables powers to flywheel motor, motors change to neutral/coast mode
@@ -229,7 +237,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * sets hood angle and velocity
      */
     private void applyShooterState(ShooterState shooterState) {
-        setSpeed(shooterState.rpmVelocity);
+        setSpeed(fromRpmToSu(shooterState.rpmVelocity));
         setHoodAngle(shooterState.hoodAngle);
     }
 
@@ -329,7 +337,15 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     private double getVelocity() {
         double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
-        return velocityInSensorUnits  * 10 / 2048;
+        return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
+    }
+
+    private double fromSuToRPM(double su){
+        return su  * (10 * 60) / 2048;
+    }
+
+    private double fromRpmToSu(double rpm){
+        return rpm  * 2048 / (10 * 60) ;
     }
 
     public void increasePreset() {
@@ -352,8 +368,22 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void shootSelectedPreset() {
         ShooterPreset currentPreset = getPreset();
-        this.setSpeed(currentPreset.shooterState.rpmVelocity);
+        this.setSpeed(fromRpmToSu(currentPreset.shooterState.rpmVelocity));
         this.setHoodAngle(currentPreset.shooterState.hoodAngle);
+    }
+
+    public double getFlywheelRPM(){
+        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
+
+    }
+
+    public ShooterState getFlywheelShooterStateFromPreset(){
+        return ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
     }
 }
 

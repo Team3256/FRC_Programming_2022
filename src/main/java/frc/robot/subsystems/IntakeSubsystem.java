@@ -23,11 +23,13 @@ public class IntakeSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
 
     private final TalonFX intakeMotor;
-    private final DoubleSolenoid intakeSolenoid;
+    private final DoubleSolenoid leftintakeSolenoid;
+    private final DoubleSolenoid rightIntakeSolenoid;
 
     public IntakeSubsystem() {
         intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, MANI_CAN_BUS);
-        intakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_FORWARD, INTAKE_SOLENOID_BACKWARD);
+        leftintakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_LEFT_FORWARD, INTAKE_SOLENOID_LEFT_BACKWARD);
+        rightIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_RIGHT_FORWARD, INTAKE_SOLENOID_RIGHT_BACKWARD);
         logger.info("Intake Initialized");
 
         off();
@@ -35,17 +37,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void forwardOn(){
         logger.info("Intake on");
-        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
     public void reverseOn(){
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
     }
 
     public void off(){
         intakeMotor.neutralOutput();
-        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         logger.info("Intake off");
     }
 }

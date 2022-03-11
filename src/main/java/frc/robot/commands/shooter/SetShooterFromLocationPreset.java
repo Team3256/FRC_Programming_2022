@@ -14,6 +14,7 @@ public class SetShooterFromLocationPreset extends CommandBase {
     private ShooterState shooterState;
 
     public SetShooterFromLocationPreset(FlywheelSubsystem flywheelSubsystem) {
+        this.shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
         this.flywheelSubsystem = flywheelSubsystem;
 
         addRequirements(flywheelSubsystem);
@@ -32,12 +33,27 @@ public class SetShooterFromLocationPreset extends CommandBase {
             flywheelSubsystem.setShooterLocationPreset(shooterLocationPreset);
         }
         shooterState = ALL_SHOOTER_PRESETS.get(flywheelSubsystem.getShooterLocationPreset()).shooterState;
+
+
+        flywheelSubsystem.setSpeed(shooterState.rpmVelocity);
+        flywheelSubsystem.setHoodAngle(shooterState.hoodAngle);
     }
 
     @Override
     public void execute() {
-        flywheelSubsystem.setSpeed(shooterState.rpmVelocity);
-        flywheelSubsystem.setHoodAngle(shooterState.hoodAngle);
+        if (flywheelSubsystem.getShooterLocationPreset() != shooterLocationPreset){
+            shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
+
+            shooterState = ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
+
+            flywheelSubsystem.setSpeed(shooterState.rpmVelocity);
+            flywheelSubsystem.setHoodAngle(shooterState.hoodAngle);
+        }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        flywheelSubsystem.stopFullShooter();
     }
 
     @Override

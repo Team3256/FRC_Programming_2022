@@ -38,13 +38,13 @@ public final class Constants {
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
     public static class SubsystemEnableFlags {
-        public static final boolean LIMELIGHT = false;
+        public static final boolean LIMELIGHT = true;
 
         public static final boolean SHOOTER = true;
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
         public static final boolean DRIVETRAIN = true;
 
@@ -68,8 +68,8 @@ public final class Constants {
     }
 
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
-        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
+        public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.35; // In Percent -1.0 - 0.0
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
@@ -90,7 +90,9 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = -45; // degrees
+        public static final double GYRO_YAW_OFFSET = 135; // degrees //TODO: CHECK OFFSET is right, Intake is forward
+
+        public static final double MAX_ACCELERATION = 0.5; // m/s^2
 
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
@@ -206,16 +208,20 @@ public final class Constants {
         public static final int HANGER_SOLENOID_FORWARD = 4;
         public static final int HANGER_SOLENOID_BACKWARD = 3;
 
-        public static final int INTAKE_SOLENOID_FORWARD = 12; // forward is down
-        public static final int INTAKE_SOLENOID_BACKWARD = 11; //backward is up
+        public static final int INTAKE_SOLENOID_LEFT_BACKWARD = 11; //backward is up
+        public static final int INTAKE_SOLENOID_RIGHT_BACKWARD = 10;
+
+        public static final int INTAKE_SOLENOID_LEFT_FORWARD = 12; // forward is down
+        public static final int INTAKE_SOLENOID_RIGHT_FORWARD = 13;
+
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
 
         public static final int IR_TRANSFER_BEGINNING_CHANNEL = 9;
         public static final int IR_TRANSFER_MIDDLE_CHANNEL = 7;
-        public static final int IR_TRANSFER_END_CHANNEL = 0;
+        public static final int IR_TRANSFER_END_CHANNEL = 2;
 
         // I2C
         public static final byte I2C_MUX_ADDRESS = 0x70;
@@ -299,7 +305,7 @@ public final class Constants {
 
         public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
 
-        public static final double CURRENT_THRESHOLD = 40.0; //in Amps
+        public static final double CURRENT_THRESHOLD = 25.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds
@@ -313,7 +319,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double INTAKE_FORWARD_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double INTAKE_FORWARD_SPEED = 1; // In Percent 0.0 - 1.0
         public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
     }
 
@@ -338,7 +344,7 @@ public final class Constants {
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
         // Hood Angle Constants
-        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
+        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.50;
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
