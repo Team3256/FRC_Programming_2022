@@ -27,6 +27,9 @@ public class AutoChooser {
         Command oneBallTaxi = Paths.get1BallTaxi();
         autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
+        Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
+        autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
+
         Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
         autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
 
