@@ -142,8 +142,8 @@ public final class Constants {
         public static final boolean AUTO_DEBUG = true;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 22;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 15;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
