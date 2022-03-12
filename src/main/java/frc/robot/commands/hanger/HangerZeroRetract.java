@@ -16,22 +16,23 @@ public class HangerZeroRetract extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        hanger.retractLeftContinuouslyToZero();
-        hanger.retractRightContinuouslyToZero();
+        hanger.retractContinuously();
+//        hanger.retractLeftContinuouslyToZero();
+//        hanger.retractRightContinuouslyToZero();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (leftMotorRunning && hanger.isLeftHangerCurrentSpiking()){
-            hanger.stopLeftMotor();
-            leftMotorRunning = false;
-        }
-
-        if (rightMotorRunning && hanger.isRightHangerCurrentSpiking()){
-            hanger.stopRightMotor();
-            rightMotorRunning = false;
-        }
+//        if (leftMotorRunning && hanger.isLeftHangerCurrentSpiking()){
+//            hanger.stopLeftMotor();
+//            leftMotorRunning = false;
+//        }
+//
+//        if (rightMotorRunning && hanger.isRightHangerCurrentSpiking()){
+//            hanger.stopRightMotor();
+//            rightMotorRunning = false;
+//        }
     }
 
     // Called once the command ends or is interrupted.
@@ -44,7 +45,7 @@ public class HangerZeroRetract extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return !rightMotorRunning && !leftMotorRunning;
+        return false;
     }
 
 }

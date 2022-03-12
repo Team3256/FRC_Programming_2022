@@ -44,14 +44,15 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
         public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
-        public static final boolean IR_SENSORS = true;
+        public static final boolean IR_SENSORS = true
+                ;
     }
 
     public static class LimelightAutoCorrectConstants {
@@ -69,6 +70,7 @@ public final class Constants {
 
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 1;
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.35; // In Percent -1.0 - 0.0
 
         public static final int MAX_BALL_COUNT = 2;
@@ -90,14 +92,15 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = 135; // degrees //TODO: CHECK OFFSET is right, Intake is forward
+        public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
         public static final double MAX_ACCELERATION = 0.5; // m/s^2
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(200.91796875);
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(118.125);
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -4.954757944870621;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -1.624581528170137;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -2.366884418807923;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -2.208932334555323;
+
 
         public static final double MAX_METERS_PER_SECOND = 10;
 
@@ -301,7 +304,7 @@ public final class Constants {
         public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
-        public static final double HANGER_ZEROING_PERCENT_SPEED = 0.3;
+        public static final double HANGER_ZEROING_PERCENT_SPEED = 0.25;
 
         public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
 

@@ -28,6 +28,7 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
+import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
@@ -88,7 +89,7 @@ public class RobotContainer {
                 SmartDashboard.putData(getCommandChooser());
         }
         if (SHOOTER)
-            configureDebugShooter();
+            configureShooter();
         if (TRANSFER)
             configureTransfer();
         if (INTAKE)
@@ -202,15 +203,17 @@ public class RobotContainer {
         JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
 
-        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
-        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
-        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
-        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
+//        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
+//        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
+//        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
+//        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
+        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem));
         if (TRANSFER) {
-            operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+            operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
         }
+        dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
+
     }
 
     private void configureDebugShooter(){

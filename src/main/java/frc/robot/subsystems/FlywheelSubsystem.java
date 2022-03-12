@@ -383,6 +383,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Hood Zero Limit Switch", this.isHoodLimitSwitchPressed());
         SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
     }
 }
