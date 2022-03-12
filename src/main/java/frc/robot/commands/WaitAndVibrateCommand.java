@@ -11,34 +11,39 @@ public class WaitAndVibrateCommand extends CommandBase {
     protected Timer timer = new Timer();
     private XboxController controller;
     private double waitDuration;
+    private double rumbleIntensity;
+
+    public WaitAndVibrateCommand(XboxController controller, double waitDuration, double rumbleIntensity) {
+        this.controller = controller;
+        this.waitDuration = waitDuration;
+        this.rumbleIntensity = rumbleIntensity;
+    }
 
     public WaitAndVibrateCommand(XboxController controller, double waitDuration) {
         this.controller = controller;
         this.waitDuration = waitDuration;
+        rumbleIntensity = 0.5;
     }
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         timer.reset();
-        timer.start();
-    }
-
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-    }
-
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
         controller.setRumble(GenericHID.RumbleType.kLeftRumble, 1.0);
         controller.setRumble(GenericHID.RumbleType.kRightRumble, 1.0);
-        timer.stop();
+        timer.start();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return timer.hasElapsed(waitDuration);
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+        controller.setRumble(GenericHID.RumbleType.kRightRumble, 0);
+        timer.stop();
     }
 }
