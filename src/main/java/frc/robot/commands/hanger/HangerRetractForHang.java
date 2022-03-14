@@ -24,6 +24,6 @@ public class HangerRetractForHang extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return hanger.isCurrentSpiking();
+        return false;
     }
 }

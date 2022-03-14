@@ -12,7 +12,7 @@ import static frc.robot.Constants.AutoConstants.COMMAND_MARKER_THRESHOLD;
 
 public class AutoCommandRunner {
     private List<AutoCommandMarker> commandMarkers;
-    private List<AutoCommandMarker> startedCommandMarkers;
+    private List<AutoCommandMarker> startedCommandMarkers = new ArrayList<>();
     private Pose2d lastPose;
 
     public AutoCommandRunner(List<AutoCommandMarker> markers) {

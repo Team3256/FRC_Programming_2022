@@ -302,5 +302,6 @@ public class TransferSubsystem extends SubsystemBase {
     public void periodic() {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
+        SmartDashboard.putBoolean("Forward IR Sesnro", this.isTransferStartIRBroken());
     }
 }

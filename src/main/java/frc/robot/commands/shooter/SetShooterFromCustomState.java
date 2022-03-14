@@ -19,8 +19,13 @@ public class SetShooterFromCustomState extends CommandBase {
 
     @Override
     public void execute() {
-        flywheelSubsystem.setPercentSpeed(0.7);
-        flywheelSubsystem.setHoodAngle(20000);
+        flywheelSubsystem.setPercentSpeed(0.60);
+        flywheelSubsystem.setHoodAngle(100000);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        flywheelSubsystem.stopFullShooter();
     }
 
     @Override
