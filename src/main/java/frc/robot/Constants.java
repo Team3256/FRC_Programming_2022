@@ -285,6 +285,12 @@ public final class Constants {
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
+        public static final double HANGER_CURRENT_LIMIT = 10;
+        public static final double HANGER_TRIGGER_THRESHOLD_CURRENT = 10;
+        public static final double HANGER_TRIGGER_THRESHOLD_TIME = 0;
+
+
+
         public static final InvertType INVERT_TYPE = InvertType.FollowMaster;
 
         public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -37,6 +38,9 @@ public class HangerSubsystem extends SubsystemBase {
                 FOLLOWER_CONFIG,
                 MANI_CAN_BUS
         );
+
+        rightFollowerTalonMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, HANGER_CURRENT_LIMIT, HANGER_TRIGGER_THRESHOLD_CURRENT, HANGER_TRIGGER_THRESHOLD_TIME));
+        leftMasterTalonMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, HANGER_CURRENT_LIMIT, HANGER_TRIGGER_THRESHOLD_CURRENT, HANGER_TRIGGER_THRESHOLD_TIME));
 
         hangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_FORWARD, HANGER_SOLENOID_BACKWARD);
 
