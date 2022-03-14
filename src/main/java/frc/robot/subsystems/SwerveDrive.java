@@ -12,9 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
@@ -58,16 +55,9 @@ public class SwerveDrive extends SubsystemBase {
     private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
-        // FIXME Setup motor configuration
+
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
-                // This can either be STANDARD or FAST depending on your gear configuration
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_MOTOR_ID,
@@ -76,9 +66,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(2, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
@@ -87,9 +74,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(4, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 BACK_LEFT_MODULE_DRIVE_MOTOR_ID,
                 BACK_LEFT_MODULE_STEER_MOTOR_ID,
@@ -98,9 +82,6 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(6, 0),
                 Mk4SwerveModuleHelper.GearRatio.L4,
                 BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_MOTOR_ID,
@@ -169,7 +150,6 @@ public class SwerveDrive extends SubsystemBase {
               SmartDashboard.putNumber("Desired Back Left Voltage", backLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
               SmartDashboard.putNumber("Desired Back Right Voltage", backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
         }
-
 
         frontLeftModule.set(
                 deadzoneMotor(frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
@@ -240,17 +220,6 @@ public class SwerveDrive extends SubsystemBase {
         double dt = timestamp - last_timestamp;
         last_timestamp = timestamp;
 
-        //Log any High Acceleration Events, bool variable to ensure 1 log per real event
-        short[] acc = new short[3];
-        pigeon.getBiasedAccelerometer(acc);
-        double squaredAcc = acc[0] * acc[0] + acc[1] * acc[1];
-        if (!highAccDetectedPrev && squaredAcc > Math.pow(2 * 16384,2)) {
-            logger.warning("High Acceleration Detected: " + Math.sqrt(squaredAcc));
-            highAccDetectedPrev = true;
-        } else {
-            highAccDetectedPrev = false;
-        }
-
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
         SwerveModuleState frontLeftState = new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle()));
@@ -267,8 +236,8 @@ public class SwerveDrive extends SubsystemBase {
                 new Rotation2d(diff.getRotation().getRadians() / dt)
         );
 
-       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
-       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
+//       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
+//       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

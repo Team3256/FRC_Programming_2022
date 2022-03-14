@@ -1,31 +1,34 @@
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.FlywheelSubsystem;
 
-public class SetShooterFromCustomState extends CommandBase {
+import static frc.robot.hardware.Limelight.getRawDistanceToTarget;
+
+public class AutoPresetSelectorShooter extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
 
-    public SetShooterFromCustomState(FlywheelSubsystem flywheelSubsystem) {
+    public AutoPresetSelectorShooter(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
-
         addRequirements(flywheelSubsystem);
     }
 
     @Override
     public void initialize() {
+        Limelight.enable();
     }
 
     @Override
     public void execute() {
-        flywheelSubsystem.setPercentSpeed(0.60);
-        flywheelSubsystem.setHoodAngle(100000);
+        double distanceToTarget = getRawDistanceToTarget();
+
+        flywheelSubsystem.autoPresetAutoAim(distanceToTarget);
     }
 
     @Override
     public void end(boolean interrupted) {
-        flywheelSubsystem.stopFullShooter();
+        Limelight.disable();
     }
 
     @Override
@@ -33,3 +36,4 @@ public class SetShooterFromCustomState extends CommandBase {
         return false;
     }
 }
+

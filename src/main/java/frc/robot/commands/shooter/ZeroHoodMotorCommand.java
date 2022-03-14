@@ -1,8 +1,11 @@
 package frc.robot.commands.shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 public class ZeroHoodMotorCommand extends CommandBase {
+    private RobotLogger logger = new RobotLogger(ZeroHoodMotorCommand.class.getCanonicalName());
 
     private final FlywheelSubsystem flywheel;
 
@@ -19,6 +22,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        logger.info("Zeroing Hood Motor");
         flywheel.hoodSlowReverse();
     }
 
@@ -32,6 +36,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+        SmartDashboard.putBoolean("Limit", flywheel.isHoodLimitSwitchPressed());
         return flywheel.isHoodLimitSwitchPressed();
     }
 }
