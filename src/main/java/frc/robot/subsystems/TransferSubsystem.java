@@ -94,6 +94,13 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Transfer On");
     }
 
+    public void forwardShoot(){
+        isReversed = false;
+        transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED);
+        logger.info("Transfer Shooting Mode On");
+    }
+
+
     public void manualReverse(){
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);

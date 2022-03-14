@@ -15,16 +15,12 @@ public class SetShooterFromCustomState extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.setDefaultNumber("Shooter Custom RPM",100.0);
-        SmartDashboard.setDefaultNumber("Hood Custom Position", 0.5);
     }
 
     @Override
     public void execute() {
-        double dashboardShooterRPM = SmartDashboard.getNumber("Shooter Custom RPM", 100.0);
-        double dashboardHoodPosition = SmartDashboard.getNumber("Shooter Custom RPM", 0.5);
-        flywheelSubsystem.setSpeed(dashboardShooterRPM);
-        flywheelSubsystem.setHoodAngle(dashboardHoodPosition);
+        flywheelSubsystem.setPercentSpeed(0.7);
+        flywheelSubsystem.setHoodAngle(20000);
     }
 
     @Override

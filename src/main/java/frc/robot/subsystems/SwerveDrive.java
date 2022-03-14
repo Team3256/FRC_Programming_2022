@@ -221,17 +221,6 @@ public class SwerveDrive extends SubsystemBase {
         double dt = timestamp - last_timestamp;
         last_timestamp = timestamp;
 
-        //Log any High Acceleration Events, bool variable to ensure 1 log per real event
-        short[] acc = new short[3];
-        pigeon.getBiasedAccelerometer(acc);
-        double squaredAcc = acc[0] * acc[0] + acc[1] * acc[1];
-        if (!highAccDetectedPrev && squaredAcc > Math.pow(2 * 16384,2)) {
-            logger.warning("High Acceleration Detected: " + Math.sqrt(squaredAcc));
-            highAccDetectedPrev = true;
-        } else {
-            highAccDetectedPrev = false;
-        }
-
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
         SwerveModuleState frontLeftState = new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle()));
