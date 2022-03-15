@@ -27,39 +27,37 @@ public class SmoothVelocity {
      * @param deltaTime in seconds
      * @return newVelocity in meters
      */
-    public static RobotKinematicState smoothVelocity(RobotKinematicState currentRobotKinematicState, double targetVelocity, double deltaTime) {
+    public static RobotKinematicState smoothVelocity(RobotKinematicState currentRobotKinematicState, double targetVelocity, double deltaTime, double decelerationConstant) {
 
         double currentAcceleration = (targetVelocity - currentRobotKinematicState.velocity)/deltaTime;
 
         // Let it accelerate up fully with no modifications
         // Check if Vel / Acc are same, if so, it is speeding up
-        if (Math.signum(currentAcceleration) == Math.signum(currentRobotKinematicState.velocity) || currentRobotKinematicState.velocity == 0)
-            return new RobotKinematicState(targetVelocity, currentAcceleration);
+        if (Math.signum(currentAcceleration) == Math.signum(currentRobotKinematicState.velocity) ||
+                currentRobotKinematicState.velocity == 0 ||
+                currentAcceleration == 0)
+            return new RobotKinematicState(targetVelocity, 0); // Assume Robot Goes to Set point Instantly
 
-        // Max because we're dealing with Deceleration
+
+        // If Crosses 0, then just decelerate to zero, then accelerate back up to the speed in the opposite direction.
+        if (Math.signum(targetVelocity) != Math.signum(currentRobotKinematicState.velocity))
+            targetVelocity = 0;
 
         double positiveUpdatedAcceleration =
-                Math.abs(currentRobotKinematicState.acceleration) - DECELERATION_CONSTANT * deltaTime;
+                Math.abs(Math.abs(currentRobotKinematicState.acceleration) - decelerationConstant * deltaTime);
 
         if (positiveUpdatedAcceleration < 0)
             positiveUpdatedAcceleration = 0;
 
         double updatedAcceleration = positiveUpdatedAcceleration * Math.signum(currentAcceleration);
 
-        double adjustedTargetVelocity = currentRobotKinematicState.velocity > 0 ? Math.max(
+        double adjustedTargetVelocity = currentAcceleration > 0 ? Math.min(
                 Math.abs(targetVelocity),
-                (currentRobotKinematicState.velocity + updatedAcceleration * deltaTime)
-        ) : Math.min(
+                currentRobotKinematicState.velocity + (updatedAcceleration * deltaTime)
+        ) : Math.max(
                 Math.abs(targetVelocity),
-                (currentRobotKinematicState.velocity + updatedAcceleration * deltaTime)
+                currentRobotKinematicState.velocity + (updatedAcceleration * deltaTime)
         );
-
-        // Checks if Adjusted Velocity is more extreme than Target Velocity, clamp if it is
-//        if (adjustedTargetVelocity < 0 && adjustedTargetVelocity < targetVelocity)
-//            adjustedTargetVelocity = targetVelocity;
-//        else if (adjustedTargetVelocity > 0 && adjustedTargetVelocity > targetVelocity)
-//            adjustedTargetVelocity = targetVelocity;
-
 
         SmartDashboard.putNumber("Adjusted Smooth Acc", updatedAcceleration);
         return new RobotKinematicState(adjustedTargetVelocity, updatedAcceleration);

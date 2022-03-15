@@ -237,8 +237,8 @@ public class SwerveDrive extends SubsystemBase {
 
         SmartDashboard.putNumber("Robot Target Vel", chassisSpeeds.vxMetersPerSecond);
 
-        smoothXKinematics = smoothVelocity(smoothXKinematics, chassisSpeeds.vxMetersPerSecond, dt);
-        smoothYKinematics = smoothVelocity(smoothYKinematics, chassisSpeeds.vyMetersPerSecond, dt);
+        smoothXKinematics = smoothVelocity(smoothXKinematics, chassisSpeeds.vxMetersPerSecond, dt, DECELERATION_CONSTANT);
+        smoothYKinematics = smoothVelocity(smoothYKinematics, chassisSpeeds.vyMetersPerSecond, dt, DECELERATION_CONSTANT);
 
         chassisSpeeds.vxMetersPerSecond = smoothXKinematics.velocity;
         chassisSpeeds.vyMetersPerSecond = smoothYKinematics.velocity;
