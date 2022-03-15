@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.helper.LED.helpers.*;
@@ -93,7 +94,8 @@ public final class Constants {
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
-        public static final double DECELERATION_CONSTANT = 1; // m/s^2
+        /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
 
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -4.954757944870621;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -1.624581528170137;
