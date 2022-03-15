@@ -54,6 +54,9 @@ public class SwerveDrive extends SubsystemBase {
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
     private boolean highAccDetectedPrev = false;
 
+    private SmoothVelocity.RobotKinematicState smoothXKinematics = new SmoothVelocity.RobotKinematicState(0,0);
+    private SmoothVelocity.RobotKinematicState smoothYKinematics = new SmoothVelocity.RobotKinematicState(0,0);
+
     public SwerveDrive() {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
@@ -230,14 +233,18 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d lastPose = pose;
         pose = odometry.update(gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
-        Pose2d diff = lastPose.relativeTo(pose);
-        curr_velocity = new Pose2d(
-                new Translation2d(diff.getX() / dt, diff.getY() / dt),
-                new Rotation2d(diff.getRotation().getRadians() / dt)
-        );
 
-//       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
-//       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
+
+        SmartDashboard.putNumber("Robot Target Vel", chassisSpeeds.vxMetersPerSecond);
+
+        smoothXKinematics = smoothVelocity(smoothXKinematics, chassisSpeeds.vxMetersPerSecond, dt);
+        smoothYKinematics = smoothVelocity(smoothYKinematics, chassisSpeeds.vyMetersPerSecond, dt);
+
+        chassisSpeeds.vxMetersPerSecond = smoothXKinematics.velocity;
+        chassisSpeeds.vyMetersPerSecond = smoothYKinematics.velocity;
+
+
+        SmartDashboard.putNumber("Robot Smooth Vel", smoothXKinematics.velocity);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
