@@ -93,8 +93,6 @@ public final class Constants {
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
-        public static final double DECELERATION_CONSTANT = 1; // m/s^2
-
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -4.954757944870621;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -1.624581528170137;
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = -2.366884418807923;

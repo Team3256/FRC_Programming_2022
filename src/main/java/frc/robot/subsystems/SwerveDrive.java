@@ -16,13 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.helper.SmoothVelocity;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
-import static frc.robot.helper.SmoothVelocity.smoothVelocity;
 
 
 public class SwerveDrive extends SubsystemBase {
@@ -52,10 +50,6 @@ public class SwerveDrive extends SubsystemBase {
     private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
-    private boolean highAccDetectedPrev = false;
-
-    private SmoothVelocity.RobotKinematicState smoothXKinematics = new SmoothVelocity.RobotKinematicState(0,0);
-    private SmoothVelocity.RobotKinematicState smoothYKinematics = new SmoothVelocity.RobotKinematicState(0,0);
 
     public SwerveDrive() {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
@@ -233,18 +227,6 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d lastPose = pose;
         pose = odometry.update(gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
-
-
-        SmartDashboard.putNumber("Robot Target Vel", chassisSpeeds.vxMetersPerSecond);
-
-        smoothXKinematics = smoothVelocity(smoothXKinematics, chassisSpeeds.vxMetersPerSecond, dt, DECELERATION_CONSTANT);
-        smoothYKinematics = smoothVelocity(smoothYKinematics, chassisSpeeds.vyMetersPerSecond, dt, DECELERATION_CONSTANT);
-
-        chassisSpeeds.vxMetersPerSecond = smoothXKinematics.velocity;
-        chassisSpeeds.vyMetersPerSecond = smoothYKinematics.velocity;
-
-
-        SmartDashboard.putNumber("Robot Smooth Vel", smoothXKinematics.velocity);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

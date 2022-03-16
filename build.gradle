@@ -20,7 +20,7 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = project.frc.getTeamNumber()
-            debug = true
+            debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type
