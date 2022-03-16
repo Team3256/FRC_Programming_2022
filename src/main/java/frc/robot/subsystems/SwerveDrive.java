@@ -233,7 +233,6 @@ public class SwerveDrive extends SubsystemBase {
         setModuleStates(states);
 
         outputToDashboard();
-
     }
 
     public void forward(double meters){
