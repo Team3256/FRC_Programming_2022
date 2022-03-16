@@ -209,8 +209,11 @@ public final class Constants {
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
 
         //Pneumatic IDs
-        public static final int HANGER_SOLENOID_FORWARD = 4;
-        public static final int HANGER_SOLENOID_BACKWARD = 3;
+        public static final int LEFT_HANGER_SOLENOID_FORWARD = 15;
+        public static final int LEFT_HANGER_SOLENOID_BACKWARD = 8;
+
+        public static final int RIGHT_HANGER_SOLENOID_FORWARD = 14;
+        public static final int RIGHT_HANGER_SOLENOID_BACKWARD = 9;
 
         public static final int INTAKE_SOLENOID_LEFT_BACKWARD = 11; //backward is up
         public static final int INTAKE_SOLENOID_RIGHT_BACKWARD = 10;
@@ -307,9 +310,9 @@ public final class Constants {
 
         public static final double HANGER_ZEROING_PERCENT_SPEED = 0.25;
 
-        public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
+        public static final double HANGER_RETRACT_PERCENT_SPEED = 0.6;
 
-        public static final double CURRENT_THRESHOLD = 25.0; //in Amps
+        public static final double CURRENT_THRESHOLD = 16.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds
