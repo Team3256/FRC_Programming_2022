@@ -274,7 +274,13 @@ public class RobotContainer {
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
+        DPadButton operatorLeftDpad = new DPadButton(operatorController, DPadButton.Direction.LEFT);
+        DPadButton operatorRightDpad = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
+
+        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem));
+        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem));
 
         operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem));
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem));
