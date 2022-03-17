@@ -95,10 +95,10 @@ public final class Constants {
 
         public static final double MAX_ACCELERATION = 0.5; // m/s^2
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -4.954757944870621;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -1.624581528170137;
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -6.52555427;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -4.76617418;
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = -2.366884418807923;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -2.208932334555323;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -0.638136;
 
 
         public static final double MAX_METERS_PER_SECOND = 10;
