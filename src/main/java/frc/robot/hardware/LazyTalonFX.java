@@ -20,4 +20,10 @@ public class LazyTalonFX extends TalonFX {
             super.set(mode, value);
         }
     }
+
+    @Override
+    public void neutralOutput() {
+        lastSetValue = 0;
+        super.neutralOutput();
+    }
 }
