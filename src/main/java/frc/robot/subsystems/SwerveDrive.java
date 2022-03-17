@@ -72,7 +72,7 @@ public class SwerveDrive extends SubsystemBase {
                 FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_ENCODER_ID,
-                FRONT_LEFT_MODULE_STEER_OFFSET
+                FRONT_LEFT_MODULE_STEER_OFFSET + 90
         );
 
         frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -83,7 +83,7 @@ public class SwerveDrive extends SubsystemBase {
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_ENCODER_ID,
-                FRONT_RIGHT_MODULE_STEER_OFFSET
+                FRONT_RIGHT_MODULE_STEER_OFFSET - 90
         );
 
         backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -105,7 +105,7 @@ public class SwerveDrive extends SubsystemBase {
                 BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_ENCODER_ID,
-                BACK_RIGHT_MODULE_STEER_OFFSET
+                BACK_RIGHT_MODULE_STEER_OFFSET + 180
         );
         logger.info("Swerve Drive Modules Initialized");
     }
@@ -170,6 +170,9 @@ public class SwerveDrive extends SubsystemBase {
               SmartDashboard.putNumber("Desired Back Right Voltage", backRightOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE);
         }
 
+        if (Constants.DEBUG) {
+            debugSwerveOffsets();
+        }
 
         frontLeftModule.set(
                 deadzoneMotor(frontLeftOptimized.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE),
@@ -301,4 +304,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
 
+    public void debugSwerveOffsets() {
+        SmartDashboard.putNumber("Front Left Swerve Module Standard Offset: ", frontLeftModule.getSteerAngle() - 90);
+        SmartDashboard.putNumber("Front Right Swerve Module Standard Offset: ", frontRightModule.getSteerAngle() + 90);
+        SmartDashboard.putNumber("Back Left Swerve Module Standard Offset: ", backLeftModule.getSteerAngle());
+        SmartDashboard.putNumber("Back Right Swerve Module Standard Offset: ", backRightModule.getSteerAngle() - 180);
+    }
 }
