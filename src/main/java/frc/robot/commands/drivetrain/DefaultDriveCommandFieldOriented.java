@@ -2,11 +2,13 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommandFieldOriented extends CommandBase {
+    private RobotLogger logger = new RobotLogger(DefaultDriveCommandFieldOriented.class.getCanonicalName());
     private final SwerveDrive drivetrainSubsystem;
 
     private final DoubleSupplier translationXSupplier;
@@ -32,6 +34,12 @@ public class DefaultDriveCommandFieldOriented extends CommandBase {
         this.rotationSupplier = () -> 0;
 
         addRequirements(drivetrainSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        logger.info("Field Oriented Drive Enabled");
     }
 
     @Override

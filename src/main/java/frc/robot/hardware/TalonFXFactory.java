@@ -1,9 +1,5 @@
 package frc.robot.hardware;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 /*
@@ -25,25 +21,26 @@ public class TalonFXFactory {
         motor.clearMotionProfileTrajectories();
         motor.clearStickyFaults();
 
-        motor.config_kP(0, config.PIDF_CONSTANTS.kP); //TODO: change slotIdx if required
-        motor.config_kI(0, config.PIDF_CONSTANTS.kI); //TODO: change slotIdx if required
-        motor.config_kD(0, config.PIDF_CONSTANTS.kD); //TODO: change slotIdx if required
-        motor.config_kF(0, config.PIDF_CONSTANTS.kF); //TODO: change slotIdx if required
+        motor.configAllSettings(config.TALONFX_CONFIG);
+
+        motor.config_kP(0, config.PIDF_CONSTANTS.kP);
+        motor.config_kI(0, config.PIDF_CONSTANTS.kI);
+        motor.config_kD(0, config.PIDF_CONSTANTS.kD);
+        motor.config_kF(0, config.PIDF_CONSTANTS.kF);
 
         motor.setNeutralMode(config.NEUTRAL_MODE);
         motor.setInverted(config.INVERT_TYPE);
-        motor.configAllSettings(config.TALONFX_CONFIG);
 
         return motor;
     }
 
-    public static TalonFX createFollowerTalonFX(int id, int master, String canBus) {
+    public static TalonFX createFollowerTalonFX(int id, TalonFX master, String canBus) {
         return createFollowerTalonFX(id, master, defaultFollowerTalonFXConfig, canBus);
     }
 
-    public static TalonFX createFollowerTalonFX(int id, int master, TalonConfiguration config, String canBus) {
+    public static TalonFX createFollowerTalonFX(int id, TalonFX master, TalonConfiguration config, String canBus) {
         TalonFX motor = createTalonFX(id, config, canBus);
-        motor.set(ControlMode.Follower, master);
+        motor.follow(master);
         return motor;
     }
 }
