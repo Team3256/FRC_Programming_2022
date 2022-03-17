@@ -58,7 +58,7 @@ public class SwerveDrive extends SubsystemBase {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L4,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_MOTOR_ID,
                 FRONT_LEFT_MODULE_STEER_ENCODER_ID,
@@ -66,7 +66,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L4,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_MOTOR_ID,
                 FRONT_RIGHT_MODULE_STEER_ENCODER_ID,
@@ -74,7 +74,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L4,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 BACK_LEFT_MODULE_DRIVE_MOTOR_ID,
                 BACK_LEFT_MODULE_STEER_MOTOR_ID,
                 BACK_LEFT_MODULE_STEER_ENCODER_ID,
@@ -82,7 +82,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                Mk4SwerveModuleHelper.GearRatio.L4,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 BACK_RIGHT_MODULE_DRIVE_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_MOTOR_ID,
                 BACK_RIGHT_MODULE_STEER_ENCODER_ID,
