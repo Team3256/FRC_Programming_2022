@@ -1,14 +1,14 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.shooter.Legacy;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 
 import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 
 public class SetShooterFromLocationPreset extends CommandBase {
+    /*
     private FlywheelSubsystem flywheelSubsystem;
     private ShooterLocationPreset shooterLocationPreset;
     private ShooterState shooterState;
@@ -60,4 +60,6 @@ public class SetShooterFromLocationPreset extends CommandBase {
     public boolean isFinished() {
         return false;
     }
+
+     */
 }

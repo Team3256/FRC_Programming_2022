@@ -6,14 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
@@ -26,6 +24,7 @@ import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
+import frc.robot.commands.shooter.Legacy.SetShooterFromLocationPreset;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
@@ -33,7 +32,6 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -54,6 +52,7 @@ public class RobotContainer {
     private IntakeSubsystem intakeSubsystem = null;
 
     private FlywheelSubsystem flywheelSubsystem = null;
+    private HoodSubsystem hoodSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
     private HangerSubsystem hangerSubsystem = null;
@@ -114,7 +113,7 @@ public class RobotContainer {
 
     public SendableChooser<Command> getCommandChooser() {
         if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem);
+            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem, hoodSubsystem);
         else
             return null;
     }
@@ -206,11 +205,11 @@ public class RobotContainer {
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
 //        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem));
+        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem, hoodSubsystem));
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
         }
-        dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
+        dPadUp.whenHeld(new ZeroHoodMotorCommand(hoodSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
 
     }
 
@@ -229,9 +228,8 @@ public class RobotContainer {
 
         rightTrigger.setThreshold(0.01);
 
-        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
-        leftTrigger.whenHeld(new SetShooterFromLocationPreset(flywheelSubsystem));
-        aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
+        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem, hoodSubsystem));
+        aButton.whenPressed(new ZeroHoodMotorCommand(hoodSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
 
         operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
 //        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));

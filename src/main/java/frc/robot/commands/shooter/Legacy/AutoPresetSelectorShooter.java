@@ -1,4 +1,4 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.shooter.Legacy;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.Limelight;
@@ -7,6 +7,7 @@ import frc.robot.subsystems.FlywheelSubsystem;
 import static frc.robot.hardware.Limelight.getRawDistanceToTarget;
 
 public class AutoPresetSelectorShooter extends CommandBase {
+    /*
     private FlywheelSubsystem flywheelSubsystem;
 
     public AutoPresetSelectorShooter(FlywheelSubsystem flywheelSubsystem) {
@@ -35,5 +36,7 @@ public class AutoPresetSelectorShooter extends CommandBase {
     public boolean isFinished() {
         return false;
     }
+
+     */
 }
 

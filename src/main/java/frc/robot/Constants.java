@@ -19,9 +19,9 @@ import java.util.LinkedHashMap;
 
 import frc.robot.helper.Polynomial;
 
+import frc.robot.helper.shooter.ShooterLocationPreset;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 
 import java.util.List;
 

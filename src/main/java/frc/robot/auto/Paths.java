@@ -2,19 +2,14 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.intake.IntakeOn;
-import frc.robot.commands.shooter.AutoPresetSelectorShooter;
 import frc.robot.commands.shooter.SetShooterFromCustomDashboardConfig;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.helper.auto.AutoCommandMarker;
 import frc.robot.helper.auto.AutoCommandRunner;
-import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.TransferSubsystem;
+import frc.robot.subsystems.*;
 
 import java.util.List;
 
@@ -23,12 +18,14 @@ public class Paths {
     private static IntakeSubsystem intakeSubsystem;
     private static FlywheelSubsystem flywheelSubsystem;
     private static TransferSubsystem transferSubsystem;
+    private static HoodSubsystem hoodSubsystem;
 
-    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer) {
+    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer, HoodSubsystem hood) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         intakeSubsystem = intake;
         flywheelSubsystem = flywheel;
         transferSubsystem = transfer;
+        hoodSubsystem = hood;
     }
 
     /* --------------------------------------------- */
@@ -247,7 +244,7 @@ public class Paths {
         return
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(4),
-                    new SetShooterFromCustomDashboardConfig(flywheelSubsystem),
+                    new SetShooterFromCustomDashboardConfig(flywheelSubsystem, hoodSubsystem),
                     new WaitCommand(1).andThen(new TransferIndexForward(transferSubsystem))
                 );
     }

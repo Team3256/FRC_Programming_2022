@@ -3,13 +3,16 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 public class SetShooterFromCustomDashboardConfig extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
+    private HoodSubsystem hoodSubsystem;
 
-    public SetShooterFromCustomDashboardConfig(FlywheelSubsystem flywheelSubsystem) {
+    public SetShooterFromCustomDashboardConfig(FlywheelSubsystem flywheelSubsystem, HoodSubsystem hoodSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
-        addRequirements(flywheelSubsystem);
+        this.hoodSubsystem = hoodSubsystem;
+        addRequirements(flywheelSubsystem, hoodSubsystem);
     }
 
     @Override
@@ -24,12 +27,13 @@ public class SetShooterFromCustomDashboardConfig extends CommandBase {
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0.0);
 
         flywheelSubsystem.setPercentSpeed(velocity);
-        flywheelSubsystem.setHoodAngle(hoodAngle);
+        hoodSubsystem.setHoodAngle(hoodAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
-        flywheelSubsystem.stopFullShooter();
+        hoodSubsystem.stopHood();
+        flywheelSubsystem.setSpeed(0);
     }
 
     @Override

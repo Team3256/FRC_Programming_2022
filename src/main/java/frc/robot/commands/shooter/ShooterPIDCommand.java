@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
@@ -14,14 +15,18 @@ import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 
 
 public class ShooterPIDCommand extends CommandBase {
-    private FlywheelSubsystem.ShooterLocationPreset shooterLocationPreset;
 
     private PIDController flywheelController;
 
     private FlywheelSubsystem flywheelSubsystem;
-    public ShooterPIDCommand(FlywheelSubsystem flywheelSubsystem) {
-        this.flywheelSubsystem = flywheelSubsystem;
+    private HoodSubsystem hoodSubsystem;
+    private DoubleSupplier flywheelRPM;
 
+    public ShooterPIDCommand(FlywheelSubsystem flywheelSubsystem, HoodSubsystem hoodSubsystem, DoubleSupplier flywheelRPM) {
+        this.flywheelSubsystem = flywheelSubsystem;
+        this.hoodSubsystem = hoodSubsystem;
+        this.flywheelRPM = flywheelRPM;
+        addRequirements(flywheelSubsystem, hoodSubsystem);
         flywheelController = new PIDController(0,0,0);
     }
 
@@ -31,12 +36,7 @@ public class ShooterPIDCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (flywheelSubsystem.getShooterLocationPreset() != this.shooterLocationPreset){
-            this.shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
-
-            flywheelSubsystem.setHoodAngle(flywheelSubsystem.getFlywheelShooterStateFromPreset().hoodAngle);
-            flywheelController.setSetpoint(flywheelSubsystem.getFlywheelShooterStateFromPreset().rpmVelocity);
-        }
+            flywheelController.setSetpoint(flywheelRPM.getAsDouble());
 
         double pidOutput = flywheelController.calculate(flywheelSubsystem.getFlywheelRPM());
 

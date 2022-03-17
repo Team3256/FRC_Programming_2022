@@ -1,4 +1,4 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.shooter.Legacy;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.logging.Logger;
 
 public class IncreasePresetForShooter extends CommandBase {
+    /*
     private FlywheelSubsystem flywheelSubsystem;
 
     public IncreasePresetForShooter(FlywheelSubsystem m_flywheelSubsystem) {
@@ -23,4 +24,6 @@ public class IncreasePresetForShooter extends CommandBase {
     public boolean isFinished() {
         return true;
     }
+
+     */
 }

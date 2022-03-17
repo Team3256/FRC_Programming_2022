@@ -1,9 +1,10 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.shooter.Legacy;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 public class DecreasePresetForShooter extends CommandBase {
+    /*
     private FlywheelSubsystem flywheelSubsystem;
 
     public DecreasePresetForShooter(FlywheelSubsystem m_flywheelSubsystem) {
@@ -19,4 +20,6 @@ public class DecreasePresetForShooter extends CommandBase {
     public boolean isFinished() {
         return true;
     }
+
+     */
 }

@@ -1,10 +1,9 @@
-package frc.robot.commands.shooter;
+package frc.robot.commands.shooter.Legacy;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 
 public class SetShooterPreset extends CommandBase {
+    /*
     private FlywheelSubsystem flywheelSubsystem;
     private ShooterLocationPreset preset;
 
@@ -22,6 +21,8 @@ public class SetShooterPreset extends CommandBase {
     public boolean isFinished() {
         return true;
     }
+
+     */
 }
 
 
