@@ -20,12 +20,12 @@ public class Paths {
     private static TransferSubsystem transferSubsystem;
     private static HoodSubsystem hoodSubsystem;
 
-    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer, HoodSubsystem hood) {
+    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel,  HoodSubsystem hood, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         intakeSubsystem = intake;
         flywheelSubsystem = flywheel;
-        transferSubsystem = transfer;
         hoodSubsystem = hood;
+        transferSubsystem = transfer;
     }
 
     /* --------------------------------------------- */

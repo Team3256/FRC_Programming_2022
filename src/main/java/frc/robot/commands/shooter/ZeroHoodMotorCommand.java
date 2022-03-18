@@ -15,7 +15,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
      * zeros the hood motor and it's sensor
      */
     public ZeroHoodMotorCommand(HoodSubsystem hood) {
-        this.hood=hood;
+        this.hood = hood;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(hood);
     }
@@ -30,7 +30,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        hood.stopHood();
+        hood.stop();
         hood.zeroHoodMotor();
     }
 

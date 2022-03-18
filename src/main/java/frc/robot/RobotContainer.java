@@ -113,7 +113,7 @@ public class RobotContainer {
 
     public SendableChooser<Command> getCommandChooser() {
         if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem, hoodSubsystem);
+            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, hoodSubsystem, transferSubsystem);
         else
             return null;
     }

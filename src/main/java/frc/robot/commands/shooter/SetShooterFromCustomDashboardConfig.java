@@ -32,8 +32,8 @@ public class SetShooterFromCustomDashboardConfig extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        hoodSubsystem.stopHood();
-        flywheelSubsystem.setSpeed(0);
+        hoodSubsystem.stop();
+        flywheelSubsystem.stop();
     }
 
     @Override

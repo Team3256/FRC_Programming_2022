@@ -48,7 +48,7 @@ public class HoodSubsystem extends SubsystemBase {
     /**
      * stops the hood motor
      */
-    public void stopHood(){
+    public void stop(){
         hoodAngleMotor.neutralOutput();
     }
 

@@ -9,9 +9,9 @@ public class AutoChooser {
     private static SendableChooser<Command> autoChooser;
     private static TrajectoryFactory trajectoryFactory;
 
-    public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer, HoodSubsystem hood) {
+    public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, HoodSubsystem hood, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
-        Paths.initialize(drive, intake, flywheel, transfer, hood);
+        Paths.initialize(drive, intake, flywheel, hood, transfer);
 
         autoChooser = new SendableChooser<>();
 

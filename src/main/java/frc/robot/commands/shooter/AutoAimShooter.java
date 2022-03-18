@@ -27,9 +27,13 @@ public class AutoAimShooter extends CommandBase {
 
     @Override
     public void execute() {
-        double distanceToTarget = getRawDistanceToTarget();
-
-        autoAim(distanceToTarget);
+        double distance = getRawDistanceToTarget();
+        ShooterState ikShooterState = ballInverseKinematics(distance);
+        ShooterState correctedShooterState = new ShooterState(
+                flywheelSubsystem.getAngularVelocityFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle),
+                hoodSubsystem.getHoodValueFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle));
+        flywheelSubsystem.setSpeed(correctedShooterState.rpmVelocity);
+        hoodSubsystem.setHoodAngle(correctedShooterState.hoodAngle);
     }
 
     @Override
@@ -40,15 +44,6 @@ public class AutoAimShooter extends CommandBase {
     @Override
     public boolean isFinished() {
         return false;
-    }
-
-    public void autoAim(double distance) {
-        ShooterState ikShooterState = ballInverseKinematics(distance);
-
-        ShooterState correctedShooterState = new ShooterState(
-                flywheelSubsystem.getAngularVelocityFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle),
-                hoodSubsystem.getHoodValueFromCalibration(ikShooterState.rpmVelocity, ikShooterState.hoodAngle));
-
     }
 
     /**

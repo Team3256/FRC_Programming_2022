@@ -28,7 +28,7 @@ public class SetShooterFromCustomState extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        hoodSubsystem.stopHood();
+        hoodSubsystem.stop();
     }
 
     @Override
