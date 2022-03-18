@@ -24,7 +24,6 @@ import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
-import frc.robot.commands.shooter.Legacy.SetShooterFromLocationPreset;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
@@ -32,6 +31,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -205,7 +205,7 @@ public class RobotContainer {
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
 //        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem, hoodSubsystem));
+        operatorRightTrigger.whenHeld( new SetShooterFromShooterState(flywheelSubsystem, hoodSubsystem, new ShooterState(0, 0)));
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
         }
