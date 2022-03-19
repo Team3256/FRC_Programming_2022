@@ -52,6 +52,7 @@ public class HoodSubsystem extends SubsystemBase {
         hoodAngleMotor.neutralOutput();
     }
 
+
     /**
      * reverses the hood for zeroing the hood motor
      */
@@ -72,9 +73,6 @@ public class HoodSubsystem extends SubsystemBase {
         return !limitSwitch.get();
     }
 
-    /**
-     * Disables both the shooter hood and motors
-     */
 
     public double getHoodAngleFromInterpolator(double distance) {
         if(distanceToHoodAngleInterpolatingFunction == null){
@@ -82,12 +80,6 @@ public class HoodSubsystem extends SubsystemBase {
         }
         return distanceToHoodAngleInterpolatingFunction.value(distance);
     }
-
-    @Override
-    public void periodic(){
-        SmartDashboard.putBoolean("Hood Zero Limit Switch", this.isHoodLimitSwitchPressed());
-    }
-
     public double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
         if(hoodAngleInterpolatingFunction == null){
             logger.warning("Hood Angle Interpolation Function is NULL");
@@ -100,7 +92,6 @@ public class HoodSubsystem extends SubsystemBase {
         }
         return hoodAngle;
     }
-
     private void getHoodAngleInterpolatingFunctionFromPoints(){
         double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
         double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
@@ -116,9 +107,7 @@ public class HoodSubsystem extends SubsystemBase {
 
         hoodAngleInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, hoodValTrain);
-
     }
-
     private void trainDistanceToHoodAngleInterpolator() {
         double[] trainDistance = new double[SIMPLE_CALIB_TRAINING.size()];
         double[] trainHoodAngle = new double[SIMPLE_CALIB_TRAINING.size()];
@@ -128,5 +117,11 @@ public class HoodSubsystem extends SubsystemBase {
             trainHoodAngle[i] = dataPoint.hoodAngle;
         }
         distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainHoodAngle);
+    }
+
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putBoolean("Hood Zero Limit Switch", this.isHoodLimitSwitchPressed());
     }
 }
