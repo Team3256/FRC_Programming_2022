@@ -42,6 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
+    public void intakeDown(){
+        logger.info("Intake coming down");
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
     public void reverseOn(){
         leftintakeSolenoid.set(DoubleSolenoid.Value.kReverse);
         rightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
