@@ -18,17 +18,13 @@ import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
-
-
+    
     private static final RobotLogger logger = new RobotLogger(FlywheelSubsystem.class.getCanonicalName());
 
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-
     private double currentTargetSpeed;
-
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.FENDER;
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
 
@@ -61,7 +57,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         logger.info("Flywheel Initialized");
 
       
-       // getVelocityInterpolatingFunctionFromPoints();
+        //getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
 
     }
@@ -75,7 +71,6 @@ public class FlywheelSubsystem extends SubsystemBase {
         currentTargetSpeed = fromRpmToSu(velocity); // rev/s * 1s/10 (100ms) * 2048su/1rev
         masterLeftShooterMotor.set(ControlMode.Velocity, currentTargetSpeed);
     }
-
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
      * Flywheel speed is set by integrated PID controller
@@ -83,8 +78,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     public void setPercentSpeed(double percent) {
         masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
     }
-
-    /*
+    /**
     * Confirms if velocity is within margin of set point
     */
     public boolean isAtSetPoint() {
@@ -93,6 +87,9 @@ public class FlywheelSubsystem extends SubsystemBase {
         return (velocity <= currentTargetSpeed + SET_POINT_ERROR_MARGIN) &&
                 (velocity >= currentTargetSpeed - SET_POINT_ERROR_MARGIN);
     }
+    public void stop(){
+        setSpeed(0);
+    }
 
     public double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
         if(velocityInterpolatingFunction == null){
@@ -100,9 +97,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         }
         return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
     }
-
     private void getVelocityInterpolatingFunctionFromPoints(){
-
         double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
         double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
         double[][] angularVelocityTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()][ALL_SHOOTER_CALIB_TRAINING.size()];
@@ -118,7 +113,6 @@ public class FlywheelSubsystem extends SubsystemBase {
         velocityInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
                 .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
     }
-
     private void trainDistanceToFlywheelRPMInterpolator() {
         double[] trainDistance = new double[SIMPLE_CALIB_TRAINING.size()];
         double[] trainFlywheelRPM = new double[SIMPLE_CALIB_TRAINING.size()];
@@ -129,7 +123,6 @@ public class FlywheelSubsystem extends SubsystemBase {
         }
         distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
     }
-
     public double getFlywheelRPMFromInterpolator(double distance) {
         if(distanceToFlywheelRPMInterpolatingFunction == null){
             logger.warning("Distance to Flywheel RPM Interpolation Function is NULL");
@@ -144,27 +137,20 @@ public class FlywheelSubsystem extends SubsystemBase {
         double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
         return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
     }
+    public double getFlywheelRPM(){
+        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
+    }
 
     private double fromSuToRPM(double su){
         return su  * (10 * 60) / 2048;
     }
-
     private double fromRpmToSu(double rpm){
         return rpm  * 2048 / (10 * 60) ;
-    }
-
-    public double getFlywheelRPM(){
-        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
-
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
-    }
-
-    public void stop(){
-        setSpeed(0);
     }
 }
 
