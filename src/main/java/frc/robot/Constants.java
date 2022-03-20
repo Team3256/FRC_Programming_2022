@@ -97,10 +97,12 @@ public final class Constants {
         /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
         public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -6.52555427;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -4.76617418;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -2.366884418807923;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -0.638136;
+
+        // All in Degrees
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 261.383972;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 48.515625;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 352.880859;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 143.695679;
 
 
         public static final double MAX_METERS_PER_SECOND = 10;
