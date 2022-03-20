@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
+import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
@@ -40,6 +41,8 @@ import java.awt.Robot;
 
 import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
+import static frc.robot.Constants.TransferConstants.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -209,8 +212,11 @@ public class RobotContainer {
         operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem));
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
+            new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
         }
         dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
+        new Button(()-> flywheelSubsystem.isAtSetPoint() ).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
+
 
     }
 
