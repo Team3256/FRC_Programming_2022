@@ -341,7 +341,7 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 70.0; // in rpm TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 0.05; // in percent TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle

@@ -17,6 +17,8 @@ import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import java.util.function.DoubleSupplier;
+
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -193,8 +195,14 @@ public class FlywheelSubsystem extends SubsystemBase {
     public boolean isAtSetPoint(double setpoint) {
         double velocity = -getVelocity();
 
-        return (velocity <= setpoint + SET_POINT_ERROR_MARGIN) &&
-                (velocity >= setpoint - SET_POINT_ERROR_MARGIN);
+        return (velocity <= setpoint + SET_POINT_ERROR_MARGIN*setpoint) &&
+                (velocity >= setpoint - SET_POINT_ERROR_MARGIN*setpoint);
+    }
+    public boolean isAtSetPoint(DoubleSupplier setpoint) {
+        double velocity = -getVelocity();
+
+        return (velocity <= setpoint.getAsDouble() + SET_POINT_ERROR_MARGIN*setpoint.getAsDouble()) &&
+                (velocity >= setpoint.getAsDouble() - SET_POINT_ERROR_MARGIN*setpoint.getAsDouble());
     }
 
     /**

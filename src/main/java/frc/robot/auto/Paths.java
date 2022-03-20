@@ -1,10 +1,7 @@
 package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.transfer.TransferIndexForward;
@@ -127,6 +124,7 @@ public class Paths {
                     twoBallTarmacSideSegment,
                     new IntakeOn(intakeSubsystem)
                 )
+                .andThen(new InstantCommand(() -> System.out.println("FINISHED 2 BALL PATH!!!!")))
                 .andThen(getShootCommand(5)); // shoot
     }
 

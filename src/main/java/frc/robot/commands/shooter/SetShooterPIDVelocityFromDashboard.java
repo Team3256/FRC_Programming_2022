@@ -1,8 +1,12 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.commands.WaitAndVibrateCommand;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.math.BigDecimal;
@@ -14,17 +18,19 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
-    private DoubleSupplier flywheelRPMSupplier;
-
     private FlywheelSubsystem flywheelSubsystem;
-    public SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem, DoubleSupplier flywheelRPMSupplier) {
+
+    public SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
-        this.flywheelRPMSupplier = flywheelRPMSupplier;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
 
         SmartDashboard.putData("Flywheel LOW", flywheelControllerLow);
+    }
+    public  SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem, XboxController operatorController) {
+        this(flywheelSubsystem);
+        new Button(() -> flywheelSubsystem.isAtSetPoint(()->SmartDashboard.getNumber("Custom Velocity", 0))).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
     }
 
     @Override

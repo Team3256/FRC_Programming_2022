@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
@@ -143,6 +145,7 @@ public class RobotContainer {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        driverLeftTrigger.setThreshold(0.1);
 
 
         // Drivetrain Command
@@ -206,10 +209,10 @@ public class RobotContainer {
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
 //        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterPIDVelocityFromDashboard(flywheelSubsystem, ()->0));
+        operatorRightTrigger.whenHeld( new SetShooterPIDVelocityFromDashboard(flywheelSubsystem, operatorController));
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
-            new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
+            new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5, 0.5));
         }
         dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
 
@@ -255,7 +258,7 @@ public class RobotContainer {
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
-        driverRightBumper.toggleWhenActive(new IntakeOn(intakeSubsystem)); // TODO: bad
+        driverRightBumper.whenActive(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
             operatorBButton.whenHeld(
@@ -279,13 +282,16 @@ public class RobotContainer {
         DPadButton operatorLeftDpad = new DPadButton(operatorController, DPadButton.Direction.LEFT);
         DPadButton operatorRightDpad = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
 
-        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
+        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
 
-        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem));
-        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem));
+        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem), false);
+        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem), false);
 
-        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem));
-        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem));
+        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
+        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
+
+        new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
+                .whenActive(new HangerZeroRetract(hangerSubsystem));
     }
 
     public void resetPose() {
