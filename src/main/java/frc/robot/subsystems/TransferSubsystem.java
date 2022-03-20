@@ -100,6 +100,10 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Transfer Shooting Mode On");
     }
 
+    public double getCurrentBallCount(){
+        return currentBallCount;
+    }
+
 
     public void manualReverse(){
         isReversed = true;
