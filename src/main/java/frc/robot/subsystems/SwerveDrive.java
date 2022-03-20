@@ -16,13 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.helper.SmoothVelocity;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
-import static frc.robot.helper.SmoothVelocity.smoothVelocity;
 
 
 public class SwerveDrive extends SubsystemBase {
@@ -211,14 +209,6 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d lastPose = pose;
         pose = odometry.update(gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
-        Pose2d diff = lastPose.relativeTo(pose);
-        curr_velocity = new Pose2d(
-                new Translation2d(diff.getX() / dt, diff.getY() / dt),
-                new Rotation2d(diff.getRotation().getRadians() / dt)
-        );
-
-//       chassisSpeeds.vxMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getX(), chassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION, dt);
-//       chassisSpeeds.vyMetersPerSecond =  smoothVelocity(curr_velocity.getTranslation().getY(), chassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION, dt);
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

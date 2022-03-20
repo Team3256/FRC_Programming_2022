@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,95 +19,81 @@ import static frc.robot.Constants.IDConstants.*;
 public class HangerSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(HangerSubsystem.class.getCanonicalName());
 
-    private final TalonFX leftMasterTalonMotor;
-    private final TalonFX rightFollowerTalonMotor;
-    private final DoubleSolenoid hangerSolenoid;
+    private final TalonFX leftTalonMotor;
+    private final TalonFX rightTalonMotor;
+    private final DoubleSolenoid leftHangerSolenoid;
+    private final DoubleSolenoid rightHangerSolenoid;
 
     DigitalInput bottomLimitSwitch = new DigitalInput(HANGER_LIMITSWITCH_CHANNEL);
 
     public HangerSubsystem() {
-        leftMasterTalonMotor = TalonFXFactory.createTalonFX(
+        leftTalonMotor = TalonFXFactory.createTalonFX(
                 HANGER_LEFT_MASTER_TALON_ID,
                 MASTER_CONFIG,
                 MANI_CAN_BUS
         );
 
-        rightFollowerTalonMotor = TalonFXFactory.createFollowerTalonFX(
+        rightTalonMotor = TalonFXFactory.createTalonFX(
                 HANGER_RIGHT_FOLLOWER_TALON_ID,
-                leftMasterTalonMotor,
-                FOLLOWER_CONFIG,
+                MASTER_CONFIG,
                 MANI_CAN_BUS
         );
 
-        hangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, HANGER_SOLENOID_FORWARD, HANGER_SOLENOID_BACKWARD);
+        rightTalonMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,90,90,0));
+        leftTalonMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,90,90,0));
+
+        leftHangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, LEFT_HANGER_SOLENOID_FORWARD, LEFT_HANGER_SOLENOID_BACKWARD);
+        rightHangerSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, RIGHT_HANGER_SOLENOID_FORWARD, RIGHT_HANGER_SOLENOID_BACKWARD);
 
         logger.info("Hanger Initialized");
 
         pneumaticUpright();
     }
 
-    public void extend() {
+    public void extendToHangPosition() {
         logger.info("Extending");
-        double distance = EXTEND_DISTANCE;
-        leftMasterTalonMotor.set(ControlMode.Position, distance);
-    }
-
-    public void extendContinuously() {
-        logger.info("Extending Continously");
-        rightFollowerTalonMotor.set(TalonFXControlMode.PercentOutput, 0.15);
-    }
-
-    public void retractContinuously() {
-
-        logger.info("Retracting Continuously");
-        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
+        leftTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
+        rightTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
     }
 
     public void retractLeftContinuouslyToZero(){
         logger.info("Retracting Left Continuously for zero");
 
-        // Stop Following if Following
-        if (rightFollowerTalonMotor.getControlMode() == ControlMode.Follower)
-            rightFollowerTalonMotor.set(ControlMode.PercentOutput, 0);
-
-        leftMasterTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
+        leftTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
     public void retractRightContinuouslyToZero(){
         logger.info("Retracting Right Continuously for zero");
-        rightFollowerTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
+        rightTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
     public void retractToHang(){
         logger.info("Retracting to Hang");
-        leftMasterTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
+        leftTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
+        rightTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
     }
 
     public void extendPartial() {
-        rightFollowerTalonMotor.follow(leftMasterTalonMotor);
         logger.info("Extending Partially");
-        double distance = PARTIAL_DISTANCE ;
-        leftMasterTalonMotor.set(ControlMode.Position, distance);
+        leftTalonMotor.set(ControlMode.Position, PARTIAL_DISTANCE);
+        rightTalonMotor.set(ControlMode.Position, PARTIAL_DISTANCE);
     }
 
     public void pneumaticUpright() {
-        hangerSolenoid.set(kForward);
+        leftHangerSolenoid.set(kForward);
+        rightHangerSolenoid.set(kForward);
     }
 
     public void pneumaticSlant() {
-        hangerSolenoid.set(kReverse);
+        leftHangerSolenoid.set(kReverse);
+        rightHangerSolenoid.set(kReverse);
     }
 
     public void adjustRetract() {
 
         double distance = ADJUSTMENT_RETRACT_DISTANCE;
-        leftMasterTalonMotor.set(ControlMode.Position, distance);
+        leftTalonMotor.set(ControlMode.Position, distance);
     }
-
-    public void zeroHanger(){
-        leftMasterTalonMotor.getSensorCollection().setIntegratedSensorPosition(0,0);
-    }
-
     /**
      * check if the bottom limit switch is triggered
      * @return returns if the bottom limit switch is triggered
@@ -115,12 +102,13 @@ public class HangerSubsystem extends SubsystemBase {
         return bottomLimitSwitch.get();
     }
 
-    /**
-     * get the position of master talon in rotations of spool
-     * @return returns position of master talon in rotations of spool
-     */
-    public double getPosition() {
-        return (leftMasterTalonMotor.getSelectedSensorPosition());
+    public double getLeftPosition() {
+        return (leftTalonMotor.getSelectedSensorPosition());
+    }
+
+
+    public double getRightPosition() {
+        return (rightTalonMotor.getSelectedSensorPosition());
     }
 
     /**
@@ -128,7 +116,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the full reached intended distance
      */
     public boolean isFullPositionReached() {
-        return getPosition() >= EXTEND_DISTANCE;
+        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, 300) &&
+                isWithinRange(getRightPosition(), EXTEND_DISTANCE, 300);
     }
 
     /**
@@ -136,7 +125,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the partial reached intended distance
      */
     public boolean isPartialPositionReached() {
-        return getPosition() >= PARTIAL_DISTANCE;
+        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, 100) &&
+                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, 100);
     }
 
     /**
@@ -144,35 +134,48 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if either talon or follower talon motor has reached or exceeded current threshold
      */
     public boolean isCurrentSpiking() {
-        return leftMasterTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD || rightFollowerTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+        return leftTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD || rightTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
     public boolean isLeftHangerCurrentSpiking(){
-        return leftMasterTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+        return leftTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
     public boolean isRightHangerCurrentSpiking(){
-        return rightFollowerTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+        return rightTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
     public void stopLeftMotor(){
-        leftMasterTalonMotor.set(ControlMode.PercentOutput, 0);
+        leftTalonMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void stopRightMotor(){
-        rightFollowerTalonMotor.set(ControlMode.PercentOutput, 0);
+        rightTalonMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void stopMotors() {
         // Stop Motors together, by Following
-        rightFollowerTalonMotor.follow(leftMasterTalonMotor);
+        rightTalonMotor.follow(leftTalonMotor);
 
-        leftMasterTalonMotor.neutralOutput();
+        leftTalonMotor.neutralOutput();
+    }
+
+    public void zeroLeftMotor(){
+        leftTalonMotor.setSelectedSensorPosition(0);
+    }
+
+    public void zeroRightMotor(){
+        rightTalonMotor.setSelectedSensorPosition(0);
+    }
+
+    private boolean isWithinRange(double value, double setpoint, double delta){
+        return Math.abs(setpoint-value) <= delta;
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Left Supply",leftMasterTalonMotor.getSupplyCurrent());
-        SmartDashboard.putNumber("Right Supply", rightFollowerTalonMotor.getSupplyCurrent());
+        SmartDashboard.putNumber("Left Position", leftTalonMotor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Right Position", rightTalonMotor.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Left Target Pos", EXTEND_DISTANCE);
     }
 }
