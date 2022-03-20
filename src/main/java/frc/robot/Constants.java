@@ -99,10 +99,10 @@ public final class Constants {
 
 
         // All in Degrees
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 261.383972;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 48.515625;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 352.880859;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 143.695679;
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.977361;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 0.846566;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 3.166089;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 4.067925;
 
 
         public static final double MAX_METERS_PER_SECOND = 10;
@@ -347,9 +347,9 @@ public final class Constants {
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
 
         //PID
-        public static final double SHOOTER_MASTER_TALON_PID_P = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_P = 0.0005;
         public static final double SHOOTER_MASTER_TALON_PID_I = 0;
-        public static final double SHOOTER_MASTER_TALON_PID_D = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_D = 0.000008;
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
         // Hood Angle Constants
