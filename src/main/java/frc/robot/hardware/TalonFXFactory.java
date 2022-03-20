@@ -22,6 +22,9 @@ public class TalonFXFactory {
         motor.clearStickyFaults();
 
         motor.configAllSettings(config.TALONFX_CONFIG);
+        motor.configStatorCurrentLimit(config.STATOR_CURRENT_LIMIT);
+        motor.configSupplyCurrentLimit(config.SUPPLY_CURRENT_LIMIT);
+
 
         motor.config_kP(0, config.PIDF_CONSTANTS.kP);
         motor.config_kI(0, config.PIDF_CONSTANTS.kI);
