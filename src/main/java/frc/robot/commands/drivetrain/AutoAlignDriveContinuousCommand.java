@@ -2,6 +2,7 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
@@ -44,6 +45,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
         this.operatorJoystickX = operatorJoystickX;
 
         autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
+        SmartDashboard.putData("AUTO ALIGN PID", autoAlignPIDController);
         autoAlignPIDController.setSetpoint(0);
         autoAlignPIDController.enableContinuousInput(-180,180);
 

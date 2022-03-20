@@ -33,7 +33,7 @@ import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
@@ -95,7 +95,7 @@ public final class Constants {
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
         /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 60,60,0); // in Amps, limits amount of current drawn to brake
 
 
         // All in Degrees
@@ -121,9 +121,9 @@ public final class Constants {
 
 
         //Non-final Allow for Changing via Smart Dashboard
-        public static double SWERVE_TURRET_KP = 0.1;
+        public static double SWERVE_TURRET_KP = 0.05;
         public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 0;
+        public static double SWERVE_TURRET_KD = 0.0008;
 
         public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
         public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
@@ -145,8 +145,8 @@ public final class Constants {
         public static final boolean AUTO_DEBUG = true;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 15;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 3;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 4;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
@@ -341,7 +341,7 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 70.0; // in rpm TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle

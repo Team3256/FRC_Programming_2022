@@ -152,20 +152,12 @@ public class TransferSubsystem extends SubsystemBase {
 
         // Starts Index / Counting Process when First Detecting Ball
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
-                .whenActive(new ParallelCommandGroup(
-                        new InstantCommand(this::ballIndexStart)
-                ));
+                .whenActive(new TransferIndexForward(this))
+                .whenInactive(new TransferOff(this));
 
-        // Stop Running Transfer when past end mark, also evaluates color
-        new Trigger(this::isTransferStopIRBroken).and(new Trigger(()->!isReversed)).and(new Trigger(() -> currentBallCount != 1))
-                .whenInactive(new ParallelCommandGroup(
-                    new InstantCommand(this::ballIndexEnd)));
-
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(() -> this.currentBallCount == 1))
-                .whenInactive(new ParallelCommandGroup(
-                            new InstantCommand(this::ballIndexEnd)
-                            )
-                        );
+       /* new Trigger(this::isTransferStartIRBroken).and(new Trigger(() -> this.currentBallCount == 1))
+                .whenInactive(new TransferOff(this)
+                        );*/
 
         // Subtract Balls shot out of shooter
         new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversed))
@@ -307,5 +299,8 @@ public class TransferSubsystem extends SubsystemBase {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
         SmartDashboard.putBoolean("Forward IR Sesnro", this.isTransferStartIRBroken());
+
+        SmartDashboard.putBoolean("Mid IR Sesnro", this.isTransferStopIRBroken());
+        SmartDashboard.putNumber("Transfer Speed", FlywheelSubsystem.fromSuToRPM(transferMotor.getSelectedSensorVelocity()));
     }
 }

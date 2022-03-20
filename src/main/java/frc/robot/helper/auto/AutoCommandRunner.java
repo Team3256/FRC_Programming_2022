@@ -16,44 +16,46 @@ public class AutoCommandRunner {
     private Pose2d lastPose;
 
     public AutoCommandRunner(List<AutoCommandMarker> markers) {
-        commandMarkers = markers;
+        commandMarkers = new ArrayList<>(markers);
     }
 
     public void execute(Pose2d currentPose) {
-        Iterator<AutoCommandMarker> commandMarkerIterator = commandMarkers.iterator();
-        Iterator<AutoCommandMarker> startedCommandMarkerIterator = startedCommandMarkers.iterator();
         if (lastPose == null) {
-            while (commandMarkerIterator.hasNext()) {
-                AutoCommandMarker autoCommandMarker = commandMarkerIterator.next();
+            for (int i = 0; i < commandMarkers.size(); i++) {
+                AutoCommandMarker autoCommandMarker = commandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getMarker(), currentPose)) {
                     autoCommandMarker.getCommand().schedule();
                     startedCommandMarkers.add(autoCommandMarker);
-                    commandMarkerIterator.remove();
+                    commandMarkers.remove(i);
+                    i--;
                 }
             }
 
-            while (startedCommandMarkerIterator.hasNext()) { // cancel started commands
-                AutoCommandMarker autoCommandMarker = startedCommandMarkerIterator.next();
+            for (int i = 0; i < startedCommandMarkers.size(); i++) { // cancel started commands
+                AutoCommandMarker autoCommandMarker = startedCommandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getEndingMarker(), currentPose)) {
                     autoCommandMarker.getCommand().cancel();
-                    startedCommandMarkerIterator.remove();
+                    startedCommandMarkers.remove(i);
+                    i--;
                 }
             }
         } else {
-            while (commandMarkerIterator.hasNext()) {
-                AutoCommandMarker autoCommandMarker = commandMarkerIterator.next();
+            for (int i = 0; i < commandMarkers.size(); i++) {
+                AutoCommandMarker autoCommandMarker = commandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getMarker(), currentPose, lastPose)) {
                     autoCommandMarker.getCommand().schedule();
                     startedCommandMarkers.add(autoCommandMarker);
-                    commandMarkerIterator.remove();
+                    commandMarkers.remove(i);
+                    i--;
                 }
             }
 
-            while (startedCommandMarkerIterator.hasNext()) { // cancel started commands
-                AutoCommandMarker autoCommandMarker = startedCommandMarkerIterator.next();
+            for (int i = 0; i < startedCommandMarkers.size(); i++) { // cancel started commands
+                AutoCommandMarker autoCommandMarker = startedCommandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getEndingMarker(), currentPose, lastPose)) {
                     autoCommandMarker.getCommand().cancel();
-                    startedCommandMarkerIterator.remove();
+                    startedCommandMarkers.remove(i);
+                    i--;
                 }
             }
         }

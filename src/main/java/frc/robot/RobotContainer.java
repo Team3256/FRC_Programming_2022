@@ -6,14 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.SwerveConstants;
@@ -34,7 +32,6 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -209,13 +206,12 @@ public class RobotContainer {
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
 //        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem));
+        operatorRightTrigger.whenHeld( new SetShooterPIDVelocityFromDashboard(flywheelSubsystem, ()->0));
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
             new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
         }
         dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
-        new Button(()-> flywheelSubsystem.isAtSetPoint() ).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
 
 
     }
@@ -259,7 +255,7 @@ public class RobotContainer {
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
-        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        driverRightBumper.toggleWhenActive(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
             operatorBButton.whenHeld(

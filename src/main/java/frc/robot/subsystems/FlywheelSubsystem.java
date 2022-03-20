@@ -38,8 +38,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
 
-    private double zeroPoint = 0;
-
     private double currentTargetSpeed;
 
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.FENDER;
@@ -147,7 +145,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * motor moves to hoodAngle position
      */
     public void setHoodAngle(double hoodAngle) {
-        hoodAngleMotor.set(ControlMode.Position, hoodAngle - zeroPoint);
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle);
     }
     /**
      * stops the hood motor
@@ -166,7 +164,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * zeros the hood motor sensor
      */
     public void zeroHoodMotor(){
-        zeroPoint = hoodAngleMotor.getSelectedSensorPosition();
+        hoodAngleMotor.setSelectedSensorPosition(0);
     }
     /**
      * checks if limit switch is pressed
@@ -192,11 +190,11 @@ public class FlywheelSubsystem extends SubsystemBase {
     /*
     * Confirms if velocity is within margin of set point
     */
-    public boolean isAtSetPoint() {
-        double velocity = getVelocity();
+    public boolean isAtSetPoint(double setpoint) {
+        double velocity = -getVelocity();
 
-        return (velocity <= currentTargetSpeed + SET_POINT_ERROR_MARGIN) &&
-                (velocity >= currentTargetSpeed - SET_POINT_ERROR_MARGIN);
+        return (velocity <= setpoint + SET_POINT_ERROR_MARGIN) &&
+                (velocity >= setpoint - SET_POINT_ERROR_MARGIN);
     }
 
     /**
@@ -340,11 +338,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
     }
 
-    private double fromSuToRPM(double su){
+    public static double fromSuToRPM(double su){
         return su  * (10 * 60) / 2048;
     }
 
-    private double fromRpmToSu(double rpm){
+    public static double fromRpmToSu(double rpm){
         return rpm  * 2048 / (10 * 60) ;
     }
 
@@ -381,10 +379,15 @@ public class FlywheelSubsystem extends SubsystemBase {
         return ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
     }
 
+    public boolean isHoodAtCurrentLimit(){
+        return hoodAngleMotor.getSupplyCurrent() >= 0.6 && hoodAngleMotor.getSupplyCurrent() <= 4;
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Hood Zero Limit Switch", this.isHoodLimitSwitchPressed());
-        SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Flywheel RPM",-getVelocity());
+        SmartDashboard.putNumber("Hood Position", hoodAngleMotor.getSelectedSensorPosition());
     }
 }
 

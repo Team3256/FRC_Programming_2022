@@ -213,8 +213,6 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
 
-        debugSwerveOffsets();
-
         outputToDashboard();
     }
 
