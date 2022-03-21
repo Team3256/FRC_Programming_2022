@@ -273,23 +273,16 @@ public class RobotContainer {
     }
 
     private void configureHanger() {
-        //TODO: IF we are doing traversal, Ensure that Intake is Down with Commands
 
         JoystickButton operatorAButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        DPadButton operatorLeftDpad = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton operatorRightDpad = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
-
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
-
-        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem), false);
-        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem), false);
-
         operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
 
+        // Auto Retract
         new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
                 .whenActive(new HangerZeroRetract(hangerSubsystem));
     }
