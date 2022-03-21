@@ -258,7 +258,7 @@ public class RobotContainer {
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
-        driverRightBumper.whenActive(new IntakeOn(intakeSubsystem)); // TODO: bad
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
             operatorBButton.whenHeld(

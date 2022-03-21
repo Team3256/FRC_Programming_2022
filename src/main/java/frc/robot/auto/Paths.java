@@ -2,6 +2,8 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
+import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.transfer.TransferIndexForward;
@@ -16,6 +18,7 @@ import frc.robot.subsystems.TransferSubsystem;
 import java.util.List;
 
 public class Paths {
+    private static SwerveDrive driveSubsystem;
     private static TrajectoryFactory trajectoryFactory;
     private static IntakeSubsystem intakeSubsystem;
     private static FlywheelSubsystem flywheelSubsystem;
@@ -23,6 +26,7 @@ public class Paths {
 
     public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
+        driveSubsystem = drive;
         intakeSubsystem = intake;
         flywheelSubsystem = flywheel;
         transferSubsystem = transfer;
@@ -137,9 +141,9 @@ public class Paths {
         );
 
         return twoBallTarmacSideSegment
-                .andThen(new WaitCommand(1))
+                .andThen(getShootCommand(3))
                 .andThen(threeBallTarmacSideSegment)
-                .andThen(new WaitCommand(0.1));
+                .andThen(getShootCommand(3));
     }
 
     public static Command get4BallFarTarmac2BallSide() {
@@ -195,7 +199,7 @@ public class Paths {
         public static AutoCommandRunner getThreeBallRunner() {
             List<AutoCommandMarker> threeBallSegmentMarkers = List.of(
                     new AutoCommandMarker(new Translation2d(6.13, 2.53), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(5.16, 1.91), getRevUpCommand())
+                    new AutoCommandMarker(new Translation2d(5.22, 2.1), getRevUpCommand())
             );
 
             return new AutoCommandRunner(threeBallSegmentMarkers);
@@ -203,7 +207,7 @@ public class Paths {
 
         public static AutoCommandRunner getFourBallRunner() {
             List<AutoCommandMarker> fourBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(2.73, 2.42), new Translation2d(3, 1.48), new IntakeOn(intakeSubsystem)),
+                    new AutoCommandMarker(new Translation2d(5.72, 2.77), new IntakeOn(intakeSubsystem)),
                     new AutoCommandMarker(new Translation2d(3, 1.48), getRevUpCommand())
             );
 
@@ -243,20 +247,24 @@ public class Paths {
     }
 
     private static Command getShootCommand(double timeToShoot) {
+        Command tranferForward = new TransferIndexForward(transferSubsystem);
         return
                 new ParallelDeadlineGroup( // TODO dont be bad
-                    new WaitCommand(timeToShoot),
-                    new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 1300/*2290*/, 140000)), //TODO: FIX ME (TESTING)
-                    new WaitCommand(timeToShoot * 0.25).andThen(
+                    new WaitCommand(timeToShoot * 0.7),
+                    new AutoAlignInPlaceCommand(driveSubsystem),
+                    new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
+                    new WaitCommand(timeToShoot * 0.2).andThen(
                             new InstantCommand(
-                                    () -> CommandScheduler.getInstance().schedule(new TransferIndexForward(transferSubsystem))
+                                    () -> CommandScheduler.getInstance().schedule(tranferForward)
                             )
                     )
-                );
+                ).andThen(new InstantCommand(
+                        () -> CommandScheduler.getInstance().cancel(tranferForward)
+                ));
     }
 
     private static Command getRevUpCommand() {
-        return new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 1300/*2290*/, 140000)); //TODO: FIX ME (TESTING)
+        return new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
 
     }
 }

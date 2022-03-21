@@ -110,7 +110,6 @@ public class PPTrajectoryFollowCommand extends CommandBase {
     public void execute() {
         double now = timer.get();
         now = now >= trajectoryDuration ? trajectoryDuration - 0.01 : now; // if overtime, dont error sampling
-        logger.info("Trajectory Time: " + now);
 
         PathPlannerTrajectory.PathPlannerState desired = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(now);
         Pose2d currentPose = driveSubsystem.getPose();
@@ -133,7 +132,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= trajectoryDuration * 1.05;
+        return timer.get() >= trajectoryDuration * 1.08;
     } // give a little more time to be in the right place
 
     @Override
@@ -141,7 +140,6 @@ public class PPTrajectoryFollowCommand extends CommandBase {
         if (autoCommandRunner != null) {
             autoCommandRunner.end();
         }
-        logger.warning("Trajectory Ended: " + interrupted);
         driveSubsystem.drive(new ChassisSpeeds());
     }
 }
