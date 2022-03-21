@@ -141,7 +141,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
         if (autoCommandRunner != null) {
             autoCommandRunner.end();
         }
-        System.out.println("Auto Command Ended");
+        logger.warning("Trajectory Ended: " + interrupted);
         driveSubsystem.drive(new ChassisSpeeds());
     }
 }

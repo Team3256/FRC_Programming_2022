@@ -36,7 +36,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     @Override
     public void initialize() {
 
-        SmartDashboard.setDefaultNumber("Custom Velocity", 1000);
+        SmartDashboard.setDefaultNumber("Custom Velocity", 1200);
         SmartDashboard.setDefaultNumber("Custom Hood Angle", 0);
     }
 
