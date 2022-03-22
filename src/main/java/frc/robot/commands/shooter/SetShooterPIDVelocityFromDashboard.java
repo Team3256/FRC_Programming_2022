@@ -25,8 +25,6 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
-
-        SmartDashboard.putData("Flywheel LOW", flywheelControllerLow);
     }
     public  SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);

@@ -33,7 +33,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
        }
 
-   public  SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, ShooterState shooterState, XboxController operatorController) {
+   public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, ShooterState shooterState, XboxController operatorController) {
         this(flywheelSubsystem, shooterState);
         new Button(() -> flywheelSubsystem.isAtSetPoint(shooterState.rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
    }

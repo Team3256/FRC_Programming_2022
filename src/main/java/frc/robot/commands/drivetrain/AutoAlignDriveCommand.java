@@ -64,7 +64,6 @@ public class AutoAlignDriveCommand extends PIDCommand {
                 drivetrainSubsystem);
         getController().enableContinuousInput(-180,180);
         getController().setTolerance(TURN_TOLERANCE, TURN_RATE_TOLERANCE);
-        SmartDashboard.putData("Auto AIM PID", getController());
 
     }
 

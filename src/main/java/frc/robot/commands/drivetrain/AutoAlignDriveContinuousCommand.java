@@ -45,7 +45,6 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
         this.operatorJoystickX = operatorJoystickX;
 
         autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
-        SmartDashboard.putData("AUTO ALIGN PID", autoAlignPIDController);
         autoAlignPIDController.setSetpoint(0);
         autoAlignPIDController.enableContinuousInput(-180,180);
 

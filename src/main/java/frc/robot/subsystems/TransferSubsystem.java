@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,6 +58,9 @@ public class TransferSubsystem extends SubsystemBase {
 
     // Linked list for FIFO queue
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
+
+    // For Tracking Ball RPM
+    public static FlywheelSubsystem flywheelSubsystem;
 
 
     private double currentBallCount;
@@ -247,6 +252,9 @@ public class TransferSubsystem extends SubsystemBase {
     private void removeShotBallFromIndex(){
         logger.info("Ball Leaving Transfer by Shooting");
 
+        if (flywheelSubsystem != null)
+            logger.info("Ball Leaving At RPM: " + flywheelSubsystem.getFlywheelRPM() + " rpm");
+
         currentBallCount--;
         if (currentBallCount < 0) {
             currentBallCount = 0;
@@ -298,9 +306,9 @@ public class TransferSubsystem extends SubsystemBase {
     public void periodic() {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
-        SmartDashboard.putBoolean("Forward IR Sesnro", this.isTransferStartIRBroken());
+        NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
 
-        SmartDashboard.putBoolean("Mid IR Sesnro", this.isTransferStopIRBroken());
-        SmartDashboard.putNumber("Transfer Speed", FlywheelSubsystem.fromSuToRPM(transferMotor.getSelectedSensorVelocity()));
+        NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
+
     }
 }

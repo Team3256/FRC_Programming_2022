@@ -171,11 +171,4 @@ public class HangerSubsystem extends SubsystemBase {
     private boolean isWithinRange(double value, double setpoint, double delta){
         return Math.abs(setpoint-value) <= delta;
     }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Left Position", leftTalonMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Right Position", rightTalonMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Left Target Pos", EXTEND_DISTANCE);
-    }
 }
