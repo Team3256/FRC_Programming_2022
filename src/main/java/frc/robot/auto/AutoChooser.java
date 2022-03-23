@@ -24,6 +24,7 @@ public class AutoChooser {
         Command doNothing = new DefaultDriveCommandRobotOriented(drive);
         autoChooser.setDefaultOption("Do Nothing", doNothing);
 
+        // path planner dot is the shooter
         Command zeroBallTaxi = Paths.get0BallTaxi();
         autoChooser.addOption("0 Ball Taxi | Start Tarmac | Any Side", zeroBallTaxi);
 
