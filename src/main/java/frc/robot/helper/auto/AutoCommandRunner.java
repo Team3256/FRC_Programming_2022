@@ -14,7 +14,7 @@ import static frc.robot.Constants.AutoConstants.COMMAND_MARKER_THRESHOLD;
 
 public class AutoCommandRunner {
     private RobotLogger logger = new RobotLogger(AutoCommandRunner.class.getCanonicalName());
-    private List<AutoCommandMarker> commandMarkers;
+    private List<AutoCommandMarker> commandMarkers = new ArrayList<>();
     private List<AutoCommandMarker> startedCommandMarkers = new ArrayList<>();
     private Pose2d lastPose;
 

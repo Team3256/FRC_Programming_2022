@@ -155,7 +155,7 @@ public final class Constants {
 
         public static double P_Y_CONTROLLER = 2.2;
         public static double I_Y_CONTROLLER = 0.025;
-        public static double D_Y_CONTROLLER = 0;
+        public static double D_Y_CONTROLLER = 0.05;
 
         public static double TRANSLATION_FF = 0.3;
 
