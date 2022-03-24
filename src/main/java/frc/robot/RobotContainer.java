@@ -215,7 +215,7 @@ public class RobotContainer {
         }
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
-        new Button(()-> flywheelSubsystem.isAtSetPoint() ).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
+        new Button(()-> flywheelSubsystem.isAtSetPoint(flywheelSubsystem.getCurrentTargetSpeed())).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
     }
 
     private void configureDebugShooter(){

@@ -136,7 +136,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
-     * Flywheel speed is set by integrated PID controller
+     * Flywheel speed is set by integrated get controller
      */
     public void setPercentSpeed(double percent) {
         masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
@@ -192,6 +192,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     /*
     * Confirms if velocity is within margin of set point
     */
+    public double getCurrentTargetSpeed() {
+        return currentTargetSpeed;
+    }
+
     public boolean isAtSetPoint(double setpoint) {
         double velocity = -getVelocity();
 
