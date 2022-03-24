@@ -36,7 +36,6 @@ public class ZeroHoodMotorCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        SmartDashboard.putBoolean("Limit", flywheel.isHoodLimitSwitchPressed());
         return flywheel.isHoodLimitSwitchPressed();
     }
 }

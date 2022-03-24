@@ -6,16 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
@@ -128,6 +128,7 @@ public class RobotContainer {
 
     private void initializeShooter() {
         this.flywheelSubsystem = new FlywheelSubsystem();
+        TransferSubsystem.flywheelSubsystem = flywheelSubsystem;
     }
 
     private void initializeTransfer() {
@@ -145,7 +146,8 @@ public class RobotContainer {
     private void configureDrivetrain() {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton driverRightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+        driverRightTrigger.setThreshold(0.1);
 
 
         // Drivetrain Command
@@ -162,10 +164,10 @@ public class RobotContainer {
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
-        driverLeftTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
+        driverRightTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
                 drivetrainSubsystem,
-                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
@@ -197,6 +199,7 @@ public class RobotContainer {
     private void configureShooter() {
 
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
         DPadButton dPadLeft= new DPadButton(operatorController, DPadButton.Direction.LEFT);
 
@@ -205,7 +208,7 @@ public class RobotContainer {
 
         dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.LAUNCHPAD));
         dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
-        
+
         if (TRANSFER) {
             operatorRightTrigger.whenHeld(new SetShooterFromLocationPreset(flywheelSubsystem).andThen(new TransferShootForward(transferSubsystem)));
             new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
@@ -254,7 +257,7 @@ public class RobotContainer {
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
-        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
             operatorBButton.whenHeld(
@@ -275,16 +278,13 @@ public class RobotContainer {
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        DPadButton operatorLeftDpad = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton operatorRightDpad = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
+        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
+        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
 
-        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
-
-        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem));
-        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem));
-
-        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem));
-        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem));
+        // Auto Retract
+        new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
+                .whenActive(new HangerZeroRetract(hangerSubsystem));
     }
 
     public void resetPose() {

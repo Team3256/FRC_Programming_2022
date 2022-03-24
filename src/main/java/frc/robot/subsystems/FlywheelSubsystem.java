@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,8 @@ import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
+import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -35,8 +38,6 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
-
-    private double zeroPoint = 0;
 
     private double currentTargetSpeed;
 
@@ -146,7 +147,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * motor moves to hoodAngle position
      */
     public void setHoodAngle(double hoodAngle) {
-        hoodAngleMotor.set(ControlMode.Position, hoodAngle - zeroPoint);
+        hoodAngleMotor.set(ControlMode.Position, hoodAngle);
     }
     /**
      * stops the hood motor
@@ -165,7 +166,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * zeros the hood motor sensor
      */
     public void zeroHoodMotor(){
-        zeroPoint = hoodAngleMotor.getSelectedSensorPosition();
+        hoodAngleMotor.setSelectedSensorPosition(0);
     }
     /**
      * checks if limit switch is pressed
@@ -191,11 +192,17 @@ public class FlywheelSubsystem extends SubsystemBase {
     /*
     * Confirms if velocity is within margin of set point
     */
-    public boolean isAtSetPoint() {
-        double velocity = getVelocity();
+    public boolean isAtSetPoint(double setpoint) {
+        double velocity = -getVelocity();
 
-        return (velocity <= currentTargetSpeed + SET_POINT_ERROR_MARGIN) &&
-                (velocity >= currentTargetSpeed - SET_POINT_ERROR_MARGIN);
+        return (velocity <= setpoint + SET_POINT_ERROR_MARGIN*setpoint) &&
+                (velocity >= setpoint - SET_POINT_ERROR_MARGIN*setpoint);
+    }
+    public boolean isAtSetPoint(DoubleSupplier setpoint) {
+        double velocity = -getVelocity();
+
+        return (velocity <= setpoint.getAsDouble() + SET_POINT_ERROR_MARGIN*setpoint.getAsDouble()) &&
+                (velocity >= setpoint.getAsDouble() - SET_POINT_ERROR_MARGIN*setpoint.getAsDouble());
     }
 
     /**
@@ -339,11 +346,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
     }
 
-    private double fromSuToRPM(double su){
+    public static double fromSuToRPM(double su){
         return su  * (10 * 60) / 2048;
     }
 
-    private double fromRpmToSu(double rpm){
+    public static double fromRpmToSu(double rpm){
         return rpm  * 2048 / (10 * 60) ;
     }
 
@@ -380,10 +387,13 @@ public class FlywheelSubsystem extends SubsystemBase {
         return ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
     }
 
+    public boolean isHoodAtCurrentLimit(){
+        return hoodAngleMotor.getSupplyCurrent() >= 0.6 && hoodAngleMotor.getSupplyCurrent() <= 4;
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Hood Zero Limit Switch", this.isHoodLimitSwitchPressed());
-        SmartDashboard.putNumber("Flywheel RPM", masterLeftShooterMotor.getSelectedSensorVelocity());
+        NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean( this.isHoodLimitSwitchPressed());
     }
 }
 

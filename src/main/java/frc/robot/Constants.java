@@ -95,12 +95,14 @@ public final class Constants {
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
         /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 60,60,0); // in Amps, limits amount of current drawn to brake
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -6.52555427;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -4.76617418;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -2.366884418807923;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -0.638136;
+
+        // All in Degrees
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.977361;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 0.846566;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 3.166089;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 4.067925;
 
 
         public static final double MAX_METERS_PER_SECOND = 10;
@@ -119,9 +121,9 @@ public final class Constants {
 
 
         //Non-final Allow for Changing via Smart Dashboard
-        public static double SWERVE_TURRET_KP = 0.1;
+        public static double SWERVE_TURRET_KP = 0.05;
         public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 0;
+        public static double SWERVE_TURRET_KD = 0.0008;
 
         public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
         public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
@@ -140,10 +142,10 @@ public final class Constants {
 
     }
     public static class AutoConstants {
-        public static final boolean AUTO_DEBUG = true;
+        public static final boolean AUTO_DEBUG = false;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 15;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 13;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
@@ -153,7 +155,7 @@ public final class Constants {
 
         public static double P_Y_CONTROLLER = 2.2;
         public static double I_Y_CONTROLLER = 0.025;
-        public static double D_Y_CONTROLLER = 0;
+        public static double D_Y_CONTROLLER = 0.05;
 
         public static double TRANSLATION_FF = 0.3;
 
@@ -339,15 +341,15 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 0.05; // in percent TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
 
         //PID
-        public static final double SHOOTER_MASTER_TALON_PID_P = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_P = 0.0005;
         public static final double SHOOTER_MASTER_TALON_PID_I = 0;
-        public static final double SHOOTER_MASTER_TALON_PID_D = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_D = 0.000008;
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
         // Hood Angle Constants
