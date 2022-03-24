@@ -8,16 +8,14 @@ import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
 
 import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 
+@Deprecated
 public class SetShooterFromLocationPreset extends CommandBase {
     private FlywheelSubsystem flywheelSubsystem;
     private ShooterLocationPreset shooterLocationPreset;
     private ShooterState shooterState;
 
     public SetShooterFromLocationPreset(FlywheelSubsystem flywheelSubsystem) {
-        this.shooterLocationPreset = flywheelSubsystem.getShooterLocationPreset();
-        this.flywheelSubsystem = flywheelSubsystem;
-
-        addRequirements(flywheelSubsystem);
+        this(flywheelSubsystem, flywheelSubsystem.getShooterLocationPreset());
     }
 
     public SetShooterFromLocationPreset(FlywheelSubsystem flywheelSubsystem, ShooterLocationPreset preset) {
@@ -31,7 +29,10 @@ public class SetShooterFromLocationPreset extends CommandBase {
     public void initialize() {
         if (shooterLocationPreset != null) {
             flywheelSubsystem.setShooterLocationPreset(shooterLocationPreset);
+        } else {
+            shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
         }
+
         shooterState = ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
 
         flywheelSubsystem.setSpeed(shooterState.rpmVelocity);

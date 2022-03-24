@@ -117,7 +117,6 @@ public class FlywheelSubsystem extends SubsystemBase {
         SmartDashboard.putString("Shooter Preset: ", preset.toString());
         logger.info("Shooter Preset Changed to " + preset);
         this.shooterLocationPreset = preset;
-        //possibly set something here
     }
 
     public ShooterLocationPreset getShooterLocationPreset() {
@@ -128,6 +127,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @param velocity Angular Velocity in (rev/s)
      * Flywheel speed is set by integrated PID controller
      */
+    @Deprecated
     public void setSpeed(double velocity) {
         // formula for converting m/s to sensor units/100ms
         currentTargetSpeed = fromRpmToSu(velocity); // rev/s * 1s/10 (100ms) * 2048su/1rev

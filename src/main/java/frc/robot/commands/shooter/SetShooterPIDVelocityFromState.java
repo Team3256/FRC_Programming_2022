@@ -1,7 +1,6 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -12,30 +11,27 @@ import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.math.BigDecimal;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 
 public class SetShooterPIDVelocityFromState extends CommandBase {
-    private FlywheelSubsystem.ShooterLocationPreset shooterLocationPreset;
-
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
-    private DoubleSupplier flywheelRPMSupplier;
 
     private FlywheelSubsystem flywheelSubsystem;
-    private ShooterState shooterState;
+    private Supplier<ShooterState> shooterStateSupplier;
 
-    public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, ShooterState shooterState) {
+    public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier) {
         this.flywheelSubsystem = flywheelSubsystem;
-        this.shooterState = shooterState;
-        this.flywheelRPMSupplier = flywheelRPMSupplier;
+        this.shooterStateSupplier = shooterStateSupplier;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
        }
 
-   public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, ShooterState shooterState, XboxController operatorController) {
-        this(flywheelSubsystem, shooterState);
-        new Button(() -> flywheelSubsystem.isAtSetPoint(shooterState.rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
+   public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier, XboxController operatorController) {
+        this(flywheelSubsystem, shooterStateSupplier);
+        new Button(() -> flywheelSubsystem.isAtSetPoint(shooterStateSupplier.get().rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
    }
 
     @Override
@@ -47,18 +43,18 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
     @Override
     public void execute() {
 
+        double pidOutput;
 
-        double pidOutput = 0;
-        if (shooterState.rpmVelocity < 3500){
-            pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), shooterState.rpmVelocity);
+        if (shooterStateSupplier.get().rpmVelocity < 3500){
+            pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         } else {
-            pidOutput = flywheelControllerFar.calculate(flywheelSubsystem.getFlywheelRPM(), shooterState.rpmVelocity);
+            pidOutput = flywheelControllerFar.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         }
 
         BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
         BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
 
-        BigDecimal feedforward = (new BigDecimal(shooterState.rpmVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
+        BigDecimal feedforward = (new BigDecimal(shooterStateSupplier.get().rpmVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
         double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
 
@@ -67,10 +63,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
         double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
 
         flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
-        flywheelSubsystem.setHoodAngle(shooterState.hoodAngle);
-
-        SmartDashboard.putNumber("Flywheel Output",clampedPositiveFinalMotorOutput);
-
+        flywheelSubsystem.setHoodAngle(shooterStateSupplier.get().hoodAngle);
     }
 
     @Override
