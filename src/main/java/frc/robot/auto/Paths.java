@@ -252,7 +252,7 @@ public class Paths {
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
                     new AutoAlignInPlaceCommand(driveSubsystem),
-                    new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
+                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.2).andThen(
                             new InstantCommand(
                                     () -> CommandScheduler.getInstance().schedule(transferForward)
@@ -264,7 +264,7 @@ public class Paths {
     }
 
     private static Command getRevUpCommand() {
-        return new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
+        return new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
     }
 }
 

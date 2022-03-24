@@ -25,10 +25,8 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
     public enum ShooterLocationPreset {
-        FENDER,
-        TARMAC_SIDE_VERTEX,
-        TARMAC_MIDDLE_VERTEX,
-        TRUSS
+        LAUNCHPAD,
+        TARMAC_VERTEX,
     }
 
     private int currentPresetNumber = 0;
@@ -43,7 +41,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double currentTargetSpeed;
 
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.FENDER;
+    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
@@ -116,7 +114,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void setShooterLocationPreset(ShooterLocationPreset preset) {
-        SmartDashboard.putString("Shooter Preset: ",preset.toString());
+        SmartDashboard.putString("Shooter Preset: ", preset.toString());
         logger.info("Shooter Preset Changed to " + preset);
         this.shooterLocationPreset = preset;
     }
@@ -129,6 +127,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @param velocity Angular Velocity in (rev/s)
      * Flywheel speed is set by integrated PID controller
      */
+    @Deprecated
     public void setSpeed(double velocity) {
         // formula for converting m/s to sensor units/100ms
         currentTargetSpeed = fromRpmToSu(velocity); // rev/s * 1s/10 (100ms) * 2048su/1rev
@@ -137,7 +136,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
-     * Flywheel speed is set by integrated PID controller
+     * Flywheel speed is set by integrated get controller
      */
     public void setPercentSpeed(double percent) {
         masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
@@ -193,6 +192,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     /*
     * Confirms if velocity is within margin of set point
     */
+    public double getCurrentTargetSpeed() {
+        return currentTargetSpeed;
+    }
+
     public boolean isAtSetPoint(double setpoint) {
         double velocity = -getVelocity();
 
