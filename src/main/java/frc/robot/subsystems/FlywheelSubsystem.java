@@ -115,9 +115,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     public void setShooterLocationPreset(ShooterLocationPreset preset) {
-        SmartDashboard.putString("Shooter Preset: ",preset.toString());
+        SmartDashboard.putString("Shooter Preset: ", preset.toString());
         logger.info("Shooter Preset Changed to " + preset);
         this.shooterLocationPreset = preset;
+        //possibly set something here
     }
 
     public ShooterLocationPreset getShooterLocationPreset() {

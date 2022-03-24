@@ -12,7 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 
-
+//shooter pid from preset
 public class ShooterPIDCommand extends CommandBase {
     private FlywheelSubsystem.ShooterLocationPreset shooterLocationPreset;
 
