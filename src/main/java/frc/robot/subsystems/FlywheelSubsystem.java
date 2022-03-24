@@ -22,10 +22,8 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
     public enum ShooterLocationPreset {
-        FENDER,
-        TARMAC_SIDE_VERTEX,
-        TARMAC_MIDDLE_VERTEX,
-        TRUSS
+        LAUNCHPAD,
+        TARMAC_VERTEX,
     }
 
     private int currentPresetNumber = 0;
@@ -42,7 +40,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private double currentTargetSpeed;
 
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.FENDER;
+    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;

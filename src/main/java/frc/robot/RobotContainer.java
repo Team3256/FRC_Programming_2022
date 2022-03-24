@@ -196,7 +196,6 @@ public class RobotContainer {
 
     private void configureShooter() {
 
-        JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
         DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
@@ -207,21 +206,20 @@ public class RobotContainer {
         operatorLeftTrigger.setThreshold(0.1);
         operatorRightTrigger.setThreshold(0.1);
 
-        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
-        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
-        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
-        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
+//        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
+//        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
+        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.LAUNCHPAD));
+        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
         
         if (TRANSFER) {
-            operatorLeftTrigger.whenHeld(new InstantCommand(() -> {
-                new SetShooterFromLocationPreset(flywheelSubsystem);
-                new TransferShootForward(transferSubsystem);
-            }), false);
+            operatorLeftTrigger.whenHeld(
+                new SetShooterFromLocationPreset(flywheelSubsystem).andThen(new TransferShootForward(transferSubsystem))
+            ,false);
 
             new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
         }
 
-        operatorBButton.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
+        dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
         new Button(()-> flywheelSubsystem.isAtSetPoint() ).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
 
 

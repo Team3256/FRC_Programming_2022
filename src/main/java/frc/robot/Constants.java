@@ -358,10 +358,8 @@ public final class Constants {
 
         // Presets
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
-                entry(ShooterLocationPreset.FENDER,               new ShooterPreset(100, 1.23, 10, "Fender")),
-                entry(ShooterLocationPreset.TARMAC_MIDDLE_VERTEX, new ShooterPreset(200, 2.34, 20, "Tarmac Middle Vertex")),
-                entry(ShooterLocationPreset.TARMAC_SIDE_VERTEX,   new ShooterPreset(200, 2.34, 20, "Tarmac Side Vertex")),
-                entry(ShooterLocationPreset.TRUSS,                new ShooterPreset(200, 2.34, 20, "Truss"))
+                entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
+                entry(ShooterLocationPreset.TARMAC_VERTEX, new ShooterPreset(2290, 140000, 0, "Tarmac Vertex"))
         ); // TODO: Create all shooter presets
 
         // Velocity Training Points

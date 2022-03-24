@@ -32,7 +32,7 @@ public class SetShooterFromLocationPreset extends CommandBase {
         if (shooterLocationPreset != null) {
             flywheelSubsystem.setShooterLocationPreset(shooterLocationPreset);
         }
-        shooterState = ALL_SHOOTER_PRESETS.get(flywheelSubsystem.getShooterLocationPreset()).shooterState;
+        shooterState = ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
 
 
         flywheelSubsystem.setSpeed(shooterState.rpmVelocity);
