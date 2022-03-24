@@ -3,6 +3,8 @@ package frc.robot.helper.auto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.shooter.ZeroHoodMotorCommand;
+import frc.robot.helper.logging.RobotLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,49 +13,56 @@ import java.util.List;
 import static frc.robot.Constants.AutoConstants.COMMAND_MARKER_THRESHOLD;
 
 public class AutoCommandRunner {
-    private List<AutoCommandMarker> commandMarkers;
+    private RobotLogger logger = new RobotLogger(AutoCommandRunner.class.getCanonicalName());
+    private List<AutoCommandMarker> commandMarkers = new ArrayList<>();
     private List<AutoCommandMarker> startedCommandMarkers = new ArrayList<>();
     private Pose2d lastPose;
 
     public AutoCommandRunner(List<AutoCommandMarker> markers) {
-        commandMarkers = markers;
+        commandMarkers = new ArrayList<>(markers);
     }
 
     public void execute(Pose2d currentPose) {
-        Iterator<AutoCommandMarker> commandMarkerIterator = commandMarkers.iterator();
-        Iterator<AutoCommandMarker> startedCommandMarkerIterator = startedCommandMarkers.iterator();
         if (lastPose == null) {
-            while (commandMarkerIterator.hasNext()) {
-                AutoCommandMarker autoCommandMarker = commandMarkerIterator.next();
+            for (int i = 0; i < commandMarkers.size(); i++) {
+                AutoCommandMarker autoCommandMarker = commandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getMarker(), currentPose)) {
+                    logger.info("Ran: " + autoCommandMarker.getCommand().getClass().getCanonicalName());
                     autoCommandMarker.getCommand().schedule();
                     startedCommandMarkers.add(autoCommandMarker);
-                    commandMarkerIterator.remove();
+                    commandMarkers.remove(i);
+                    i--;
                 }
             }
 
-            while (startedCommandMarkerIterator.hasNext()) { // cancel started commands
-                AutoCommandMarker autoCommandMarker = startedCommandMarkerIterator.next();
+            for (int i = 0; i < startedCommandMarkers.size(); i++) { // cancel started commands
+                AutoCommandMarker autoCommandMarker = startedCommandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getEndingMarker(), currentPose)) {
                     autoCommandMarker.getCommand().cancel();
-                    startedCommandMarkerIterator.remove();
+                    logger.info("Stopped: " + autoCommandMarker.getCommand().getClass().getCanonicalName());
+                    startedCommandMarkers.remove(i);
+                    i--;
                 }
             }
         } else {
-            while (commandMarkerIterator.hasNext()) {
-                AutoCommandMarker autoCommandMarker = commandMarkerIterator.next();
+            for (int i = 0; i < commandMarkers.size(); i++) {
+                AutoCommandMarker autoCommandMarker = commandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getMarker(), currentPose, lastPose)) {
                     autoCommandMarker.getCommand().schedule();
+                    logger.info("Ran: " + autoCommandMarker.getCommand().getClass().getCanonicalName());
                     startedCommandMarkers.add(autoCommandMarker);
-                    commandMarkerIterator.remove();
+                    commandMarkers.remove(i);
+                    i--;
                 }
             }
 
-            while (startedCommandMarkerIterator.hasNext()) { // cancel started commands
-                AutoCommandMarker autoCommandMarker = startedCommandMarkerIterator.next();
+            for (int i = 0; i < startedCommandMarkers.size(); i++) { // cancel started commands
+                AutoCommandMarker autoCommandMarker = startedCommandMarkers.get(i);
                 if (isAtMarker(autoCommandMarker.getEndingMarker(), currentPose, lastPose)) {
                     autoCommandMarker.getCommand().cancel();
-                    startedCommandMarkerIterator.remove();
+                    logger.info("Stopped: " + autoCommandMarker.getCommand().getClass().getCanonicalName());
+                    startedCommandMarkers.remove(i);
+                    i--;
                 }
             }
         }
@@ -84,9 +93,13 @@ public class AutoCommandRunner {
         Translation2d currentTranslation = currentPose.getTranslation();
         Translation2d lastTranslation = lastPose.getTranslation();
 
-        double distanceBetweenTrajectoryPoses = currentTranslation.getDistance(lastTranslation);
-        double distanceBetweenLastPose = lastTranslation.getDistance(marker);
-        double distanceBetweenCurrentPose = currentTranslation.getDistance(marker);
+        double distanceBetweenTrajectoryPoses = Math.abs(currentTranslation.getDistance(lastTranslation)) * 6;
+        double distanceBetweenLastPose = Math.abs(lastTranslation.getDistance(marker));
+        double distanceBetweenCurrentPose = Math.abs(currentTranslation.getDistance(marker));
+
+//        logger.info("Distance Between Trajectory Poses: " + distanceBetweenTrajectoryPoses);
+//        logger.info("Distance Between Last Pose: " + distanceBetweenLastPose);
+//        logger.info("Distance Between Current Pose: " + distanceBetweenCurrentPose);
 
         // essentially finding if the marker is in between the 2 trajectories
         // by kinda creating an ellipse/box while allowing for some tolerance

@@ -6,16 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
@@ -34,7 +34,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -128,6 +128,7 @@ public class RobotContainer {
 
     private void initializeShooter() {
         this.flywheelSubsystem = new FlywheelSubsystem();
+        TransferSubsystem.flywheelSubsystem = flywheelSubsystem;
     }
 
     private void initializeTransfer() {
@@ -145,7 +146,8 @@ public class RobotContainer {
     private void configureDrivetrain() {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton driverRightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
+        driverRightTrigger.setThreshold(0.1);
 
 
         // Drivetrain Command
@@ -162,10 +164,10 @@ public class RobotContainer {
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
-        driverLeftTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
+        driverRightTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
                 drivetrainSubsystem,
-                () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                () -> ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
@@ -209,41 +211,14 @@ public class RobotContainer {
 //        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
 //        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
 
-        operatorRightTrigger.whenHeld( new SetShooterFromCustomState(flywheelSubsystem));
+        operatorRightTrigger.whenHeld( new SetShooterPIDVelocityFromState(flywheelSubsystem, new ShooterState(2290, 140000), operatorController)); //TODO: Replace me with Presets
         if (TRANSFER) {
             operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem), false);
-            new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5));
+            new Button(()-> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.5, 0.5));
         }
         dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
-        new Button(()-> flywheelSubsystem.isAtSetPoint() ).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
 
 
-    }
-
-    private void configureDebugShooter(){
-        JoystickAnalogButton rightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
-        JoystickAnalogButton leftTrigger  = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
-        JoystickButton aButton = new JoystickButton(driverController, XboxController.Button.kA.value);
-
-        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
-        operatorLeftTrigger.setThreshold(0.1);
-
-//        DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-//        DPadButton dPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
-//        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
-//        DPadButton dPadLeft= new DPadButton(operatorController, DPadButton.Direction.LEFT);
-
-        rightTrigger.setThreshold(0.01);
-
-        rightTrigger.whenHeld(new SetShooterFromCustomDashboardConfig(flywheelSubsystem));
-        leftTrigger.whenHeld(new SetShooterFromLocationPreset(flywheelSubsystem));
-        aButton.whenPressed(new ZeroHoodMotorCommand(flywheelSubsystem)).whenPressed(new InstantCommand(()->System.out.println("Activated Zero")));
-
-        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
-//        dPadUp.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.FENDER));
-//        dPadDown.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_MIDDLE_VERTEX));
-//        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_SIDE_VERTEX));
-//        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TRUSS));
     }
 
     private void configureTransfer() {
@@ -259,7 +234,7 @@ public class RobotContainer {
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
 
 
-        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
             operatorBButton.whenHeld(
@@ -274,22 +249,18 @@ public class RobotContainer {
     }
 
     private void configureHanger() {
-        //TODO: IF we are doing traversal, Ensure that Intake is Down with Commands
 
         JoystickButton operatorAButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        DPadButton operatorLeftDpad = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton operatorRightDpad = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
+        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
+        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
 
-        operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem));
-
-        operatorLeftDpad.toggleWhenActive(new HangerTogglePneumatics(hangerSubsystem, intakeSubsystem));
-        operatorRightDpad.whenHeld(new HangerPartial(hangerSubsystem));
-
-        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem));
-        operatorYButton.whenHeld(new HangerExtend(hangerSubsystem));
+        // Auto Retract
+        new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
+                .whenActive(new HangerZeroRetract(hangerSubsystem));
     }
 
     public void resetPose() {
