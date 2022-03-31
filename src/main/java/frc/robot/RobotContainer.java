@@ -272,24 +272,4 @@ public class RobotContainer {
     public void resetPose() {
         drivetrainSubsystem.resetOdometry(new Pose2d());
     }
-
-    private static double deadband(double value, double deadband) {
-        return (Math.abs(value) > deadband) ? value : 0.0;
-    }
-
-    private static double modifyAxis(double value) {
-        double deadband = 0.05;
-        value = deadband(value, deadband);
-
-        if (value == 0) {
-            return 0;
-        }
-
-        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
-//
-        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
-
-        return value;
-    }
 }

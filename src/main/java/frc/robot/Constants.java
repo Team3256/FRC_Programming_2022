@@ -369,7 +369,7 @@ public final class Constants {
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
 
-        public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
+        public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
                 new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
         );
     }

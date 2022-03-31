@@ -45,8 +45,23 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
-    private PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
-    private PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+    private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
+    private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+
+    static {
+        double[] trainDistance = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
+        for(int i = 0; i < SHOOTER_DATA.size(); i++) {
+            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
+            trainDistance[i] = dataPoint.distance;
+            trainFlywheelHood[i] = dataPoint.hoodAngle;
+            trainFlywheelRPM[i] = dataPoint.flywheelRPM;
+        }
+
+        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+    }
 
     public FlywheelSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -304,28 +319,6 @@ public class FlywheelSubsystem extends SubsystemBase {
             hoodAngle = 1.0;
         }
         return hoodAngle;
-    }
-
-    private void trainDistanceToHoodAngleInterpolator() {
-        double[] trainDistance = new double[SIMPLE_CALIB_TRAINING.size()];
-        double[] trainHoodAngle = new double[SIMPLE_CALIB_TRAINING.size()];
-        for(int i = 0; i < SIMPLE_CALIB_TRAINING.size(); i++) {
-            TrainingDataPoint dataPoint = SIMPLE_CALIB_TRAINING.get(i);
-            trainDistance[i] = dataPoint.distance;
-            trainHoodAngle[i] = dataPoint.hoodAngle;
-        }
-        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainHoodAngle);
-    }
-
-    private void trainDistanceToFlywheelRPMInterpolator() {
-        double[] trainDistance = new double[SIMPLE_CALIB_TRAINING.size()];
-        double[] trainFlywheelRPM = new double[SIMPLE_CALIB_TRAINING.size()];
-        for(int i = 0; i < SIMPLE_CALIB_TRAINING.size(); i++) {
-            TrainingDataPoint dataPoint = SIMPLE_CALIB_TRAINING.get(i);
-            trainDistance[i] = dataPoint.distance;
-            trainFlywheelRPM[i] = dataPoint.flywheelRPM;
-        }
-        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
     }
 
     public double getHoodAngleFromInterpolator(double distance) {
