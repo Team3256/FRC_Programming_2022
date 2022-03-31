@@ -5,7 +5,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 
 public class AdaptiveSlewRateLimiter {
     private final double accelRateLimit;
-    private final double deccelRateLimit;
+    private final double decelRateLimit;
     private double prevVal;
     private double prevTime;
 
@@ -13,11 +13,11 @@ public class AdaptiveSlewRateLimiter {
      * Creates a new SlewRateLimiter with the given rate limit and initial value.
      *
      * @param accelRateLimit The rate-of-change limit, in units per second.
-     * @param deccelRateLimit The rate-of-change limit, in units per second.
+     * @param decelRateLimit The rate-of-change limit, in units per second.
      */
-    public AdaptiveSlewRateLimiter(double accelRateLimit, double deccelRateLimit) {
+    public AdaptiveSlewRateLimiter(double accelRateLimit, double decelRateLimit) {
         this.accelRateLimit = Math.abs(accelRateLimit);
-        this.deccelRateLimit = Math.abs(deccelRateLimit);
+        this.decelRateLimit = Math.abs(decelRateLimit);
         prevVal = 0;
         prevTime = WPIUtilJNI.now() * 1e-6;
     }
@@ -31,7 +31,7 @@ public class AdaptiveSlewRateLimiter {
     public double calculate(double input) {
         double currentTime = WPIUtilJNI.now() * 1e-6;
         double elapsedTime = currentTime - prevTime;
-        double currRateLimit = (Math.abs(input) > prevVal ? accelRateLimit : deccelRateLimit);
+        double currRateLimit = (Math.abs(input) > prevVal ? accelRateLimit : decelRateLimit);
         prevVal +=
                 MathUtil.clamp(input - prevVal, -currRateLimit * elapsedTime, currRateLimit * elapsedTime);
         prevTime = currentTime;
