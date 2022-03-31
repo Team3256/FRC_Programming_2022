@@ -1,12 +1,12 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class StopShooter extends CommandBase {
-    private FlywheelSubsystem flywheelSubsystem;
+    private ShooterSubsystem flywheelSubsystem;
 
-    public StopShooter(FlywheelSubsystem flywheelSubsystem) {
+    public StopShooter(ShooterSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
 
         addRequirements(flywheelSubsystem);

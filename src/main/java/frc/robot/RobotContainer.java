@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -29,12 +27,11 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
-import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
+import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -56,7 +53,7 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    private FlywheelSubsystem flywheelSubsystem = null;
+    private ShooterSubsystem flywheelSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
     private HangerSubsystem hangerSubsystem = null;
@@ -127,7 +124,7 @@ public class RobotContainer {
     }
 
     private void initializeShooter() {
-        this.flywheelSubsystem = new FlywheelSubsystem();
+        this.flywheelSubsystem = new ShooterSubsystem();
         TransferSubsystem.flywheelSubsystem = flywheelSubsystem;
     }
 

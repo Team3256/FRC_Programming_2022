@@ -2,8 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.shooter.SetShooterFromTriggerDebug;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,10 +24,7 @@ public class SetShooterFromTriggerDebugTest {
         //Java does not like it if this is placed in setUp Method
         DriverStationSim.setEnabled(true);
 
-        FlywheelSubsystem flywheelSubsystem = mock(FlywheelSubsystem.class);
-        SetShooterFromTriggerDebug percentSpeedCommand = new SetShooterFromTriggerDebug(flywheelSubsystem, ()->0.4);
-
-        commandScheduler.schedule(percentSpeedCommand);
+        ShooterSubsystem flywheelSubsystem = mock(ShooterSubsystem.class);
         commandScheduler.run();
 
         verify(flywheelSubsystem).setPercentSpeed(0.4 * 100);

@@ -6,27 +6,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.WaitAndVibrateCommand;
-import frc.robot.helper.shooter.ShooterState;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
-import java.util.function.DoubleSupplier;
 
 
 public class SetShooterPIDVelocityFromDashboard extends CommandBase {
-    private FlywheelSubsystem.ShooterLocationPreset shooterLocationPreset;
+    private ShooterSubsystem.ShooterLocationPreset shooterLocationPreset;
 
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
-    private FlywheelSubsystem flywheelSubsystem;
+    private ShooterSubsystem flywheelSubsystem;
 
-    public SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem) {
+    public SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
-    public  SetShooterPIDVelocityFromDashboard(FlywheelSubsystem flywheelSubsystem, XboxController operatorController) {
+    public  SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
         new Button(() -> flywheelSubsystem.isAtSetPoint(()->SmartDashboard.getNumber("Custom Velocity", 0))).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
     }
