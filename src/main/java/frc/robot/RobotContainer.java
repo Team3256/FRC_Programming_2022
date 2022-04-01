@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -19,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
-import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
+import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.hanger.*;
@@ -29,7 +27,6 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
-import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
@@ -177,7 +174,7 @@ public class RobotContainer {
         // A button zeros the gyroscope
         driverAButton.whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        Command autoAlign = new AutoAlignDriveContinuousCommand(
+        Command autoAlign = new AutoAlignDriveCommand(
                 drivetrainSubsystem,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,

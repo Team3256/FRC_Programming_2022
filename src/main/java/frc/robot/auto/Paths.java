@@ -2,8 +2,7 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
-import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
+import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.transfer.TransferIndexForward;
@@ -251,7 +250,7 @@ public class Paths {
         return
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
-                    new AutoAlignInPlaceCommand(driveSubsystem),
+                    new AutoAlignDriveCommand(driveSubsystem),
                     new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.2).andThen(
                             new InstantCommand(
