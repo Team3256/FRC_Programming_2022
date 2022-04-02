@@ -1,21 +1,21 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 
 public class SetShooterPreset extends CommandBase {
-    private FlywheelSubsystem flywheelSubsystem;
+    private ShooterSubsystem shooterSubsystem;
     private ShooterLocationPreset preset;
 
-    public SetShooterPreset(FlywheelSubsystem flywheelSubsystem, ShooterLocationPreset preset) {
-        this.flywheelSubsystem = flywheelSubsystem;
+    public SetShooterPreset(ShooterSubsystem flywheelSubsystem, ShooterLocationPreset preset) {
+        this.shooterSubsystem = shooterSubsystem;
         this.preset = preset;
     }
 
     @Override
     public void initialize() {
-        flywheelSubsystem.setShooterLocationPreset(preset);
+        shooterSubsystem.setShooterLocationPreset(preset);
     }
 
     @Override
@@ -23,5 +23,3 @@ public class SetShooterPreset extends CommandBase {
         return true;
     }
 }
-
-
