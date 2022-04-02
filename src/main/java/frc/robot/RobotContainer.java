@@ -219,8 +219,8 @@ public class RobotContainer {
         if (TRANSFER) {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
         }
-        new Button(() -> flywheelSubsystem.isAtSetPoint(flywheelSubsystem.getCurrentTargetSpeed())).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5));
 
+        // Flywheel Vibration from the SetShooterPIDVelocityFromStateCommand
     }
 
     private void configureTransfer() {

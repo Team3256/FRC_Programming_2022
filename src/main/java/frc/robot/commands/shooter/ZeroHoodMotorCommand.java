@@ -29,7 +29,7 @@ public class ZeroHoodMotorCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         flywheel.stopHood();
-        flywheel.zeroHoodMotor();
+        flywheel.zeroHoodMotorSensor();
     }
 
     // Returns true when the command should end.

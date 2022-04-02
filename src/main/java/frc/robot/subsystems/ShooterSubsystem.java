@@ -30,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
-    private double currentTargetSpeed;
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
 
     public ShooterSubsystem() {
@@ -57,39 +56,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
         logger.info("Flywheel Initialized");
     }
-    /**
-     * @param distance distance from target
-     * @return ShooterState with velocity and hood angle settings
-     */
-    private ShooterState ballInverseKinematics(double distance) {
-        double angleEntry = ENTRY_ANGLE_INTO_HUB * Math.PI / 180;
-
-        double distToAimPoint = RADIUS_UPPER_HUB + distance;
-        distToAimPoint = distToAimPoint +
-                DELTA_DISTANCE_TO_TARGET_FACTOR * distToAimPoint + OFFSET_DISTANCE_FACTOR;
-
-        double deltaHeight = UPPER_HUB_AIMING_HEIGHT - SHOOTER_HEIGHT;
-        deltaHeight = deltaHeight +
-                DELTA_AIM_HEIGHT_FACTOR * distToAimPoint + OFFSET_HEIGHT_FACTOR;
-
-        double tangentEntryAngle = Math.tan(angleEntry);
-        double fourDistHeightTangent = 4 * distToAimPoint * deltaHeight * tangentEntryAngle;
-        double distanceToAimSquare = Math.pow(distToAimPoint, 2);
-        double deltaHeightSquare = Math.pow(deltaHeight, 2);
-        double tangentAimDistSquare = Math.pow(distToAimPoint * tangentEntryAngle, 2);
-        double tangentAimDist = distToAimPoint * tangentEntryAngle;
-
-
-        double exitAngleTheta = -2 * Math.atan((distToAimPoint -
-                Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
-                / (tangentAimDist + 2 * deltaHeight));
-        double velocity = 0.3 * Math.sqrt(54.5) *
-                ((Math.sqrt(tangentAimDistSquare + fourDistHeightTangent + distanceToAimSquare + 4*deltaHeightSquare))
-                        / Math.sqrt(tangentAimDist + deltaHeight));
-
-        return new ShooterState(velocity, exitAngleTheta);
-    }
-
 
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
@@ -122,7 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * zeros the hood motor sensor
      */
-    public void zeroHoodMotor(){
+    public void zeroHoodMotorSensor(){
         hoodAngleMotor.setSelectedSensorPosition(0);
     }
     /**
@@ -169,10 +135,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getFlywheelRPM(){
         return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
 
-    }
-
-    public double getCurrentTargetSpeed() {
-        return currentTargetSpeed;
     }
 
     public ShooterState getFlywheelShooterStateFromPreset(){
