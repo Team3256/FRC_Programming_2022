@@ -56,10 +56,10 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    private FlywheelSubsystem flywheelSubsystem = null;
+    public FlywheelSubsystem flywheelSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
-    private HangerSubsystem hangerSubsystem = null;
+    public HangerSubsystem hangerSubsystem = null;
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);

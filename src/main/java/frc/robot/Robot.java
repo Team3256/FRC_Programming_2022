@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import frc.robot.commands.hanger.HangerZeroRetract;
+import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import frc.robot.helper.logging.RobotLogger;
 
 public class Robot extends TimedRobot {
@@ -62,14 +65,22 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() { }
-
-  @Override
-  public void testInit() {
-    logger.info("Test Enabled");
-    CommandScheduler.getInstance().cancelAll();
+  public void teleopPeriodic() {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testInit() {
+    LiveWindow.setEnabled(false);
+    logger.info("Test Enabled");
+    CommandScheduler.getInstance().cancelAll();
+
+    CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(robotContainer.flywheelSubsystem));
+    CommandScheduler.getInstance().schedule(new HangerZeroRetract(robotContainer.hangerSubsystem));
+  }
+
+  @Override
+  public void testPeriodic() {
+
+
+  }
 }
