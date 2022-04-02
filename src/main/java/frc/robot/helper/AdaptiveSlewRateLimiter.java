@@ -2,6 +2,7 @@ package frc.robot.helper;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AdaptiveSlewRateLimiter {
     private final double accelRateLimit;
@@ -31,7 +32,9 @@ public class AdaptiveSlewRateLimiter {
     public double calculate(double input) {
         double currentTime = WPIUtilJNI.now() * 1e-6;
         double elapsedTime = currentTime - prevTime;
-        double currRateLimit = (Math.abs(input) > prevVal ? accelRateLimit : decelRateLimit);
+        double currRateLimit = (Math.abs(input) > Math.abs(prevVal) ? accelRateLimit : decelRateLimit);
+        SmartDashboard.putNumber("Acc?",Math.abs(input) > Math.abs(prevVal) ? 1 : 0);
+        SmartDashboard.putNumber("Prev Val",prevVal);
         prevVal +=
                 MathUtil.clamp(input - prevVal, -currRateLimit * elapsedTime, currRateLimit * elapsedTime);
         prevTime = currentTime;

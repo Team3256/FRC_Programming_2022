@@ -92,15 +92,15 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double X_ACCEL_RATE_LIMIT = 0.0;
-        public static final double X_DECEL_RATE_LIMIT = 0.0;
-        public static final double Y_ACCEL_RATE_LIMIT = 0.0;
-        public static final double Y_DECEL_RATE_LIMIT = 0.0;
+        public static final double X_ACCEL_RATE_LIMIT = 10;
+        public static final double X_DECEL_RATE_LIMIT = 10;
+        public static final double Y_ACCEL_RATE_LIMIT = 10;
+        public static final double Y_DECEL_RATE_LIMIT = 10;
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
         /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 60,60,0); // in Amps, limits amount of current drawn to brake
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
 
 
         // All in Degrees
