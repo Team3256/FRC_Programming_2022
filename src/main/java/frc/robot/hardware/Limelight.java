@@ -68,6 +68,12 @@ public class Limelight {
         return getLimelightValue("ts").getDouble(0);
     }
     /**
+     * @return Whether the limelight has any valid targets (0 or 1)
+     */
+    public static double getTv(){
+        return getLimelightValue("tv").getDouble(0);
+    }
+    /**
      * @return Number array of corner coordinates [x0,x1,etc]
      */
     public static double[] getTcornx(){
@@ -91,6 +97,16 @@ public class Limelight {
     public static double getTunedDistanceToTarget(){
         return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
     }
+
+    public static boolean isTargetDetected(){
+        if(getTv() == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     /**
      * @param degrees
      * @return radians

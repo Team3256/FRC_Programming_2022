@@ -38,6 +38,10 @@ public final class Constants {
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
+    public static final double HUB_POSITION_X = 8.347;
+    public static final double HUB_POSITION_Y = 4.117;
+
+
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = true;
 
