@@ -22,7 +22,7 @@ import frc.robot.helper.Polynomial;
 
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
-import frc.robot.subsystems.FlywheelSubsystem.ShooterLocationPreset;
+import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 
 import java.util.List;
 
@@ -241,9 +241,9 @@ public final class Constants {
         public static final int I2C_COLOR_SENSOR_FIXED_ADDRESS = 0x52;
 
 
-        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 3;
-        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
-        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 6;
+        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 3;
+        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 5;
 
         // PWM
         public static final int LED_STRIP_PWM_PORT = 0;

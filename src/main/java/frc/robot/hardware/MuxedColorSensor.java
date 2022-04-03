@@ -34,10 +34,12 @@ public class MuxedColorSensor {
     private MuxedColorSensor(){
         changeMuxPort(BALL_COLOR_SENSOR_MUX_PORT);
         ballColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        changeMuxPort(BALL_COLOR_SENSOR_MUX_PORT);
+        changeMuxPort(LEFT_ALIGN_COLOR_SENSOR_MUX_PORT);
         leftAlignColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        changeMuxPort(BALL_COLOR_SENSOR_MUX_PORT);
+        changeMuxPort(RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT);
         rightAlignColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+
+
     }
 
     public Color getBallSensorColor() {

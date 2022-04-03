@@ -2,15 +2,13 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.helper.shooter.ShooterState;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 
@@ -18,10 +16,10 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
 
-    private FlywheelSubsystem flywheelSubsystem;
+    private ShooterSubsystem flywheelSubsystem;
     private Supplier<ShooterState> shooterStateSupplier;
 
-    public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier) {
+    public SetShooterPIDVelocityFromState(ShooterSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier) {
         this.flywheelSubsystem = flywheelSubsystem;
         this.shooterStateSupplier = shooterStateSupplier;
 
@@ -29,7 +27,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
        }
 
-   public SetShooterPIDVelocityFromState(FlywheelSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier, XboxController operatorController) {
+   public SetShooterPIDVelocityFromState(ShooterSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier, XboxController operatorController) {
         this(flywheelSubsystem, shooterStateSupplier);
         new Button(() -> flywheelSubsystem.isAtSetPoint(shooterStateSupplier.get().rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
    }

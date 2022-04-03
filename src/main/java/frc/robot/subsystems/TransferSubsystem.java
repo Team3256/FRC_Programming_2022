@@ -8,12 +8,10 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.MuxedColorSensor;
@@ -27,7 +25,6 @@ import frc.robot.helper.BallColor;
 import frc.robot.helper.logging.RobotLogger;
 
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
@@ -60,7 +57,7 @@ public class TransferSubsystem extends SubsystemBase {
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
 
     // For Tracking Ball RPM
-    public static FlywheelSubsystem flywheelSubsystem;
+    public static ShooterSubsystem flywheelSubsystem;
 
 
     private double currentBallCount;
