@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.helper.LED.helpers.*;
 import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -55,7 +57,12 @@ public final class Constants {
         public static final boolean IR_SENSORS = true;
     }
 
+    public static class FieldConstants {
+        public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+    }
+
     public static class LimelightAutoCorrectConstants {
+        public static final double MAX_VISION_LOCALIZATION_CORRECTION = 0.5; // in meters
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
         public static final int POLYNOMIAL_DEGREE = 5;
