@@ -12,6 +12,11 @@ import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterState;
+import frc.robot.helper.shooter.TrainingDataPoint;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
+import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.util.function.DoubleSupplier;
 
@@ -27,10 +32,33 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private final TalonFX masterLeftShooterMotor;
+    private final TalonFX followerRightShooterMotor;
 
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
+
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
+
+    private PiecewiseBicubicSplineInterpolatingFunction velocityInterpolatingFunction;
+    private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
+    private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
+    private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+
+    static {
+        double[] trainDistance = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
+        for(int i = 0; i < SHOOTER_DATA.size(); i++) {
+            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
+            trainDistance[i] = dataPoint.distance;
+            trainFlywheelHood[i] = dataPoint.hoodAngle;
+            trainFlywheelRPM[i] = dataPoint.flywheelRPM;
+        }
+
+        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+    }
+
 
     public ShooterSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -42,9 +70,17 @@ public class ShooterSubsystem extends SubsystemBase {
                 SHOOTER_MASTER_TALON_PID_D,
                 SHOOTER_MASTER_TALON_PID_F
         );
+
+        TalonConfiguration FOLLOWER_CONFIG = TalonConfiguration.createFollowerConfig(MASTER_CONFIG, InvertType.OpposeMaster);
+
         masterLeftShooterMotor = TalonFXFactory.createTalonFX(
                 PID_SHOOTER_MOTOR_ID_LEFT,
                 MASTER_CONFIG,
+                MANI_CAN_BUS
+        );
+        followerRightShooterMotor = TalonFXFactory.createFollowerTalonFX(PID_SHOOTER_MOTOR_ID_RIGHT,
+                masterLeftShooterMotor,
+                FOLLOWER_CONFIG,
                 MANI_CAN_BUS
         );
 
@@ -127,6 +163,84 @@ public class ShooterSubsystem extends SubsystemBase {
                 (velocity >= setpoint.getAsDouble() - SET_POINT_ERROR_MARGIN*setpoint.getAsDouble());
     }
 
+    private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {
+        if(velocityInterpolatingFunction == null){
+            logger.warning("Velocity Interpolating Function is NULL");
+        }
+        return velocityInterpolatingFunction.value(ballVelocity, ballAngle);
+    }
+
+    private void getVelocityInterpolatingFunctionFromPoints(){
+
+        double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[][] angularVelocityTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()][ALL_SHOOTER_CALIB_TRAINING.size()];
+
+        TrainingDataPoint data;
+        for (int i = 0; i < ALL_SHOOTER_CALIB_TRAINING.size(); i++) {
+            data = ALL_SHOOTER_CALIB_TRAINING.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            angularVelocityTrain[i][i] = data.flywheelRPM;
+        }
+
+        velocityInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
+                .interpolate(vValTrain, thetaValTrain, angularVelocityTrain);
+    }
+
+    private void getHoodAngleInterpolatingFunctionFromPoints(){
+        double[] vValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[] thetaValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()];
+        double[][] hoodValTrain = new double[ALL_SHOOTER_CALIB_TRAINING.size()][ALL_SHOOTER_CALIB_TRAINING.size()];
+
+        TrainingDataPoint data;
+        for (int i = 0; i < ALL_SHOOTER_CALIB_TRAINING.size(); i++) {
+            data = ALL_SHOOTER_CALIB_TRAINING.get(i);
+            vValTrain[i] = data.velocityTraining;
+            thetaValTrain[i] = data.exitAngleTraining;
+            hoodValTrain[i][i] = data.calibratedHoodAngleTraining;
+        }
+
+        hoodAngleInterpolatingFunction = new PiecewiseBicubicSplineInterpolator()
+                .interpolate(vValTrain, thetaValTrain, hoodValTrain);
+
+    }
+
+    private double getHoodValueFromCalibration(double ballVelocity, double ballAngle) {
+        if(hoodAngleInterpolatingFunction == null){
+            logger.warning("Hood Angle Interpolation Function is NULL");
+        }
+        double hoodAngle = hoodAngleInterpolatingFunction.value(ballVelocity, ballAngle);
+        if (hoodAngle < 0.0) {
+            hoodAngle = 0.0;
+        } else if (hoodAngle > 1.0) {
+            hoodAngle = 1.0;
+        }
+        return hoodAngle;
+    }
+
+    public double getHoodAngleFromInterpolator(double distance) {
+        if(distanceToHoodAngleInterpolatingFunction == null){
+            logger.warning("Distance to Hood Angle Interpolation Function is NULL");
+        }
+        return distanceToHoodAngleInterpolatingFunction.value(distance);
+    }
+
+    public double getFlywheelRPMFromInterpolator(double distance) {
+        if(distanceToFlywheelRPMInterpolatingFunction == null){
+            logger.warning("Distance to Flywheel RPM Interpolation Function is NULL");
+        }
+        return distanceToFlywheelRPMInterpolatingFunction.value(distance);
+    }
+
+    /**
+     * @return current velocity of motors
+     */
+    private double getVelocity() {
+        double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
+        return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
+    }
+
     public static double fromSuToRPM(double su){
         return su  * (10 * 60) / 2048;
     }
@@ -140,6 +254,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterState getFlywheelShooterStateFromPreset(){
         return ALL_SHOOTER_PRESETS.get(shooterLocationPreset).shooterState;
     }
+
     @Override
     public void periodic() {
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean( this.isHoodLimitSwitchPressed());
