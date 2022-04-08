@@ -69,44 +69,13 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The angle between the hub and the robot
     public double angleBetweenHub(Pose2d robotPose) {
-        if(HUB_POSITION_X - robotPose.getX() == 0){
-            if(robotPose.getY() - HUB_POSITION_Y > 0){
-                return 270;
-            }
-            else{
-                return 90;
-            }
-        }
-        return Math.atan(Math.abs(HUB_POSITION_Y - robotPose.getY())/Math.abs(HUB_POSITION_X - robotPose.getX()));
+        return Math.atan2(Math.abs(HUB_POSITION_Y - robotPose.getY()), Math.abs(HUB_POSITION_X - robotPose.getX()));
     }
 
     //The setpoint angle for the robot to turn towards the hub
-    public double angleToHub(Pose2d robotPose) {
-        double angleBetweenHub = Math.toDegrees(angleBetweenHub(robotPose));
-
-        if(robotPose.getY() - HUB_POSITION_Y > 0){
-            if(robotPose.getX() - HUB_POSITION_X > 0){
-                angleBetweenHub+=180;
-            }
-            else if(robotPose.getX() - HUB_POSITION_X > 0){
-                angleBetweenHub+=270;
-            }
-        }
-        else if(robotPose.getY() - HUB_POSITION_Y < 0){
-            if(robotPose.getX() - HUB_POSITION_X > 0){
-                angleBetweenHub+=90;
-            }
-        }
-        else if(angleBetweenHub == 0){
-            if(robotPose.getX() - HUB_POSITION_X > 0){
-                angleBetweenHub=180;
-            }
-            else if(robotPose.getX() - HUB_POSITION_X < 0){
-                angleBetweenHub=0;
-            }
-        }
-
-        return angleBetweenHub;
+    public double setAligningAngle(Pose2d robotPose) {
+        double angleDifference = robotPose.getRotation().getDegrees() - Math.toDegrees(angleBetweenHub(robotPose));
+        return robotPose.getRotation().getDegrees() - angleDifference - 180;
     }
 
     public void alignWithVision(){
@@ -118,7 +87,7 @@ public class AutoAlignDriveCommand extends CommandBase {
     public void alignWithoutVision(){
 
         autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
-        autoAlignPIDController.setSetpoint(angleToHub(swerveDrive.getPose()));
+        autoAlignPIDController.setSetpoint(setAligningAngle(swerveDrive.getPose()));
         autoAlignPIDController.enableContinuousInput(0, 360);
     }
 
