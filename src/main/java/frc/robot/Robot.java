@@ -31,7 +31,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotLogger.init();
     robotContainer = new RobotContainer();
-    SmartDashboard.putData(robotContainer.getCommandChooser());
+    SmartDashboard.putData(robotContainer.getCommandChooser(RobotContainer.DefaultChooserOptions.BALL_COUNT));
+    SmartDashboard.putData(robotContainer.getCommandChooser(RobotContainer.DefaultChooserOptions.STARTING_POSITIONS));
+
   }
 
   @Override
