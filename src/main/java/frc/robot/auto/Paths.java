@@ -2,7 +2,6 @@ package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
 import frc.robot.commands.drivetrain.AutoAlignInPlaceCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
@@ -10,7 +9,7 @@ import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.helper.auto.AutoCommandMarker;
 import frc.robot.helper.auto.AutoCommandRunner;
 import frc.robot.helper.shooter.ShooterState;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.TransferSubsystem;
@@ -21,10 +20,10 @@ public class Paths {
     private static SwerveDrive driveSubsystem;
     private static TrajectoryFactory trajectoryFactory;
     private static IntakeSubsystem intakeSubsystem;
-    private static FlywheelSubsystem flywheelSubsystem;
+    private static ShooterSubsystem flywheelSubsystem;
     private static TransferSubsystem transferSubsystem;
 
-    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer) {
+    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem flywheel, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         driveSubsystem = drive;
         intakeSubsystem = intake;
