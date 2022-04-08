@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.TransferSubsystem;
@@ -12,9 +12,9 @@ import frc.robot.subsystems.TransferSubsystem;
 public class AutoChooser {
     private static SendableChooser<Command> autoChooser;
     private static TrajectoryFactory trajectoryFactory;
-    private static FlywheelSubsystem flywheelSubsystem;
+    private static ShooterSubsystem flywheelSubsystem;
 
-    public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intake, FlywheelSubsystem flywheel, TransferSubsystem transfer) {
+    public static SendableChooser<Command> getDefaultChooser(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem flywheel, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         flywheelSubsystem = flywheel;
         Paths.initialize(drive, intake, flywheel, transfer);
