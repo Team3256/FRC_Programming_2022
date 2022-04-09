@@ -60,7 +60,8 @@ public class AutoChooser {
         }
     }
 
-    public static Command setCommand(StartingPosition position, BallCount ballCount, SwerveDrive drive ){
+    //Sets path depending on the robot's starting position and the amount of balls interacted with in the autonomous path
+    public static Command setPath(StartingPosition position, BallCount ballCount, SwerveDrive drive ){
         if(position == StartingPosition.TARMAC_ANY_SIDE){
             if(ballCount == BallCount.ZERO_BALL){
                 return Paths.get0BallTaxi();
@@ -68,6 +69,7 @@ public class AutoChooser {
             else if(ballCount == BallCount.ONE_BALL){
                 return Paths.get1BallTaxi();
             }
+            return Paths.get0BallTaxi();
         }
         else if(position == StartingPosition.EDGE_TARMAC_TWO_BALL_SIDE){
             if(ballCount == BallCount.TWO_BALL){
@@ -79,6 +81,7 @@ public class AutoChooser {
             else if(ballCount == BallCount.FOUR_BALL){
                 return Paths.get4BallFarTarmac2BallSide();
             }
+            return Paths.get0BallTaxi();
         }
         else if(position == StartingPosition.MID_TARMAC_TWO_BALL_SIDE){
             if(ballCount == BallCount.TWO_BALL){
@@ -87,21 +90,21 @@ public class AutoChooser {
             else if(ballCount == BallCount.FOUR_BALL){
                 return Paths.get4BallMidTarmac2BallSide();
             }
+            return Paths.get0BallTaxi();
         }
         else if(position == StartingPosition.MID_TARMAC_ONE_BALL_SIDE){
             return Paths.get2BallMidTarmac1BallSide();
         }
         return new DefaultDriveCommandRobotOriented(drive);
     }
-    //    Command doNothing = new DefaultDriveCommandRobotOriented(drive);
 
     public static Command getCommand(SwerveDrive drive) {
         return flywheelSubsystem != null ?
                 new ParallelRaceGroup(
                     new WaitCommand(3),
                     new ZeroHoodMotorCommand(flywheelSubsystem)
-                ).andThen(setCommand(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive))
+                ).andThen(setPath(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive))
                 :
-            autoChooser.getSelected();
+                setPath(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive);
     }
 }
