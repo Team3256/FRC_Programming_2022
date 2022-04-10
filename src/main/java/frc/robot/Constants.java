@@ -59,10 +59,12 @@ public final class Constants {
 
     public static class FieldConstants {
         public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
     }
 
     public static class LimelightAutoCorrectConstants {
-        public static final double MAX_VISION_LOCALIZATION_CORRECTION = 0.5; // in meters
+        public static final double MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION = 0.5; // in meters
+        public static final double MAX_VISION_LOCALIZATION_HEADING_CORRECTION = 5; // in degrees
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
         public static final int POLYNOMIAL_DEGREE = 5;

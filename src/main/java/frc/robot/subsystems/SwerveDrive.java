@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_CORRECTION;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
@@ -126,18 +126,29 @@ public class SwerveDrive extends SubsystemBase {
 
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
 
+
+    /**
+     * @param distanceToTarget Distance to target in meters
+     * @param thetaTargetOffset Limelight angle error in degrees
+     */
     public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
         Pose2d currentPose = getPose();
-        Translation2d hubCenteredPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
 
         double r = distanceToTarget;
-        double theta = Math.atan2(hubCenteredPosition.getY(), hubCenteredPosition.getX());
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
 
         Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
-        Pose2d visionPose = new Pose2d(visionTranslation, currentPose.getRotation());
+        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
 
-        if (Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_CORRECTION)
+        if (
+                Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
+                Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
+        ){
+            // only update position if measurement is not obviously wrong
             poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+        }
     }
 
     public Pose2d getVelocity() { return curr_velocity; }
