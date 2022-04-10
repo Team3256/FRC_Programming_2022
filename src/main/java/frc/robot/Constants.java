@@ -33,7 +33,7 @@ import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
@@ -126,8 +126,12 @@ public final class Constants {
 
         //Non-final Allow for Changing via Smart Dashboard
         public static double SWERVE_TURRET_KP = 0.05;
-        public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 0.0008;
+        public static double SWERVE_TURRET_KI = 0.001;
+        public static double SWERVE_TURRET_KD = 0.001;
+
+        public static double SWERVE_ODOMETRY_TURRET_KP = 0.1;
+        public static double SWERVE_ODOMETRY_TURRET_KI = 0;
+        public static double SWERVE_ODOMETRY_TURRET_KD = 0.007;
 
         public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
         public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
