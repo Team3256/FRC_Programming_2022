@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
@@ -25,7 +26,8 @@ import static frc.robot.Constants.IDConstants.*;
 
 public class SwerveDrive extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
-
+    private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
+    private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     public static final double MAX_VOLTAGE = 12.0;
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -109,6 +111,8 @@ public class SwerveDrive extends SubsystemBase {
 
     public void drive(ChassisSpeeds chassisSpeeds) {
         chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
+        chassisSpeeds.vxMetersPerSecond = adaptiveXRateLimiter.calculate(chassisSpeeds.vxMetersPerSecond);
+        chassisSpeeds.vyMetersPerSecond = adaptiveYRateLimiter.calculate(chassisSpeeds.vyMetersPerSecond);
         this.chassisSpeeds = chassisSpeeds;
 
     }

@@ -54,10 +54,10 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    private ShooterSubsystem flywheelSubsystem = null;
+    public ShooterSubsystem shooterSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
-    private HangerSubsystem hangerSubsystem = null;
+    public HangerSubsystem hangerSubsystem = null;
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
@@ -116,7 +116,7 @@ public class RobotContainer {
 
     public SendableChooser<Command> getCommandChooser() {
         if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem);
+            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem);
         else
             return null;
     }
@@ -126,8 +126,8 @@ public class RobotContainer {
     }
 
     private void initializeShooter() {
-        this.flywheelSubsystem = new ShooterSubsystem();
-        TransferSubsystem.flywheelSubsystem = flywheelSubsystem;
+        this.shooterSubsystem = new ShooterSubsystem();
+        TransferSubsystem.flywheelSubsystem = shooterSubsystem;
     }
 
     private void initializeTransfer() {
@@ -204,14 +204,14 @@ public class RobotContainer {
         JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
         operatorRightTrigger.setThreshold(0.1);
 
-        dPadRight.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.LAUNCHPAD));
-        dPadLeft.whenPressed(new SetShooterPreset(flywheelSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
+        dPadRight.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.LAUNCHPAD));
+        dPadLeft.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
 
-        dPadUp.whenHeld(new ZeroHoodMotorCommand(flywheelSubsystem));
+        dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
         operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
-                flywheelSubsystem,
-                flywheelSubsystem::getFlywheelShooterStateFromPreset,
+                shooterSubsystem,
+                shooterSubsystem::getFlywheelShooterStateFromPreset,
                 operatorController));
 
 
