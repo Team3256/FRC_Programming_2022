@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.helper.LED.helpers.*;
 import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -38,10 +40,6 @@ public final class Constants {
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
-    public static final double HUB_POSITION_X = 8.347;
-    public static final double HUB_POSITION_Y = 4.117;
-
-
     public static class SubsystemEnableFlags {
         public static final boolean LIMELIGHT = true;
 
@@ -57,6 +55,11 @@ public final class Constants {
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
         public static final boolean IR_SENSORS = true;
+    }
+
+    public static class FieldConstants {
+        public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
     }
 
     public static class LimelightAutoCorrectConstants {

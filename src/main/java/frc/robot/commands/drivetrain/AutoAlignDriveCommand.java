@@ -2,6 +2,7 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -67,7 +68,8 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The angle between the hub and the robot
     public double angleBetweenHub(Pose2d robotPose) {
-        return Math.atan2(HUB_POSITION_Y - robotPose.getY(), HUB_POSITION_X - robotPose.getX());
+        Translation2d hubCenteredRobotPosition = FieldConstants.HUB_POSITION.minus(robotPose.getTranslation());
+        return Math.atan2(hubCenteredRobotPosition.getX(), hubCenteredRobotPosition.getY());
     }
 
     //The setpoint angle for the robot to turn towards the hub
