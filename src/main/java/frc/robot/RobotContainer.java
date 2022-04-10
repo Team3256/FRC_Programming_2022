@@ -119,8 +119,8 @@ public class RobotContainer {
     }
   
     public void getCommandChooser() {
-        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem, DefaultChooserOptions.BALL_COUNT));
-        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem, DefaultChooserOptions.STARTING_POSITIONS));
+        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.BALL_COUNT));
+        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.STARTING_POSITIONS));
     }
 
     private void initializeDrivetrain() {
