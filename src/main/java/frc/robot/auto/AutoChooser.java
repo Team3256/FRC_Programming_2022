@@ -21,33 +21,39 @@ public class AutoChooser {
 
         autoChooser = new SendableChooser<>();
 
-        Command doNothing = new DefaultDriveCommandRobotOriented(drive);
-        autoChooser.setDefaultOption("Do Nothing", doNothing);
+        if (drive != null) {
+            Command doNothing = new DefaultDriveCommandRobotOriented(drive);
+            autoChooser.setDefaultOption("Do Nothing", doNothing);
 
-        // path planner dot is the shooter
-        Command zeroBallTaxi = Paths.get0BallTaxi();
-        autoChooser.addOption("0 Ball Taxi | Start Tarmac | Any Side", zeroBallTaxi);
+            Command zeroBallTaxi = Paths.get0BallTaxi();
+            autoChooser.addOption("0 Ball Taxi | Start Tarmac | Any Side", zeroBallTaxi);
 
-        Command oneBallTaxi = Paths.get1BallTaxi();
-        autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
+            // path planner dot is the shooter
+            if (flywheel != null) {
+                Command oneBallTaxi = Paths.get1BallTaxi();
+                autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
-        Command twoBallTarmacMid2BallSide = Paths.get2BallMidTarmac2BallSide();
-        autoChooser.addOption("2 Ball Knock Red | Start Mid Tarmac | 2 Ball Side", twoBallTarmacMid2BallSide);
+                if (intake != null && transfer != null) {
+                    Command twoBallTarmacMid2BallSide = Paths.get2BallMidTarmac2BallSide();
+                    autoChooser.addOption("2 Ball Knock Red | Start Mid Tarmac | 2 Ball Side", twoBallTarmacMid2BallSide);
 
-        Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
-        autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
+                    Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
+                    autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
 
-        Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
-        autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
+                    Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
+                    autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
 
-        Command threeBallTarmacEdge2BallSide = Paths.get3BallFarTarmac2BallSide();
-        autoChooser.addOption("3 Ball | Start Edge Tarmac | 2 Ball Side", threeBallTarmacEdge2BallSide);
+                    Command threeBallTarmacEdge2BallSide = Paths.get3BallFarTarmac2BallSide();
+                    autoChooser.addOption("3 Ball | Start Edge Tarmac | 2 Ball Side", threeBallTarmacEdge2BallSide);
 
-        Command fourBallTarmacEdge2BallSide = Paths.get4BallFarTarmac2BallSide();
-        autoChooser.addOption("4/5 Ball | Start Edge Tarmac | 2 Ball Side", fourBallTarmacEdge2BallSide);
+                    Command fourBallTarmacEdge2BallSide = Paths.get4BallFarTarmac2BallSide();
+                    autoChooser.addOption("4/5 Ball | Start Edge Tarmac | 2 Ball Side", fourBallTarmacEdge2BallSide);
 
-        Command fourBallTarmacMid2BallSide = Paths.get4BallMidTarmac2BallSide();
-        autoChooser.addOption("4 Ball | Start Mid Tarmac | 2 Ball Side", fourBallTarmacMid2BallSide);
+                    Command fourBallTarmacMid2BallSide = Paths.get4BallMidTarmac2BallSide();
+                    autoChooser.addOption("4 Ball | Start Mid Tarmac | 2 Ball Side", fourBallTarmacMid2BallSide);
+                }
+            }
+        }
 
         return autoChooser;
     }

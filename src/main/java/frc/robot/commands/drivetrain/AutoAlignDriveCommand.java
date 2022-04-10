@@ -69,13 +69,13 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The angle between the hub and the robot
     public double angleBetweenHub(Pose2d robotPose) {
-        return Math.atan2(Math.abs(HUB_POSITION_Y - robotPose.getY()), Math.abs(HUB_POSITION_X - robotPose.getX()));
+        return Math.atan2(HUB_POSITION_Y - robotPose.getY(), HUB_POSITION_X - robotPose.getX());
     }
 
     //The setpoint angle for the robot to turn towards the hub
     public double setAligningAngle(Pose2d robotPose) {
         double angleDifference = robotPose.getRotation().getDegrees() - Math.toDegrees(angleBetweenHub(robotPose));
-        return robotPose.getRotation().getDegrees() - angleDifference - 180;
+        return robotPose.getRotation().getDegrees() - angleDifference;
     }
 
     public void alignWithVision(){
@@ -112,8 +112,8 @@ public class AutoAlignDriveCommand extends CommandBase {
         // but while NOT moving, the motors need more power in order to actually move, so
         // we add a Constant, (Using copysign to either add or subtract depending on sign)
         double autoAlignPIDRotationalOutput = speedSquared > Math.pow(0.1, 2) ?
-                    autoAlignPidOutput :
-                    autoAlignPidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, autoAlignPidOutput);
+                autoAlignPidOutput :
+                autoAlignPidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, autoAlignPidOutput);
 
 
         swerveDrive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(

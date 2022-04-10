@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotLogger.init();
     robotContainer = new RobotContainer();
-    SmartDashboard.putData(robotContainer.getCommandChooser());
+    SmartDashboard.putData("Auto Chooser", robotContainer.getCommandChooser());
   }
 
   @Override
@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
+    }  else {
+      logger.severe("NOT RUNNING AUTO COMMAND: AUTO COMMAND IS NULL");
     }
   }
 

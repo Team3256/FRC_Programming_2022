@@ -49,7 +49,7 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
         public static final boolean DRIVETRAIN = true;
 

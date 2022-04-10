@@ -108,17 +108,11 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getCommand();
-        else
-            return null;
+        return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem);
-        else
-            return null;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, flywheelSubsystem, transferSubsystem);
     }
 
     private void initializeDrivetrain() {
@@ -224,7 +218,7 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
         operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
