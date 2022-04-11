@@ -15,10 +15,11 @@ public class BallTracker {
         ballTracker = inst.getTable("ballTracker");
     }
     public static double getDx() {
-        return ballTracker.getEntry("dx").getDouble(0);
+        return kx * ballTracker.getEntry("dx").getDouble(0);
     }
     public static double getDy(){
-        return ballTracker.getEntry("dy").getDouble(0);
+        return ky * ballTracker.getEntry("dy").getDouble(0);
     }
-
+    static double kx = 10;
+    static double ky = 10;
 }
