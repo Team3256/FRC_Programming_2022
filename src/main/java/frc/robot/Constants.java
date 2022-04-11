@@ -358,6 +358,14 @@ public final class Constants {
         public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
                 new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
         );
+
+        // Shooting While Moving
+        public static final double EPSILON = 0.00001;
+        public static final double THETA = Math.PI/60;
+        public static final double VELOCITY_X = -1.524;
+        public static final double VELOCITY_Y = 4.572;
+        public static final double DI = 5;
+        public static final double ERROR = 1000;
     }
     public static class LEDConstants {
          public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

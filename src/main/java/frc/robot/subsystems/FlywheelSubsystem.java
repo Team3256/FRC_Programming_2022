@@ -27,7 +27,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-    //private final TalonFX hoodAngleMotor;
+
     private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
@@ -332,5 +332,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         this.setSpeed(currentPreset.shooterState.rpmVelocity);
         this.setHoodAngle(currentPreset.shooterState.hoodAngle);
     }
+
+
 }
 
