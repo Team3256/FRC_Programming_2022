@@ -61,7 +61,7 @@ public class AutoChooser {
     }
 
     //Sets path depending on the robot's starting position and the amount of balls interacted with in the autonomous path
-    public static Command setPath(StartingPosition position, BallCount ballCount, SwerveDrive drive ){
+    public static Command getPathCommand(StartingPosition position, BallCount ballCount, SwerveDrive drive ){
         if(position == StartingPosition.TARMAC_ANY_SIDE){
             if(ballCount == BallCount.ZERO_BALL){
                 return Paths.get0BallTaxi();
@@ -103,8 +103,8 @@ public class AutoChooser {
                 new ParallelRaceGroup(
                     new WaitCommand(3),
                     new ZeroHoodMotorCommand(flywheelSubsystem)
-                ).andThen(setPath(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive))
+                ).andThen(getPathCommand(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive))
                 :
-                setPath(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive);
+                getPathCommand(startingPositionChooser.getSelected(), ballCountChooser.getSelected(), drive);
     }
 }
