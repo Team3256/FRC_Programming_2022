@@ -74,8 +74,7 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The setpoint angle for the robot to turn towards the hub
     public double setAligningAngle(Pose2d robotPose) {
-        double angleDifference = robotPose.getRotation().getDegrees() - Math.toDegrees(angleBetweenHub(robotPose));
-        return robotPose.getRotation().getDegrees() - angleDifference;
+        return (Math.toDegrees(angleBetweenHub(robotPose)) + 180 ) % 360;
     }
 
     public void alignWithVision(){
