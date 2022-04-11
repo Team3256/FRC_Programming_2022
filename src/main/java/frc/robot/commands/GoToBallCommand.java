@@ -14,11 +14,6 @@ public class GoToBallCommand extends CommandBase {
         this.drivetrainSubsystem=drivetrainSubsystem;
     }
 
-    @Override
-    public void initialize(){
-        BallTracker.init();
-    }
-
     /**
      * swerve drives towards ball
      */
@@ -34,5 +29,14 @@ public class GoToBallCommand extends CommandBase {
     public boolean isFinished() {
         return Math.abs(BallTracker.getDx())<DX_MAX_ERROR &&
                 Math.abs(BallTracker.getDy())<DY_MAX_ERROR;
+    }
+
+    /**
+     * stop robot when done
+     * @param interrupted
+     */
+    @Override
+    public void end(boolean interrupted){
+        drivetrainSubsystem.stop();
     }
 }

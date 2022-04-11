@@ -9,6 +9,11 @@ public class BallTracker {
     //Doesn't allow instancing
     private BallTracker(){}
 
+    //Initialize when class is loaded
+    static {
+        init();
+    }
+    
     /**
      * initialize ball tracker network table
      */
