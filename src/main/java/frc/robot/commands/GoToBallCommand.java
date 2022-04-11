@@ -19,6 +19,9 @@ public class GoToBallCommand extends CommandBase {
         BallTracker.init();
     }
 
+    /**
+     * swerve drives towards ball
+     */
     @Override
     public void execute(){
         drivetrainSubsystem.drive(new ChassisSpeeds(KX * BallTracker.getDx()*BallTracker.getDy(), KY * BallTracker.getDy(), 0));
