@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.BallTracker;
 import frc.robot.subsystems.SwerveDrive;
 
+import static frc.robot.Constants.BallFollowConstants.*;
+
 public class GoToBallCommand extends CommandBase {
     SwerveDrive drivetrainSubsystem;
     public GoToBallCommand(SwerveDrive drivetrainSubsystem){
@@ -13,16 +15,21 @@ public class GoToBallCommand extends CommandBase {
     }
 
     @Override
-    public void execute(){
-        drivetrainSubsystem.drive(new ChassisSpeeds(BallTracker.getDx()*BallTracker.getDy(), BallTracker.getDy(), 0));
+    public void initialize(){
+        BallTracker.init();
     }
 
     @Override
-    public boolean isFinished() {
-        return Math.abs(BallTracker.getDx())<dxThresh &&
-                Math.abs(BallTracker.getDy())<dyThresh;
+    public void execute(){
+        drivetrainSubsystem.drive(new ChassisSpeeds(KX * BallTracker.getDx()*BallTracker.getDy(), KY * BallTracker.getDy(), 0));
     }
 
-    double dxThresh = 0.000001;
-    double dyThresh = 0.000001;
+    /**
+     * @return is position relative to ball is less than error
+     */
+    @Override
+    public boolean isFinished() {
+        return Math.abs(BallTracker.getDx())<DX_MAX_ERROR &&
+                Math.abs(BallTracker.getDy())<DY_MAX_ERROR;
+    }
 }

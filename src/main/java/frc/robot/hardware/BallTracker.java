@@ -9,17 +9,26 @@ public class BallTracker {
     //Doesn't allow instancing
     private BallTracker(){}
 
+    /**
+     * initialize ball tracker network table
+     */
     public static void init(){
         //Set up network tables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         ballTracker = inst.getTable("ballTracker");
     }
+
+    /**
+     * @return ball horizontal pixel offset
+     */
     public static double getDx() {
-        return kx * ballTracker.getEntry("dx").getDouble(0);
+        return ballTracker.getEntry("dx").getDouble(0);
     }
+
+    /**
+     * @return image height minus ball radius pixel
+     */
     public static double getDy(){
-        return ky * ballTracker.getEntry("dy").getDouble(0);
+        return ballTracker.getEntry("dy").getDouble(0);
     }
-    static double kx = 10;
-    static double ky = 10;
 }

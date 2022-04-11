@@ -141,6 +141,15 @@ public final class Constants {
         public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
 
     }
+    public static class BallFollowConstants {
+        //tune speed of robot during follow
+        public static final double KX = 10;
+        public static final double KY = 10;
+
+        //max distance error
+        public static final double DX_MAX_ERROR = 0.000001;
+        public static final double DY_MAX_ERROR = 0.000001;
+    }
     public static class AutoConstants {
         public static final boolean AUTO_DEBUG = false;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
