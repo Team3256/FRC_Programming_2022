@@ -112,7 +112,7 @@ public class HangerSubsystem extends SubsystemBase {
     }
 
     /**
-     * check if master talon motor has reached the full intended distance
+     * check if master talon motor has reached the full intended distance-
      * @return returns true if master talon has the full reached intended distance
      */
     public boolean isFullPositionReached() {

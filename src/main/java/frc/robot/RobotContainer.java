@@ -58,7 +58,7 @@ public class RobotContainer {
     private ShooterSubsystem shooterSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
-    private HangerSubsystem hangerSubsystem = null;
+    public HangerSubsystem hangerSubsystem = null;
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
@@ -69,7 +69,6 @@ public class RobotContainer {
     public RobotContainer() {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
-
 
         // Initialize Active Subsystems
         if (LIMELIGHT)
@@ -100,13 +99,6 @@ public class RobotContainer {
         if (HANGER)
             configureHanger();
     }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
 
     public Command getAutonomousCommand() {
         if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
@@ -204,9 +196,6 @@ public class RobotContainer {
         JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
         operatorRightTrigger.setThreshold(0.1);
 
-//        dPadRight.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.LAUNCHPAD));
-//        dPadLeft.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
-
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
 //        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
@@ -214,10 +203,7 @@ public class RobotContainer {
 //                shooterSubsystem::getFlywheelShooterStateFromPreset,
 //                operatorController));
 
-        SmartDashboard.putNumber("LimeLight Distance from Target", Limelight.getRawDistanceToTarget());
-
         operatorRightTrigger.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController));
-
 
         // Vibrations
         if (TRANSFER) {
