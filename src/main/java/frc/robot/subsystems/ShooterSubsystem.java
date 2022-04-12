@@ -247,7 +247,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double boundDistanceToInterpolation(double distance) {
         double lowerBounded = Math.max(distance, 60); // lower bound
-        double bounded = Math.min(distance, 204); // upper bound
+        double bounded = Math.min(lowerBounded, 204); // upper bound
         return bounded;
     }
 

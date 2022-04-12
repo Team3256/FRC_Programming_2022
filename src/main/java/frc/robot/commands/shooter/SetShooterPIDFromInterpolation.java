@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.Constants;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
-import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
+
+    private double targetVelocity = 0;
+    private double targetHoodAngle = 0;
 
     private ShooterSubsystem shooterSubsystem;
 
@@ -27,7 +30,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
-//        new Button(() -> flywheelSubsystem.isAtSetPoint(shooterStateSupplier.get().rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
+        new Button(() -> flywheelSubsystem.isAtSetPoint(targetVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
     @Override
@@ -38,15 +41,19 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput = 0;
+        double pidOutput;
 
         double currentDistance = Limelight.getRawDistanceToTarget();
-        double targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
-        shooterSubsystem.setTargetVelocity(targetVelocity);
-        double targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
 
-        SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
-        SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
+        shooterSubsystem.setTargetVelocity(targetVelocity);
+
+        targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
+
+        if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
+            SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+        }
 
         if (targetVelocity < 3500){
             pidOutput = flywheelControllerLow.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);

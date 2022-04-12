@@ -16,14 +16,8 @@ public class TransferShootForward extends CommandBase {
     public TransferShootForward(TransferSubsystem transferSubsystem, ShooterSubsystem shooterSubsystem) {
         this.transferSubsystem = transferSubsystem;
         this.shooterSubsystem = shooterSubsystem;
-        // Use addRequirements() here to declare subsystem dependencies.
+
         addRequirements(transferSubsystem);
-    }
-
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-
     }
 
     @Override

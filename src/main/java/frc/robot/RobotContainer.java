@@ -229,8 +229,7 @@ public class RobotContainer {
 
         // Operator's Intake Up Button
         operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
-
-
+        
         driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
 
         if (TRANSFER)
