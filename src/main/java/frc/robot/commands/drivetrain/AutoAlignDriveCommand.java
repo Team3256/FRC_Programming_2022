@@ -69,7 +69,7 @@ public class AutoAlignDriveCommand extends CommandBase {
     //The angle between the hub and the robot
     public double angleBetweenHub(Pose2d robotPose) {
         Translation2d hubCenteredRobotPosition = FieldConstants.HUB_POSITION.minus(robotPose.getTranslation());
-        return Math.atan2(hubCenteredRobotPosition.getX(), hubCenteredRobotPosition.getY());
+        return Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
     }
 
     //The setpoint angle for the robot to turn towards the hub
