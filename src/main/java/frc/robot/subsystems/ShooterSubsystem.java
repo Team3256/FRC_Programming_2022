@@ -256,7 +256,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     private double getVelocity() {
         double velocityInSensorUnits = masterLeftShooterMotor.getSensorCollection().getIntegratedSensorVelocity();
-        return fromSuToRPM(velocityInSensorUnits) ; // su / 100ms  * 1/2048 * 10 100ms/ 1s 60s / min
+        return fromSuToRPM(velocityInSensorUnits);
     }
 
     public static double fromSuToRPM(double su){
