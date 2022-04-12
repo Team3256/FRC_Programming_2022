@@ -40,12 +40,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
 
     private int counter = 0;
-    private ArrayList<Double> error_list;
-    private ArrayList<Double> dn_list;
-    private ArrayList<Double> x_aim_list;
-    private ArrayList<Double> y_aim_list;
-    private ArrayList<Double> dn_list_x;
-    private ArrayList<Double> dn_list_y;
     public double alpha_angle = Math.PI/60;
     public double error = 1000.0;
 
@@ -82,14 +76,6 @@ public class FlywheelSubsystem extends SubsystemBase {
       
        // getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
-
-        error_list = new ArrayList<Double>();
-        dn_list = new ArrayList<Double>();
-        dn_list_x = new ArrayList<Double>();
-        dn_list_y = new ArrayList<Double>();
-        x_aim_list = new ArrayList<Double>();
-        y_aim_list = new ArrayList<Double>();
-
     }
 
     private ShooterPreset getPreset() {
@@ -368,15 +354,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         double dn = Math.sqrt(Math.pow(xAim, 2.0) + Math.pow(yAim, 2.0));
         double tn = timeFromDistance(dn);
 
-        x_aim_list.add(xAim);
-        y_aim_list.add(yAim);
-
-        dn_list_x.add(-1*VELOCITY_X*tn);
-        dn_list_y.add(-1*VELOCITY_Y*tn + DI);
-
-        return Math.copySign(Math.sqrt(
-                (Math.pow((tn*-1*VELOCITY_X) - xAim, 2.0) +
-                        Math.pow(((tn * -1 * VELOCITY_Y + DI) - yAim), 2))),
+        return Math.copySign(
+                    Math.sqrt(
+                        Math.pow((tn*-1*VELOCITY_X) - xAim, 2.0) +
+                        Math.pow(((tn * -1 * VELOCITY_Y + DI) - yAim), 2)
+                    ),
                 tn * VELOCITY_X - xAim); // error margin
     }
 
@@ -391,8 +373,6 @@ public class FlywheelSubsystem extends SubsystemBase {
 
             System.out.println("Iteration " + counter + " | Error: " + error
                     + " | Alpha: " + Math.toDegrees(alpha_angle));
-
-            error_list.add(error);
 
             counter += 1;
 
