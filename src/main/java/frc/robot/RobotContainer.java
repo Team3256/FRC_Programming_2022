@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -258,6 +259,13 @@ public class RobotContainer {
         // Auto Retract
         new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
                 .whenActive(new HangerZeroRetract(hangerSubsystem));
+    }
+
+    public void zeroSubsystems() {
+        if (SHOOTER)
+            CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(shooterSubsystem));
+        if (HANGER)
+            CommandScheduler.getInstance().schedule(new HangerZeroRetract(hangerSubsystem));
     }
 
     public void resetPose() {

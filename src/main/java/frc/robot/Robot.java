@@ -77,8 +77,7 @@ public class Robot extends TimedRobot {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
 
-    CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(robotContainer.shooterSubsystem));
-    CommandScheduler.getInstance().schedule(new HangerZeroRetract(robotContainer.hangerSubsystem));
+    robotContainer.zeroSubsystems();
   }
 
   @Override
