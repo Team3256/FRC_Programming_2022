@@ -45,7 +45,7 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
         public static final boolean DRIVETRAIN = true;
 
@@ -370,8 +370,14 @@ public final class Constants {
         ); // TODO: Create all training data
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
-                new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
-        );
+                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
+                    new TrainingDataPoint(59.3223818, 12000, 2200),
+                    new TrainingDataPoint(93.438228, 147500, 2200),
+                    new TrainingDataPoint(116.1115998, 185000, 2265),
+                    new TrainingDataPoint(137.720407, 195000, 2340),
+                    new TrainingDataPoint(168.63393, 205000, 2540),
+                    new TrainingDataPoint(204.32797, 235000, 2960)
+                );
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

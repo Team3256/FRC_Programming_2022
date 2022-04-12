@@ -28,6 +28,7 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
+import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
@@ -196,7 +197,6 @@ public class RobotContainer {
     }
 
     private void configureShooter() {
-
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
         DPadButton dPadLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
@@ -204,15 +204,19 @@ public class RobotContainer {
         JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
         operatorRightTrigger.setThreshold(0.1);
 
-        dPadRight.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.LAUNCHPAD));
-        dPadLeft.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
+//        dPadRight.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.LAUNCHPAD));
+//        dPadLeft.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
-        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
-                shooterSubsystem,
-                shooterSubsystem::getFlywheelShooterStateFromPreset,
-                operatorController));
+//        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
+//                shooterSubsystem,
+//                shooterSubsystem::getFlywheelShooterStateFromPreset,
+//                operatorController));
+
+        SmartDashboard.putNumber("LimeLight Distance from Target", Limelight.getRawDistanceToTarget());
+
+        operatorRightTrigger.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController));
 
 
         // Vibrations
@@ -224,9 +228,11 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
-        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+      operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
+//        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+
     }
 
     private void configureIntake() {

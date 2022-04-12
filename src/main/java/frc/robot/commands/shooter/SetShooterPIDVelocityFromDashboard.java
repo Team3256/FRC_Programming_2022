@@ -10,6 +10,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
 
+import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
+
 
 public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     private ShooterSubsystem.ShooterLocationPreset shooterLocationPreset;
@@ -31,15 +33,12 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
     @Override
     public void initialize() {
-
         SmartDashboard.setDefaultNumber("Custom Velocity", 1200);
         SmartDashboard.setDefaultNumber("Custom Hood Angle", 0);
     }
 
     @Override
     public void execute() {
-
-
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
 
@@ -64,7 +63,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         flywheelSubsystem.setHoodAngle(hoodAngle);
 
-        SmartDashboard.putNumber("Flywheel Output",clampedPositiveFinalMotorOutput);
+
 
     }
 

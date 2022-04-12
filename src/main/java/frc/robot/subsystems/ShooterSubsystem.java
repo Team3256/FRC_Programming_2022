@@ -31,11 +31,13 @@ public class ShooterSubsystem extends SubsystemBase {
         TARMAC_VERTEX,
     }
 
+    private double targetVelocity = 0;
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
+//    private double currentSetpoint = 0;
 
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
 
@@ -91,6 +93,14 @@ public class ShooterSubsystem extends SubsystemBase {
         limitSwitch = new DigitalInput(HOOD_LIMITSWITCH_CHANNEL);
 
         logger.info("Flywheel Initialized");
+    }
+
+    public void setTargetVelocity(double targetVelocity) {
+        this.targetVelocity = targetVelocity;
+    }
+
+    public double getTargetVelocity() {
+        return this.targetVelocity;
     }
 
     /**
@@ -151,13 +161,13 @@ public class ShooterSubsystem extends SubsystemBase {
      */
 
     public boolean isAtSetPoint(double setpoint) {
-        double velocity = -getFlywheelRPM();
+        double velocity = getFlywheelRPM();
 
         return (velocity <= setpoint + SET_POINT_ERROR_MARGIN*setpoint) &&
                 (velocity >= setpoint - SET_POINT_ERROR_MARGIN*setpoint);
     }
     public boolean isAtSetPoint(DoubleSupplier setpoint) {
-        double velocity = -getFlywheelRPM();
+        double velocity = getFlywheelRPM();
 
         return (velocity <= setpoint.getAsDouble() + SET_POINT_ERROR_MARGIN*setpoint.getAsDouble()) &&
                 (velocity >= setpoint.getAsDouble() - SET_POINT_ERROR_MARGIN*setpoint.getAsDouble());
@@ -223,14 +233,22 @@ public class ShooterSubsystem extends SubsystemBase {
         if(distanceToHoodAngleInterpolatingFunction == null){
             logger.warning("Distance to Hood Angle Interpolation Function is NULL");
         }
-        return distanceToHoodAngleInterpolatingFunction.value(distance);
+
+        return distanceToHoodAngleInterpolatingFunction.value(boundDistanceToInterpolation(distance));
     }
 
     public double getFlywheelRPMFromInterpolator(double distance) {
         if(distanceToFlywheelRPMInterpolatingFunction == null){
             logger.warning("Distance to Flywheel RPM Interpolation Function is NULL");
         }
-        return distanceToFlywheelRPMInterpolatingFunction.value(distance);
+
+        return distanceToFlywheelRPMInterpolatingFunction.value(boundDistanceToInterpolation(distance));
+    }
+
+    private double boundDistanceToInterpolation(double distance) {
+        double lowerBounded = Math.max(distance, 60); // lower bound
+        double bounded = Math.min(distance, 204); // upper bound
+        return bounded;
     }
 
     /**
