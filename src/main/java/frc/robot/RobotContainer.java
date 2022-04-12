@@ -191,8 +191,6 @@ public class RobotContainer {
 
     private void configureShooter() {
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
-        DPadButton dPadLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
 
         JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
         operatorRightTrigger.setThreshold(0.1);
