@@ -16,6 +16,9 @@ import frc.robot.helper.shooter.ShooterState;
 import org.apache.commons.math3.analysis.interpolation.*;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -27,7 +30,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
 
-
     private final DigitalInput limitSwitch;
 
     private double currentTargetSpeed;
@@ -36,6 +38,16 @@ public class FlywheelSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
     private PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+
+    private int counter = 0;
+    private ArrayList<Double> error_list;
+    private ArrayList<Double> dn_list;
+    private ArrayList<Double> x_aim_list;
+    private ArrayList<Double> y_aim_list;
+    private ArrayList<Double> dn_list_x;
+    private ArrayList<Double> dn_list_y;
+    public double alpha_angle = Math.PI/60;
+    public double error = 1000.0;
 
     public FlywheelSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -70,6 +82,14 @@ public class FlywheelSubsystem extends SubsystemBase {
       
        // getVelocityInterpolatingFunctionFromPoints();
         //getHoodAngleInterpolatingFunctionFromPoints();
+
+        error_list = new ArrayList<Double>();
+        dn_list = new ArrayList<Double>();
+        dn_list_x = new ArrayList<Double>();
+        dn_list_y = new ArrayList<Double>();
+        x_aim_list = new ArrayList<Double>();
+        y_aim_list = new ArrayList<Double>();
+
     }
 
     private ShooterPreset getPreset() {
@@ -333,6 +353,53 @@ public class FlywheelSubsystem extends SubsystemBase {
         this.setHoodAngle(currentPreset.shooterState.hoodAngle);
     }
 
+    private double timeFromDistance(double distance) {
+        return 0.1 * distance;
+    }
 
+    private double possiblePositions(double x) {
+        return VELOCITY_Y/VELOCITY_X * x + DI;
+    }
+
+    public double iterate(double alpha) {
+        double xAim = DI/((Math.tan(Math.PI/2 - alpha)) - VELOCITY_Y/VELOCITY_X);
+        double yAim = possiblePositions(xAim);
+
+        double dn = Math.sqrt(Math.pow(xAim, 2.0) + Math.pow(yAim, 2.0));
+        double tn = timeFromDistance(dn);
+
+        x_aim_list.add(xAim);
+        y_aim_list.add(yAim);
+
+        dn_list_x.add(-1*VELOCITY_X*tn);
+        dn_list_y.add(-1*VELOCITY_Y*tn + DI);
+
+        return Math.copySign(Math.sqrt(
+                (Math.pow((tn*-1*VELOCITY_X) - xAim, 2.0) +
+                        Math.pow(((tn * -1 * VELOCITY_Y + DI) - yAim), 2))),
+                tn * VELOCITY_X - xAim); // error margin
+    }
+
+    private double computeAlpha(double error, double alpha) {
+        return error * -0.05 + alpha;
+    }
+
+    public void runIterations() {
+        while (Math.abs(error) > EPSILON) {
+            error = iterate(alpha_angle);
+            alpha_angle = computeAlpha(error, alpha_angle);
+
+            System.out.println("Iteration " + counter + " | Error: " + error
+                    + " | Alpha: " + Math.toDegrees(alpha_angle));
+
+            error_list.add(error);
+
+            counter += 1;
+
+            if (counter > 200) {
+                return;
+            }
+        }
+    }
 }
 
