@@ -196,20 +196,12 @@ public class RobotContainer {
         operatorRightTrigger.setThreshold(0.1);
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
-
-//        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
-//                shooterSubsystem,
-//                shooterSubsystem::getFlywheelShooterStateFromPreset,
-//                operatorController));
-
         operatorRightTrigger.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController));
 
         // Vibrations
         if (TRANSFER) {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
         }
-
-        // Flywheel Vibration from the SetShooterPIDVelocityFromStateCommand
     }
 
     private void configureTransfer() {
