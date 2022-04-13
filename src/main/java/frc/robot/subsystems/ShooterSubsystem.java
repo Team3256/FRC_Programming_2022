@@ -304,6 +304,7 @@ public class ShooterSubsystem extends SubsystemBase {
             else if (calculate(tiMinus, robotVelocity, d) == calculate(tiPlus, robotVelocity, d)) {
                 ti = ti + 1/2 * beta;
             }
+            magRi = calculate(ti, robotVelocity, d);
         }
 
         double sn = magRi - distance;
