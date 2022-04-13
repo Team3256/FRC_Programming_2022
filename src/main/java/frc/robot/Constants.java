@@ -383,6 +383,9 @@ public final class Constants {
                     new TrainingDataPoint(168.63393, 205000, 2540),
                     new TrainingDataPoint(204.32797, 235000, 2960)
                 );
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 60;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
+
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

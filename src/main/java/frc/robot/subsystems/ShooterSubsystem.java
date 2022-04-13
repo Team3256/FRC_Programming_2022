@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -234,7 +235,7 @@ public class ShooterSubsystem extends SubsystemBase {
             logger.warning("Distance to Hood Angle Interpolation Function is NULL");
         }
 
-        return distanceToHoodAngleInterpolatingFunction.value(boundDistanceToInterpolation(distance));
+        return distanceToHoodAngleInterpolatingFunction.value(clampDistanceToInterpolation(distance));
     }
 
     public double getFlywheelRPMFromInterpolator(double distance) {
@@ -242,13 +243,11 @@ public class ShooterSubsystem extends SubsystemBase {
             logger.warning("Distance to Flywheel RPM Interpolation Function is NULL");
         }
 
-        return distanceToFlywheelRPMInterpolatingFunction.value(boundDistanceToInterpolation(distance));
+        return distanceToFlywheelRPMInterpolatingFunction.value(clampDistanceToInterpolation(distance));
     }
 
-    private double boundDistanceToInterpolation(double distance) {
-        double lowerBounded = Math.max(distance, 60); // lower bound
-        double bounded = Math.min(lowerBounded, 204); // upper bound
-        return bounded;
+    private double clampDistanceToInterpolation(double distance) {
+        return MathUtil.clamp(distance, SHOOTER_INTERPOLATION_MIN_VALUE, SHOOTER_INTERPOLATION_MAX_VALUE);
     }
 
     /**
