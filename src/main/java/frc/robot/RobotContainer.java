@@ -92,7 +92,7 @@ public class RobotContainer {
         // Configure Enabled Subsystems
         if (DRIVETRAIN) {
             configureDrivetrain();
-            getCommandChooser();
+            sendCommandChoosers();
         }
         if (SHOOTER)
             configureShooter();
@@ -118,7 +118,7 @@ public class RobotContainer {
             return null;
     }
   
-    public void getCommandChooser() {
+    public void sendCommandChoosers() {
         SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.BALL_COUNT));
         SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.STARTING_POSITIONS));
     }

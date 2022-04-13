@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotLogger.init();
     robotContainer = new RobotContainer();
-    robotContainer.getCommandChooser();
+    robotContainer.sendCommandChoosers();
   }
 
   @Override
