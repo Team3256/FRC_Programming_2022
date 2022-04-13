@@ -50,6 +50,11 @@ import static frc.robot.Constants.TransferConstants.*;
  */
 public class RobotContainer {
 
+    public enum DefaultChooserOptions{
+        BALL_COUNT,
+        STARTING_POSITIONS
+    }
+
     // The robot's subsystems and commands are defined here...
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
@@ -87,8 +92,7 @@ public class RobotContainer {
         // Configure Enabled Subsystems
         if (DRIVETRAIN) {
             configureDrivetrain();
-            if (getCommandChooser() != null)
-                SmartDashboard.putData(getCommandChooser());
+            sendCommandChoosers();
         }
         if (SHOOTER)
             configureShooter();
@@ -109,16 +113,14 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getCommand();
+            return AutoChooser.getCommand(drivetrainSubsystem);
         else
             return null;
     }
-
-    public SendableChooser<Command> getCommandChooser() {
-        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem);
-        else
-            return null;
+  
+    public void sendCommandChoosers() {
+        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.BALL_COUNT));
+        SmartDashboard.putData(AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem, DefaultChooserOptions.STARTING_POSITIONS));
     }
 
     private void initializeDrivetrain() {
