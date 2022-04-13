@@ -330,15 +330,18 @@ public class ShooterSubsystem extends SubsystemBase {
         return magRiPrime;
     }
 
-    public double adjustRobotAngle(double currentAngle, double targetAngle) {
-        return robotAnglePIDController.calculate(targetAngle, currentAngle);
+    public double adjustFlywheelRPM(int[] calculatedValues, double currentFlywheelRPM) {
+        double targetFlywheelRPM = calculatedValues[0];
+        return flywheelRPMPIDController.calculate(currentFlywheelRPM, targetFlywheelRPM);
     }
 
-    public double adjustFlywheelRPM(double currentRPM, double targetRPM) {
-        return flywheelRPMPIDController.calculate(targetRPM, currentRPM);
+    public double adjustHoodAngle(int[] calculatedValues, double currentHoodAngle) {
+        double targetHoodAngle = calculatedValues[1];
+        return hoodAnglePIDController.calculate(currentHoodAngle, targetHoodAngle);
     }
 
-    public double adjustHoodAngle(double currentAngle, double targetAngle) {
-        return hoodAnglePIDController.calculate(targetAngle, currentAngle);
+    public double adjustRobotAngle(int[] calculatedValues, double currentRobotAngle) {
+        double targetRobotAngle = calculatedValues[2];
+        return robotAnglePIDController.calculate(currentRobotAngle, targetRobotAngle);
     }
 }
