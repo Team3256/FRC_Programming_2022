@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +18,8 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-
+import frc.robot.helper.linearalgebra.Vector;
+import frc.robot.helper.shooter.DininnoDataPoint;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.IDConstants.*;
@@ -45,20 +47,26 @@ public class ShooterSubsystem extends SubsystemBase {
     private PiecewiseBicubicSplineInterpolatingFunction hoodAngleInterpolatingFunction;
     private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
-
+    private static PolynomialSplineFunction distanceToTimeInterpolatingFunction;
+    private PIDController robotAnglePIDController = new PIDController(ROBOT_ANGLE_PID_P, ROBOT_ANGLE_PID_I, ROBOT_ANGLE_PID_D);
+    private PIDController hoodAnglePIDController = new PIDController(HOOD_ANGLE_PID_P, HOOD_ANGLE_PID_I, HOOD_ANGLE_PID_D);
+    private PIDController flywheelRPMPIDController = new PIDController(FLYWHEEL_RPM_PID_P, FLYWHEEL_RPM_PID_I, FLYWHEEL_RPM_PID_D);
     static {
-        double[] trainDistance = new double[SHOOTER_DATA.size()];
-        double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
-        double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
-        for(int i = 0; i < SHOOTER_DATA.size(); i++) {
-            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
+        double[] trainDistance = new double[TRAINING_DATA.size()];
+        double[] trainTime = new double[TRAINING_DATA.size()];
+        double[] trainHoodAngle = new double[TRAINING_DATA.size()];
+        double[] trainFlywheelRPM = new double[TRAINING_DATA.size()];
+        for(int i = 0; i < TRAINING_DATA.size(); i++) {
+            DininnoDataPoint dataPoint = TRAINING_DATA.get(i);
             trainDistance[i] = dataPoint.distance;
-            trainFlywheelHood[i] = dataPoint.hoodAngle;
+            trainTime[i] = dataPoint.time;
+            trainHoodAngle[i] = dataPoint.hoodAngle;
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
         }
 
         distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
-        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainHoodAngle);
+        distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainTime);
     }
 
 
@@ -276,5 +284,60 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean( this.isHoodLimitSwitchPressed());
+    }
+
+    public double[] dininnoAlgorithm(double distance, double robotXVelocity, double robotYVelocity) {
+        double ti = t0;
+        Vector d = new Vector(0, distance);
+        Vector robotVelocity = new Vector(robotXVelocity, robotYVelocity);
+        double magRi = calculate(ti, robotVelocity, d);
+        while (magRi > dininnoConstant * RADIUS_UPPER_HUB) {
+            double beta = dininnoConstant2 * Math.sqrt(magRi);
+            double tiMinus = ti - beta;
+            double tiPlus = ti + beta;
+            if (calculate(tiMinus, robotVelocity, d) > calculate(tiPlus, robotVelocity, d)) {
+                ti = tiPlus;
+            }
+            else if (calculate(tiMinus, robotVelocity, d) < calculate(tiPlus, robotVelocity, d)) {
+                ti = tiMinus;
+            }
+            else if (calculate(tiMinus, robotVelocity, d) == calculate(tiPlus, robotVelocity, d)) {
+                ti = ti + 1/2 * beta;
+            }
+        }
+
+        double sn = magRi - distance;
+        double alpha = Math.acos( (-Math.pow(magRi, 2) + sn + Math.pow(distance, 2)) / (2 * sn * distance) );
+
+        double omega = distanceToFlywheelRPMInterpolatingFunction.value(sn);
+        double theta = distanceToHoodAngleInterpolatingFunction.value(sn);
+
+        double calculatedValues[] = new double[3];
+        calculatedValues[0] = omega; //Flywheel RPM
+        calculatedValues[1] = theta; //Hood Angle
+        calculatedValues[2] = alpha; //Robot Angle
+
+        return calculatedValues;
+    }
+
+    public double calculate(double time, Vector robotVelocity, Vector distance) {
+        Vector ri = Vector.multiply(robotVelocity, time);
+        Vector sn = Vector.add(ri, distance);
+        double magSn = sn.magnitude();
+        double tn = distanceToTimeInterpolatingFunction.value(magSn);
+        double magRiPrime = Vector.magnitude(Vector.multiply(robotVelocity, (time - tn)));
+        return magRiPrime;
+    }
+
+    public double adjustRobotAngle(double currentAngle, double targetAngle) {
+        return robotAnglePIDController.calculate(targetAngle, currentAngle);
+    }
+
+    public double adjustFlywheelRPM(double currentRPM, double targetRPM) {
+        return flywheelRPMPIDController.calculate(targetRPM, currentRPM);
+    }
+
+    public double adjustHoodAngle(double currentAngle, double targetAngle) {
+        return hoodAnglePIDController.calculate(targetAngle, currentAngle);
     }
 }

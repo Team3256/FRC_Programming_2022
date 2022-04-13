@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 
 import frc.robot.helper.Polynomial;
 
+import frc.robot.helper.shooter.DininnoDataPoint;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
 import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
@@ -363,6 +364,24 @@ public final class Constants {
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
 
+        public static final double t0 = 0.0;
+        public static final double dininnoConstant = 0.0;
+        public static final double dininnoConstant2 = 0.0;
+
+        public static final double ROBOT_ANGLE_PID_P = 0.0;
+        public static final double ROBOT_ANGLE_PID_I = 0.0;
+        public static final double ROBOT_ANGLE_PID_D = 0.0;
+
+        public static final double HOOD_ANGLE_PID_P = 0.0;
+        public static final double HOOD_ANGLE_PID_I = 0.0;
+        public static final double HOOD_ANGLE_PID_D = 0.0;
+
+        public static final double FLYWHEEL_RPM_PID_P = 0.0;
+        public static final double FLYWHEEL_RPM_PID_I = 0.0;
+        public static final double FLYWHEEL_RPM_PID_D = 0.0;
+
+
+
         // Presets
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
                 entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
@@ -383,6 +402,10 @@ public final class Constants {
                     new TrainingDataPoint(168.63393, 205000, 2540),
                     new TrainingDataPoint(204.32797, 235000, 2960)
                 );
+
+        public static final List<DininnoDataPoint> TRAINING_DATA = Arrays.asList(
+
+        );
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
