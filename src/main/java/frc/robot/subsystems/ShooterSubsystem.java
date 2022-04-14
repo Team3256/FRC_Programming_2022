@@ -18,6 +18,7 @@ import frc.robot.helper.shooter.TrainingDataPoint;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.util.function.DoubleSupplier;
@@ -42,8 +43,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
 
-    private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
-    private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
 
     static {
         double[] trainDistance = new double[SHOOTER_DATA.size()];
@@ -56,8 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
         }
 
-        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
-        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToFlywheelRPMInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelHood);
     }
 
 
