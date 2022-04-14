@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.helper.LED.helpers.*;
@@ -14,13 +15,14 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import frc.robot.hardware.TalonConfiguration;
 import frc.robot.helper.Polynomial;
 
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
+import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 
 import java.util.List;
 
@@ -37,18 +39,20 @@ public final class Constants {
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
     public static class SubsystemEnableFlags {
-        public static final boolean LIMELIGHT = false;
+        public static final boolean LIMELIGHT = true;
 
         public static final boolean SHOOTER = true;
         public static final boolean TRANSFER = true;
-        public static final boolean INTAKE = false;
+        public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
-        public static final boolean DRIVETRAIN = false;
+        public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
+
+        public static final boolean IR_SENSORS = true;
     }
 
     public static class LimelightAutoCorrectConstants {
@@ -65,8 +69,9 @@ public final class Constants {
     }
 
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.5; // In Percent 0.0 - 1.0
-        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.5; // In Percent -1.0 - 0.0
+        public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 0.5;
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.35; // In Percent -1.0 - 0.0
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
@@ -87,20 +92,29 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double GYRO_YAW_OFFSET = -45; // degrees
+        public static final double X_ACCEL_RATE_LIMIT = 10;
+        public static final double X_DECEL_RATE_LIMIT = 10;
+        public static final double Y_ACCEL_RATE_LIMIT = 10;
+        public static final double Y_DECEL_RATE_LIMIT = 10;
 
-        public static final double MAX_ACCELERATION = 0.5; // m/s^2
+        public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(274.921875);
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(93.251953125);
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(200.91796875);
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(118.125);
+        /* Enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
+
+
+        // All in Degrees
+        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.977361;
+        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 0.846566;
+        public static final double BACK_LEFT_MODULE_STEER_OFFSET = 3.166089;
+        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 4.067925;
+
 
         public static final double MAX_METERS_PER_SECOND = 10;
 
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-                 SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-                 SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+                SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+                SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
         private static final double ANGULAR_VELOCITY_CONSTANT = 1;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ANGULAR_VELOCITY_CONSTANT * MAX_VELOCITY_METERS_PER_SECOND /
@@ -112,9 +126,9 @@ public final class Constants {
 
 
         //Non-final Allow for Changing via Smart Dashboard
-        public static double SWERVE_TURRET_KP = 0.1;
+        public static double SWERVE_TURRET_KP = 0.05;
         public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 0;
+        public static double SWERVE_TURRET_KD = 0.0008;
 
         public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
         public static double SWERVE_TURRET_STATIONARY_KI = 0.2;
@@ -133,11 +147,11 @@ public final class Constants {
 
     }
     public static class AutoConstants {
-        public static final boolean AUTO_DEBUG = true;
+        public static final boolean AUTO_DEBUG = false;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
 
-        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 30;
-        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 22;
+        public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 13;
+        public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
 
         public static double P_X_CONTROLLER = 2.2;
@@ -146,7 +160,7 @@ public final class Constants {
 
         public static double P_Y_CONTROLLER = 2.2;
         public static double I_Y_CONTROLLER = 0.025;
-        public static double D_Y_CONTROLLER = 0;
+        public static double D_Y_CONTROLLER = 0.05;
 
         public static double TRANSLATION_FF = 0.3;
 
@@ -173,11 +187,7 @@ public final class Constants {
         public static final int FRONT_LEFT_MODULE_STEER_ENCODER_ID = 12;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR_ID = 11;
 
-        public static final int HANGER_LEFT_MASTER_TALON_ID = 10;
-
         public static final int DRIVETRAIN_PIGEON_ID = 9;
-
-        public static final int HANGER_RIGHT_FOLLOWER_TALON_ID = 8;
 
         public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_ID = 7;
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_ID = 6;
@@ -191,6 +201,11 @@ public final class Constants {
 
         public static final String MANI_CAN_BUS = "mani";
 
+
+        public static final int HANGER_RIGHT_FOLLOWER_TALON_ID = 7;
+
+        public static final int HANGER_LEFT_MASTER_TALON_ID = 6;
+
         public static final int INTAKE_MOTOR_ID = 5;
 
         public static final int TRANSFER_MOTOR_ID = 4;
@@ -200,31 +215,36 @@ public final class Constants {
         public static final int PID_SHOOTER_MOTOR_ID_RIGHT = 2;
         public static final int PID_SHOOTER_MOTOR_ID_LEFT = 1;
 
-        public static final int INTAKE_ID = 40;
-
         //Pneumatic IDs
-        public static final int HANGER_SOLENOID_FORWARD = 4;
-        public static final int HANGER_SOLENOID_BACKWARD = 3;
+        public static final int LEFT_HANGER_SOLENOID_FORWARD = 15;
+        public static final int LEFT_HANGER_SOLENOID_BACKWARD = 8;
 
-        public static final int INTAKE_SOLENOID_FORWARD = 2; // forward is down
-        public static final int INTAKE_SOLENOID_BACKWARD = 1; //backward is up
+        public static final int RIGHT_HANGER_SOLENOID_FORWARD = 14;
+        public static final int RIGHT_HANGER_SOLENOID_BACKWARD = 9;
+
+        public static final int INTAKE_SOLENOID_LEFT_BACKWARD = 11; //backward is up
+        public static final int INTAKE_SOLENOID_RIGHT_BACKWARD = 10;
+
+        public static final int INTAKE_SOLENOID_LEFT_FORWARD = 12; // forward is down
+        public static final int INTAKE_SOLENOID_RIGHT_FORWARD = 13;
+
 
         // DIO Channels
         public static final int HANGER_LIMITSWITCH_CHANNEL = 5;
-        public static final int HOOD_LIMITSWITCH_CHANNEL = 4;
+        public static final int HOOD_LIMITSWITCH_CHANNEL = 0;
 
-        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 3;
-        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 2;
-        public static final int IR_TRANSFER_END_CHANNEL = 1;
+        public static final int IR_TRANSFER_BEGINNING_CHANNEL = 9;
+        public static final int IR_TRANSFER_MIDDLE_CHANNEL = 7;
+        public static final int IR_TRANSFER_END_CHANNEL = 2;
 
         // I2C
         public static final byte I2C_MUX_ADDRESS = 0x70;
         public static final int I2C_COLOR_SENSOR_FIXED_ADDRESS = 0x52;
 
 
-        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 3;
-        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 2;
-        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 1;
+        public static final byte BALL_COLOR_SENSOR_MUX_PORT = 6;
+        public static final byte RIGHT_ALIGN_COLOR_SENSOR_MUX_PORT = 3;
+        public static final byte LEFT_ALIGN_COLOR_SENSOR_MUX_PORT = 5;
 
         // PWM
         public static final int LED_STRIP_PWM_PORT = 0;
@@ -272,12 +292,12 @@ public final class Constants {
 
     public static class HangerConstants {
 
-        public static final double HANGER_MASTER_TALON_PID_P = 0;
+        public static final double HANGER_MASTER_TALON_PID_P = 0.1;
         public static final double HANGER_MASTER_TALON_PID_I = 0;
         public static final double HANGER_MASTER_TALON_PID_D = 0;
         public static final double HANGER_MASTER_TALON_PID_F = 0;
 
-        public static final InvertType INVERT_TYPE = InvertType.None;
+        public static final InvertType INVERT_TYPE = InvertType.FollowMaster;
 
         public static TalonConfiguration.TalonFXPIDFConfig PIDF_CONSTANTS = new TalonConfiguration.TalonFXPIDFConfig(
                 HANGER_MASTER_TALON_PID_P,
@@ -291,13 +311,15 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
-        public static final double EXTEND_DISTANCE = 0.0; // in Rotations of Spool
-        public static final double PARTIAL_DISTANCE = 0.0; // in Rotations of Spool
-        public static final double ADJUSTMENT_RETRACT_DISTANCE = 0.0; //in Rotations of Spool
+        public static final double EXTEND_DISTANCE = 126391; // in Sensor units
+        public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
-        public static final double RETRACT_PERCENT_SPEED = 0.0;
+        public static final double HANGER_ZEROING_PERCENT_SPEED = 0.25;
 
-        public static final double CURRENT_THRESHOLD = 0.0; //in Amps
+        public static final double HANGER_RETRACT_PERCENT_SPEED = 0.6;
+
+        public static final double CURRENT_THRESHOLD = 16.0; //in Amps
 
         public static final double PNEUMATIC_WAIT_DURATION = 0; //in Seconds
         public static final double EXTEND_WAIT = 0; //in Seconds
@@ -311,7 +333,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double INTAKE_FORWARD_SPEED = 0.5; // In Percent 0.0 - 1.0
+        public static final double INTAKE_FORWARD_SPEED = 1; // In Percent 0.0 - 1.0
         public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
     }
 
@@ -324,30 +346,27 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 0.0; // in m/s TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 0.05; // in percent TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
 
         //PID
-        public static final double SHOOTER_MASTER_TALON_PID_P = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_P = 0.0005;
         public static final double SHOOTER_MASTER_TALON_PID_I = 0;
-        public static final double SHOOTER_MASTER_TALON_PID_D = 0;
+        public static final double SHOOTER_MASTER_TALON_PID_D = 0.000008;
         public static final double SHOOTER_MASTER_TALON_PID_F = 0;
 
-        public static final String VEL_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
-        public static final String HOOD_CALIB_FILENAME = ""; // TODO: Add filename for the .csv file with training data points
-
         // Hood Angle Constants
-        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.05;
+        public static final double HOOD_SLOW_REVERSE_PERCENT = -0.50;
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
 
         // Presets
-        public static final List<ShooterPreset> ALL_SHOOTER_PRESETS = Arrays.asList(
-            new ShooterPreset(100, 1.23, "Default 1"), // TODO: Change this to accurate numbers (given testing)
-            new ShooterPreset(200, 2.34, "Default 2") // TODO: Change this to accurate numbers (given testing)
+        public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
+                entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
+                entry(ShooterLocationPreset.TARMAC_VERTEX, new ShooterPreset(2290, 140000, 0, "Tarmac Vertex"))
         ); // TODO: Create all shooter presets
 
         // Velocity Training Points
@@ -366,7 +385,7 @@ public final class Constants {
         public static final double DI = 5.0;
     }
     public static class LEDConstants {
-         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
+        public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
 
         public enum LEDSectionName {
             BALL_COLOR, AUTO_AIM, DEBUG_SECTION
@@ -379,13 +398,13 @@ public final class Constants {
         // Defines order of Sections (Thus LinkedHashMap)
         public static final LinkedHashMap<LEDSectionName, LEDSectionAttributes> SECTIONS =
                 HashMapFiller.populateLinkedHashMap(
-                    entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
-                    entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
+                        entry(BALL_COLOR, new LEDSectionAttributes(0, 0.7, BALL_PATTERN)),
+                        entry(AUTO_AIM, new LEDSectionAttributes(0.7, 1, AUTO_AIM_PATTERN))
                 );
 
         // Defines Ranges
         public static final LEDRange[] RANGES = {
-                    new LEDRange(0,200, 180)
+                new LEDRange(0,200, 180)
         };
     }
 

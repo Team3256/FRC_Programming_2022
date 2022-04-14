@@ -1,12 +1,16 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommandRobotOriented extends CommandBase {
+    private RobotLogger logger = new RobotLogger(DefaultDriveCommandRobotOriented.class.getCanonicalName());
+
     private final SwerveDrive drivetrainSubsystem;
 
     private final DoubleSupplier translationXSupplier;
@@ -32,6 +36,14 @@ public class DefaultDriveCommandRobotOriented extends CommandBase {
         this.rotationSupplier = () -> 0;
 
         addRequirements(drivetrainSubsystem);
+
+        SmartDashboard.putBoolean("IS Robot Oriented", false);
+    }
+
+    @Override
+    public void initialize() {
+        logger.info("Robot Oriented Drive Enabled");
+        SmartDashboard.putBoolean("IS Robot Oriented", true);
     }
 
     @Override
@@ -49,5 +61,6 @@ public class DefaultDriveCommandRobotOriented extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        SmartDashboard.putBoolean("IS Robot Oriented", false);
     }
 }

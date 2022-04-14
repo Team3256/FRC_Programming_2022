@@ -28,6 +28,8 @@ public class TransferIndexForward extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        if (interrupted)
+            System.out.println("Interrupted Transfer Forward");
         transferSubsystem.off();
     }
 

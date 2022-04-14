@@ -2,8 +2,10 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.hardware.Limelight;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
@@ -12,7 +14,7 @@ import static frc.robot.Constants.LEDConstants.AUTO_AIM_PATTERN;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class AutoAlignDriveContinuousCommand extends CommandBase {
-
+    private RobotLogger logger = new RobotLogger(AutoAlignDriveContinuousCommand.class.getCanonicalName());
 
     PIDController autoAlignPIDController;
 
@@ -47,7 +49,10 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
         autoAlignPIDController.enableContinuousInput(-180,180);
 
         addRequirements(drivetrainSubsystem);
+
     }
+
+
 
     @Override
     public void execute() {
@@ -84,6 +89,7 @@ public class AutoAlignDriveContinuousCommand extends CommandBase {
     public void initialize() {
         Limelight.enable();
         AUTO_AIM_PATTERN.update(true);
+        logger.info("Auto Align Enabled");
     }
 
     @Override

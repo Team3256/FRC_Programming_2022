@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 
@@ -23,27 +25,49 @@ public class IntakeSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
 
     private final TalonFX intakeMotor;
-    private final DoubleSolenoid intakeSolenoid;
+    private final DoubleSolenoid leftintakeSolenoid;
+    private final DoubleSolenoid rightIntakeSolenoid;
 
     public IntakeSubsystem() {
-        intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, MANI_CAN_BUS);
-        intakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_FORWARD, INTAKE_SOLENOID_BACKWARD);
+        TalonConfiguration config = new TalonConfiguration(NeutralMode.Coast);
+        intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, config, MANI_CAN_BUS);
+        leftintakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_LEFT_FORWARD, INTAKE_SOLENOID_LEFT_BACKWARD);
+        rightIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_RIGHT_FORWARD, INTAKE_SOLENOID_RIGHT_BACKWARD);
         logger.info("Intake Initialized");
+
+        off();
     }
 
     public void forwardOn(){
         logger.info("Intake on");
-        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        extend();
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_FORWARD_SPEED);
     }
 
+    public void intakeDown(){
+        logger.info("Intake coming down");
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
     public void reverseOn(){
+        retract();
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
     }
 
     public void off(){
         intakeMotor.neutralOutput();
-        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        retract();
         logger.info("Intake off");
+    }
+    public void extend(){
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        logger.info("Intake Extended");
+    }
+    public void retract(){
+        leftintakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        rightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        logger.info("Intake Retracted");
     }
 }

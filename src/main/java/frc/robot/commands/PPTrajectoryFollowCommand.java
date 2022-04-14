@@ -15,11 +15,13 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.helper.auto.AutoCommandRunner;
 import frc.robot.helper.auto.SwerveDriveController;
+import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
 
 public class PPTrajectoryFollowCommand extends CommandBase {
+    private static final RobotLogger logger = new RobotLogger(PPTrajectoryFollowCommand.class.getCanonicalName());
     private final Timer timer = new Timer();
     private final PathPlannerTrajectory trajectory;
     private final SwerveDriveController controller;
@@ -80,7 +82,10 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     public void setFirstSegment(boolean first) {
         if (!first) {
+//            logger.info("Set trajectory as NOT first segment");
             this.startPose = null;
+        } else {
+//            logger.info("Set trajectory AS first segment");
         }
     }
 
@@ -93,6 +98,9 @@ public class PPTrajectoryFollowCommand extends CommandBase {
             driveSubsystem.resetOdometry(this.startPose);
         }
 
+        logger.info("Trajectory Duration: " + trajectoryDuration);
+        logger.info("Trajectory Starting!");
+
         this.controller.reset();
         timer.reset();
         timer.start();
@@ -101,7 +109,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
     @Override
     public void execute() {
         double now = timer.get();
-        now = now > trajectoryDuration ? trajectoryDuration - 0.01 : now; // if overtime, dont error sampling
+        now = now >= trajectoryDuration ? trajectoryDuration - 0.01 : now; // if overtime, dont error sampling
 
         PathPlannerTrajectory.PathPlannerState desired = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(now);
         Pose2d currentPose = driveSubsystem.getPose();
@@ -124,7 +132,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= trajectoryDuration * 1.05;
+        return timer.get() >= trajectoryDuration * 1.08;
     } // give a little more time to be in the right place
 
     @Override

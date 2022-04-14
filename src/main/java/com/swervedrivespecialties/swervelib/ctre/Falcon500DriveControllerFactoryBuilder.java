@@ -1,9 +1,6 @@
 package com.swervedrivespecialties.swervelib.ctre;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.swervedrivespecialties.swervelib.DriveController;
@@ -12,6 +9,7 @@ import com.swervedrivespecialties.swervelib.ModuleConfiguration;
 import frc.robot.hardware.LazyTalonFX;
 
 import static frc.robot.Constants.IDConstants.ROBORIO_CAN_BUS;
+import static frc.robot.Constants.SwerveConstants.STATOR_CURRENT_LIMIT;
 
 public final class Falcon500DriveControllerFactoryBuilder {
     private static final double TICKS_PER_ROTATION = 2048.0;
@@ -70,6 +68,8 @@ public final class Falcon500DriveControllerFactoryBuilder {
             }
 
             motor.setNeutralMode(NeutralMode.Brake);
+
+            motor.configStatorCurrentLimit(STATOR_CURRENT_LIMIT);
 
             motor.setInverted(moduleConfiguration.isDriveInverted() ? TalonFXInvertType.Clockwise : TalonFXInvertType.CounterClockwise);
             motor.setSensorPhase(true);
