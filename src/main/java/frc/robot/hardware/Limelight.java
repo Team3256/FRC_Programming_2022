@@ -4,15 +4,27 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.helper.logging.RobotLogger;
-
-import java.util.logging.Logger;
-
-import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_DISTANCE_TUNER;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.LIMELIGHT_TUNED_DATA;
 import static frc.robot.Constants.LimelightConstants.*;
 
 public class Limelight {
     private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
+    private static PolynomialSplineFunction tunedDistance;
+
+    static {
+        double[] rawDistance = new double[LIMELIGHT_TUNED_DATA.size()];
+        double[] actualDistance = new double[LIMELIGHT_TUNED_DATA.size()];
+        for(int i = 0; i < LIMELIGHT_TUNED_DATA.size(); i++) {
+            int[] data = LIMELIGHT_TUNED_DATA.get(i);
+            rawDistance[i] = data[0];
+            actualDistance[i] = data[1];
+        }
+
+        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
+    }
 
     //Doesn't Allow Instancing
     private Limelight(){}
@@ -68,6 +80,12 @@ public class Limelight {
         return getLimelightValue("ts").getDouble(0);
     }
     /**
+     * @return Whether the limelight has any valid targets (0 or 1)
+     */
+    public static double getTv(){
+        return getLimelightValue("tv").getDouble(0);
+    }
+    /**
      * @return Number array of corner coordinates [x0,x1,etc]
      */
     public static double[] getTcornx(){
@@ -85,12 +103,29 @@ public class Limelight {
     public static double getRawDistanceToTarget(){
         return (TARGET_HEIGHT_INCHES-MOUNTING_HEIGHT_INCHES)/Math.tan(toRadians(MOUNTING_ANGLE_DEG+getTy()));
     }
+
     /**
      * @return tuned distance to target (inches)
      */
     public static double getTunedDistanceToTarget(){
-        return LIMELIGHT_DISTANCE_TUNER.getOutput(getRawDistanceToTarget());
+        double rawDistance = getRawDistanceToTarget();
+        try {
+            return tunedDistance.value(rawDistance);
+        } catch (Exception e) {
+            logger.warning("Distance from Limelight is out of range of interpolating");
+            return rawDistance;
+        }
     }
+
+    public static boolean isTargetDetected(){
+        if(getTv() == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     /**
      * @param degrees
      * @return radians
