@@ -15,15 +15,15 @@ public class Limelight {
     private static PolynomialSplineFunction tunedDistance;
 
     static {
-        double[] rawDistance = new double[LIMELIGHT_TUNED_DATA.size()];
-        double[] actualDistance = new double[LIMELIGHT_TUNED_DATA.size()];
-        for(int i = 0; i < LIMELIGHT_TUNED_DATA.size(); i++) {
-            int[] data = LIMELIGHT_TUNED_DATA.get(i);
-            rawDistance[i] = data[0];
-            actualDistance[i] = data[1];
-        }
-
-        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
+//        double[] rawDistance = new double[LIMELIGHT_TUNED_DATA.size()];
+//        double[] actualDistance = new double[LIMELIGHT_TUNED_DATA.size()];
+//        for(int i = 0; i < LIMELIGHT_TUNED_DATA.size(); i++) {
+//            int[] data = LIMELIGHT_TUNED_DATA.get(i);
+//            rawDistance[i] = data[0];
+//            actualDistance[i] = data[1];
+//        }
+//
+//        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
     }
 
     //Doesn't Allow Instancing
@@ -109,12 +109,13 @@ public class Limelight {
      */
     public static double getTunedDistanceToTarget(){
         double rawDistance = getRawDistanceToTarget();
-        try {
-            return tunedDistance.value(rawDistance);
-        } catch (Exception e) {
-            logger.warning("Distance from Limelight is out of range of interpolating");
-            return rawDistance;
-        }
+        return rawDistance;
+//        try {
+//            return tunedDistance.value(rawDistance);
+//        } catch (Exception e) {
+//            logger.warning("Distance from Limelight is out of range of interpolating");
+//            return rawDistance;
+//        }
     }
 
     public static boolean isTargetDetected(){

@@ -74,7 +74,7 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The setpoint angle for the robot to turn towards the hub
     public double setAligningAngle(Pose2d robotPose) {
-        return (Math.toDegrees(angleBetweenHub(robotPose)) + 180 ) % 360;
+        return (Math.toDegrees(angleBetweenHub(robotPose))) % 360;
     }
 
     public void alignWithVision(){
@@ -94,44 +94,7 @@ public class AutoAlignDriveCommand extends CommandBase {
         if(Limelight.isTargetDetected()){
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
-            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            );
+//            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
         else{
