@@ -144,7 +144,7 @@ public class SwerveDrive extends SubsystemBase {
         Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
 
         Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
-        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
+        Pose2d visionPose = new Pose2d(hubCenteredRobotPosition, robotCorrectedHeading); // TODO: make this vision tranlation since we get the tuning functions
 
         if (
                 Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
