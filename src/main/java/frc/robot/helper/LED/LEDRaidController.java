@@ -99,7 +99,7 @@ public class LEDRaidController {
                 // Size: (int)(range.getLength() * SECTIONS.get(ledSectionName).getPercentageRange() + 0.5)
 
                 // Then We need to pass that buffer to each pattern generator
-                // (Which we neeed to modify so that works)
+                // (Which we need to modify so that works)
                 // to modify that buffer instead of creating a new LEDInstruction Array
                 // TODO: Modify each Pattern Generator so it modifies the current Array it was given, not creating a new array
 
