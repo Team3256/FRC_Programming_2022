@@ -100,6 +100,10 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * Disables powers to flywheel motor, motors change to neutral/coast mode
      */
+    public void slowFlywheel(){
+        setPercentSpeed(SHOOTER_SLOW_PERCENT);
+    }
+
     public void stopFlywheel() {
         masterLeftShooterMotor.neutralOutput();
     }
