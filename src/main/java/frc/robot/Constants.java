@@ -374,15 +374,18 @@ public final class Constants {
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
 
-        public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList();
+        public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
+                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
+                    new TrainingDataPoint(59.3223818, 12000, 2200),
+                    new TrainingDataPoint(93.438228, 147500, 2200),
+                    new TrainingDataPoint(116.1115998, 185000, 2265),
+                    new TrainingDataPoint(137.720407, 195000, 2340),
+                    new TrainingDataPoint(168.63393, 205000, 2540),
+                    new TrainingDataPoint(204.32797, 235000, 2960)
+                );
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 60;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
 
-
-        public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
-                new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
-        );
-
-        // Shooting While Moving
-        public static final double EPSILON = 0.01; // in meters
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
