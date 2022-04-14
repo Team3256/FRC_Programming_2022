@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.helper.LED.helpers.*;
 import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -33,7 +35,7 @@ import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
@@ -45,7 +47,7 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
         public static final boolean DRIVETRAIN = true;
 
@@ -55,11 +57,22 @@ public final class Constants {
         public static final boolean IR_SENSORS = true;
     }
 
+    public static class FieldConstants {
+        public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
+    }
+
     public static class LimelightAutoCorrectConstants {
+        public static final double MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION = 0.5; // in meters
+        public static final double MAX_VISION_LOCALIZATION_HEADING_CORRECTION = 5; // in degrees
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
         public static final int POLYNOMIAL_DEGREE = 5;
-        public static final Polynomial LIMELIGHT_DISTANCE_TUNER = new Polynomial(new double[]{0,1,0,0,0}); // TODO: Put actual polynomial coefficients here
+
+        public static final List<int[]> LIMELIGHT_TUNED_DATA = Arrays.asList( // {raw, tuned}
+                new int[] {10, 10},
+                new int[] {10, 10}
+        );
     }
 
     public static class LimelightConstants {
@@ -127,8 +140,12 @@ public final class Constants {
 
         //Non-final Allow for Changing via Smart Dashboard
         public static double SWERVE_TURRET_KP = 0.05;
-        public static double SWERVE_TURRET_KI = 0;
-        public static double SWERVE_TURRET_KD = 0.0008;
+        public static double SWERVE_TURRET_KI = 0.001;
+        public static double SWERVE_TURRET_KD = 0.001;
+
+        public static double SWERVE_ODOMETRY_TURRET_KP = 0.1;
+        public static double SWERVE_ODOMETRY_TURRET_KI = 0;
+        public static double SWERVE_ODOMETRY_TURRET_KD = 0.007;
 
         public static double SWERVE_TURRET_STATIONARY_KP = 0.1;
         public static double SWERVE_TURRET_STATIONARY_KI = 0.2;

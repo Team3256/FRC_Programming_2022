@@ -15,12 +15,13 @@ import static frc.robot.Constants.AutoConstants.TRANSLATION_FF;
 public class SwerveDriveController {
     PIDController xPositionController;
     PIDController yPositionController;
+
     ProfiledPIDController thetaController;
     private Pose2d poseTolerance = new Pose2d();
     private Pose2d poseError;
     private Rotation2d rotationError;
     private double prevCurrentRotation;
-    private boolean firstInteration = true;
+    private boolean firstIteration = true;
 
     public SwerveDriveController(PIDController xPositionController, PIDController yPositionController, ProfiledPIDController thetaController) {
         this.xPositionController = xPositionController;
@@ -42,10 +43,10 @@ public class SwerveDriveController {
             Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters, Rotation2d angleRef) {
         // If this is the first run, then we need to reset the theta controller to the current pose's
         // heading.
-        if (firstInteration) {
+        if (firstIteration) {
             thetaController.reset(currentPose.getRotation().getRadians());
             prevCurrentRotation = currentPose.getRotation().getRadians();
-            firstInteration = false;
+            firstIteration = false;
         }
 
         double currentRotation = currentPose.getRotation().getRadians();
@@ -92,6 +93,6 @@ public class SwerveDriveController {
     }
 
     public void reset() {
-        firstInteration = true;
+        firstIteration = true;
     }
 }
