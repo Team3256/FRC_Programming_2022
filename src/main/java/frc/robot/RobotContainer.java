@@ -28,6 +28,7 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
+import frc.robot.commands.transfer.TransferOff;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
@@ -218,6 +219,14 @@ public class RobotContainer {
         // Vibrations
         if (TRANSFER) {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
+
+            new Trigger(()-> transferSubsystem.shouldOuttake(1))
+                    .whileActiveContinuous(
+                            new ParallelCommandGroup(
+                                    new OutakeShooter(shooterSubsystem),
+                                    new TransferIndexForward(transferSubsystem)
+                            )
+                    );
         }
 
         // Flywheel Vibration from the SetShooterPIDVelocityFromStateCommand
@@ -240,13 +249,22 @@ public class RobotContainer {
 
         driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
 
-        if (TRANSFER)
+        if (TRANSFER) {
             operatorBButton.whenHeld(
                     new ParallelCommandGroup(
                             new IntakeReverse(intakeSubsystem),
                             new TransferManualReverse(transferSubsystem)
                     )
             );
+            new Trigger(()-> transferSubsystem.shouldOuttake(0))
+                    .whileActiveContinuous(
+                            new ParallelCommandGroup(
+                                    new IntakeReverse(intakeSubsystem),
+                                    new TransferManualReverse(transferSubsystem)
+                            )
+                    );
+        }
+
 
 
 

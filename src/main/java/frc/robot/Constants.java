@@ -342,6 +342,8 @@ public final class Constants {
         public static final double RADIUS_UPPER_HUB = 0.61; // in m
         public static final double SHOOTER_HEIGHT = 0.51; // in m
         public static final double UPPER_HUB_AIMING_HEIGHT = 2.725427; // in m
+        public static final double SHOOTER_SLOW_PERCENT = 0.10;
+
 
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning

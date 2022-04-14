@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.intake.IntakeOn;
 import frc.robot.hardware.MuxedColorSensor;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
@@ -30,8 +31,7 @@ import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
 import static frc.robot.Constants.IDConstants;
 
-import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
-import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
+import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
 
@@ -55,6 +55,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     // Linked list for FIFO queue
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
+    BallColor wrongBallColor;
 
     // For Tracking Ball RPM
     public static ShooterSubsystem flywheelSubsystem;
@@ -146,6 +147,10 @@ public class TransferSubsystem extends SubsystemBase {
         return currentBallCount >= TransferConstants.MAX_BALL_COUNT;
     }
 
+    public boolean shouldOuttake(int index){
+       return wrongBallColor == ballColorIndex.get(index);
+    }
+
     public void transferIndexSetup(){
 
         // If no IR Sensors, Disable all Sensors
@@ -208,6 +213,7 @@ public class TransferSubsystem extends SubsystemBase {
                 logger.warning("No Ball Detected in Index!");
 
             else if (redColorCountVote == blueColorCountVote)
+
                 logger.warning("Blue and Red Ball Counts are the same!\nCount: " + redColorCountVote);
 
             else if (redColorCountVote > blueColorCountVote) {
@@ -262,6 +268,7 @@ public class TransferSubsystem extends SubsystemBase {
             if (ballColorIndex.getLast() == BallColor.NONE)
                 logger.warning("No Ball Color At end of index!");
 
+
             ballColorIndex.removeLast();
             ballColorIndex.addFirst(BallColor.NONE);
 
@@ -292,11 +299,13 @@ public class TransferSubsystem extends SubsystemBase {
         BALL_PATTERN.update(firstBallColor, secondBallColor);
     }
 
+
     private void wrongBallColorDetected(BallColor ballColorDetected){
         logger.warning("Intaked Wrong Ball Color! " +
                 "(Alliance: " + alliance +
                 ", Ball Color Intaken: " + ballColorDetected +
                 ")");
+        wrongBallColor = ballColorDetected;
     }
 
     @Override
