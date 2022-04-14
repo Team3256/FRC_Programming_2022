@@ -161,17 +161,11 @@ public class ShooterSubsystem extends SubsystemBase {
      * Confirms if velocity is within margin of set point
      */
 
-    public boolean isAtSetPoint(double setpoint) {
+    public boolean isAtSetPoint() {
         double velocity = getFlywheelRPM();
 
-        return (velocity <= setpoint + SET_POINT_ERROR_MARGIN*setpoint) &&
-                (velocity >= setpoint - SET_POINT_ERROR_MARGIN*setpoint);
-    }
-    public boolean isAtSetPoint(DoubleSupplier setpoint) {
-        double velocity = getFlywheelRPM();
-
-        return (velocity <= setpoint.getAsDouble() + SET_POINT_ERROR_MARGIN*setpoint.getAsDouble()) &&
-                (velocity >= setpoint.getAsDouble() - SET_POINT_ERROR_MARGIN*setpoint.getAsDouble());
+        return (velocity <= this.targetVelocity + SET_POINT_ERROR_MARGIN*this.targetVelocity) &&
+                (velocity >= this.targetVelocity - SET_POINT_ERROR_MARGIN*this.targetVelocity);
     }
 
     private double getAngularVelocityFromCalibration(double ballVelocity, double ballAngle) {

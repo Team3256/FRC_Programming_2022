@@ -28,7 +28,8 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     }
     public  SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
-        new Button(() -> flywheelSubsystem.isAtSetPoint(()->SmartDashboard.getNumber("Custom Velocity", 0))).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
+        flywheelSubsystem.setTargetVelocity(SmartDashboard.getNumber("Custom Velocity", 0));
+        new Button(() -> flywheelSubsystem.isAtSetPoint()).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
     }
 
     @Override

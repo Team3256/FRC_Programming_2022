@@ -22,9 +22,8 @@ public class TransferShootForward extends CommandBase {
 
     @Override
     public void execute() {
-        double velocity = shooterSubsystem.getTargetVelocity();
-        SmartDashboard.putBoolean("Ready to Shoot", shooterSubsystem.isAtSetPoint(velocity));
-        if (shooterSubsystem.isAtSetPoint(velocity)) {
+        SmartDashboard.putBoolean("Ready to Shoot", shooterSubsystem.isAtSetPoint());
+        if (shooterSubsystem.isAtSetPoint()) {
             transferSubsystem.forward();
         } else {
             transferSubsystem.off();

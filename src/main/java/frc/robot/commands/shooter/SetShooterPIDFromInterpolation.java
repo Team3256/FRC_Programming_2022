@@ -30,7 +30,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
-        new Button(() -> flywheelSubsystem.isAtSetPoint(targetVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
+        new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
     @Override
