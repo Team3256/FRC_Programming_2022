@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.helper.LED.helpers.*;
 import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -53,6 +55,11 @@ public final class Constants {
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
         public static final boolean IR_SENSORS = true;
+    }
+
+    public static class FieldConstants {
+        public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
     }
 
     public static class LimelightAutoCorrectConstants {
@@ -376,15 +383,17 @@ public final class Constants {
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
                 // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
-                    new TrainingDataPoint(59.3223818, 12000, 2200),
-                    new TrainingDataPoint(93.438228, 147500, 2200),
-                    new TrainingDataPoint(116.1115998, 185000, 2265),
-                    new TrainingDataPoint(137.720407, 195000, 2340),
-                    new TrainingDataPoint(168.63393, 205000, 2540),
-                    new TrainingDataPoint(204.32797, 235000, 2960)
+                    new TrainingDataPoint(59.3223818, 12000, 2200, 1.174),
+                    new TrainingDataPoint(93.438228, 147500, 2200, 1.03125),
+                    new TrainingDataPoint(116.1115998, 185000, 2265, 1.000),
+                    new TrainingDataPoint(137.720407, 195000, 2340, 1.0757),
+                    new TrainingDataPoint(168.63393, 205000, 2540, 1.2725),
+                    new TrainingDataPoint(204.32797, 235000, 2960, 1.39143)
                 );
+
         public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 60;
         public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
+        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 0.1;
 
     }
     public static class LEDConstants {

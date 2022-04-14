@@ -2,20 +2,23 @@ package frc.robot.helper.shooter;
 
 import frc.robot.subsystems.ShooterSubsystem;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.util.function.DoubleSupplier;
-import static frc.robot.Constants.ShooterConstants.EPSILON;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_DATA;
+
+import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShootingWhileMovingHelper {
     public static class ShootingWhileMovingState {
         public double distance = 0;
         public double alpha = 0;
+        public boolean readyToShoot = false;
 
-        public ShootingWhileMovingState(double distance, double alpha) {
+        public ShootingWhileMovingState(double distance, double alpha, boolean readyToShoot) {
             this.distance = distance;
-            this.alpha = 0;
+            this.alpha = alpha;
+            this.readyToShoot = readyToShoot;
         }
     }
 
@@ -27,7 +30,7 @@ public class ShootingWhileMovingHelper {
 
     private static PolynomialSplineFunction distanceToTime;
 
-    private int maxIterations = 100;
+    private int maxIterations = 50;
     private final double kP = 0.05;
 
     static {
@@ -39,7 +42,7 @@ public class ShootingWhileMovingHelper {
             trainTime[i] = dataPoint.time;
         }
 
-        distanceToTime = new LinearInterpolator().interpolate(trainDistance, trainTime);
+        distanceToTime = new SplineInterpolator().interpolate(trainDistance, trainTime);
     }
 
     public ShootingWhileMovingHelper(ShooterSubsystem shooterSubsystem, DoubleSupplier distance, DoubleSupplier vX, DoubleSupplier vY) {
@@ -67,7 +70,7 @@ public class ShootingWhileMovingHelper {
         double error = Double.POSITIVE_INFINITY;
         double predictedDistanceToHub = 0;
 
-        while (iterations < maxIterations && error > EPSILON) {
+        while (iterations < maxIterations && error > TARGET_SHOOTING_WHILE_MOVING_ERROR) {
             double xAim = distanceSupplier.getAsDouble()/((Math.tan(Math.PI/2 - alpha)) - (velocityYSupplier.getAsDouble()/velocityXSupplier.getAsDouble()));
             double yAim = findSolutionLineY(xAim);
 
@@ -79,7 +82,7 @@ public class ShootingWhileMovingHelper {
             alpha = calculateNextAlpha(error, alpha);
         }
 
-        return new ShootingWhileMovingState(predictedDistanceToHub, alpha);
+        return new ShootingWhileMovingState(predictedDistanceToHub, alpha, error < TARGET_SHOOTING_WHILE_MOVING_ERROR);
     }
 
     private double findSolutionLineY(double x) {

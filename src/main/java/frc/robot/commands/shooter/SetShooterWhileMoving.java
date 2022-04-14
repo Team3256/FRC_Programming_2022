@@ -1,39 +1,52 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.shooter.ShootingWhileMovingHelper;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveDrive;
 
 import java.math.BigDecimal;
+import java.util.function.DoubleSupplier;
+
+import static frc.robot.Constants.SwerveConstants.*;
 
 public class SetShooterWhileMoving extends CommandBase {
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
+    private PIDController alphaController;
     private ShootingWhileMovingHelper shootingWhileMovingHelper;
 
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
+    private double targetAngle = 0;
     private double alpha = 0.1;
 
     private ShooterSubsystem shooterSubsystem;
+    private SwerveDrive swerveDrive;
 
-    public SetShooterWhileMoving(ShooterSubsystem shooterSubsystem) {
+    private final DoubleSupplier translationXSupplier;
+    private final DoubleSupplier translationYSupplier;
+
+    public SetShooterWhileMoving(SwerveDrive swerveDrive, ShooterSubsystem shooterSubsystem,
+                                            DoubleSupplier translationXSupplier,
+                                            DoubleSupplier translationYSupplier,
+                                            DoubleSupplier rotationSupplier) {
+
+        this.translationXSupplier = translationXSupplier;
+        this.translationYSupplier = translationYSupplier;
         this.shooterSubsystem = shooterSubsystem;
+        this.swerveDrive = swerveDrive;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
+        alphaController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
 
-        addRequirements(shooterSubsystem);
-    }
-
-    public SetShooterWhileMoving(ShooterSubsystem shooterSubsystem, XboxController operatorController) {
-        this(shooterSubsystem);
-//        new Button(() -> flywheelSubsystem.isAtSetPoint(targetVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
+        addRequirements(swerveDrive, shooterSubsystem);
     }
 
     @Override
@@ -41,7 +54,12 @@ public class SetShooterWhileMoving extends CommandBase {
         System.out.println("Velocity PID Ramping Up");
         Limelight.enable();
 
-        this.shootingWhileMovingHelper = new ShootingWhileMovingHelper(() -> Limelight.getRawDistanceToTarget(), )
+        this.shootingWhileMovingHelper = new ShootingWhileMovingHelper(
+                shooterSubsystem,
+                () -> Limelight.getRawDistanceToTarget(),
+                () -> swerveDrive.getVelocity().getX(),
+                () -> swerveDrive.getVelocity().getY()
+        );
     }
 
     @Override
@@ -50,9 +68,9 @@ public class SetShooterWhileMoving extends CommandBase {
 
         ShootingWhileMovingHelper.ShootingWhileMovingState state = this.shootingWhileMovingHelper.calculate(alpha);
 
+        alpha = state.alpha;
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(state.distance);
-//        shooterSubsystem.setTargetVelocity(targetVelocity);
-
+        shooterSubsystem.setTargetVelocity(targetVelocity);
         targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(state.distance);
 
         if (Constants.DEBUG) {
@@ -79,6 +97,15 @@ public class SetShooterWhileMoving extends CommandBase {
 
         shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
+
+        swerveDrive.drive(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                        translationXSupplier.getAsDouble(),
+                        translationYSupplier.getAsDouble(),
+                        alphaController.calculate(Limelight.getTx(), alpha),
+                        swerveDrive.getGyroscopeRotation()
+                )
+        );
     }
 
     @Override

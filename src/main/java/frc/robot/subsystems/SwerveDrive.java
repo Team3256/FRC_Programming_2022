@@ -48,7 +48,7 @@ public class SwerveDrive extends SubsystemBase {
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
-    private Pose2d curr_velocity = new Pose2d();
+    private Pose2d hubRelativeVelocity = new Pose2d();
     private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
@@ -119,7 +119,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public Pose2d getPose() { return odometry.getPoseMeters();}
 
-    public Pose2d getVelocity() { return curr_velocity; }
+    public Pose2d getVelocity() { return hubRelativeVelocity; }
 
     /**
      * Sets the swerve ModuleStates.
@@ -210,9 +210,13 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backLeftState = new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle()));
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
 
-        Pose2d lastPose = pose;
+        Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
         pose = odometry.update(gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
+        pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
+
+        Pose2d diff = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d())).relativeTo(lastPose);
+        hubRelativeVelocity = new Pose2d(diff.getX() / dt, diff.getY() / dt, diff.getRotation().times(1/dt));
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
