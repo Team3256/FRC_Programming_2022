@@ -368,20 +368,6 @@ public final class Constants {
         public static final double dininnoConstant = 0.0;
         public static final double dininnoConstant2 = 0.0;
 
-        public static final double ROBOT_ANGLE_PID_P = 0.0;
-        public static final double ROBOT_ANGLE_PID_I = 0.0;
-        public static final double ROBOT_ANGLE_PID_D = 0.0;
-
-        public static final double HOOD_ANGLE_PID_P = 0.0;
-        public static final double HOOD_ANGLE_PID_I = 0.0;
-        public static final double HOOD_ANGLE_PID_D = 0.0;
-
-        public static final double FLYWHEEL_RPM_PID_P = 0.0;
-        public static final double FLYWHEEL_RPM_PID_I = 0.0;
-        public static final double FLYWHEEL_RPM_PID_D = 0.0;
-
-
-
         // Presets
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
                 entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
