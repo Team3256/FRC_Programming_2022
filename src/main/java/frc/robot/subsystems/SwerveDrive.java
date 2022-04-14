@@ -22,6 +22,7 @@ import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
+import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
@@ -63,7 +64,7 @@ public class SwerveDrive extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
                 new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.012, 0.012, 0.01), // Current state X, Y, theta.
                 new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.05) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.11, 0.11, 0.05) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
@@ -106,7 +107,7 @@ public class SwerveDrive extends SubsystemBase {
         resetOdometry(new Pose2d());
         logger.info("zeroed gyroscope");
     }
-    
+
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }
@@ -129,8 +130,29 @@ public class SwerveDrive extends SubsystemBase {
 
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
 
-    public void limelightOdometryLocalization(double distanceToTarget) {
-//        poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+
+    /**
+     * @param distanceToTarget Distance to target in meters
+     * @param thetaTargetOffset Limelight angle error in degrees
+     */
+    public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
+        Pose2d currentPose = getPose();
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
+
+        double r = distanceToTarget;
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
+
+        Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
+        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
+
+        if (
+                Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
+                Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
+        ){
+            // only update position if measurement is not obviously wrong
+            poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+        }
     }
 
     public Pose2d getVelocity() { return curr_velocity; }

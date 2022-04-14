@@ -63,6 +63,8 @@ public final class Constants {
     }
 
     public static class LimelightAutoCorrectConstants {
+        public static final double MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION = 0.5; // in meters
+        public static final double MAX_VISION_LOCALIZATION_HEADING_CORRECTION = 5; // in degrees
         public static final int PACE_SIZE = 5;
         public static final int PACES = 40;
         public static final int POLYNOMIAL_DEGREE = 5;
