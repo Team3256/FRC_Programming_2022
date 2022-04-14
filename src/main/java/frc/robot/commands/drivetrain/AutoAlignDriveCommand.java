@@ -94,6 +94,44 @@ public class AutoAlignDriveCommand extends CommandBase {
         if(Limelight.isTargetDetected()){
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
+            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            );
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
         else{
@@ -114,7 +152,6 @@ public class AutoAlignDriveCommand extends CommandBase {
                 autoAlignPidOutput + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, autoAlignPidOutput);
 
         SmartDashboard.putNumber("Swerve Turret Output", autoAlignPidOutput);
-
 
         swerveDrive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
                 driverJoystickX.getAsDouble(),

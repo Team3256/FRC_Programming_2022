@@ -136,7 +136,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param thetaTargetOffset Limelight angle error in degrees
      */
     public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
-        Pose2d currentPose = getPose();
+        Pose2d currentPose = getPose(); // TODO: Add values for Limelight interpolation
         Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
 
         double r = distanceToTarget;
@@ -151,7 +151,10 @@ public class SwerveDrive extends SubsystemBase {
                 Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
         ){
             // only update position if measurement is not obviously wrong
+            this.logger.info("Updating Pose Based off vision");
             poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+        } else {
+            this.logger.info("Not Updating Pose Based off vision");
         }
     }
 
