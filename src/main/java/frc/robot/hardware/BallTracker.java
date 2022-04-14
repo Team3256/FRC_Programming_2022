@@ -13,7 +13,7 @@ public class BallTracker {
     static {
         init();
     }
-    
+
     /**
      * initialize ball tracker network table
      */
