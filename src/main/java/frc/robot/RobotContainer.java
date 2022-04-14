@@ -259,6 +259,13 @@ public class RobotContainer {
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
+        JoystickButton operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        operatorLeftBumper.whenPressed(new HangerPneumaticSlant(hangerSubsystem, intakeSubsystem));
+
+
+        JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+        operatorRightBumper.whenPressed(new HangerPneumaticUpright(hangerSubsystem));
+
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
         operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);

@@ -23,9 +23,11 @@ public class LEDRaidController {
     private static final Logger logger = Logger.getLogger(LEDRaidController.class.getCanonicalName());
 
     private AddressableLED addressableLED;
+    // This is the global LED buffer, whatever is in here will be pushed out to LEDs
     private AddressableLEDBuffer buffer;
 
-    Timer timer = new Timer();
+    // Enforces the wait time between commands
+    Timer waitTimer = new Timer();
 
     private int maxLeds = 0;
 
@@ -49,28 +51,29 @@ public class LEDRaidController {
 
         this.swerveDrive = swerveDrive;
 
-        timer.start();
+        waitTimer.start();
 
         // Start Sending Values to LEDs
         addressableLED.start();
 
+        // Stuff when Disabling vs Enabling
         new Trigger(DriverStation::isDisabled).whenActive(()->{
             disabledLights();
-            timer.reset();
-            timer.stop();
+            waitTimer.reset();
+            waitTimer.stop();
         });
         new Trigger(DriverStation::isEnabled).whenActive(()->{
             // Figure out which Patterns need updating
             for (LEDSectionName ledSectionName : SECTIONS.keySet())
                 SECTIONS.get(ledSectionName).patternGenerator.reset();
 
-            timer.start();
+            waitTimer.start();
         });
     }
 
     public void update() {
         // Wait if running too quickly / Disabled (Since we reset timer)
-        if(!timer.hasElapsed(MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS)) {
+        if(!waitTimer.hasElapsed(MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS)) {
             return;
         }
 
@@ -87,6 +90,31 @@ public class LEDRaidController {
         // Update Sections + Get Instructions, Put into FIFO Queue
         for (LEDRange range: RANGES){
             for (LEDSectionName ledSectionName : sectionsNeedUpdate.keySet()){
+
+
+                // TODO: This entire section needs reworking
+
+
+                // First we need to Create a Buffer (Array of LedColor) that represents the LED Section we want to write too
+                // Size: (int)(range.getLength() * SECTIONS.get(ledSectionName).getPercentageRange() + 0.5)
+
+                // Then We need to pass that buffer to each pattern generator
+                // (Which we neeed to modify so that works)
+                // to modify that buffer instead of creating a new LEDInstruction Array
+                // TODO: Modify each Pattern Generator so it modifies the current Array it was given, not creating a new array
+
+
+                // Lastly we need to transform the "Local Space" (Array 0-size of whatever that section is) into
+                // "Global Space" which is a section of the entire LED strip
+
+                // But here is the mapping
+                // let GlobalStartIdx = fromVirtualIndexToGlobalIndex(range, ledSectionName, instruction.startIdx)
+
+                // 0  to  size -> Local Space
+                // GlobalStartIdx   to   size + GlobalStartIdx -> Global Space
+
+
+                // Code down here is all obsolete but is here for reference ------------------------------------
 
                 // Get Instructions from Pattern
                 // +0.5 needed to find the closest int for a given percentage
@@ -111,7 +139,7 @@ public class LEDRaidController {
         }
 
         addressableLED.setData(buffer);
-        timer.reset();
+        waitTimer.reset();
     }
 
     private void disabledLights(){
