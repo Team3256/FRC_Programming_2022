@@ -31,7 +31,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
     private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
-
     public ShooterSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
         MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Coast;
@@ -96,6 +95,10 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public boolean isHoodLimitSwitchPressed(){
         return !limitSwitch.get();
+    }
+
+    public boolean didBallOutake(){
+        return TransferSubsystem.isTransferEndIRBroken();
     }
     /**
      * Disables powers to flywheel motor, motors change to neutral/coast mode

@@ -39,9 +39,9 @@ public class TransferSubsystem extends SubsystemBase {
     private static final RobotLogger logger = new RobotLogger(TransferSubsystem.class.getCanonicalName());
 
     private final TalonFX transferMotor;
-    private final DigitalInput transferStartIRSensor;
-    private final DigitalInput transferStopIRSensor;
-    private final DigitalInput transferEndIRSensor;
+    private static DigitalInput transferStartIRSensor = null;
+    private static DigitalInput transferStopIRSensor = null;
+    private static DigitalInput transferEndIRSensor = null;
 
     // Counts how many times what color is being detected
     // To avoid single bad reading skewing data
@@ -58,7 +58,7 @@ public class TransferSubsystem extends SubsystemBase {
     BallColor wrongBallColor;
 
     // For Tracking Ball RPM
-    public static ShooterSubsystem flywheelSubsystem;
+    public static ShooterSubsystem shooterSubsystem;
 
 
     private double currentBallCount;
@@ -123,7 +123,7 @@ public class TransferSubsystem extends SubsystemBase {
     /**
      * @return Returns whether the IR sensor at the front of the transfer's line of sight is broken.
      */
-    public boolean isTransferStartIRBroken() {
+    public static boolean isTransferStartIRBroken() {
         return !transferStartIRSensor.get();
     }
 
@@ -131,7 +131,7 @@ public class TransferSubsystem extends SubsystemBase {
      * @return Returns whether the IR sensor in the middle of the transfer's line of sight is broken,
      * which signifies when the ball should stop.
      */
-    public boolean isTransferStopIRBroken() {
+    public static boolean isTransferStopIRBroken() {
         return !transferStopIRSensor.get();
     }
 
@@ -139,7 +139,7 @@ public class TransferSubsystem extends SubsystemBase {
      * @return Returns whether the IR sensor at the end of the transfer's line of sight is broken,
      * which signifies when the ball leaves the transfer via the shooter
      */
-    public boolean isTransferEndIRBroken() {
+    public static boolean isTransferEndIRBroken() {
         return !transferEndIRSensor.get();
     }
 
@@ -158,7 +158,7 @@ public class TransferSubsystem extends SubsystemBase {
             return;
 
         // Starts Index / Counting Process when First Detecting Ball
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
+        new Trigger((() -> isTransferStartIRBroken())).and(new Trigger(()->!isReversed))
                 .whenActive(new TransferIndexForward(this))
                 .whenInactive(new TransferOff(this));
 
@@ -167,11 +167,11 @@ public class TransferSubsystem extends SubsystemBase {
                         );*/
 
         // Subtract Balls shot out of shooter
-        new Trigger(this::isTransferEndIRBroken).and(new Trigger(()->!isReversed))
+        new Trigger(() -> isTransferEndIRBroken()).and(new Trigger(()->!isReversed))
                 .whenInactive(new InstantCommand(this::removeShotBallFromIndex));
 
         // When Reversed, Subtract Balls that leave
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()-> isReversed))
+        new Trigger(() -> isTransferStartIRBroken()).and(new Trigger(()-> isReversed))
                 .whenActive(new InstantCommand(this::removeBallEjectedOutOfIntake));
     }
 
@@ -255,8 +255,8 @@ public class TransferSubsystem extends SubsystemBase {
     private void removeShotBallFromIndex(){
         logger.info("Ball Leaving Transfer by Shooting");
 
-        if (flywheelSubsystem != null)
-            logger.info("Ball Leaving At RPM: " + flywheelSubsystem.getFlywheelRPM() + " rpm");
+        if (shooterSubsystem != null)
+            logger.info("Ball Leaving At RPM: " + shooterSubsystem.getFlywheelRPM() + " rpm");
 
         currentBallCount--;
         if (currentBallCount < 0) {

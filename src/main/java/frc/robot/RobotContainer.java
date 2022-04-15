@@ -128,7 +128,7 @@ public class RobotContainer {
 
     private void initializeShooter() {
         this.shooterSubsystem = new ShooterSubsystem();
-        TransferSubsystem.flywheelSubsystem = shooterSubsystem;
+        TransferSubsystem.shooterSubsystem = shooterSubsystem;
     }
 
     private void initializeTransfer() {
