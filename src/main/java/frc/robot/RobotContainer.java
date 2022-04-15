@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -196,7 +194,13 @@ public class RobotContainer {
         operatorRightTrigger.setThreshold(0.1);
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
-        operatorRightTrigger.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController));
+
+        operatorRightTrigger.whenHeld( new SequentialCommandGroup(
+                new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController),
+                new InstantCommand(() -> {
+                    if(transferSubsystem.getCurrentBallCount() >= 1) shooterSubsystem.setIsShootingAllBalls(true);
+                })
+        ));
 
         // Vibrations
         if (TRANSFER) {
@@ -205,7 +209,7 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
       operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
 //        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);

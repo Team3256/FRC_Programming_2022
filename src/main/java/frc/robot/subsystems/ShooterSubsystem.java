@@ -34,6 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
         TARMAC_VERTEX,
     }
 
+    private boolean shootingAllBalls = false;
     private double targetVelocity = 0;
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
@@ -101,6 +102,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getTargetVelocity() {
         return this.targetVelocity;
+    }
+
+    public boolean isShootingAllBalls() {
+        return this.shootingAllBalls;
+    }
+
+    public void setIsShootingAllBalls(boolean isShootingAllBalls){
+        this.shootingAllBalls = isShootingAllBalls;
     }
 
     /**

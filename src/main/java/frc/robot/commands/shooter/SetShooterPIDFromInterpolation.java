@@ -18,6 +18,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
+    private double currentDistance = 0;
 
     private ShooterSubsystem shooterSubsystem;
 
@@ -33,6 +34,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
+    //shooting all balls
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
@@ -42,9 +44,11 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void execute() {
         double pidOutput;
+        if(!shooterSubsystem.isShootingAllBalls()){
+            currentDistance = Limelight.getRawDistanceToTarget();
+        }
 
-        double currentDistance = Limelight.getRawDistanceToTarget();
-
+        //if the current ball count > 0 && tranfer forward is on
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
         shooterSubsystem.setTargetVelocity(targetVelocity);
 

@@ -106,7 +106,6 @@ public class TransferSubsystem extends SubsystemBase {
         return currentBallCount;
     }
 
-
     public void manualReverse(){
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
