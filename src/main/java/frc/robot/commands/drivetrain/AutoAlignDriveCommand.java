@@ -10,6 +10,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.LEDConstants.AUTO_AIM_PATTERN;
@@ -29,6 +30,7 @@ public class AutoAlignDriveCommand extends CommandBase {
     DoubleSupplier operatorJoystickX;
 
     SwerveDrive swerveDrive;
+    BooleanSupplier isShootingAllBalls;
 
     /**
      * Continuously rotates swerve drive toward Limelight target.
@@ -37,6 +39,25 @@ public class AutoAlignDriveCommand extends CommandBase {
      * @param driverJoystickX Driver's Translation X
      * @param driverJoystickY Driver's Translation Y
      */
+
+    public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem,
+                                 DoubleSupplier driverJoystickX,
+                                 DoubleSupplier driverJoystickY,
+                                 DoubleSupplier operatorJoystickX,
+                                 BooleanSupplier isShootingAllBalls) {
+
+        this.swerveDrive = drivetrainSubsystem;
+
+        this.driverJoystickX = driverJoystickX;
+        this.driverJoystickY = driverJoystickY;
+
+        this.operatorJoystickX = operatorJoystickX;
+
+        this.isShootingAllBalls = isShootingAllBalls;
+
+        addRequirements(drivetrainSubsystem);
+
+    }
 
     public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem,
                                  DoubleSupplier driverJoystickX,
@@ -89,55 +110,20 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double autoAlignPidOutput;
+        double autoAlignPidOutput = 0;
 
         if(Limelight.isTargetDetected()){
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
-            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            );
+            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
         else{
-            alignWithoutVision();
-            autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());
-            SmartDashboard.putNumber("Swerve Turret Setpoint", swerveDrive.getPose().getRotation().getDegrees());
+            if(!isShootingAllBalls.getAsBoolean()){
+                alignWithoutVision();
+                autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());
+                SmartDashboard.putNumber("Swerve Turret Setpoint", swerveDrive.getPose().getRotation().getDegrees());
+            }
         }
 
         //Save some Computation from Sqrt
