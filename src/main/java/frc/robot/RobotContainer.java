@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
-import frc.robot.commands.drivetrain.AutoAlignDriveContinuousCommand;
+import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
 import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.hanger.*;
@@ -102,17 +102,11 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getCommand();
-        else
-            return null;
+        return AutoChooser.getCommand();
     }
 
     public SendableChooser<Command> getCommandChooser() {
-        if (DRIVETRAIN && INTAKE && SHOOTER && TRANSFER)
-            return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem);
-        else
-            return null;
+        return AutoChooser.getDefaultChooser(drivetrainSubsystem, intakeSubsystem, shooterSubsystem, transferSubsystem);
     }
 
     private void initializeDrivetrain() {
@@ -170,7 +164,7 @@ public class RobotContainer {
         // A button zeros the gyroscope
         driverAButton.whenPressed(drivetrainSubsystem::zeroGyroscope);
 
-        Command autoAlign = new AutoAlignDriveContinuousCommand(
+        Command autoAlign = new AutoAlignDriveCommand(
                 drivetrainSubsystem,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
@@ -207,8 +201,8 @@ public class RobotContainer {
     private void configureTransfer() {
         JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
-      operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
-//        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+        operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
+//      operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
 
     }
 
