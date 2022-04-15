@@ -48,6 +48,9 @@ public class TransferSubsystem extends SubsystemBase {
     private int blueColorCountVote = 0;
     private int redColorCountVote = 0;
 
+    private int currBlueCount = 0;
+    private int currRedCount = 0;
+
     private boolean isDetectingBallColor = false;
     private boolean isReversed = false;
 
@@ -58,7 +61,6 @@ public class TransferSubsystem extends SubsystemBase {
 
     // For Tracking Ball RPM
     public static ShooterSubsystem flywheelSubsystem;
-
 
     private double currentBallCount;
 
@@ -73,6 +75,9 @@ public class TransferSubsystem extends SubsystemBase {
         transferStartIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_BEGINNING_CHANNEL);
         transferStopIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_MIDDLE_CHANNEL);
         transferEndIRSensor = new DigitalInput(IDConstants.IR_TRANSFER_END_CHANNEL);
+
+        SmartDashboard.putNumber("Current Blue Ball Count: ", currBlueCount);
+        SmartDashboard.putNumber("Current Red Ball Count: ", currRedCount);
 
         SmartDashboard.setDefaultNumber("Starting Ball Count", STARTING_BALL_COUNT);
         currentBallCount = SmartDashboard.getNumber("Starting Ball Count", TransferConstants.STARTING_BALL_COUNT);
@@ -217,16 +222,20 @@ public class TransferSubsystem extends SubsystemBase {
             }
         }
 
-        logger.info("Ball Count End: "+currentBallCount);
+        logger.info("Ball Count End: "+ currentBallCount);
     }
 
     private void addBallToIndex(BallColor ballColor){
         logger.info("Ball Indexed Into Transfer");
 
         if (BALL_COLOR_SENSOR) {
+            if (ballColor == BallColor.RED)
+                currRedCount++;
             if (ballColor == BallColor.RED && alliance == DriverStation.Alliance.Blue)
                 wrongBallColorDetected(ballColor);
 
+            if (ballColor == BallColor.BLUE)
+                currBlueCount++;
             if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
                 wrongBallColorDetected(ballColor);
 
@@ -258,13 +267,15 @@ public class TransferSubsystem extends SubsystemBase {
             logger.warning("No Ball At end of index!");
         }
 
+        if (ballColorIndex.getFirst() == BallColor.BLUE)
+            currBlueCount--;
+        else currRedCount--;
+
         if (BALL_COLOR_SENSOR) {
             if (ballColorIndex.getLast() == BallColor.NONE)
                 logger.warning("No Ball Color At end of index!");
-
             ballColorIndex.removeLast();
             ballColorIndex.addFirst(BallColor.NONE);
-
             updateBallLEDPattern();
         }
     }
