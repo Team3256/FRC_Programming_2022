@@ -252,10 +252,17 @@ public class RobotContainer {
         JoystickButton operatorAButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        JoystickButton operatorRB= new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
         operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
+
+        if (INTAKE) {
+            operatorRB
+                    .whenHeld(new HangerPneumaticSlant(hangerSubsystem, intakeSubsystem))
+                    .whenReleased(new HangerPneumaticUpright(hangerSubsystem));
+        }
 
         // Auto Retract
         new Trigger(()->((hangerSubsystem.getLeftPosition() > 10000 || hangerSubsystem.getRightPosition() > 10000)))
