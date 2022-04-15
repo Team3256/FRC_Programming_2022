@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.commands.hanger.HangerZeroRetract;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.ColorsensorTestSubsystem;
 
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
   }
 
   @Override
@@ -77,8 +79,7 @@ public class Robot extends TimedRobot {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
 
-    CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(robotContainer.shooterSubsystem));
-    CommandScheduler.getInstance().schedule(new HangerZeroRetract(robotContainer.hangerSubsystem));
+    robotContainer.zeroSubsystems();
   }
 
   @Override

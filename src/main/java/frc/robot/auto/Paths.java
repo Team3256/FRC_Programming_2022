@@ -197,8 +197,8 @@ public class Paths {
 
         public static AutoCommandRunner getThreeBallRunner() {
             List<AutoCommandMarker> threeBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(6.13, 2.53), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(6.13, 2.53), getRevUpCommand())
+                    new AutoCommandMarker(new Translation2d(7.25, 1.31), new IntakeOn(intakeSubsystem)),
+                    new AutoCommandMarker(new Translation2d(5.20, 1.88), getRevUpCommand())
             );
 
             return new AutoCommandRunner(threeBallSegmentMarkers);
@@ -206,7 +206,7 @@ public class Paths {
 
         public static AutoCommandRunner getFourBallRunner() {
             List<AutoCommandMarker> fourBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(5.74, 2.78), new Translation2d(3.48, 1.98), new IntakeOn(intakeSubsystem)),
+                    new AutoCommandMarker(new Translation2d(5.74, 2.78), new Translation2d(3.68, 1.98), new IntakeOn(intakeSubsystem)),
                     new AutoCommandMarker(new Translation2d(1.72, 0.94), getRevUpCommand())
             );
 

@@ -93,7 +93,7 @@ public class AutoCommandRunner {
         Translation2d currentTranslation = currentPose.getTranslation();
         Translation2d lastTranslation = lastPose.getTranslation();
 
-        double distanceBetweenTrajectoryPoses = Math.abs(currentTranslation.getDistance(lastTranslation)) * 6;
+        double distanceBetweenTrajectoryPoses = Math.abs(currentTranslation.getDistance(lastTranslation)) * 4;
         double distanceBetweenLastPose = Math.abs(lastTranslation.getDistance(marker));
         double distanceBetweenCurrentPose = Math.abs(currentTranslation.getDistance(marker));
 

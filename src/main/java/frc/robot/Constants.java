@@ -47,7 +47,7 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
         public static final boolean DRIVETRAIN = true;
 
@@ -363,7 +363,7 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 0.05; // in percent TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 0.04; // in percent TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
@@ -391,9 +391,20 @@ public final class Constants {
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
 
-        public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
-                new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
-        );
+        public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
+                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
+                // ^ bro that tuning was really bad
+//                    new TrainingDataPoint(59.322381, 012000, 2200),
+                    new TrainingDataPoint(78.819100, 000000, 2450), // tuning 4/13
+                    new TrainingDataPoint(99.215692, 020000, 2550), // tuning 4/13
+                    new TrainingDataPoint(116.11159, 185000, 2265),
+                    new TrainingDataPoint(137.72040, 195000, 2340),
+                    new TrainingDataPoint(168.63393, 205000, 2540),
+                    new TrainingDataPoint(204.32797, 235000, 2960)
+                );
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 78.819100;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
+
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds
