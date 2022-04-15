@@ -58,8 +58,8 @@ public class ShooterSubsystem extends SubsystemBase {
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
         }
 
-        distanceToFlywheelRPMInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelRPM);
-        distanceToHoodAngleInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
     }
 
 
@@ -200,6 +200,8 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Actual Flywheel Velocity", getFlywheelRPM());
+            SmartDashboard.putNumber("Actual Hood Angle", hoodAngleMotor.getSelectedSensorPosition());
             NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean(this.isHoodLimitSwitchPressed());
         }
     }

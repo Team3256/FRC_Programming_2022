@@ -50,7 +50,6 @@ public class AutoAlignDriveCommand extends CommandBase {
 
         this.driverJoystickX = driverJoystickX;
         this.driverJoystickY = driverJoystickY;
-
         this.operatorJoystickX = operatorJoystickX;
 
         this.isShootingAllBalls = isShootingAllBalls;
@@ -68,7 +67,6 @@ public class AutoAlignDriveCommand extends CommandBase {
 
         this.driverJoystickX = driverJoystickX;
         this.driverJoystickY = driverJoystickY;
-
         this.operatorJoystickX = operatorJoystickX;
 
         addRequirements(drivetrainSubsystem);
@@ -76,7 +74,6 @@ public class AutoAlignDriveCommand extends CommandBase {
     }
 
     public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem) {
-
         this.swerveDrive = drivetrainSubsystem;
 
         this.driverJoystickX = () -> 0;
@@ -115,10 +112,11 @@ public class AutoAlignDriveCommand extends CommandBase {
         if(Limelight.isTargetDetected()){
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
-            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
+//            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
+            SmartDashboard.putNumber("Limelight Diatance", Limelight.getRawDistanceToTarget());
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
-        else{
+        else if (false){
             if(!isShootingAllBalls.getAsBoolean()){
                 alignWithoutVision();
                 autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());

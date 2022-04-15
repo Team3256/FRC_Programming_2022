@@ -42,6 +42,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     public void execute() {
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
+        flywheelSubsystem.setTargetVelocity(velocity);
 
         double pidOutput = 0;
         if (velocity < 3500){

@@ -25,6 +25,7 @@ import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
+import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
@@ -191,7 +192,7 @@ public class RobotContainer {
         operatorRightTrigger.whenHeld( new SequentialCommandGroup(
                 new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController),
                 new InstantCommand(() -> {
-                    if(transferSubsystem.getCurrentBallCount() >= 1) shooterSubsystem.setIsShootingAllBalls(true);
+                    shooterSubsystem.setIsShootingAllBalls(transferSubsystem.getCurrentBallCount() > 1);
                 })
         ));
 
@@ -204,8 +205,8 @@ public class RobotContainer {
     private void configureTransfer() {
         JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
 
-      operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
-//        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+//      operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
+        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
 
     }
 
@@ -224,7 +225,7 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                             new IntakeReverse(intakeSubsystem),
                             new TransferManualReverse(transferSubsystem)
-                    )
+                    ), false
             );
 
 

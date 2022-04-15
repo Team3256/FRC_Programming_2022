@@ -23,7 +23,7 @@ public class Limelight {
             actualDistance[i] = data[1];
         }
 
-        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
+//        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
     }
 
     //Doesn't Allow Instancing

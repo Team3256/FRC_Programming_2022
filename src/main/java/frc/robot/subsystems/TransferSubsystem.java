@@ -266,16 +266,18 @@ public class TransferSubsystem extends SubsystemBase {
             logger.warning("No Ball At end of index!");
         }
 
-        if (ballColorIndex.getFirst() == BallColor.BLUE)
-            currBlueCount--;
-        else currRedCount--;
+        if (!ballColorIndex.isEmpty()) {
+            if (ballColorIndex.getFirst() == BallColor.BLUE)
+                currBlueCount--;
+            else currRedCount--;
 
-        if (BALL_COLOR_SENSOR) {
-            if (ballColorIndex.getLast() == BallColor.NONE)
-                logger.warning("No Ball Color At end of index!");
-            ballColorIndex.removeLast();
-            ballColorIndex.addFirst(BallColor.NONE);
-            updateBallLEDPattern();
+            if (BALL_COLOR_SENSOR) {
+                if (ballColorIndex.getLast() == BallColor.NONE)
+                    logger.warning("No Ball Color At end of index!");
+                ballColorIndex.removeLast();
+                ballColorIndex.addFirst(BallColor.NONE);
+                updateBallLEDPattern();
+            }
         }
     }
 

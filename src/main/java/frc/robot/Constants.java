@@ -105,10 +105,10 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double X_ACCEL_RATE_LIMIT = 10;
-        public static final double X_DECEL_RATE_LIMIT = 10;
-        public static final double Y_ACCEL_RATE_LIMIT = 10;
-        public static final double Y_DECEL_RATE_LIMIT = 10;
+        public static final double X_ACCEL_RATE_LIMIT = 3;
+        public static final double X_DECEL_RATE_LIMIT = 3;
+        public static final double Y_ACCEL_RATE_LIMIT = 3;
+        public static final double Y_DECEL_RATE_LIMIT = 3;
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
@@ -393,15 +393,24 @@ public final class Constants {
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
                 // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
-                    new TrainingDataPoint(59.3223818, 12000, 2200),
-                    new TrainingDataPoint(93.438228, 147500, 2200),
-                    new TrainingDataPoint(116.1115998, 185000, 2265),
-                    new TrainingDataPoint(137.720407, 195000, 2340),
-                    new TrainingDataPoint(168.63393, 205000, 2540),
-                    new TrainingDataPoint(204.32797, 235000, 2960)
+//                    new TrainingDataPoint(59.3223818, 12000, 2200),
+//                    new TrainingDataPoint(93.438228, 147500, 2200),
+                    new TrainingDataPoint(60.40864, 000000, 2470),
+                    new TrainingDataPoint(75.33697, 000000, 2450),
+                    new TrainingDataPoint(92.11719, 070000, 2375),
+//                    new TrainingDataPoint(99.25691, 200000, 2550),
+                    new TrainingDataPoint(107.1820, 120000, 2420),
+                    new TrainingDataPoint(114.4050, 120000, 2460),
+                    new TrainingDataPoint(138.0660, 125000, 2540),
+                    new TrainingDataPoint(154.0136, 160000, 2550),
+                    new TrainingDataPoint(177.1405, 190000, 2720),
+                    new TrainingDataPoint(206.1429, 210000, 2840)
+//                    new TrainingDataPoint()
+//                    new TrainingDataPoint(168.63393, 205000, 2540),
+//                    new TrainingDataPoint(204.32797, 235000, 2960)
                 );
-        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 60;
-        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 76;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 206;
 
     }
     public static class LEDConstants {
