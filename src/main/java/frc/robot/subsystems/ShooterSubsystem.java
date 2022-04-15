@@ -57,8 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
         }
 
-        distanceToFlywheelRPMInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelRPM);
-        distanceToHoodAngleInterpolatingFunction = new SplineInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
     }
 
 

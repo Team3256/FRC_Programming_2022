@@ -363,7 +363,7 @@ public final class Constants {
         // Tuning Section
         public static final double DELTA_AIM_HEIGHT_FACTOR = 0.0; // TODO: Set delta aim height factor from tuning
         public static final double DELTA_DISTANCE_TO_TARGET_FACTOR = 0.0; // TODO: Set delta distance from tuning
-        public static final double SET_POINT_ERROR_MARGIN = 0.05; // in percent TODO: Set margin of error for initiation speed test
+        public static final double SET_POINT_ERROR_MARGIN = 0.04; // in percent TODO: Set margin of error for initiation speed test
         public static final double OFFSET_HEIGHT_FACTOR = 0.0; // TODO: From tuning, set offset height
         public static final double OFFSET_DISTANCE_FACTOR = 0.0; // TODO: From tuning, set offset distance
         public static final double ENTRY_ANGLE_INTO_HUB = 50.0; // TODO: From tuning, find entry angle
@@ -393,14 +393,16 @@ public final class Constants {
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
                 // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
-                    new TrainingDataPoint(59.3223818, 12000, 2200),
-                    new TrainingDataPoint(93.438228, 147500, 2200),
-                    new TrainingDataPoint(116.1115998, 185000, 2265),
-                    new TrainingDataPoint(137.720407, 195000, 2340),
+                // ^ bro that tuning was really bad
+//                    new TrainingDataPoint(59.322381, 012000, 2200),
+                    new TrainingDataPoint(78.819100, 000000, 2450), // tuning 4/13
+                    new TrainingDataPoint(99.215692, 020000, 2550), // tuning 4/13
+                    new TrainingDataPoint(116.11159, 185000, 2265),
+                    new TrainingDataPoint(137.72040, 195000, 2340),
                     new TrainingDataPoint(168.63393, 205000, 2540),
                     new TrainingDataPoint(204.32797, 235000, 2960)
                 );
-        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 60;
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 78.819100;
         public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 204;
 
     }

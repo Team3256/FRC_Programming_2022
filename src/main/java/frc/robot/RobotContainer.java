@@ -190,7 +190,7 @@ public class RobotContainer {
         operatorRightTrigger.setThreshold(0.1);
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
-        operatorRightTrigger.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController));
+        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem, operatorController));
 
         // Vibrations
         if (TRANSFER) {

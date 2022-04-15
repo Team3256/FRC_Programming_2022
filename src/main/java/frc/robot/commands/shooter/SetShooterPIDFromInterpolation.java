@@ -53,6 +53,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
             SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+            SmartDashboard.putNumber("Raw Limelight Distance", currentDistance);
         }
 
         if (targetVelocity < 3500){
