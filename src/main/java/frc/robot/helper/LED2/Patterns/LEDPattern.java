@@ -19,10 +19,9 @@ public class LEDPattern {
         this.totalPattern=totalPattern;
     }
 
+    //"clear" update
     public void update(){
-        for (int i=0;i<length;i++){
-            set(i,new Color(0,0,0));
-        }
+        setRange(0,length-1,new Color(0,0,0));
     }
 
     public void set(int percentage, Color color){

@@ -17,6 +17,7 @@ public class BallColorPattern extends LEDPattern {
     //event driven/state driven updates
     @Override
     public void update(){
+        super.update();
         //set colouring of pattern
         setRange(0,24,new Color(255,0,0));
         setRange(25,49, new Color(0,0,255));
