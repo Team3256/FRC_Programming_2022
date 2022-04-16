@@ -52,7 +52,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         }
 
         BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+        BigDecimal KF_CONSTANT = new BigDecimal("0.0156208876");
 
         BigDecimal feedforward = (new BigDecimal(velocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 

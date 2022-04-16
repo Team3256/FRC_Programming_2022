@@ -40,6 +40,9 @@ public class AutoChooser {
                     Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
                     autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
 
+                    Command twoBallDefenseMidTarmac1BallSide = Paths.get2BallDefenseMidTarmac1BallSide();
+                    autoChooser.addOption("2 Ball Defense Fender | Start Mid Tarmac | 1 Ball Side", twoBallDefenseMidTarmac1BallSide);
+
                     Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
                     autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
 

@@ -9,8 +9,10 @@ import frc.robot.Constants;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
+import jdk.jfr.BooleanFlag;
 
 import java.math.BigDecimal;
+import java.util.function.BooleanSupplier;
 
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
@@ -21,16 +23,18 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     private double currentDistance = 0;
 
     private ShooterSubsystem shooterSubsystem;
+    private BooleanSupplier isShooting;
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem) {
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting) {
         this.shooterSubsystem = flywheelSubsystem;
+        this.isShooting = isShooting;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
-        this(flywheelSubsystem);
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting, XboxController operatorController) {
+        this(flywheelSubsystem, isShooting);
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
@@ -38,7 +42,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
-        Limelight.enable();
+//        Limelight.enable();
     }
 
     @Override
@@ -49,10 +53,12 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         }
 
         //if the current ball count > 0 && tranfer forward is on
-        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
-        shooterSubsystem.setTargetVelocity(targetVelocity);
+        if (!isShooting.getAsBoolean() || targetVelocity == 0) { // dont update when shooting because limelight gets blocked by shooting ball
+            targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
+            shooterSubsystem.setTargetVelocity(targetVelocity);
 
-        targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
+            targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
+        }
 
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
@@ -83,7 +89,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.stopFlywheel();
-        Limelight.disable();
+//        Limelight.disable();
     }
 
 }

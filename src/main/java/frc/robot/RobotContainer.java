@@ -25,6 +25,7 @@ import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
+import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
@@ -166,7 +167,7 @@ public class RobotContainer {
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> shooterSubsystem.isShootingAllBalls()
+                transferSubsystem::isShooting
         );
 
         if(LIMELIGHT) {
@@ -174,6 +175,8 @@ public class RobotContainer {
             driverLeftBumper.whenPressed(
                 autoAlign
             );
+
+            driverLeftBumper.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController));
         }
 
         //Any Significant Movement in driver's X interrupt auto align
@@ -184,17 +187,9 @@ public class RobotContainer {
     private void configureShooter() {
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
 
-        JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
-        operatorRightTrigger.setThreshold(0.1);
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
-        operatorRightTrigger.whenHeld( new SequentialCommandGroup(
-                new SetShooterPIDFromInterpolation(shooterSubsystem, operatorController),
-                new InstantCommand(() -> {
-                    shooterSubsystem.setIsShootingAllBalls(transferSubsystem.getCurrentBallCount() > 1);
-                })
-        ));
 
         // Vibrations
         if (TRANSFER) {
@@ -203,30 +198,32 @@ public class RobotContainer {
     }
 
     private void configureTransfer() {
-        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
 
-//      operatorLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
-        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
-
+      driverLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
+//        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
 
     private void configureIntake() {
         JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        JoystickButton driverBButton = new JoystickButton(driverController, XboxController.Button.kB.value);
+        JoystickButton driverYButton = new JoystickButton(driverController, XboxController.Button.kY.value);
         JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         // Operator's Intake Up Button
-        operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
+        operatorRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
-        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
-
-        if (TRANSFER)
-            operatorBButton.whenHeld(
+        if (TRANSFER) {
+            driverBButton.whenHeld(
                     new ParallelCommandGroup(
                             new IntakeReverse(intakeSubsystem),
                             new TransferManualReverse(transferSubsystem)
                     ), false
             );
+
+            driverYButton.whenHeld(new OuttakeFast(transferSubsystem, intakeSubsystem));
+        }
 
 
 
