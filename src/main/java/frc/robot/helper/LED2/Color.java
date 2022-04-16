@@ -1,5 +1,8 @@
 package frc.robot.helper.LED2;
 
+/**
+ * class that holds the state of a RGB color
+ */
 public class Color {
     public int R;
     public int G;
@@ -11,5 +14,8 @@ public class Color {
         this.R=R;
         this.G=G;
         this.B=B;
+    }
+    public String toString(){
+        return "(R:"+R+", G:"+G+", B:"+B+")";
     }
 }

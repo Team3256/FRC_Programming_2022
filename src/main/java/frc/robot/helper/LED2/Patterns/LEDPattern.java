@@ -2,6 +2,10 @@ package frc.robot.helper.LED2.Patterns;
 
 import frc.robot.helper.LED2.Color;
 
+/**
+ * Only extend this class, don't actually use any of these
+ * The foundation of a displayable and event-driven updated LEDPattern
+ */
 public class LEDPattern {
     public int startPercentage;
     public int endPercentage;

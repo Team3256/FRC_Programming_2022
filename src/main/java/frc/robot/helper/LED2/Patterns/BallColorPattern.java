@@ -1,11 +1,16 @@
 package frc.robot.helper.LED2.Patterns;
-
 import frc.robot.helper.LED2.Color;
 
+/**
+ * first half of pattern displays color of first ball in the robot
+ * second half of pattern displays color of second ball in the robot
+ * (red or blue)
+ * pattern will take up 0 to 49 percentage range
+ */
 public class BallColorPattern extends LEDPattern {
 
     public BallColorPattern(Color[] totalPattern) {
-        super(0, 30, totalPattern);
+        super(0, 49, totalPattern);
     }
 
     @Override
