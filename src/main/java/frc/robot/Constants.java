@@ -39,20 +39,20 @@ public final class Constants {
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
     public static class SubsystemEnableFlags {
-        public static final boolean LIMELIGHT = true;
+        public static final boolean LIMELIGHT = false;
 
-        public static final boolean SHOOTER = true;
-        public static final boolean TRANSFER = true;
-        public static final boolean INTAKE = true;
+        public static final boolean SHOOTER = false;
+        public static final boolean TRANSFER = false;
+        public static final boolean INTAKE = false;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = true;
+        public static final boolean DRIVETRAIN = false;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
-        public static final boolean IR_SENSORS = true;
+        public static final boolean IR_SENSORS = false;
     }
 
     public static class LimelightAutoCorrectConstants {
