@@ -1,8 +1,14 @@
-package frc.robot.subsystems;
+package frc.robot.helper.LED2;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * LEDSubsystem class to help test the LED strip
+ * can play rainbow
+ * can set all to a certain color
+ * takes length of all leds and pwm port as parameters
+ */
 public class LEDSubsystem extends SubsystemBase {
     private AddressableLED LED;
     private AddressableLEDBuffer LEDBuffer;

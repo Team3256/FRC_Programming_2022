@@ -10,11 +10,14 @@ import frc.robot.helper.LED2.Color;
 public class BallColorPattern extends LEDPattern {
 
     public BallColorPattern(Color[] totalPattern) {
+        //percentage range that pattern is allocated to
         super(0, 49, totalPattern);
     }
 
+    //event driven/state driven updates
     @Override
     public void update(){
+        //set colouring of pattern
         setRange(0,24,new Color(255,0,0));
         setRange(25,49, new Color(0,0,255));
     }
