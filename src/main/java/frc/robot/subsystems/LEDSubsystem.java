@@ -7,18 +7,18 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLED LED;
     private AddressableLEDBuffer LEDBuffer;
 
-    public LEDSubsystem(){
-        LED = new AddressableLED(0);
-        LEDBuffer = new AddressableLEDBuffer(60);
+    public LEDSubsystem(int length, int port){
+        LED = new AddressableLED(port);
+        LEDBuffer = new AddressableLEDBuffer(length);
         LED.setLength(LEDBuffer.getLength());
 
         LED.setData(LEDBuffer);
         LED.start();
     }
 
-    public void on(){
+    public void setAll(int R, int G, int B){
         for (int i=0;i<LEDBuffer.getLength();i++){
-            LEDBuffer.setRGB(i,0,0,255);
+            LEDBuffer.setRGB(i,R,G,B);
         }
         LED.setData(LEDBuffer);
     }

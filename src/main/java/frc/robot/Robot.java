@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.helper.LED2.LEDController;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.ColorsensorTestSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -28,7 +29,8 @@ public class Robot extends TimedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
-  LEDSubsystem ledSubsystem = new LEDSubsystem();
+  //LEDSubsystem ledSubsystem = new LEDSubsystem(100, 0);
+  LEDController ledController = new LEDController();
 
   @Override
   public void robotInit() {
@@ -41,7 +43,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     CommandScheduler.getInstance().run();
-    ledSubsystem.rainbow();
+    //ledSubsystem.rainbow();
+    ledController.periodic();
   }
 
   @Override
@@ -75,7 +78,6 @@ public class Robot extends TimedRobot {
   public void testInit() {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
-
-    //ledSubsystem.on();
+    //ledSubsystem.setAll(0,0,255);
   }
 }
