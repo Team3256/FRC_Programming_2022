@@ -140,8 +140,9 @@ public class Paths {
                         );
 
         return twoBallTarmacSideSegment
-                .andThen(getShootCommand(3))
-                .andThen(twoBallTarmacDefenseSideSegment);
+                .andThen(getShootCommand(5))
+                .andThen(twoBallTarmacDefenseSideSegment)
+                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(outtake)));
 //                .andThen(outtake);
     }
 
@@ -295,7 +296,7 @@ public class Paths {
                     new AutoAlignDriveCommand(driveSubsystem),
                     new SetShooterPIDFromInterpolation(flywheelSubsystem, () -> false),
 //                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
-                    new WaitCommand(timeToShoot * 0.2).andThen(
+                    new WaitCommand(timeToShoot * 0.25).andThen(
                             new InstantCommand(
                                     () -> CommandScheduler.getInstance().schedule(transferForward)
                             )
