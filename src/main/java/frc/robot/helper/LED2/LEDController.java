@@ -38,6 +38,7 @@ public class LEDController {
         ledContainers.add(new LEDContainer(0, 24));
         ledContainers.add(new LEDContainer(25, 49));
         ledContainers.add(new LEDContainer(50, 74));
+        ledContainers.add(new LEDContainer(75, 99));
 
         //initialize the total pattern percentage array
         for (int i=0;i<100;i++){
