@@ -15,11 +15,7 @@ public class BallColorPattern extends LEDPattern {
 
     @Override
     public void update(){
-        for (int i=0;i<=length/2;i++){
-            totalPattern[startPercentage+i].set(255,0,0);
-        }
-        for (int i=length/2+1;i<length;i++){
-            totalPattern[startPercentage+i].set(0,0,255);
-        }
+        setRange(0,24,new Color(255,0,0));
+        setRange(25,49, new Color(0,0,255));
     }
 }

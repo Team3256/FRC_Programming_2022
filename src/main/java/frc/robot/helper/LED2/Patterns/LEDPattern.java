@@ -21,7 +21,17 @@ public class LEDPattern {
 
     public void update(){
         for (int i=0;i<length;i++){
-            totalPattern[startPercentage+i].set(0,0,0);
+            set(i,new Color(0,0,0));
+        }
+    }
+
+    public void set(int percentage, Color color){
+        totalPattern[startPercentage+percentage].set(color);
+    }
+
+    public void setRange(int start, int end, Color color){
+        for (int i=start;start<=end;i++){
+            set(i,color);
         }
     }
 }
