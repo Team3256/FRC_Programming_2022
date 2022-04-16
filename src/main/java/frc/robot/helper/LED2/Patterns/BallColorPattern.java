@@ -4,8 +4,8 @@ import frc.robot.helper.LED2.Color;
 
 public class BallColorPattern extends LEDPattern {
 
-    public BallColorPattern(int start, int end, Color[] totalPattern) {
-        super(start, end, totalPattern);
+    public BallColorPattern(Color[] totalPattern) {
+        super(0, 30, totalPattern);
     }
 
     @Override
