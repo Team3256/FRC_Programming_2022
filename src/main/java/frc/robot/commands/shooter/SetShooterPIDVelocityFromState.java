@@ -43,6 +43,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
 
         double pidOutput;
 
+        flywheelSubsystem.setTargetVelocity(shooterStateSupplier.get().rpmVelocity);
         if (shooterStateSupplier.get().rpmVelocity < 3500){
             pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         } else {

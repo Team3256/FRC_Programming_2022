@@ -142,7 +142,9 @@ public class Paths {
         return twoBallTarmacSideSegment
                 .andThen(getShootCommand(5))
                 .andThen(twoBallTarmacDefenseSideSegment)
-                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(outtake)));
+                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(outtake)))
+                .andThen(new WaitCommand(4))
+                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().cancel(outtake)));
 //                .andThen(outtake);
     }
 
