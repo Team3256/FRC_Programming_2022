@@ -294,8 +294,8 @@ public class Paths {
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
                     new AutoAlignDriveCommand(driveSubsystem),
-                    new SetShooterPIDFromInterpolation(flywheelSubsystem, () -> false),
-//                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
+//                    new SetShooterPIDFromInterpolation(flywheelSubsystem, () -> false),
+                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.25).andThen(
                             new InstantCommand(
                                     () -> CommandScheduler.getInstance().schedule(transferForward)
