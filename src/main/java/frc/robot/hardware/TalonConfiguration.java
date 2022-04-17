@@ -26,6 +26,12 @@ public class TalonConfiguration {
         this.NEUTRAL_MODE = mode;
     }
 
+    public TalonConfiguration(NeutralMode mode, InvertType invertType) {
+        this.NEUTRAL_MODE = mode;
+        this.INVERT_TYPE = invertType;
+    }
+
+
     public TalonConfiguration(StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT, SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT ) {
         this.STATOR_CURRENT_LIMIT = STATOR_CURRENT_LIMIT;
         this.SUPPLY_CURRENT_LIMIT = SUPPLY_CURRENT_LIMIT;

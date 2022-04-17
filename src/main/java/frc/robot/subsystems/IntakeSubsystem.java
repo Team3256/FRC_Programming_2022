@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -29,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightIntakeSolenoid;
 
     public IntakeSubsystem() {
-        TalonConfiguration config = new TalonConfiguration(NeutralMode.Coast);
+        TalonConfiguration config = new TalonConfiguration(NeutralMode.Coast, InvertType.InvertMotorOutput);
         intakeMotor = TalonFXFactory.createTalonFX(INTAKE_MOTOR_ID, config, MANI_CAN_BUS);
         leftintakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_LEFT_FORWARD, INTAKE_SOLENOID_LEFT_BACKWARD);
         rightIntakeSolenoid = new DoubleSolenoid(PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, INTAKE_SOLENOID_RIGHT_FORWARD, INTAKE_SOLENOID_RIGHT_BACKWARD);
@@ -53,6 +54,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public void reverseOn(){
         retract();
         intakeMotor.set(ControlMode.PercentOutput, INTAKE_BACKWARD_SPEED);
+    }
+
+    public void outtake(){
+        retract();
+        intakeMotor.set(ControlMode.PercentOutput, INTAKE_OUTTAKE_SPEED);
     }
 
     public void off(){

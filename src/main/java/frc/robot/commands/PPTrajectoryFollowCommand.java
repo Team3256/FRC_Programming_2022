@@ -132,7 +132,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= trajectoryDuration * 1.08;
+        return timer.get() >= trajectoryDuration * 1.11;
     } // give a little more time to be in the right place
 
     @Override

@@ -13,6 +13,7 @@ public class Limelight {
     private static final RobotLogger logger = new RobotLogger(Limelight.class.getCanonicalName());
     private static NetworkTable limelight;
     private static PolynomialSplineFunction tunedDistance;
+    private static int users = 0;
 
     static {
         double[] rawDistance = new double[LIMELIGHT_TUNED_DATA.size()];
@@ -23,7 +24,7 @@ public class Limelight {
             actualDistance[i] = data[1];
         }
 
-        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
+//        tunedDistance = new SplineInterpolator().interpolate(rawDistance, actualDistance);
     }
 
     //Doesn't Allow Instancing
@@ -138,13 +139,16 @@ public class Limelight {
      *  Methods that enable and disable the limelight
      */
     public static void disable(){
-        Limelight.getLimelightValue("ledMode").setNumber(1);
+        if (--users == 0) {
+            Limelight.getLimelightValue("ledMode").setNumber(1);
+        }
     }
 
     /**
      * Enables the LEDs on the limelight, LEDs should be on when limelight is in use.
      */
     public static void enable(){
+        users++;
         Limelight.getLimelightValue("ledMode").setNumber(3);
     }
 

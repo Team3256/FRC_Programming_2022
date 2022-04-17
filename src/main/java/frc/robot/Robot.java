@@ -7,22 +7,13 @@
 
 package frc.robot;
 
-import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
-import frc.robot.commands.hanger.HangerZeroRetract;
-import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
-import frc.robot.subsystems.ColorsensorTestSubsystem;
-
-import java.awt.*;
-import java.util.logging.Logger;
 
 public class Robot extends TimedRobot {
   private static final RobotLogger logger = new RobotLogger(Robot.class.getCanonicalName());
@@ -44,11 +35,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    Limelight.disable();
     logger.info("Robot Disabled");
   }
 
   @Override
   public void autonomousInit() {
+    Limelight.enable();
     logger.info("Auto Enabled");
     robotContainer.resetPose();
     autonomousCommand = robotContainer.getAutonomousCommand();
@@ -62,10 +55,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    Limelight.enable();
     logger.info("TeleOp Enabled");
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
   }
 
   @Override
@@ -77,8 +72,7 @@ public class Robot extends TimedRobot {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
 
-    CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(robotContainer.shooterSubsystem));
-    CommandScheduler.getInstance().schedule(new HangerZeroRetract(robotContainer.hangerSubsystem));
+    robotContainer.zeroSubsystems();
   }
 
   @Override

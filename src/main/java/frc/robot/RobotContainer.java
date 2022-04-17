@@ -10,8 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -26,13 +25,14 @@ import frc.robot.commands.intake.IntakeOff;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.*;
+import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferIndexForward;
 import frc.robot.commands.transfer.TransferManualReverse;
+import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
-import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -54,7 +54,7 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    public ShooterSubsystem shooterSubsystem = null;
+    private ShooterSubsystem shooterSubsystem = null;
     private TransferSubsystem transferSubsystem = null;
 
     public HangerSubsystem hangerSubsystem = null;
@@ -68,7 +68,6 @@ public class RobotContainer {
     public RobotContainer() {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
-
 
         // Initialize Active Subsystems
         if (LIMELIGHT)
@@ -99,13 +98,6 @@ public class RobotContainer {
         if (HANGER)
             configureHanger();
     }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
 
     public Command getAutonomousCommand() {
         return AutoChooser.getCommand();
@@ -174,7 +166,8 @@ public class RobotContainer {
                 drivetrainSubsystem,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                transferSubsystem::isShooting
         );
 
         if(LIMELIGHT) {
@@ -182,6 +175,8 @@ public class RobotContainer {
             driverLeftBumper.whenPressed(
                 autoAlign
             );
+
+            driverLeftBumper.whenHeld(new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController));
         }
 
         //Any Significant Movement in driver's X interrupt auto align
@@ -190,57 +185,45 @@ public class RobotContainer {
     }
 
     private void configureShooter() {
-
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
-        DPadButton dPadLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
 
-        JoystickAnalogButton operatorRightTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kRightTrigger.value);
-        operatorRightTrigger.setThreshold(0.1);
-
-        dPadRight.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.LAUNCHPAD));
-        dPadLeft.whenPressed(new SetShooterPreset(shooterSubsystem, ShooterLocationPreset.TARMAC_VERTEX));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
-
-        operatorRightTrigger.whenHeld(new SetShooterPIDVelocityFromState(
-                shooterSubsystem,
-                shooterSubsystem::getFlywheelShooterStateFromPreset,
-                operatorController));
 
 
         // Vibrations
         if (TRANSFER) {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
         }
-
-        // Flywheel Vibration from the SetShooterPIDVelocityFromStateCommand
     }
 
     private void configureTransfer() {
-        JoystickAnalogButton operatorLeftTrigger  = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+        JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);
 
-        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
+      driverLeftTrigger.whenHeld(new TransferShootForward(transferSubsystem, shooterSubsystem), false);
+//        operatorLeftTrigger.whenHeld(new TransferIndexForward(transferSubsystem), false);
     }
 
     private void configureIntake() {
         JoystickButton driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        JoystickButton driverBButton = new JoystickButton(driverController, XboxController.Button.kB.value);
+        JoystickButton driverYButton = new JoystickButton(driverController, XboxController.Button.kY.value);
         JoystickButton operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         // Operator's Intake Up Button
-        operatorRightBumper.whenPressed(new IntakeOff(intakeSubsystem));
+        operatorRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
+        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
-
-        driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem)); // TODO: bad
-
-        if (TRANSFER)
-            operatorBButton.whenHeld(
+        if (TRANSFER) {
+            driverBButton.whenHeld(
                     new ParallelCommandGroup(
                             new IntakeReverse(intakeSubsystem),
                             new TransferManualReverse(transferSubsystem)
-                    )
+                    ), false
             );
+
+            driverYButton.whenHeld(new OuttakeFast(transferSubsystem, intakeSubsystem));
+        }
 
 
 
@@ -262,27 +245,14 @@ public class RobotContainer {
                 .whenActive(new HangerZeroRetract(hangerSubsystem));
     }
 
+    public void zeroSubsystems() {
+        if (SHOOTER)
+            CommandScheduler.getInstance().schedule(new ZeroHoodMotorCommand(shooterSubsystem));
+        if (HANGER)
+            CommandScheduler.getInstance().schedule(new HangerZeroRetract(hangerSubsystem));
+    }
+
     public void resetPose() {
         drivetrainSubsystem.resetOdometry(new Pose2d());
-    }
-
-    private static double deadband(double value, double deadband) {
-        return (Math.abs(value) > deadband) ? value : 0.0;
-    }
-
-    private static double modifyAxis(double value) {
-        double deadband = 0.05;
-        value = deadband(value, deadband);
-
-        if (value == 0) {
-            return 0;
-        }
-
-        SmartDashboard.setDefaultNumber("Joystick Input Exponential Power", 3);
-//
-        double exp = SmartDashboard.getNumber("Joystick Input Exponential Power", 3);
-        value = Math.copySign(Math.pow((((1 + deadband)*value) - deadband), exp), value);
-
-        return value;
     }
 }
