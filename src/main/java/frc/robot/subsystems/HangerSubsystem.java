@@ -141,8 +141,16 @@ public class HangerSubsystem extends SubsystemBase {
         return leftTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
+    public boolean isLeftHangerCurrentSpiking(double threshold){
+        return leftTalonMotor.getSupplyCurrent() >= threshold;
+    }
+
     public boolean isRightHangerCurrentSpiking(){
         return rightTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+    }
+
+    public boolean isRightHangerCurrentSpiking(double threshold){
+        return rightTalonMotor.getSupplyCurrent() >= threshold;
     }
 
     public void stopLeftMotor(){
