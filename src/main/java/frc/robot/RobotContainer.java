@@ -255,7 +255,10 @@ public class RobotContainer {
         JoystickButton operatorRB= new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
-        operatorAButton.whenHeld(new HangerRetractForHang(hangerSubsystem), false);
+        operatorAButton.whenHeld(
+                (new HangerZeroRetract(hangerSubsystem))
+                .andThen(new HangerRetractForHang(hangerSubsystem))
+                , false);
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
 
         if (INTAKE) {
