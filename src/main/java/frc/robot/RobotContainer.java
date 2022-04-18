@@ -252,7 +252,7 @@ public class RobotContainer {
         JoystickButton operatorAButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
         JoystickButton operatorXButton = new JoystickButton(operatorController, XboxController.Button.kX.value);
         JoystickButton operatorYButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
-        JoystickButton operatorRB= new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+        JoystickButton operatorRB = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
         operatorAButton.whenHeld(
