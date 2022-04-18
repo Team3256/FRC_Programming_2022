@@ -256,7 +256,7 @@ public class RobotContainer {
 
         operatorXButton.whenHeld(new HangerZeroRetract(hangerSubsystem), false);
         operatorAButton.whenHeld(
-                (new HangerZeroRetract(hangerSubsystem))
+                (new HangerSyncOnBar(hangerSubsystem))
                 .andThen(new HangerRetractForHang(hangerSubsystem))
                 , false);
         operatorYButton.whenHeld(new HangerExtend(hangerSubsystem), false);
