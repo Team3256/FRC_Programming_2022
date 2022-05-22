@@ -10,19 +10,13 @@ import static frc.robot.Constants.ShooterConstants.dininnoConstant2;
 
 public class DininnoShootingAlgorithm {
 
-    private double distance;
-    private Vector robotVelocity;
+    private static Vector robotVelocity;
+    private static Vector ri;
+    private static double magSn;
 
-    private Vector ri;
-    private double magSn;
-
-    public DininnoShootingAlgorithm(double distance, double robotXVelocity, double robotYVelocity){
-        this.distance = distance;
-        robotVelocity = new Vector(robotXVelocity, robotYVelocity);
-    }
-
-    public void dininnoAlgorithm() {
+    public static void dininnoAlgorithm(double distance, double robotXVelocity, double robotYVelocity) {
         double ti = t0;
+        robotVelocity = new Vector(robotXVelocity, robotYVelocity);
         Vector d = new Vector(0, distance);
         double magRp = calculate(ti, robotVelocity, d);
         while (magRp > dininnoConstant * RADIUS_UPPER_HUB) {
@@ -42,7 +36,7 @@ public class DininnoShootingAlgorithm {
         }
     }
 
-    private double calculate(double time, Vector robotVelocity, Vector distance) {
+    private static double calculate(double time, Vector robotVelocity, Vector distance) {
         ri = Vector.multiply(robotVelocity, time);
         Vector sn = Vector.add(ri, distance);
         magSn = sn.magnitude();
@@ -51,11 +45,11 @@ public class DininnoShootingAlgorithm {
         return magRiPrime;
     }
 
-    public double getPredictedDistance() {
+    public static double getPredictedDistance() {
         return magSn;
     }
 
-    public double getRobotAngle(double distance) {
+    public static double getRobotAngle(double distance) {
         double alpha = Math.acos( (-Math.pow(ri.magnitude(), 2) + magSn + Math.pow(distance, 2)) / (2 * magSn * distance) );
         return alpha;
     }
