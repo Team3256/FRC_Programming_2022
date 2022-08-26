@@ -3,12 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,6 +22,7 @@ import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.Constants;
 
+import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
@@ -51,11 +54,19 @@ public class SwerveDrive extends SubsystemBase {
     private Pose2d hubRelativeVelocity = new Pose2d();
     private final Field2d field = new Field2d();
     private double last_timestamp = Timer.getFPGATimestamp();
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getGyroscopeRotation(), pose);
+    private SwerveDrivePoseEstimator poseEstimator;
+
     private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
+
+        poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.012, 0.012, 0.01), // Current state X, Y, theta.
+                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.11, 0.11, 0.05) // Vision stdevs X, Y, and theta.
+        );
+//            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 Mk4SwerveModuleHelper.GearRatio.L2,
@@ -96,7 +107,7 @@ public class SwerveDrive extends SubsystemBase {
         resetOdometry(new Pose2d());
         logger.info("zeroed gyroscope");
     }
-    
+
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }
@@ -106,7 +117,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(pose, getGyroscopeRotation());
+        poseEstimator.resetPosition(pose, getGyroscopeRotation());
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
@@ -117,7 +128,35 @@ public class SwerveDrive extends SubsystemBase {
 
     }
 
-    public Pose2d getPose() { return odometry.getPoseMeters();}
+    public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
+
+
+    /**
+     * @param distanceToTarget Distance to target in meters
+     * @param thetaTargetOffset Limelight angle error in degrees
+     */
+    public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
+        Pose2d currentPose = getPose(); // TODO: Add values for Limelight interpolation
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
+
+        double r = distanceToTarget;
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
+
+        Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
+        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
+
+        if (
+                Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
+                Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
+        ){
+            // only update position if measurement is not obviously wrong
+            this.logger.info("Updating Pose Based off vision");
+            poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+        } else {
+            this.logger.info("Not Updating Pose Based off vision");
+        }
+    }
 
     public Pose2d getVelocity() { return hubRelativeVelocity; }
 
@@ -174,7 +213,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setTrajectory(Trajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
-    }
+    } // only used for debug on Glass, not for following trajectories
 
     public void outputToDashboard() {
 
@@ -200,7 +239,6 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
-        double dt = timestamp - last_timestamp;
         last_timestamp = timestamp;
 
         Rotation2d gyroAngle = getGyroscopeRotation();
@@ -210,8 +248,12 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backLeftState = new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle()));
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
 
-        Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
-        pose = odometry.update(gyroAngle, frontRightState, backRightState,
+
+        // Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
+        // pose = odometry.update(gyroAngle, frontRightState, backRightState,
+
+        pose = poseEstimator.updateWithTime(timestamp, gyroAngle, frontRightState, backRightState,
+
                 frontLeftState, backLeftState);
         pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
 

@@ -11,10 +11,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.helper.auto.SwerveDriveController;
 import frc.robot.subsystems.SwerveDrive;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
