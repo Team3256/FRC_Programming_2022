@@ -11,10 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.hardware.MuxedColorSensor;
+import frc.robot.hardware.BallColorSensor;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.commands.transfer.TransferIndexForward;
@@ -26,13 +25,12 @@ import frc.robot.helper.logging.RobotLogger;
 
 import java.util.LinkedList;
 
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
-import static frc.robot.Constants.IDConstants;
 
 import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
 import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
-import static frc.robot.Constants.TransferConstants;
 import static frc.robot.Constants.TransferConstants.*;
 
 public class TransferSubsystem extends SubsystemBase {
@@ -42,6 +40,8 @@ public class TransferSubsystem extends SubsystemBase {
     private final DigitalInput transferStartIRSensor;
     private final DigitalInput transferStopIRSensor;
     private final DigitalInput transferEndIRSensor;
+    private BallColorSensor ballColorSensor;
+
 
     // Counts how many times what color is being detected
     // To avoid single bad reading skewing data
@@ -53,6 +53,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     private boolean isDetectingBallColor = false;
     private boolean isReversed = false;
+    private boolean isShooting = false;
 
     DriverStation.Alliance alliance;
 
@@ -91,8 +92,18 @@ public class TransferSubsystem extends SubsystemBase {
             addBallToIndex(DriverStation.getAlliance() == DriverStation.Alliance.Blue ? BallColor.BLUE : BallColor.RED);
 
         transferIndexSetup();
+        ballColorSensor = BallColorSensor.getInstance();
+
         logger.info("Transfer Initialized");
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
+    }
+
+    public boolean isShooting() {
+        return this.isShooting;
+    }
+
+    public void setShooting(boolean shoot) {
+        this.isShooting = shoot;
     }
 
     public void forward(){
@@ -111,10 +122,15 @@ public class TransferSubsystem extends SubsystemBase {
         return currentBallCount;
     }
 
-
     public void manualReverse(){
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
+        logger.info("Transfer Manually Reversed");
+    }
+
+    public void outtake(){
+        isReversed = true;
+        transferMotor.set(TalonFXControlMode.PercentOutput, OUTTAKE_REVERSE_SPEED);
         logger.info("Transfer Manually Reversed");
     }
 
@@ -159,8 +175,19 @@ public class TransferSubsystem extends SubsystemBase {
 
         // Starts Index / Counting Process when First Detecting Ball
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
-                .whenActive(new TransferIndexForward(this))
-                .whenInactive(new TransferOff(this));
+                .whenActive(
+                        new ParallelRaceGroup(
+                                new WaitCommand(0.50),
+                                new TransferIndexForward(this)
+                        )
+                )
+                .whenActive(new InstantCommand(this::ballIndexStart))
+                .whenInactive(
+                        new ParallelCommandGroup(
+                                new TransferOff(this),
+                                new InstantCommand(this::ballIndexEnd)
+                        )
+                );
 
        /* new Trigger(this::isTransferStartIRBroken).and(new Trigger(() -> this.currentBallCount == 1))
                 .whenInactive(new TransferOff(this)
@@ -171,39 +198,24 @@ public class TransferSubsystem extends SubsystemBase {
                 .whenInactive(new InstantCommand(this::removeShotBallFromIndex));
 
         // When Reversed, Subtract Balls that leave
-        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()-> isReversed))
+        new Trigger(this::isTransferStartIRBroken).and(new Trigger(()-> isReversed && !ballColorIndex.isEmpty()))
                 .whenActive(new InstantCommand(this::removeBallEjectedOutOfIntake));
     }
 
     private void ballIndexStart(){
-
-        forward();
+//        forward();
         logger.info("Ball Count Start: "+currentBallCount);
         redColorCountVote = 0;
         blueColorCountVote = 0;
+        this.isDetectingBallColor = true;
 
         if(isFull()){
             logger.info("Indexing while Transfer is full!");
         }
     }
 
-    /**
-     * Runs when Ball is between Transfer Start + Stop sensors to detect ball color
-     */
-    private void ballColorSamplingPeriodic() {
-        double proximity = MuxedColorSensor.getInstance().getBallSensorProximity();
-
-        if (proximity >= MIN_BALL_COLOR_PROXIMITY){
-            BallColor ballColor = MuxedColorSensor.getInstance().ballSensorDetection();
-            if (ballColor == BallColor.BLUE)
-                blueColorCountVote++;
-            else if (ballColor == BallColor.RED)
-                redColorCountVote++;
-        }
-    }
-
     private void ballIndexEnd(){
-        off();
+//        off();
         isDetectingBallColor = false;
 
         currentBallCount++;
@@ -225,17 +237,40 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Ball Count End: "+ currentBallCount);
     }
 
+    /**
+     * Runs when Ball is between Transfer Start + Stop sensors to detect ball color
+     */
+    private void ballColorSamplingPeriodic() {
+        double proximity = ballColorSensor.getBallSensorProximity();
+        SmartDashboard.putNumber("Proximity for da BALLS", proximity);
+        SmartDashboard.putBoolean("Is detected da BALLS", isDetectingBallColor);
+
+        SmartDashboard.putNumber("Red Ball Color Vote", redColorCountVote);
+        SmartDashboard.putNumber("Blue Ball Color Vote", blueColorCountVote);
+
+
+        if (proximity >= MIN_BALL_COLOR_PROXIMITY){
+            BallColor ballColor = ballColorSensor.ballSensorDetection();
+            if (ballColor == BallColor.BLUE)
+                blueColorCountVote++;
+            else if (ballColor == BallColor.RED)
+                redColorCountVote++;
+        }
+    }
+
     private void addBallToIndex(BallColor ballColor){
         logger.info("Ball Indexed Into Transfer");
 
         if (BALL_COLOR_SENSOR) {
             if (ballColor == BallColor.RED)
                 currRedCount++;
+                ballColorIndex.addFirst(ballColor);
             if (ballColor == BallColor.RED && alliance == DriverStation.Alliance.Blue)
                 wrongBallColorDetected(ballColor);
 
             if (ballColor == BallColor.BLUE)
                 currBlueCount++;
+                ballColorIndex.addFirst(ballColor);
             if (ballColor == BallColor.BLUE && alliance == DriverStation.Alliance.Red)
                 wrongBallColorDetected(ballColor);
 
@@ -243,8 +278,6 @@ public class TransferSubsystem extends SubsystemBase {
             // Keep 2nd Ball in 2nd Place, if there is one
             if (!ballColorIndex.isEmpty() && ballColorIndex.get(0) == BallColor.NONE) {
                 ballColorIndex.set(0, ballColor);
-            } else {
-                ballColorIndex.addFirst(ballColor);
             }
 
             // Remove extra NONEs
@@ -267,16 +300,18 @@ public class TransferSubsystem extends SubsystemBase {
             logger.warning("No Ball At end of index!");
         }
 
-        if (ballColorIndex.getFirst() == BallColor.BLUE)
-            currBlueCount--;
-        else currRedCount--;
+        if (!ballColorIndex.isEmpty()) {
+            if (ballColorIndex.getFirst() == BallColor.BLUE)
+                currBlueCount--;
+            else currRedCount--;
 
-        if (BALL_COLOR_SENSOR) {
-            if (ballColorIndex.getLast() == BallColor.NONE)
-                logger.warning("No Ball Color At end of index!");
-            ballColorIndex.removeLast();
-            ballColorIndex.addFirst(BallColor.NONE);
-            updateBallLEDPattern();
+            if (BALL_COLOR_SENSOR) {
+                if (ballColorIndex.getLast() == BallColor.NONE)
+                    logger.warning("No Ball Color At end of index!");
+                ballColorIndex.removeLast();
+                ballColorIndex.addFirst(BallColor.NONE);
+                updateBallLEDPattern();
+            }
         }
     }
 
@@ -285,11 +320,11 @@ public class TransferSubsystem extends SubsystemBase {
 
         currentBallCount--;
 
-        if (BALL_COLOR_SENSOR) {
+        if (BALL_COLOR_SENSOR && !ballColorIndex.isEmpty()) {
             if (ballColorIndex.get(0) == BallColor.NONE) {
                 // Only Ball is Indexed 2nd, Removes the NONE and the Ball
                 ballColorIndex.remove(0);
-                ballColorIndex.remove(1);
+//                ballColorIndex.remove(1);
             } else {
                 ballColorIndex.removeFirst();
             }
@@ -317,6 +352,12 @@ public class TransferSubsystem extends SubsystemBase {
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
 
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
-
+        if (DEBUG) {
+            SmartDashboard.putNumber("Ball Count", getCurrentBallCount());
+            if (!ballColorIndex.isEmpty()) {
+                SmartDashboard.putString("First Ball Color", ballColorIndex.getFirst().toString());
+                SmartDashboard.putString("Last Ball Color", ballColorIndex.getLast().toString());
+            }
+        }
     }
 }

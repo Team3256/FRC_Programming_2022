@@ -15,7 +15,7 @@ public class SetShooterPreset extends CommandBase {
 
     @Override
     public void initialize() {
-        shooterSubsystem.setShooterLocationPreset(preset);
+        // shooterSubsystem.setShooterLocationPreset(preset);
     }
 
     @Override
