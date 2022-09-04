@@ -39,23 +39,24 @@ public class TransferShootForward extends CommandBase {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Ready to Shoot", shooterSubsystem.isAtSetPoint());
-        if (shooterSubsystem.isAtSetPoint() || override.getAsBoolean()) {
-            if (override.getAsBoolean() && shooterSubsystem.isAtSetPoint()) {
-                logger.warning("Overriding Shooting because of timeout override");
-            }
+        // if (shooterSubsystem.isAtSetPoint() || override.getAsBoolean()) {
+        //     if (override.getAsBoolean() && shooterSubsystem.isAtSetPoint()) {
+        //         logger.warning("Overriding Shooting because of timeout override");
+        //     }
 //            if (!ready) lastTimeReady = Timer.getFPGATimestamp();
 //            if (Timer.getFPGATimestamp() - lastTimeReady >= 0.15 && ready)
-                transferSubsystem.forwardShoot();
+        transferSubsystem.forwardShoot();
 //            ready = true;
-        } else {
-//            ready = false;
-            transferSubsystem.off();
-        }
+//         } else {
+// //            ready = false;
+//             transferSubsystem.off();
+//         }
     }
 
     @Override
     public void initialize() {
         transferSubsystem.setShooting(true);
+        transferSubsystem.setCoast(true);
         lastTimeReady = Timer.getFPGATimestamp();
     }
 
@@ -63,6 +64,7 @@ public class TransferShootForward extends CommandBase {
     public void end(boolean interrupted) {
         transferSubsystem.off();
         transferSubsystem.setShooting(false);
+        transferSubsystem.setCoast(false);
     }
 
     // Returns true when the command should end.

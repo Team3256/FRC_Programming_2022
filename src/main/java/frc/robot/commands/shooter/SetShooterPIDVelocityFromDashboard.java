@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.WaitAndVibrateCommand;
+import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
@@ -42,6 +43,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     public void execute() {
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
+        SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
         flywheelSubsystem.setTargetVelocity(velocity);
 
         double pidOutput = 0;
@@ -64,9 +66,6 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
         flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         flywheelSubsystem.setHoodAngle(hoodAngle);
-
-
-
     }
 
     @Override

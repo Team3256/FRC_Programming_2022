@@ -67,9 +67,10 @@ public class TransferSubsystem extends SubsystemBase {
 
     public TransferSubsystem() {
         TalonConfiguration talonConfiguration = new TalonConfiguration(
-                new TalonConfiguration.TalonFXPIDFConfig(),
+                new TalonConfiguration.TalonFXPIDFConfig(0.039, 0, 0, 0.070),
                 InvertType.InvertMotorOutput,
-                NeutralMode.Brake);
+                NeutralMode.Brake
+        );
 
         transferMotor = TalonFXFactory.createTalonFX(IDConstants.TRANSFER_MOTOR_ID, talonConfiguration, MANI_CAN_BUS);
       
@@ -98,6 +99,14 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
+    public void setCoast(boolean coast) {
+        if (coast) {
+            transferMotor.setNeutralMode(NeutralMode.Coast);
+        } else {
+            transferMotor.setNeutralMode(NeutralMode.Brake);
+        }
+    }
+
     public boolean isShooting() {
         return this.isShooting;
     }
@@ -114,7 +123,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     public void forwardShoot(){
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED);
+        transferMotor.set(TalonFXControlMode.Velocity, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED);
         logger.info("Transfer Shooting Mode On");
     }
 
@@ -350,9 +359,9 @@ public class TransferSubsystem extends SubsystemBase {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
-
         NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
         if (DEBUG) {
+            SmartDashboard.putNumber("Transfer Speed", transferMotor.getSelectedSensorVelocity(0));
             SmartDashboard.putNumber("Ball Count", getCurrentBallCount());
             if (!ballColorIndex.isEmpty()) {
                 SmartDashboard.putString("First Ball Color", ballColorIndex.getFirst().toString());

@@ -42,7 +42,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
-//        Limelight.enable();
+        Limelight.enable();
     }
 
     @Override
@@ -51,6 +51,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         if(!shooterSubsystem.isShootingAllBalls()){
             currentDistance = Limelight.getRawDistanceToTarget();
         }
+
 
         //if the current ball count > 0 && tranfer forward is on
         if (!isShooting.getAsBoolean() || targetVelocity == 0) { // dont update when shooting because limelight gets blocked by shooting ball

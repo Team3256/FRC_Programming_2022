@@ -35,8 +35,8 @@ import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = false;
-    public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
+    public static final boolean DEBUG = true;
+    public static final boolean LOG_DEBUG_TO_CONSOLE = true;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
@@ -47,11 +47,11 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = true;
+        public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = true;
+        public static final boolean DRIVETRAIN = false;
 
-        public static final boolean BALL_COLOR_SENSOR = true;
+        public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
 
         public static final boolean IR_SENSORS = true;
@@ -76,14 +76,14 @@ public final class Constants {
     }
 
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 24.5;
-        public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 43;
+        public static final double MOUNTING_HEIGHT_INCHES = 34.00138913;
+        public static final double TARGET_HEIGHT_INCHES = 107;
+        public static final double MOUNTING_ANGLE_DEG = 45.8;
     }
 
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
-        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 0.60;
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 3000; // Not in percent
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.20; // In Percent -1.0 - 0.0
         public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 

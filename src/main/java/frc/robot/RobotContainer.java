@@ -23,6 +23,7 @@ import frc.robot.commands.hanger.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
+import frc.robot.commands.shooter.SetShooterPIDVelocityFromDashboard;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import frc.robot.commands.transfer.OuttakeFast;
@@ -54,8 +55,8 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    private ShooterSubsystem shooterSubsystem = null;
-    private TransferSubsystem transferSubsystem = null;
+    public ShooterSubsystem shooterSubsystem = null;
+    public TransferSubsystem transferSubsystem = null;
 
     public HangerSubsystem hangerSubsystem = null;
 
@@ -180,21 +181,21 @@ public class RobotContainer {
                 autoAlign
             );
 
-            driverLeftBumper.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
-                    new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
-            );
-
-            driverLeftBumper.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
-                    new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
-            );
-
-            operatorLeftTrigger.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
-                    new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
-            );
-
-            operatorLeftTrigger.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
-                    new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
-            );
+            // driverLeftBumper.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
+            //         new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
+            // );
+            //
+            // driverLeftBumper.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
+            //         new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
+            // );
+            //
+            // operatorLeftTrigger.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
+            //         new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
+            // );
+            //
+            // operatorLeftTrigger.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
+            //         new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
+            // );
         }
 
         //Any Significant Movement in driver's X interrupt auto align
@@ -206,12 +207,14 @@ public class RobotContainer {
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
         DPadButton dPadLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
         DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
+        Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        
+        driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
 
-        dPadRight.whenActive(new InstantCommand(() -> usingInterpolation = true));
-        dPadLeft.whenActive(new InstantCommand(() -> usingInterpolation = false));
+        // dPadRight.whenActive(new InstantCommand(() -> usingInterpolation = true));
+        // dPadLeft.whenActive(new InstantCommand(() -> usingInterpolation = false));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
-
 
         // Vibrations
         if (TRANSFER) {
@@ -247,9 +250,6 @@ public class RobotContainer {
 
             driverYButton.whenHeld(new OuttakeFast(transferSubsystem, intakeSubsystem));
         }
-
-
-
     }
 
     private void configureHanger() {
