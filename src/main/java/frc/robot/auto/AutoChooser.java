@@ -30,15 +30,34 @@ public class AutoChooser {
 
             // path planner dot is the shooter
             if (flywheel != null) {
-                Command oneBallTaxi = Paths.get1BallTaxi();
+                Command oneBallTaxi = new WaitCommand(8).andThen(Paths.get1BallTaxi());
                 autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
                 if (intake != null && transfer != null) {
+
+                    Command oneBallPicked = Paths.getPleasePickUsOneBall();
+                    autoChooser.addOption("JUST ONE BALL", oneBallPicked);
+
+                    Command oneBallPickedHanger = Paths.getPleasePickUsHanger();
+                    autoChooser.addOption("HANGER DEFENSE", oneBallPickedHanger);
+
+                    Command oneBallPickedFender = Paths.getPleasePickUsFender();
+                    autoChooser.addOption("FENDER DEFENSE", oneBallPickedFender);
+
+                    Command oneBallTarmacFar1BallSide = Paths.get1BallOuttakeFarTarmac1BallSide();
+                    autoChooser.addOption("1 Ball Outtake | Start Far Tarmac | 1 Ball Side", oneBallTarmacFar1BallSide);
+
+                    Command cool = Paths.getCoolAuto();
+                    autoChooser.addOption("COOL AUTO RUN THIS", cool);
+
                     Command twoBallTarmacMid2BallSide = Paths.get2BallMidTarmac2BallSide();
                     autoChooser.addOption("2 Ball Knock Red | Start Mid Tarmac | 2 Ball Side", twoBallTarmacMid2BallSide);
 
                     Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
                     autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
+
+                    Command twoBallDefenseMidTarmac1BallSide = Paths.get2BallDefenseMidTarmac1BallSide();
+                    autoChooser.addOption("2 Ball Outtake | Start Mid Tarmac | 1 Ball Side", twoBallDefenseMidTarmac1BallSide);
 
                     Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
                     autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);

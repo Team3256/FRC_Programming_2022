@@ -116,8 +116,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the full reached intended distance
      */
     public boolean isFullPositionReached() {
-        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, 300) &&
-                isWithinRange(getRightPosition(), EXTEND_DISTANCE, 300);
+        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
@@ -125,8 +125,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the partial reached intended distance
      */
     public boolean isPartialPositionReached() {
-        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, 100) &&
-                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, 100);
+        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
@@ -141,8 +141,16 @@ public class HangerSubsystem extends SubsystemBase {
         return leftTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
+    public boolean isLeftHangerCurrentSpiking(double threshold){
+        return leftTalonMotor.getSupplyCurrent() >= threshold;
+    }
+
     public boolean isRightHangerCurrentSpiking(){
         return rightTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+    }
+
+    public boolean isRightHangerCurrentSpiking(double threshold){
+        return rightTalonMotor.getSupplyCurrent() >= threshold;
     }
 
     public void stopLeftMotor(){

@@ -36,7 +36,7 @@ import static java.util.Map.entry;
 public final class Constants {
 
     public static final boolean DEBUG = true;
-    public static final boolean LOG_DEBUG_TO_CONSOLE = false;  // Requires DEBUG to be true
+    public static final boolean LOG_DEBUG_TO_CONSOLE = true;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
 
@@ -49,7 +49,7 @@ public final class Constants {
 
         public static final boolean HANGER = false;
 
-        public static final boolean DRIVETRAIN = true;
+        public static final boolean DRIVETRAIN = false;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
@@ -76,28 +76,33 @@ public final class Constants {
     }
 
     public static class LimelightConstants {
-        public static final double MOUNTING_HEIGHT_INCHES = 24.5;
-        public static final double TARGET_HEIGHT_INCHES = 98;
-        public static final double MOUNTING_ANGLE_DEG = 43;
+        public static final double MOUNTING_HEIGHT_INCHES = 34.00138913;
+        public static final double TARGET_HEIGHT_INCHES = 107;
+        public static final double MOUNTING_ANGLE_DEG = 45.8;
     }
 
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
-        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 0.5;
-        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.35; // In Percent -1.0 - 0.0
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 3000; // Not in percent
+        public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.20; // In Percent -1.0 - 0.0
+        public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 
         public static final int MAX_BALL_COUNT = 2;
         public static final int STARTING_BALL_COUNT = 1;
 
-        public static final int MIN_BALL_COLOR_PROXIMITY = 1500; // Raw Proximity value 0 - 2047 (0 being far away)
+        public static final int MIN_BALL_COLOR_PROXIMITY = 1000; // Raw Proximity value 0 - 2047 (0 being far away)
 
-        public static final Color RED_BALL_COLOR = new Color(1, 0, 0); // TODO: Set to Measured Ball Color
+        public static final Color RED_BALL_COLOR = new Color(0.54931640625, 0.33935546875, 0.112);
+        public static final Color BLUE_BALL_COLOR = new Color(0.142, 0.404296875, 0.454345703125);
 
-        public static final Color BLUE_BALL_COLOR = new Color(0, 0, 1); // TODO: Set to Measured Ball Color
+        public static final double MAX_BALL_COLOR_DEVIATION = 0.15;
 
-        public static final double MAX_BALL_COLOR_DEVIATION = 0.01;
+        public static final double transfer_kP = 0.039;
+        public static final double transfer_kD = 0;
+        public static final double transfer_kI = 0;
+        public static final double transfer_kF = 0.07;
 
-    }
+}
 
     public static class SwerveConstants {
         public static final boolean INVERT_TURN = true;
@@ -105,9 +110,9 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACK_METERS = 0.4445;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
-        public static final double X_ACCEL_RATE_LIMIT = 10;
+        public static final double X_ACCEL_RATE_LIMIT = 15;
         public static final double X_DECEL_RATE_LIMIT = 10;
-        public static final double Y_ACCEL_RATE_LIMIT = 10;
+        public static final double Y_ACCEL_RATE_LIMIT = 15;
         public static final double Y_DECEL_RATE_LIMIT = 10;
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
@@ -116,7 +121,7 @@ public final class Constants {
         public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(true, 80,80,0); // in Amps, limits amount of current drawn to brake
 
 
-        // All in Degrees
+        // All in radians pretty sure
         public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.977361;
         public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 0.846566;
         public static final double BACK_LEFT_MODULE_STEER_OFFSET = 3.166089;
@@ -166,6 +171,7 @@ public final class Constants {
     public static class AutoConstants {
         public static final boolean AUTO_DEBUG = false;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
+        public static final double TRAJECTORY_DURATION_FACTOR =1.11;
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 13;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
@@ -181,9 +187,9 @@ public final class Constants {
 
         public static double TRANSLATION_FF = 0.3;
 
-        public static double P_THETA_CONTROLLER = 7.5;
+        public static double P_THETA_CONTROLLER = 5.4;
         public static double I_THETA_CONTROLLER = 0.02;
-        public static double D_THETA_CONTROLLER = 1.2;
+        public static double D_THETA_CONTROLLER = 1.5;
     }
 
     public static class IDConstants {
@@ -330,11 +336,12 @@ public final class Constants {
 
         public static final double EXTEND_DISTANCE = 126391; // in Sensor units
         public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double RANGE_THRESHOLD = 50000.0;
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
         public static final double HANGER_ZEROING_PERCENT_SPEED = 0.25;
 
-        public static final double HANGER_RETRACT_PERCENT_SPEED = 0.6;
+        public static final double HANGER_RETRACT_PERCENT_SPEED = 1;
 
         public static final double CURRENT_THRESHOLD = 16.0; //in Amps
 
@@ -351,7 +358,8 @@ public final class Constants {
 
     public static class IntakeConstants {
         public static final double INTAKE_FORWARD_SPEED = 1; // In Percent 0.0 - 1.0
-        public static final double INTAKE_BACKWARD_SPEED = -0.5; // In Percent -1.0 - 0.0
+        public static final double INTAKE_BACKWARD_SPEED = -0.25; // In Percent -1.0 - 0.0
+        public static final double INTAKE_OUTTAKE_SPEED = -0.7;
     }
 
     public static class ShooterConstants {
@@ -391,9 +399,23 @@ public final class Constants {
                 new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
         ); // TODO: Create all training data
 
-        public static final List<TrainingDataPoint> SIMPLE_CALIB_TRAINING = Arrays.asList(
-                new TrainingDataPoint(0, 0, 0) //TODO: SET THIS
-        );
+        public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
+                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
+//                    new TrainingDataPoint(60.40864, 000000, 2470),
+//                    new TrainingDataPoint(75.33697, 000000, 2450),
+                    new TrainingDataPoint(92.11719, 070000, 2375),
+                    new TrainingDataPoint(107.1820, 120000, 2420),
+                    new TrainingDataPoint(114.4050, 120000, 2460),
+                    new TrainingDataPoint(122.4000, 120000, 2490),
+                    new TrainingDataPoint(138.0660, 125000, 2540),
+                    new TrainingDataPoint(154.0136, 160000, 2550),
+                    new TrainingDataPoint(177.1405, 190000, 2720),
+                    new TrainingDataPoint(206.1429, 210000, 2840)
+                );
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 92.1172;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 206;
+
+        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 0.01;
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

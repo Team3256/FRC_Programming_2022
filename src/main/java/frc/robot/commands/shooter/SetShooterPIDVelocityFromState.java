@@ -29,7 +29,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
 
    public SetShooterPIDVelocityFromState(ShooterSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier, XboxController operatorController) {
         this(flywheelSubsystem, shooterStateSupplier);
-        new Button(() -> flywheelSubsystem.isAtSetPoint(shooterStateSupplier.get().rpmVelocity)).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
+        new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
    }
 
     @Override
@@ -43,6 +43,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
 
         double pidOutput;
 
+        flywheelSubsystem.setTargetVelocity(shooterStateSupplier.get().rpmVelocity);
         if (shooterStateSupplier.get().rpmVelocity < 3500){
             pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         } else {
@@ -68,4 +69,5 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
     public void end(boolean interrupted) {
         flywheelSubsystem.stopFlywheel();
     }
+
 }

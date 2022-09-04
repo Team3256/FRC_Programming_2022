@@ -6,9 +6,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.WaitAndVibrateCommand;
+import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.math.BigDecimal;
+
+import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
 
 
 public class SetShooterPIDVelocityFromDashboard extends CommandBase {
@@ -26,22 +29,22 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
     }
     public  SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
-        new Button(() -> flywheelSubsystem.isAtSetPoint(()->SmartDashboard.getNumber("Custom Velocity", 0))).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
+        flywheelSubsystem.setTargetVelocity(SmartDashboard.getNumber("Custom Velocity", 0));
+        new Button(() -> flywheelSubsystem.isAtSetPoint()).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
     }
 
     @Override
     public void initialize() {
-
         SmartDashboard.setDefaultNumber("Custom Velocity", 1200);
         SmartDashboard.setDefaultNumber("Custom Hood Angle", 0);
     }
 
     @Override
     public void execute() {
-
-
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
+        SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
+        flywheelSubsystem.setTargetVelocity(velocity);
 
         double pidOutput = 0;
         if (velocity < 3500){
@@ -51,7 +54,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         }
 
         BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+        BigDecimal KF_CONSTANT = new BigDecimal("0.0156208876");
 
         BigDecimal feedforward = (new BigDecimal(velocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
@@ -63,9 +66,6 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
         flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         flywheelSubsystem.setHoodAngle(hoodAngle);
-
-        SmartDashboard.putNumber("Flywheel Output",clampedPositiveFinalMotorOutput);
-
     }
 
     @Override

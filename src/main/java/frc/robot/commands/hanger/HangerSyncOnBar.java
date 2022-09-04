@@ -5,7 +5,10 @@ import frc.robot.subsystems.HangerSubsystem;
 
 import static frc.robot.Constants.HangerConstants.CURRENT_THRESHOLD;
 
-public class HangerZeroRetract extends CommandBase {
+/*
+* Same as HangerZero but doesnt set encoders to 0, instead just syncs the motors on the bar
+ */
+public class HangerSyncOnBar extends CommandBase {
     private HangerSubsystem hanger;
 
     private double leftCurrentThreshold = CURRENT_THRESHOLD;
@@ -14,14 +17,14 @@ public class HangerZeroRetract extends CommandBase {
     private boolean leftMotorRunning = true;
     private boolean rightMotorRunning = true;
 
-    public HangerZeroRetract(HangerSubsystem hanger) {
+    public HangerSyncOnBar(HangerSubsystem hanger) {
         this.hanger = hanger;
         addRequirements(hanger);
     }
 
-    public HangerZeroRetract(HangerSubsystem hanger, double leftCurrentThrehold, double rightCurrentThreshold) {
+    public HangerSyncOnBar(HangerSubsystem hanger, double leftCurrentThreshold, double rightCurrentThreshold) {
         this.hanger = hanger;
-        this.leftCurrentThreshold = leftCurrentThrehold;
+        this.leftCurrentThreshold = leftCurrentThreshold;
         this.rightCurrentThreshold = rightCurrentThreshold;
         addRequirements(hanger);
     }
@@ -40,13 +43,11 @@ public class HangerZeroRetract extends CommandBase {
     public void execute() {
         if (leftMotorRunning && hanger.isLeftHangerCurrentSpiking(leftCurrentThreshold)){
             hanger.stopLeftMotor();
-            hanger.zeroLeftMotor();
             leftMotorRunning = false;
         }
 
         if (rightMotorRunning && hanger.isRightHangerCurrentSpiking(rightCurrentThreshold)){
             hanger.stopRightMotor();
-            hanger.zeroRightMotor();
             rightMotorRunning = false;
         }
     }
