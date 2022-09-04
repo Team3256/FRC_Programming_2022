@@ -67,7 +67,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     public TransferSubsystem() {
         TalonConfiguration talonConfiguration = new TalonConfiguration(
-                new TalonConfiguration.TalonFXPIDFConfig(0.039, 0, 0, 0.070),
+                new TalonConfiguration.TalonFXPIDFConfig(transfer_kP, transfer_kD, transfer_kI, transfer_kF),
                 InvertType.InvertMotorOutput,
                 NeutralMode.Brake
         );
