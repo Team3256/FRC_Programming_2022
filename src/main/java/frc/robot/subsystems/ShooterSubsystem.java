@@ -34,7 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
         TARMAC_VERTEX,
     }
 
-    private boolean shootingAllBalls = false;
     private double targetVelocity = 0;
     private final TalonFX masterLeftShooterMotor;
     private final TalonFX followerRightShooterMotor;
@@ -104,13 +103,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return this.targetVelocity;
     }
 
-    public boolean isShootingAllBalls() {
-        return this.shootingAllBalls;
-    }
-
-    public void setIsShootingAllBalls(boolean isShootingAllBalls){
-        this.shootingAllBalls = isShootingAllBalls;
-    }
 
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)

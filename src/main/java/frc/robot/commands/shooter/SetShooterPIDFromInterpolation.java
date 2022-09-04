@@ -48,10 +48,8 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void execute() {
         double pidOutput;
-        if(!shooterSubsystem.isShootingAllBalls()){
-            currentDistance = Limelight.getRawDistanceToTarget();
-        }
 
+        currentDistance = Limelight.getRawDistanceToTarget();
 
         //if the current ball count > 0 && tranfer forward is on
         if (!isShooting.getAsBoolean() || targetVelocity == 0) { // dont update when shooting because limelight gets blocked by shooting ball

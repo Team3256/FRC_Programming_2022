@@ -21,8 +21,6 @@ public class AutoChooser {
 
         autoChooser = new SendableChooser<>();
 
-        boolean weGotPicked = true;
-
         if (drive != null) {
             Command doNothing = new DefaultDriveCommandRobotOriented(drive);
             autoChooser.setDefaultOption("Do Nothing", doNothing);
@@ -36,16 +34,15 @@ public class AutoChooser {
                 autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
                 if (intake != null && transfer != null) {
-                    if (weGotPicked) {
-                        Command oneBallPicked = Paths.getPleasePickUsOneBall();
-                        autoChooser.addOption("Thanks 1619 & 254 | JUST ONE BALL", oneBallPicked);
 
-                        Command oneBallPickedHanger = Paths.getPleasePickUsHanger();
-                        autoChooser.addOption("Thanks 1619 & 254 | HANGER DEFENSE", oneBallPickedHanger);
+                    Command oneBallPicked = Paths.getPleasePickUsOneBall();
+                    autoChooser.addOption("JUST ONE BALL", oneBallPicked);
 
-                        Command oneBallPickedFender = Paths.getPleasePickUsFender();
-                        autoChooser.addOption("Thanks 1619 & 254 | FENDER DEFENSE", oneBallPickedFender);
-                    }
+                    Command oneBallPickedHanger = Paths.getPleasePickUsHanger();
+                    autoChooser.addOption("HANGER DEFENSE", oneBallPickedHanger);
+
+                    Command oneBallPickedFender = Paths.getPleasePickUsFender();
+                    autoChooser.addOption("FENDER DEFENSE", oneBallPickedFender);
 
                     Command oneBallTarmacFar1BallSide = Paths.get1BallOuttakeFarTarmac1BallSide();
                     autoChooser.addOption("1 Ball Outtake | Start Far Tarmac | 1 Ball Side", oneBallTarmacFar1BallSide);

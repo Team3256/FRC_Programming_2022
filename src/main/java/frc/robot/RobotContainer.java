@@ -62,9 +62,6 @@ public class RobotContainer {
 
     private final XboxController driverController = new XboxController(0);
     private final XboxController operatorController = new XboxController(1);
-
-    private boolean usingInterpolation = true;
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -135,8 +132,6 @@ public class RobotContainer {
         Button driverAButton = new JoystickButton(driverController, XboxController.Button.kA.value);
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         JoystickAnalogButton driverRightTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kRightTrigger.value);
-        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
-        operatorLeftTrigger.setThreshold(0.1);
         driverRightTrigger.setThreshold(0.1);
 
 
@@ -180,22 +175,6 @@ public class RobotContainer {
             driverLeftBumper.whenPressed(
                 autoAlign
             );
-
-            // driverLeftBumper.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
-            //         new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
-            // );
-            //
-            // driverLeftBumper.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
-            //         new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
-            // );
-            //
-            // operatorLeftTrigger.and(new Trigger(()->usingInterpolation)).whileActiveOnce(
-            //         new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
-            // );
-            //
-            // operatorLeftTrigger.and(new Trigger(()->!usingInterpolation)).whileActiveOnce(
-            //         new SetShooterPIDVelocityFromState(shooterSubsystem, ()->ALL_SHOOTER_PRESETS.get(ShooterSubsystem.ShooterLocationPreset.TARMAC_VERTEX).shooterState)
-            // );
         }
 
         //Any Significant Movement in driver's X interrupt auto align
@@ -205,14 +184,11 @@ public class RobotContainer {
 
     private void configureShooter() {
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
-        DPadButton dPadLeft = new DPadButton(operatorController, DPadButton.Direction.LEFT);
-        DPadButton dPadRight = new DPadButton(operatorController, DPadButton.Direction.RIGHT);
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        
-        driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
+        JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
+        operatorLeftTrigger.setThreshold(0.1);
 
-        // dPadRight.whenActive(new InstantCommand(() -> usingInterpolation = true));
-        // dPadLeft.whenActive(new InstantCommand(() -> usingInterpolation = false));
+        driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
@@ -220,6 +196,18 @@ public class RobotContainer {
         if (TRANSFER) {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
         }
+
+        if(LIMELIGHT) {
+
+             driverLeftBumper.whileActiveOnce(
+                     new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
+             );
+
+             operatorLeftTrigger.whileActiveOnce(
+                     new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
+             );
+        }
+
     }
 
     private void configureTransfer() {

@@ -166,6 +166,7 @@ public final class Constants {
     public static class AutoConstants {
         public static final boolean AUTO_DEBUG = false;
         public static final double COMMAND_MARKER_THRESHOLD = 0.05; // meters
+        public static final double TRAJECTORY_DURATION_FACTOR =1.11;
 
         public static double MAX_SPEED_CONTROLLER_METERS_PER_SECOND = 13;
         public static double MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED = 8;
@@ -330,6 +331,7 @@ public final class Constants {
 
         public static final double EXTEND_DISTANCE = 126391; // in Sensor units
         public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double RANGE_THRESHOLD = 50000.0;
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
         public static final double HANGER_ZEROING_PERCENT_SPEED = 0.25;

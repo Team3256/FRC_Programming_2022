@@ -19,6 +19,8 @@ import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
 import static frc.robot.Constants.AutoConstants.AUTO_DEBUG;
+import static frc.robot.Constants.AutoConstants.TRAJECTORY_DURATION_FACTOR;
+
 
 public class PPTrajectoryFollowCommand extends CommandBase {
     private static final RobotLogger logger = new RobotLogger(PPTrajectoryFollowCommand.class.getCanonicalName());
@@ -132,7 +134,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() >= trajectoryDuration * 1.11;
+        return timer.get() >= trajectoryDuration * TRAJECTORY_DURATION_FACTOR;
     } // give a little more time to be in the right place
 
     @Override

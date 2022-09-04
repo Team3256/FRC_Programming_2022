@@ -116,8 +116,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the full reached intended distance
      */
     public boolean isFullPositionReached() {
-        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, 5000) &&
-                isWithinRange(getRightPosition(), EXTEND_DISTANCE, 5000);
+        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
@@ -125,8 +125,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the partial reached intended distance
      */
     public boolean isPartialPositionReached() {
-        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, 5000) &&
-                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, 5000);
+        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
