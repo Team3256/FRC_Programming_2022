@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import io.github.oblarg.oblog.Logger;
+
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
@@ -68,6 +70,7 @@ public class RobotContainer {
     public RobotContainer() {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
+        Logger.configureLoggingAndConfig(this, false);
 
         // Initialize Active Subsystems
         if (LIMELIGHT)
@@ -98,6 +101,10 @@ public class RobotContainer {
             configureIntake();
         if (HANGER)
             configureHanger();
+    }
+
+    public void updateEntries() {
+        Logger.updateEntries();
     }
 
     public Command getAutonomousCommand() {
