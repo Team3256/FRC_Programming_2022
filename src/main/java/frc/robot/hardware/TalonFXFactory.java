@@ -25,6 +25,9 @@ public class TalonFXFactory {
         motor.configStatorCurrentLimit(config.STATOR_CURRENT_LIMIT);
         motor.configSupplyCurrentLimit(config.SUPPLY_CURRENT_LIMIT);
 
+        // 1678 voltage compesation config
+        motor.configVoltageCompSaturation(12);
+        motor.enableVoltageCompensation(true);
 
         motor.config_kP(0, config.PIDF_CONSTANTS.kP);
         motor.config_kI(0, config.PIDF_CONSTANTS.kI);

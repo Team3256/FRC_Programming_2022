@@ -60,9 +60,6 @@ public class TransferSubsystem extends SubsystemBase {
     // Linked list for FIFO queue
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
 
-    // For Tracking Ball RPM
-    public static ShooterSubsystem flywheelSubsystem;
-
     private double currentBallCount;
 
     public TransferSubsystem() {
@@ -299,9 +296,6 @@ public class TransferSubsystem extends SubsystemBase {
 
     private void removeShotBallFromIndex(){
         logger.info("Ball Leaving Transfer by Shooting");
-
-        if (flywheelSubsystem != null)
-            logger.info("Ball Leaving At RPM: " + flywheelSubsystem.getFlywheelRPM() + " rpm");
 
         currentBallCount--;
         if (currentBallCount < 0) {

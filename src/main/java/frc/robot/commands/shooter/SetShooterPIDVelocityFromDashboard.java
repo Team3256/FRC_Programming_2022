@@ -19,10 +19,10 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
-    private ShooterSubsystem flywheelSubsystem;
+    private ShooterSubsystem shooterSubsystem;
 
-    public SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem) {
-        this.flywheelSubsystem = flywheelSubsystem;
+    public SetShooterPIDVelocityFromDashboard(ShooterSubsystem shooter) {
+        this.shooterSubsystem = shooter;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
@@ -44,13 +44,13 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
         SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
-        flywheelSubsystem.setTargetVelocity(velocity);
+        shooterSubsystem.setTargetVelocity(velocity);
 
         double pidOutput = 0;
         if (velocity < 3500){
-            pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), velocity);
+            pidOutput = flywheelControllerLow.calculate(shooterSubsystem.getFlywheelRPM(), velocity);
         } else {
-            pidOutput = flywheelControllerFar.calculate(flywheelSubsystem.getFlywheelRPM(), velocity);
+            pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), velocity);
         }
 
         BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
@@ -64,12 +64,12 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
         double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
 
-        flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
-        flywheelSubsystem.setHoodAngle(hoodAngle);
+        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setHoodAngle(hoodAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
-        flywheelSubsystem.stopFlywheel();
+        shooterSubsystem.stopFlywheel();
     }
 }

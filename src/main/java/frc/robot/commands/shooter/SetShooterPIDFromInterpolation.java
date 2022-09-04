@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,10 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
     private double currentDistance = 0;
+
+    private BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
+    private BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+
 
     private ShooterSubsystem shooterSubsystem;
     private BooleanSupplier isShooting;
@@ -51,13 +56,10 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
         currentDistance = Limelight.getRawDistanceToTarget();
 
-        //if the current ball count > 0 && tranfer forward is on
-        if (!isShooting.getAsBoolean() || targetVelocity == 0) { // dont update when shooting because limelight gets blocked by shooting ball
-            targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
-            shooterSubsystem.setTargetVelocity(targetVelocity);
+        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
+        shooterSubsystem.setTargetVelocity(targetVelocity);
 
-            targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
-        }
+        targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
 
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
@@ -70,16 +72,12 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
         BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
         double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
 
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
+        // Ensure it is never negative or over 100%
+        double clampedPositiveFinalMotorOutput = MathUtil.clamp(feedForwardedPidOutput, 0, 1);
 
         shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);

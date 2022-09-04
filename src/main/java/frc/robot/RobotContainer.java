@@ -86,8 +86,9 @@ public class RobotContainer {
         // Configure Enabled Subsystems
         if (DRIVETRAIN) {
             configureDrivetrain();
-            if (getCommandChooser() != null)
-                SmartDashboard.putData(getCommandChooser());
+            SendableChooser<Command> commandChooser = getCommandChooser();
+            if (commandChooser != null)
+                SmartDashboard.putData(commandChooser);
         }
         if (SHOOTER)
             configureShooter();
@@ -113,7 +114,6 @@ public class RobotContainer {
 
     private void initializeShooter() {
         this.shooterSubsystem = new ShooterSubsystem();
-        TransferSubsystem.flywheelSubsystem = shooterSubsystem;
     }
 
     private void initializeTransfer() {
@@ -170,14 +170,14 @@ public class RobotContainer {
                 transferSubsystem::isShooting
         );
 
-        if(LIMELIGHT) {
+        if (LIMELIGHT) {
             // Left Bumper Enables Auto Align
             driverLeftBumper.whenPressed(
                 autoAlign
             );
         }
 
-        //Any Significant Movement in driver's X interrupt auto align
+        // Any Significant Movement in driver's X interrupt auto align
         new Button(()->Math.abs(driverController.getRightX()) > AUTO_AIM_BREAKOUT_TOLERANCE)
                 .cancelWhenActive(autoAlign);
     }
@@ -189,7 +189,6 @@ public class RobotContainer {
         operatorLeftTrigger.setThreshold(0.1);
 
         driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
-
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
         // Vibrations
@@ -198,7 +197,6 @@ public class RobotContainer {
         }
 
         if(LIMELIGHT) {
-
              driverLeftBumper.whileActiveOnce(
                      new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
              );

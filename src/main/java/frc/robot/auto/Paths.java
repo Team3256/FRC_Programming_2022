@@ -30,11 +30,11 @@ public class Paths {
     private static ShooterSubsystem shooterSubsystem;
     private static TransferSubsystem transferSubsystem;
 
-    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem flywheel, TransferSubsystem transfer) {
+    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem shooter, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         driveSubsystem = drive;
         intakeSubsystem = intake;
-        shooterSubsystem = flywheel;
+        shooterSubsystem = shooter;
         transferSubsystem = transfer;
     }
 
