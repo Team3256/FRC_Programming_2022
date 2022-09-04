@@ -55,8 +55,8 @@ public class RobotContainer {
     public SwerveDrive drivetrainSubsystem = null;
     private IntakeSubsystem intakeSubsystem = null;
 
-    public ShooterSubsystem shooterSubsystem = null;
-    public TransferSubsystem transferSubsystem = null;
+    private ShooterSubsystem shooterSubsystem = null;
+    private TransferSubsystem transferSubsystem = null;
 
     public HangerSubsystem hangerSubsystem = null;
 

@@ -75,8 +75,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     robotContainer.zeroSubsystems();
-    CommandScheduler.getInstance().schedule(new SetShooterPIDVelocityFromDashboard(robotContainer.shooterSubsystem));
-    CommandScheduler.getInstance().schedule(new TransferShootForward(robotContainer.transferSubsystem, robotContainer.shooterSubsystem));
   }
 
   @Override

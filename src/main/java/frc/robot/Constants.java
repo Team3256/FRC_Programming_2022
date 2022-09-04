@@ -97,6 +97,11 @@ public final class Constants {
 
         public static final double MAX_BALL_COLOR_DEVIATION = 0.15;
 
+        public static final double transfer_kP = 0.039;
+        public static final double transfer_kD = 0;
+        public static final double transfer_kI = 0;
+        public static final double transfer_kF = 0.07;
+
 }
 
     public static class SwerveConstants {
