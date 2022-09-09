@@ -57,18 +57,17 @@ public class HangerSubsystem extends SubsystemBase implements Loggable {
         rightTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
     }
 
-    public void retractLeftContinuouslyToZero(){
+    public void retractLeftContinuouslyToZero() {
         logger.info("Retracting Left Continuously for zero");
-
         leftTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractRightContinuouslyToZero(){
+    public void retractRightContinuouslyToZero() {
         logger.info("Retracting Right Continuously for zero");
         rightTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractToHang(){
+    public void retractToHang() {
         logger.info("Retracting to Hang");
         leftTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
         rightTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);

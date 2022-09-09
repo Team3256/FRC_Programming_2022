@@ -43,8 +43,6 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
 
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
-
     private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
 
@@ -104,7 +102,6 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     public double getTargetVelocity() {
         return this.targetVelocity;
     }
-
 
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
@@ -190,7 +187,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     }
 
     public double getFlywheelRPM(){
-        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
+        return ShooterSubsystem.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
     }
 
     @Override

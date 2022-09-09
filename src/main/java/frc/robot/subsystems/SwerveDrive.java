@@ -109,7 +109,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         logger.info("zeroed gyroscope");
     }
 
-    @Log
+    @Log.Gyro
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }

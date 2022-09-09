@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.BallColor;
 import frc.robot.helper.logging.RobotLogger;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 import java.util.LinkedList;
 
@@ -43,7 +45,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     private final DigitalInput transferEndIRSensor;
     private BallColorSensor ballColorSensor;
 
-
     // Counts how many times what color is being detected
     // To avoid single bad reading skewing data
     private int blueColorCountVote = 0;
@@ -52,8 +53,11 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     private int currBlueCount = 0;
     private int currRedCount = 0;
 
+    @Log
     private boolean isDetectingBallColor = false;
+    @Log
     private boolean isReversed = false;
+    @Log
     private boolean isShooting = false;
 
     DriverStation.Alliance alliance;
@@ -61,6 +65,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     // Linked list for FIFO queue
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
 
+    @Log
     private double currentBallCount;
 
     public TransferSubsystem() {
@@ -97,6 +102,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
+    @Log
     public boolean isShooting() {
         return this.isShooting;
     }
@@ -105,40 +111,41 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         this.isShooting = shoot;
     }
 
-    public void forward(){
+    public void forward() {
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.DEFAULT_TRANSFER_SPEED);
+        transferMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TRANSFER_SPEED);
         logger.info("Transfer On");
     }
 
-    public void forwardShoot(){
+    public void forwardShoot() {
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.Velocity, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED * 2048);
+        transferMotor.set(TalonFXControlMode.Velocity, SHOOT_FORWARD_TRANSFER_SPEED * 2048);
         logger.info("Transfer Shooting Mode On");
     }
 
-    public double getCurrentBallCount(){
+    public double getCurrentBallCount() {
         return currentBallCount;
     }
 
-    public void manualReverse(){
+    public void manualReverse() {
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
         logger.info("Transfer Manually Reversed");
     }
 
-    public void outtake(){
+    public void outtake() {
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, OUTTAKE_REVERSE_SPEED);
         logger.info("Transfer Manually Reversed");
     }
 
-    public void off(){
+    public void off() {
         isReversed = false;
         transferMotor.neutralOutput();
         logger.info("Transfer Off");
     }
 
+    @Log
     /**
      * @return Returns whether the IR sensor at the front of the transfer's line of sight is broken.
      */
@@ -146,6 +153,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         return !transferStartIRSensor.get();
     }
 
+    @Log.BooleanBox
     /**
      * @return Returns whether the IR sensor in the middle of the transfer's line of sight is broken,
      * which signifies when the ball should stop.
@@ -154,6 +162,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         return !transferStopIRSensor.get();
     }
 
+    @Log.BooleanBox
     /**
      * @return Returns whether the IR sensor at the end of the transfer's line of sight is broken,
      * which signifies when the ball leaves the transfer via the shooter
@@ -162,7 +171,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         return !transferEndIRSensor.get();
     }
 
-    public boolean isFull(){
+    public boolean isFull() {
         return currentBallCount >= TransferConstants.MAX_BALL_COUNT;
     }
 
@@ -345,15 +354,10 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     public void periodic() {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
-        NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
-        NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
+        // NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
+        // NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
         if (DEBUG) {
             SmartDashboard.putNumber("Transfer Speed", transferMotor.getSelectedSensorVelocity(0));
-            SmartDashboard.putNumber("Ball Count", getCurrentBallCount());
-            if (!ballColorIndex.isEmpty()) {
-                SmartDashboard.putString("First Ball Color", ballColorIndex.getFirst().toString());
-                SmartDashboard.putString("Last Ball Color", ballColorIndex.getLast().toString());
-            }
         }
     }
 }
