@@ -15,6 +15,8 @@ import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterState;
 import frc.robot.helper.shooter.TrainingDataPoint;
+import io.github.oblarg.oblog.Loggable;
+
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
@@ -26,7 +28,7 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(ShooterSubsystem.class.getCanonicalName());
 
     public enum ShooterLocationPreset {

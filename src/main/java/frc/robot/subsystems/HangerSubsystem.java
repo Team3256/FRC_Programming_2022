@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
-public class HangerSubsystem extends SubsystemBase {
+public class HangerSubsystem extends SubsystemBase implements Loggable { 
     private static final RobotLogger logger = new RobotLogger(HangerSubsystem.class.getCanonicalName());
 
     private final TalonFX leftTalonMotor;

@@ -83,7 +83,7 @@ public final class Constants {
 
     public static class TransferConstants {
         public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
-        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 3000; // Not in percent
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 1.5; // In rotations/second
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.20; // In Percent -1.0 - 0.0
         public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 

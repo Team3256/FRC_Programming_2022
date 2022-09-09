@@ -22,6 +22,7 @@ import frc.robot.commands.transfer.TransferOff;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.BallColor;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
 
 import java.util.LinkedList;
 
@@ -33,7 +34,7 @@ import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
 import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
 import static frc.robot.Constants.TransferConstants.*;
 
-public class TransferSubsystem extends SubsystemBase {
+public class TransferSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(TransferSubsystem.class.getCanonicalName());
 
     private final TalonFX transferMotor;
@@ -96,14 +97,6 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
-    public void setCoast(boolean coast) {
-        if (coast) {
-            transferMotor.setNeutralMode(NeutralMode.Coast);
-        } else {
-            transferMotor.setNeutralMode(NeutralMode.Brake);
-        }
-    }
-
     public boolean isShooting() {
         return this.isShooting;
     }
@@ -120,7 +113,7 @@ public class TransferSubsystem extends SubsystemBase {
 
     public void forwardShoot(){
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.Velocity, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED);
+        transferMotor.set(TalonFXControlMode.Velocity, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED * 2048);
         logger.info("Transfer Shooting Mode On");
     }
 

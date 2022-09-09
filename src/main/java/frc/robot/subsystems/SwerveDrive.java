@@ -20,6 +20,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
+import jdk.jfr.Label;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
@@ -27,7 +30,7 @@ import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
 
-public class SwerveDrive extends SubsystemBase {
+public class SwerveDrive extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
     private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
@@ -42,6 +45,7 @@ public class SwerveDrive extends SubsystemBase {
             // Back right
             new Translation2d(-DRIVETRAIN_TRACK_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
+
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     private final SwerveModule frontLeftModule;
@@ -53,10 +57,7 @@ public class SwerveDrive extends SubsystemBase {
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
     private Pose2d curr_velocity = new Pose2d();
     private final Field2d field = new Field2d();
-    private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDrivePoseEstimator poseEstimator;
-
-    private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
@@ -108,6 +109,7 @@ public class SwerveDrive extends SubsystemBase {
         logger.info("zeroed gyroscope");
     }
 
+    @Log
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }
@@ -151,10 +153,10 @@ public class SwerveDrive extends SubsystemBase {
                 Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
         ){
             // only update position if measurement is not obviously wrong
-            this.logger.info("Updating Pose Based off vision");
+            SwerveDrive.logger.info("Updating Pose Based off vision");
             poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
         } else {
-            this.logger.info("Not Updating Pose Based off vision");
+            SwerveDrive.logger.info("Not Updating Pose Based off vision");
         }
     }
 
@@ -239,7 +241,6 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
-        last_timestamp = timestamp;
 
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
@@ -257,33 +258,7 @@ public class SwerveDrive extends SubsystemBase {
         outputToDashboard();
     }
 
-    public void forward(double meters){
-        drive(new ChassisSpeeds(0,meters,0));
-    }
-
-    public void backward(double meters){
-        drive(new ChassisSpeeds(0,-meters,0));
-    }
-
-    public void pivotTurn(double rad){
-        drive( new ChassisSpeeds(0,0,rad));
-    }
-
-    public void fixedRightRotate(int volts){
-        frontLeftModule.set(deadzoneMotor(volts), 0);
-        backLeftModule.set(deadzoneMotor(volts), 0);
-    }
-    public void fixedLeftRotate(int volts){
-        frontRightModule.set(deadzoneMotor(volts), 0);
-        backRightModule.set(deadzoneMotor(volts), 0);
-    }
-    public void stop(){
-        drive(new ChassisSpeeds(0,0,0));
-    }
-
-
     public void debugSwerveOffsets() {
-
         SmartDashboard.putNumber("Front Left Swerve Module Standard Offset: ", frontLeftModule.getSteerAngle());
         SmartDashboard.putNumber("Front Right Swerve Module Standard Offset: ", frontRightModule.getSteerAngle());
         SmartDashboard.putNumber("Back Left Swerve Module Standard Offset: ", backLeftModule.getSteerAngle());

@@ -16,13 +16,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
 
 import java.util.logging.Logger;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(IntakeSubsystem.class.getCanonicalName());
 
     private final TalonFX intakeMotor;
