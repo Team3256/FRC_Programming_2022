@@ -47,12 +47,13 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
-        public static final boolean DRIVETRAIN = false;
+        public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
+
 
         public static final boolean IR_SENSORS = true;
     }

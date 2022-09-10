@@ -53,11 +53,11 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     private int currBlueCount = 0;
     private int currRedCount = 0;
 
-    @Log
+    @Log(name = "Is detecting ball color")
     private boolean isDetectingBallColor = false;
-    @Log
+    @Log(name = "Transfered Reveresed")
     private boolean isReversed = false;
-    @Log
+    @Log(name = "Transfer is shooting")
     private boolean isShooting = false;
 
     DriverStation.Alliance alliance;

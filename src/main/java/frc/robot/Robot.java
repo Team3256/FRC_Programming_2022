@@ -16,6 +16,7 @@ import frc.robot.commands.shooter.SetShooterPIDVelocityFromDashboard;
 import frc.robot.commands.transfer.TransferShootForward;
 import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Logger;
 
 public class Robot extends TimedRobot {
   private static final RobotLogger logger = new RobotLogger(Robot.class.getCanonicalName());
@@ -28,11 +29,13 @@ public class Robot extends TimedRobot {
     RobotLogger.init();
     robotContainer = new RobotContainer();
     SmartDashboard.putData("Auto Chooser", robotContainer.getCommandChooser());
+
+    Logger.configureLoggingAndConfig(robotContainer, false);
   }
 
   @Override
   public void robotPeriodic() {
-    robotContainer.updateEntries();
+    Logger.updateEntries();
     CommandScheduler.getInstance().run();
   }
 

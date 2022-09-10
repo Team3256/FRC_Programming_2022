@@ -1,6 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) WarriorBorgs.
 // Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// the WarriorBorgs BSD license file in the root directory of this project.
 
 package frc.robot;
 
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
-
+import io.github.oblarg.oblog.annotations.Log;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
@@ -54,12 +54,15 @@ import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
 public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
+    @Log
     public SwerveDrive drivetrainSubsystem = null;
+    @Log
     private IntakeSubsystem intakeSubsystem = null;
-
+    @Log
     private ShooterSubsystem shooterSubsystem = null;
+    @Log
     private TransferSubsystem transferSubsystem = null;
-
+    @Log
     public HangerSubsystem hangerSubsystem = null;
 
     private final XboxController driverController = new XboxController(0);
@@ -70,7 +73,6 @@ public class RobotContainer {
     public RobotContainer() {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
-        Logger.configureLoggingAndConfig(this, false);
 
         // Initialize Active Subsystems
         if (LIMELIGHT)
@@ -101,10 +103,6 @@ public class RobotContainer {
             configureIntake();
         if (HANGER)
             configureHanger();
-    }
-
-    public void updateEntries() {
-        Logger.updateEntries();
     }
 
     public Command getAutonomousCommand() {

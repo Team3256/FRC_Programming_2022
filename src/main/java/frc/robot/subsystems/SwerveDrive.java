@@ -109,7 +109,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         logger.info("zeroed gyroscope");
     }
 
-    @Log.Gyro
+    @Log.Gyro(name = "Gyro Angle")
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }
@@ -127,7 +127,6 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         chassisSpeeds.vxMetersPerSecond = adaptiveXRateLimiter.calculate(chassisSpeeds.vxMetersPerSecond);
         chassisSpeeds.vyMetersPerSecond = adaptiveYRateLimiter.calculate(chassisSpeeds.vyMetersPerSecond);
         this.chassisSpeeds = chassisSpeeds;
-
     }
 
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
@@ -218,7 +217,6 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     } // only used for debug on Glass, not for following trajectories
 
     public void outputToDashboard() {
-
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
