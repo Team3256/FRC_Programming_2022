@@ -350,6 +350,11 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
                 ")");
     }
 
+    @Log(name = "Transfer Velocity")
+    public double getTransferVelocity() {
+        return transferMotor.getSelectedSensorVelocity(0) / 2048;
+    }
+
     @Override
     public void periodic() {
         if (isDetectingBallColor)
@@ -357,7 +362,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         // NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
         // NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
         if (DEBUG) {
-            SmartDashboard.putNumber("Transfer Speed", transferMotor.getSelectedSensorVelocity(0));
         }
     }
 }

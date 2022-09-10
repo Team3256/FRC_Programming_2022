@@ -83,8 +83,8 @@ public final class Constants {
     }
 
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
-        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 1.5; // In rotations/second
+        public static final double DEFAULT_TRANSFER_SPEED = 0.25; // In Percent 0.0 - 1.0
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 2.4; // In rotations/second
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.20; // In Percent -1.0 - 0.0
         public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 
@@ -98,10 +98,10 @@ public final class Constants {
 
         public static final double MAX_BALL_COLOR_DEVIATION = 0.15;
 
-        public static final double transfer_kP = 0.039;
-        public static final double transfer_kD = 0;
+        public static final double transfer_kP = 0.0032;
+        public static final double transfer_kD = 0.0002;
         public static final double transfer_kI = 0;
-        public static final double transfer_kF = 0.07;
+        public static final double transfer_kF = 0.068;
 
 }
 
