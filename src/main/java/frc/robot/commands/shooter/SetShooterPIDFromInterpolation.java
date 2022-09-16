@@ -10,10 +10,10 @@ import frc.robot.Constants;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
-import jdk.jfr.BooleanFlag;
 
 import java.math.BigDecimal;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
@@ -28,22 +28,23 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
 
     private ShooterSubsystem shooterSubsystem;
-    private BooleanSupplier isShooting;
+    private DoubleSupplier estimatedDistance;
+    private BooleanSupplier isTargetDetected;
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting) {
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, DoubleSupplier estimatedDistance, BooleanSupplier isTargetDetected) {
         this.shooterSubsystem = flywheelSubsystem;
-        this.isShooting = isShooting;
+        this.isTargetDetected = isTargetDetected;
+        this.estimatedDistance = estimatedDistance;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting, XboxController operatorController) {
-        this(flywheelSubsystem, isShooting);
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, DoubleSupplier odomDistanceToTarget, BooleanSupplier isTargetDetected, XboxController operatorController) {
+        this(flywheelSubsystem, odomDistanceToTarget, isTargetDetected);
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
-    //shooting all balls
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
@@ -53,9 +54,13 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void execute() {
         double pidOutput;
-
-        currentDistance = Limelight.getRawDistanceToTarget();
-
+        //logic does not work right after the ir is triggered because it switches back to limelight. Maybe always switch to odom whenever the limelight is blocked --> try this now
+        if(isTargetDetected.getAsBoolean()){
+            currentDistance = Limelight.getRawDistanceToTarget();
+        }
+        else{
+            currentDistance = estimatedDistance.getAsDouble();
+        }
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
         shooterSubsystem.setTargetVelocity(targetVelocity);
 

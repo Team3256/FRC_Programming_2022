@@ -11,26 +11,27 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.helper.LED.helpers.*;
-import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import frc.robot.helper.Polynomial;
-
+import frc.robot.helper.LED.PatternGenerators.AutoAimPatternGenerator;
+import frc.robot.helper.LED.PatternGenerators.BallColorPatternGenerator;
+import frc.robot.helper.LED.PatternGenerators.DebugLEDWalkUpPatternGenerator;
+import frc.robot.helper.LED.helpers.HashMapFiller;
+import frc.robot.helper.LED.helpers.LEDColor;
+import frc.robot.helper.LED.helpers.LEDRange;
+import frc.robot.helper.LED.helpers.LEDSectionAttributes;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
 import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-
 import java.util.logging.Level;
 
-import static frc.robot.Constants.LEDConstants.LEDSectionName.*;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.AUTO_AIM;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.BALL_COLOR;
 import static java.util.Map.entry;
 
 public final class Constants {
@@ -60,6 +61,8 @@ public final class Constants {
 
     public static class FieldConstants {
         public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        public static final double UPPER_HUB_RADIUS = 0.61; // in meters
+
         // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
     }
 
