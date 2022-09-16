@@ -45,20 +45,24 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
     private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToTimeInterpolatingFunction;
 
     static {
         double[] trainDistance = new double[SHOOTER_DATA.size()];
         double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
         double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelTime = new double[SHOOTER_DATA.size()];
         for(int i = 0; i < SHOOTER_DATA.size(); i++) {
             TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
             trainDistance[i] = dataPoint.distance;
             trainFlywheelHood[i] = dataPoint.hoodAngle;
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
+            trainFlywheelTime[i] = dataPoint.time;
         }
 
         distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
         distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelTime);
     }
 
 
@@ -158,6 +162,14 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
         return (velocity <= this.targetVelocity + SET_POINT_ERROR_MARGIN*this.targetVelocity) &&
                 (velocity >= this.targetVelocity - SET_POINT_ERROR_MARGIN*this.targetVelocity);
+    }
+
+    public double getTimeFromInterpolator(double distance) {
+        if(distanceToTimeInterpolatingFunction == null){
+            logger.warning("Distance to Time Interpolation Function is NULL");
+        }
+
+        return distanceToTimeInterpolatingFunction.value(clampDistanceToInterpolation(distance));
     }
 
     public double getHoodAngleFromInterpolator(double distance) {

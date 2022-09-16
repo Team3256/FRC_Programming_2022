@@ -99,9 +99,9 @@ public final class Constants {
         public static final double MAX_BALL_COLOR_DEVIATION = 0.15;
 
         public static final double transfer_kP = 0.0032;
-        public static final double transfer_kD = 0.0002;
+        public static final double transfer_kD = 0.0000;
         public static final double transfer_kI = 0;
-        public static final double transfer_kF = 0.068;
+        public static final double transfer_kF = 0.0710;
 
 }
 
@@ -393,28 +393,19 @@ public final class Constants {
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
                 entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
                 entry(ShooterLocationPreset.TARMAC_VERTEX, new ShooterPreset(2290, 140000, 0, "Tarmac Vertex"))
-        ); // TODO: Create all shooter presets
-
-        // Velocity Training Points
-        public static final List<TrainingDataPoint> ALL_SHOOTER_CALIB_TRAINING = Arrays.asList(
-                new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
-        ); // TODO: Create all training data
+        ); 
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
-                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
-//                    new TrainingDataPoint(60.40864, 000000, 2470),
-//                    new TrainingDataPoint(75.33697, 000000, 2450),
-                    new TrainingDataPoint(92.11719, 070000, 2375),
-                    new TrainingDataPoint(107.1820, 120000, 2420),
-                    new TrainingDataPoint(114.4050, 120000, 2460),
-                    new TrainingDataPoint(122.4000, 120000, 2490),
-                    new TrainingDataPoint(138.0660, 125000, 2540),
-                    new TrainingDataPoint(154.0136, 160000, 2550),
-                    new TrainingDataPoint(177.1405, 190000, 2720),
-                    new TrainingDataPoint(206.1429, 210000, 2840)
+                // tuned 9/10
+                   new TrainingDataPoint(57.00706, 000000, 2350, 1.090000),
+                   new TrainingDataPoint(89.28630, 050000, 2370, 1.190000),
+                   new TrainingDataPoint(111.5242, 075000, 2550, 1.244000),
+                   new TrainingDataPoint(169.7674, 190000, 2800, 1.296875),
+                   new TrainingDataPoint(186.2049, 195000, 2925, 1.432000)
                 );
-        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 92.1172;
-        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 206;
+
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 57.00707;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 186.2048;
 
         public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 0.01;
     }
