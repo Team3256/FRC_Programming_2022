@@ -55,7 +55,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
 
     @Log(name = "Is detecting ball color")
     private boolean isDetectingBallColor = false;
-    @Log(name = "Transfered Reveresed")
+    @Log(name = "Transfer Reversed")
     private boolean isReversed = false;
     @Log(name = "Transfer is shooting")
     private boolean isShooting = false;
@@ -102,7 +102,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
-    @Log
     public boolean isShooting() {
         return this.isShooting;
     }
@@ -145,7 +144,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         logger.info("Transfer Off");
     }
 
-    @Log
+    @Log.BooleanBox(name = "Transfer Start IR")
     /**
      * @return Returns whether the IR sensor at the front of the transfer's line of sight is broken.
      */
@@ -153,7 +152,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         return !transferStartIRSensor.get();
     }
 
-    @Log.BooleanBox
+    @Log.BooleanBox(name = "Transfer Stop IR")
     /**
      * @return Returns whether the IR sensor in the middle of the transfer's line of sight is broken,
      * which signifies when the ball should stop.
@@ -162,7 +161,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         return !transferStopIRSensor.get();
     }
 
-    @Log.BooleanBox
+    @Log.BooleanBox(name = "Transfer End IR")
     /**
      * @return Returns whether the IR sensor at the end of the transfer's line of sight is broken,
      * which signifies when the ball leaves the transfer via the shooter
@@ -185,7 +184,7 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
                 .whenActive(
                         new ParallelRaceGroup(
-                                new WaitCommand(0.50),
+                                new WaitCommand(1), // 1 second timeout
                                 new TransferIndexForward(this)
                         )
                 )
@@ -350,6 +349,11 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
                 ")");
     }
 
+    @Log(name = "Transfer Velocity")
+    public double getTransferVelocity() {
+        return transferMotor.getSelectedSensorVelocity(0) / 2048;
+    }
+
     @Override
     public void periodic() {
         if (isDetectingBallColor)
@@ -357,7 +361,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
         // NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
         // NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
         if (DEBUG) {
-            SmartDashboard.putNumber("Transfer Speed", transferMotor.getSelectedSensorVelocity(0));
         }
     }
 }

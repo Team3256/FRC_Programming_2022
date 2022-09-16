@@ -50,8 +50,8 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00010082895");
+        BigDecimal KF_CONSTANT = new BigDecimal("0.0109208876");
 
         BigDecimal feedforward = (new BigDecimal(shooterStateSupplier.get().rpmVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 

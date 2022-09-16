@@ -35,6 +35,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.*;
 
 import java.awt.Robot;
@@ -194,6 +195,8 @@ public class RobotContainer {
         operatorLeftTrigger.setThreshold(0.1);
 
         driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
+        // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0));
+
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
         // Vibrations
