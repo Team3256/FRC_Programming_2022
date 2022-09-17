@@ -31,6 +31,7 @@ import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.FieldConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable {
@@ -145,10 +146,10 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
      */
     public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
         Pose2d currentPose = getPose(); 
-        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
 
-        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        if(theta < 0) theta += 2*Math.PI; // not sure about this
+        double theta = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+        if(theta < 0) theta += 2*Math.PI;
         Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
 
         double distanceToTarget = limelightDistanceToTarget + Constants.FieldConstants.UPPER_HUB_RADIUS;
