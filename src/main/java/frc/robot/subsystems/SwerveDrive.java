@@ -23,15 +23,12 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
-import java.util.function.DoubleSupplier;
-
+import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
 import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
 import static frc.robot.Constants.SwerveConstants.*;
-import static frc.robot.Constants.FieldConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable {
@@ -141,7 +138,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     }
 
     /**
-     * @param distanceToTarget Distance to target in meters
+     * @param limelightDistanceToTarget Distance to target in meters
      * @param thetaTargetOffset Limelight angle error in degrees
      */
     public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
