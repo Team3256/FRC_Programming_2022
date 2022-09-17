@@ -52,7 +52,7 @@ public class ShootingWhileMovingHelper {
 
     public ShootingWhileMovingState calculate(double alphaGuess) {
         int iterations = 0;
-        double alpha = 0.1; // radians
+        double alpha = alphaGuess; // radians
         double error = Double.POSITIVE_INFINITY;
         double predictedDistanceToHub = 0;
 
