@@ -10,7 +10,6 @@ import frc.robot.helper.shooter.ShootingWhileMovingHelper;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 
-import java.math.BigDecimal;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveConstants.*;
@@ -25,6 +24,7 @@ public class SetShooterWhileMoving extends CommandBase {
     private double targetHoodAngle = 0;
     private double targetAngle = 0;
     private double alpha = 0.1;
+    private double pidOutput = 0;
 
     private ShooterSubsystem shooterSubsystem;
     private SwerveDrive swerveDrive;
@@ -64,18 +64,18 @@ public class SetShooterWhileMoving extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput;
-
         ShootingWhileMovingHelper.ShootingWhileMovingState state = this.shootingWhileMovingHelper.calculate(alpha);
 
         alpha = state.alpha;
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(state.distance);
-        shooterSubsystem.setTargetVelocity(targetVelocity);
         targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(state.distance);
 
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
             SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+            SmartDashboard.putNumber("Shooting while moving: Alpha", state.alpha);
+            SmartDashboard.putNumber("Shooting while moving: Distance", state.distance);
+            SmartDashboard.putBoolean("Shooting while moving: Ready", state.readyToShoot);
         }
 
         if (targetVelocity < 3500){

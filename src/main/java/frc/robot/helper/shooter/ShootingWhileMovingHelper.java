@@ -28,22 +28,8 @@ public class ShootingWhileMovingHelper {
     private DoubleSupplier velocityXSupplier;
     private DoubleSupplier velocityYSupplier;
 
-    private static PolynomialSplineFunction distanceToTime;
-
     private int maxIterations = 50;
     private final double kP = 0.05;
-
-    static {
-        double[] trainDistance = new double[SHOOTER_DATA.size()];
-        double[] trainTime = new double[SHOOTER_DATA.size()];
-        for (int i = 0; i < SHOOTER_DATA.size(); i++) {
-            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
-            trainDistance[i] = dataPoint.distance;
-            trainTime[i] = dataPoint.time;
-        }
-
-        distanceToTime = new SplineInterpolator().interpolate(trainDistance, trainTime);
-    }
 
     public ShootingWhileMovingHelper(ShooterSubsystem shooterSubsystem, DoubleSupplier distance, DoubleSupplier vX, DoubleSupplier vY) {
         this.shooterSubsystem = shooterSubsystem;
@@ -76,7 +62,7 @@ public class ShootingWhileMovingHelper {
 
             //finding time to get to predicted dn
             predictedDistanceToHub = Math.sqrt(Math.pow(xAim, 2) + Math.pow(yAim, 2));
-            double predictedTimeToHub = shooterSubsystem.getFlywheelRPMFromInterpolator(predictedDistanceToHub);
+            double predictedTimeToHub = shooterSubsystem.getTimeFromInterpolator(predictedDistanceToHub);
 
             error = calculateError(predictedTimeToHub, xAim, yAim);
             alpha = calculateNextAlpha(error, alpha);
@@ -95,8 +81,17 @@ public class ShootingWhileMovingHelper {
 
     private double calculateError(double time, double x, double y) {
         return Math.copySign(
-                    Math.sqrt(Math.pow((time * -velocityXSupplier.getAsDouble() - x), 2) + Math.pow(((time * -velocityYSupplier.getAsDouble() + distanceSupplier.getAsDouble()) - y), 2)),
-                    time * velocityXSupplier.getAsDouble() - x
-                );
+            Math.sqrt(
+                Math.pow(
+                    (time * -velocityXSupplier.getAsDouble() - x),
+                    2
+                ) + 
+                Math.pow(
+                    ((time * -velocityYSupplier.getAsDouble() + distanceSupplier.getAsDouble()) - y),
+                    2
+                )
+            ),
+            time * velocityXSupplier.getAsDouble() - x
+        );
     }
 }

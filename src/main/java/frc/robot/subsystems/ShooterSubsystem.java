@@ -102,14 +102,6 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         logger.info("Flywheel Initialized");
     }
 
-    public void setTargetVelocity(double targetVelocity) {
-        this.targetVelocity = targetVelocity;
-    }
-
-    public double getTargetVelocity() {
-        return this.targetVelocity;
-    }
-
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
      * Flywheel speed is set by integrated get controller
@@ -122,10 +114,11 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
      * @param RPM of the flywheel (including gearing)
      * Flywheel speed is set by integrated get controller
      */
-    public void setVelocity(double rpm) {
+    public void setVelocityPID(double targetVelocity, double pidOutput) {
+        this.targetVelocity = targetVelocity;
         BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
-        double feedForwardedPidOutput = rpm + feedforward.doubleValue();
+        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
 
         // Ensure it is never negative
         double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;

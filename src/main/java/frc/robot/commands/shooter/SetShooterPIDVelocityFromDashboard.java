@@ -9,14 +9,8 @@ import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 
-import java.math.BigDecimal;
-
-import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
-
 
 public class SetShooterPIDVelocityFromDashboard extends CommandBase {
-    private ShooterSubsystem.ShooterLocationPreset shooterLocationPreset;
-
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
     private ShooterSubsystem shooterSubsystem;
@@ -30,7 +24,6 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
 
     public  SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
-        flywheelSubsystem.setTargetVelocity(SmartDashboard.getNumber("Custom Velocity", 0));
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenHeld(new WaitAndVibrateCommand(operatorController, 0.05));
     }
 
@@ -45,7 +38,6 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         double velocity = SmartDashboard.getNumber("Custom Velocity", 0);
         double hoodAngle = SmartDashboard.getNumber("Custom Hood Angle", 0);
         SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
-        shooterSubsystem.setTargetVelocity(velocity);
 
         double pidOutput = 0;
         if (velocity < 3500){
@@ -54,7 +46,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), velocity);
         }
 
-        shooterSubsystem.setVelocity(pidOutput);
+        shooterSubsystem.setVelocityPID(velocity, pidOutput);
         shooterSubsystem.setHoodAngle(hoodAngle);
     }
 

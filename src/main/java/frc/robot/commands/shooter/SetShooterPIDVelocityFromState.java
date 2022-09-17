@@ -19,6 +19,8 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
     private ShooterSubsystem shooterSubsystem;
     private Supplier<ShooterState> shooterStateSupplier;
 
+    private double pidOutput = 0;
+
     public SetShooterPIDVelocityFromState(ShooterSubsystem shooter, Supplier<ShooterState> shooterStateSupplier) {
         this.shooterSubsystem = shooter;
         this.shooterStateSupplier = shooterStateSupplier;
@@ -40,10 +42,6 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
 
     @Override
     public void execute() {
-
-        double pidOutput;
-
-        shooterSubsystem.setTargetVelocity(shooterStateSupplier.get().rpmVelocity);
         if (shooterStateSupplier.get().rpmVelocity < 3500){
             pidOutput = flywheelControllerLow.calculate(shooterSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         } else {
@@ -51,7 +49,7 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
         }
 
         shooterSubsystem.setHoodAngle(shooterStateSupplier.get().hoodAngle);
-        shooterSubsystem.setVelocity(pidOutput);
+        shooterSubsystem.setVelocityPID(shooterStateSupplier.get().rpmVelocity, pidOutput);
     }
 
     @Override

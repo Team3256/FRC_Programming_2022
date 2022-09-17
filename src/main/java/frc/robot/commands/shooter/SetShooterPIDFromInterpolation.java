@@ -21,22 +21,22 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
+    private double pidOutput = 0;
+
 
     private double currentDistance = 0;
 
     private ShooterSubsystem shooterSubsystem;
-    private BooleanSupplier isShooting;
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting) {
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem) {
         this.shooterSubsystem = flywheelSubsystem;
-        this.isShooting = isShooting;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting, XboxController operatorController) {
-        this(flywheelSubsystem, isShooting);
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
+        this(flywheelSubsystem);
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
@@ -49,14 +49,9 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput;
-
         currentDistance = Limelight.getRawDistanceToTarget();
 
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
-
-        shooterSubsystem.setTargetVelocity(targetVelocity);
-
         targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
 
         if (Constants.DEBUG) {
@@ -70,7 +65,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        shooterSubsystem.setVelocity(pidOutput);
+        shooterSubsystem.setVelocityPID(targetVelocity, pidOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
     }
 
@@ -78,7 +73,6 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     public void end(boolean interrupted) {
         shooterSubsystem.stopFlywheel();
 //        Limelight.disable();
-
     }
 
 }
