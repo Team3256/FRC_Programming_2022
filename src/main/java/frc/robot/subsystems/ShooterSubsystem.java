@@ -65,26 +65,6 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelTime);
     }
 
-
-    private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
-    private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
-
-    static {
-        double[] trainDistance = new double[SHOOTER_DATA.size()];
-        double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
-        double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
-        for(int i = 0; i < SHOOTER_DATA.size(); i++) {
-            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
-            trainDistance[i] = dataPoint.distance;
-            trainFlywheelHood[i] = dataPoint.hoodAngle;
-            trainFlywheelRPM[i] = dataPoint.flywheelRPM;
-        }
-
-        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
-        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
-    }
-
-
     public ShooterSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
         MASTER_CONFIG.NEUTRAL_MODE = NeutralMode.Coast;

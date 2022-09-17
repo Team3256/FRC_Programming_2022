@@ -35,6 +35,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     public static final double MAX_VOLTAGE = 12.0;
+    double lastTimestamp = -1; // illegal initial value so we can check when to Initialize it
+
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
             new Translation2d(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -239,6 +241,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
+        if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
+        double dt = timestamp - lastTimestamp;
 
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
@@ -248,16 +252,15 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
 
 
-        // Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
-        // pose = odometry.update(gyroAngle, frontRightState, backRightState,
+        Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
 
         pose = poseEstimator.updateWithTime(timestamp, gyroAngle, frontRightState, backRightState,
-
                 frontLeftState, backLeftState);
-        pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
 
         Pose2d diff = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d())).relativeTo(lastPose);
         hubRelativeVelocity = new Pose2d(diff.getX() / dt, diff.getY() / dt, diff.getRotation().times(1/dt));
+
+        lastTimestamp = timestamp;
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
