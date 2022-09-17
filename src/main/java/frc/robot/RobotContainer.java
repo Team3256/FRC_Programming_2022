@@ -40,6 +40,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.*;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -160,12 +161,12 @@ public class RobotContainer {
                 () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
 
-        driverRightTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
-                drivetrainSubsystem,
-                () -> ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        ));
+        // driverRightTrigger.toggleWhenActive(new DefaultDriveCommandRobotOriented(
+        //         drivetrainSubsystem,
+        //         () -> ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        //         () -> ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        //         () -> -ControllerUtil.modifyAxis(driverController.getRightX()) * SwerveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        // ));
 
         // Automatically Schedule Command when nothing else is scheduled
         drivetrainSubsystem.setDefaultCommand(defaultDriveCommand);
@@ -214,6 +215,7 @@ public class RobotContainer {
 
         // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
         driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0)));
+        operatorLeftTrigger.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0)));
 
         operatorXButton.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 

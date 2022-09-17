@@ -23,6 +23,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
