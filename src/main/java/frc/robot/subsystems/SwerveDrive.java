@@ -143,16 +143,18 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
      * @param distanceToTarget Distance to target in meters
      * @param thetaTargetOffset Limelight angle error in degrees
      */
-    public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
-        Pose2d currentPose = getPose(); // TODO: Add values for Limelight interpolation
-        Translation2d hubCenteredRobotPosition = Constants.FieldConstants.HUB_POSITION.minus(currentPose.getTranslation()); // coordinates with hub as origin
+    public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
+        Pose2d currentPose = getPose(); 
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
 
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        if(theta < 0) theta += 2*Math.PI;
-        Rotation2d robotCorrectedHeading = new Rotation2d(theta - Math.toRadians(thetaTargetOffset));
+        if(theta < 0) theta += 2*Math.PI; // not sure about this
+        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
 
-        distanceToTarget+= Constants.FieldConstants.UPPER_HUB_RADIUS;
-        Translation2d visionTranslation = new Translation2d(Constants.FieldConstants.HUB_POSITION.getX() - distanceToTarget * Math.cos(theta), Constants.FieldConstants.HUB_POSITION.getY() - distanceToTarget * Math.sin(theta));
+        double distanceToTarget = limelightDistanceToTarget + Constants.FieldConstants.UPPER_HUB_RADIUS;
+        Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
+        Translation2d visionTranslation = visionTranslationHubCentered.plus(visionTranslationHubCentered);
+
         Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
 
         if (
