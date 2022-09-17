@@ -24,7 +24,6 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     private double targetHoodAngle = 0;
     private double pidOutput = 0;
 
-
     private double currentDistance = 0;
 
     private ShooterSubsystem shooterSubsystem;
@@ -54,8 +53,6 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput;
-        // logic does not work right after the ir is triggered because it switches back to limelight. Maybe always switch to odom whenever the limelight is blocked --> try this now
         if(isTargetDetected.getAsBoolean()){
             currentDistance = Limelight.getRawDistanceToTarget();
         }

@@ -192,7 +192,7 @@ public class RobotContainer {
                 );
             }
 
-            if (SHOOTER && GOING_CRAZY && LIMELIGHT) {
+            if (SHOOTER && GOING_CRAZY) {
                 driverLeftBumper.whenPressed(
                     new SetShooterWhileMoving(drivetrainSubsystem, shooterSubsystem, 
                         () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
@@ -226,7 +226,7 @@ public class RobotContainer {
         }
 
         if(LIMELIGHT) {
-                if (!GOING_CRAZY) {
+                if (!GOING_CRAZY) { // TODO: uncomment for comp
                  // driverLeftBumper.whileActiveOnce(
                  //         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
                  // );

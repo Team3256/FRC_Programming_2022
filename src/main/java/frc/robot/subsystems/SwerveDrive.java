@@ -69,9 +69,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.012, 0.012, 0.01), // Current state X, Y, theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.015, 0.015, 0.01), // Current state X, Y, theta.
                 new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.11, 0.11, 0.05) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.011, 0.011, 0.05) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
@@ -139,7 +139,16 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
 
 
     public double getEstimatedDistance(){
-        return Math.hypot(poseEstimator.getEstimatedPosition().getX(), poseEstimator.getEstimatedPosition().getY());
+        return getPose().getTranslation().getDistance(HUB_POSITION);
+    }
+
+    public double getEstimatedThetaOffset() {
+        Pose2d currentPose = getPose(); 
+        Rotation2d currentRotation = currentPose.getRotation();
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
+        double thetaToHub = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+
+        return currentRotation.getDegrees() - thetaToHub;
     }
 
     /**

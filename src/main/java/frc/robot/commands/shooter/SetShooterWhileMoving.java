@@ -55,7 +55,7 @@ public class SetShooterWhileMoving extends CommandBase {
 
         this.shootingWhileMovingHelper = new ShootingWhileMovingHelper(
                 shooterSubsystem,
-                () -> Limelight.getRawDistanceToTarget(),
+                () -> swerveDrive.getEstimatedDistance(),
                 () -> swerveDrive.getVelocity().getX(),
                 () -> swerveDrive.getVelocity().getY()
         );
@@ -90,7 +90,7 @@ public class SetShooterWhileMoving extends CommandBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         translationXSupplier.getAsDouble(),
                         translationYSupplier.getAsDouble(),
-                        alphaController.calculate(Limelight.getTx(), alpha),
+                        alphaController.calculate(swerveDrive.getEstimatedDistance(), alpha),
                         swerveDrive.getGyroscopeRotation()
                 )
         );
