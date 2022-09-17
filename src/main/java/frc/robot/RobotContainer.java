@@ -9,13 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
 import edu.wpi.first.wpilibj2.command.*;
-
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -28,8 +22,6 @@ import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.hanger.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
-import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
-import frc.robot.commands.shooter.SetShooterPIDVelocityFromDashboard;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.shooter.SetShooterWhileMoving;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
@@ -40,13 +32,14 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.ControllerUtil;
 import frc.robot.helper.DPadButton;
 import frc.robot.helper.JoystickAnalogButton;
+import frc.robot.helper.shooter.ShooterState;
 import frc.robot.subsystems.*;
 import io.github.oblarg.oblog.annotations.Log;
 
 import java.awt.Robot;
 
-import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.GOING_CRAZY;
+import static frc.robot.Constants.SubsystemEnableFlags.*;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
 

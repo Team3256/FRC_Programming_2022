@@ -1,6 +1,5 @@
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +10,6 @@ import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
 
-import java.math.BigDecimal;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -66,6 +64,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
             SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+
         }
 
         if (targetVelocity < 3500){
