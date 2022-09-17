@@ -152,7 +152,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         Rotation2d robotCorrectedHeading = new Rotation2d(theta - Math.toRadians(thetaTargetOffset));
 
         distanceToTarget+= Constants.FieldConstants.UPPER_HUB_RADIUS;
-        Translation2d visionTranslation = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
+        Translation2d visionTranslation = new Translation2d(Constants.FieldConstants.HUB_POSITION.getX() - distanceToTarget * Math.cos(theta), Constants.FieldConstants.HUB_POSITION.getY() - distanceToTarget * Math.sin(theta));
         Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
 
         if (
