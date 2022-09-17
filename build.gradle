@@ -79,6 +79,8 @@ dependencies {
 
     //Apache Commons Math - For Curve Fitting
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    // Logging
+    implementation "com.github.Oblarg:Oblog:4.0.9"
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -105,3 +107,8 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+
+repositories {
+  maven { url 'https://jitpack.io' }
+}
+

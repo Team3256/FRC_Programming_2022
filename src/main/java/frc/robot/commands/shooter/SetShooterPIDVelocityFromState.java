@@ -16,11 +16,11 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
 
-    private ShooterSubsystem flywheelSubsystem;
+    private ShooterSubsystem shooterSubsystem;
     private Supplier<ShooterState> shooterStateSupplier;
 
-    public SetShooterPIDVelocityFromState(ShooterSubsystem flywheelSubsystem, Supplier<ShooterState> shooterStateSupplier) {
-        this.flywheelSubsystem = flywheelSubsystem;
+    public SetShooterPIDVelocityFromState(ShooterSubsystem shooter, Supplier<ShooterState> shooterStateSupplier) {
+        this.shooterSubsystem = shooter;
         this.shooterStateSupplier = shooterStateSupplier;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
@@ -43,14 +43,15 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
 
         double pidOutput;
 
+        shooterSubsystem.setTargetVelocity(shooterStateSupplier.get().rpmVelocity);
         if (shooterStateSupplier.get().rpmVelocity < 3500){
-            pidOutput = flywheelControllerLow.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
+            pidOutput = flywheelControllerLow.calculate(shooterSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         } else {
-            pidOutput = flywheelControllerFar.calculate(flywheelSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
+            pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00010082895");
+        BigDecimal KF_CONSTANT = new BigDecimal("0.0109208876");
 
         BigDecimal feedforward = (new BigDecimal(shooterStateSupplier.get().rpmVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
@@ -60,13 +61,13 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
         double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
         double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
 
-        flywheelSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
-        flywheelSubsystem.setHoodAngle(shooterStateSupplier.get().hoodAngle);
+        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setHoodAngle(shooterStateSupplier.get().hoodAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
-        flywheelSubsystem.stopFlywheel();
+        shooterSubsystem.stopFlywheel();
     }
 
 }

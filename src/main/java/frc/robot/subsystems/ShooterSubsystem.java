@@ -15,9 +15,12 @@ import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterState;
 import frc.robot.helper.shooter.TrainingDataPoint;
+import io.github.oblarg.oblog.Loggable;
+
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.util.function.DoubleSupplier;
@@ -25,7 +28,7 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(ShooterSubsystem.class.getCanonicalName());
 
     public enum ShooterLocationPreset {
@@ -40,7 +43,28 @@ public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
 
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
+    private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToTimeInterpolatingFunction;
+
+    static {
+        double[] trainDistance = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelTime = new double[SHOOTER_DATA.size()];
+        for(int i = 0; i < SHOOTER_DATA.size(); i++) {
+            TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
+            trainDistance[i] = dataPoint.distance;
+            trainFlywheelHood[i] = dataPoint.hoodAngle;
+            trainFlywheelRPM[i] = dataPoint.flywheelRPM;
+            trainFlywheelTime[i] = dataPoint.time;
+        }
+
+        distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
+        distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelTime);
+    }
+
 
     private static PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
@@ -159,6 +183,14 @@ public class ShooterSubsystem extends SubsystemBase {
                 (velocity >= this.targetVelocity - SET_POINT_ERROR_MARGIN*this.targetVelocity);
     }
 
+    public double getTimeFromInterpolator(double distance) {
+        if(distanceToTimeInterpolatingFunction == null){
+            logger.warning("Distance to Time Interpolation Function is NULL");
+        }
+
+        return distanceToTimeInterpolatingFunction.value(clampDistanceToInterpolation(distance));
+    }
+
     public double getHoodAngleFromInterpolator(double distance) {
         if(distanceToHoodAngleInterpolatingFunction == null){
             logger.warning("Distance to Hood Angle Interpolation Function is NULL");
@@ -176,6 +208,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private double clampDistanceToInterpolation(double distance) {
+        // if limelight is not tracking, we are prob out of range and should set to max distance
+        if (distance == 0) return SHOOTER_INTERPOLATION_MAX_VALUE;
         return MathUtil.clamp(distance, SHOOTER_INTERPOLATION_MIN_VALUE, SHOOTER_INTERPOLATION_MAX_VALUE);
     }
 
@@ -184,14 +218,16 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getFlywheelRPM(){
-        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
+        return ShooterSubsystem.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
     }
 
     @Override
     public void periodic() {
         if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Actual Flywheel Velocity", getFlywheelRPM());
+            SmartDashboard.putNumber("Actual Hood Angle", hoodAngleMotor.getSelectedSensorPosition());
             NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean(this.isHoodLimitSwitchPressed());
         }
     }
-
 }
+

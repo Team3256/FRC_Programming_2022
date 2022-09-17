@@ -10,6 +10,7 @@ import frc.robot.hardware.Limelight;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.subsystems.SwerveDrive;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.LEDConstants.AUTO_AIM_PATTERN;
@@ -27,6 +28,7 @@ public class AutoAlignDriveCommand extends CommandBase {
     DoubleSupplier driverJoystickX;
     DoubleSupplier driverJoystickY;
     DoubleSupplier operatorJoystickX;
+    BooleanSupplier isShooting = () -> true;
 
     SwerveDrive swerveDrive;
 
@@ -41,13 +43,31 @@ public class AutoAlignDriveCommand extends CommandBase {
     public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem,
                                  DoubleSupplier driverJoystickX,
                                  DoubleSupplier driverJoystickY,
+                                 DoubleSupplier operatorJoystickX,
+                                 BooleanSupplier isShooting
+    ) {
+
+        this.swerveDrive = drivetrainSubsystem;
+
+        this.driverJoystickX = driverJoystickX;
+        this.driverJoystickY = driverJoystickY;
+        this.operatorJoystickX = operatorJoystickX;
+
+        this.isShooting = isShooting;
+
+        addRequirements(drivetrainSubsystem);
+
+    }
+
+    public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem,
+                                 DoubleSupplier driverJoystickX,
+                                 DoubleSupplier driverJoystickY,
                                  DoubleSupplier operatorJoystickX) {
 
         this.swerveDrive = drivetrainSubsystem;
 
         this.driverJoystickX = driverJoystickX;
         this.driverJoystickY = driverJoystickY;
-
         this.operatorJoystickX = operatorJoystickX;
 
         addRequirements(drivetrainSubsystem);
@@ -55,7 +75,6 @@ public class AutoAlignDriveCommand extends CommandBase {
     }
 
     public AutoAlignDriveCommand(SwerveDrive drivetrainSubsystem) {
-
         this.swerveDrive = drivetrainSubsystem;
 
         this.driverJoystickX = () -> 0;
@@ -74,7 +93,7 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     //The setpoint angle for the robot to turn towards the hub
     public double setAligningAngle(Pose2d robotPose) {
-        return (Math.toDegrees(angleBetweenHub(robotPose)) + 180 ) % 360;
+        return (Math.toDegrees(angleBetweenHub(robotPose))) % 360;
     }
 
     public void alignWithVision(){
@@ -89,55 +108,21 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double autoAlignPidOutput;
+        double autoAlignPidOutput = 0;
 
+        SmartDashboard.putBoolean("Limelight Detected", Limelight.isTargetDetected());
         if(Limelight.isTargetDetected()){
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
-            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            );
+//            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
+            SmartDashboard.putNumber("Limelight Diatance", Limelight.getRawDistanceToTarget());
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
-        else{
-            alignWithoutVision();
-            autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());
-            SmartDashboard.putNumber("Swerve Turret Setpoint", swerveDrive.getPose().getRotation().getDegrees());
+        else {
+            return;
+//            alignWithoutVision();
+//            autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());
+//            SmartDashboard.putNumber("Swerve Turret Setpoint", swerveDrive.getPose().getRotation().getDegrees());
         }
 
         //Save some Computation from Sqrt
@@ -170,7 +155,7 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        Limelight.enable();
+//        Limelight.enable();
         AUTO_AIM_PATTERN.update(true);
         autoAlignVisionPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
         autoAlignOdometryPIDController = new PIDController(SWERVE_ODOMETRY_TURRET_KP, SWERVE_ODOMETRY_TURRET_KI, SWERVE_ODOMETRY_TURRET_KD);
@@ -180,7 +165,7 @@ public class AutoAlignDriveCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        Limelight.disable();
+//        Limelight.disable();
         AUTO_AIM_PATTERN.update(false);
     }
 }

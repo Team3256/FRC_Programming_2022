@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,8 +10,10 @@ import frc.robot.Constants;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
-
+import jdk.jfr.BooleanFlag;
 import java.math.BigDecimal;
+import java.util.function.BooleanSupplier;
+
 
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
@@ -19,20 +22,29 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
 
-    private ShooterSubsystem shooterSubsystem;
+    private double currentDistance = 0;
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem) {
+    private BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
+    private BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
+
+
+    private ShooterSubsystem shooterSubsystem;
+    private BooleanSupplier isShooting;
+
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting) {
         this.shooterSubsystem = flywheelSubsystem;
+        this.isShooting = isShooting;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
-        this(flywheelSubsystem);
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting, XboxController operatorController) {
+        this(flywheelSubsystem, isShooting);
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
+    //shooting all balls
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
@@ -43,9 +55,10 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     public void execute() {
         double pidOutput;
 
-        double currentDistance = Limelight.getRawDistanceToTarget();
+        currentDistance = Limelight.getRawDistanceToTarget();
 
-        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance);
+        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
+
         shooterSubsystem.setTargetVelocity(targetVelocity);
 
         targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
@@ -61,16 +74,12 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
         BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
 
         double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
 
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
+        // Ensure it is never negative or over 100%
+        double clampedPositiveFinalMotorOutput = MathUtil.clamp(feedForwardedPidOutput, 0, 1);
 
         shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
@@ -79,7 +88,8 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.stopFlywheel();
-        Limelight.disable();
+//        Limelight.disable();
+
     }
 
 }

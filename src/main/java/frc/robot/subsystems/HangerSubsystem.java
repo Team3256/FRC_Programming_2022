@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import static frc.robot.Constants.HangerConstants.*;
 import static frc.robot.Constants.IDConstants.*;
 
-public class HangerSubsystem extends SubsystemBase {
+public class HangerSubsystem extends SubsystemBase implements Loggable { 
     private static final RobotLogger logger = new RobotLogger(HangerSubsystem.class.getCanonicalName());
 
     private final TalonFX leftTalonMotor;
@@ -56,18 +57,17 @@ public class HangerSubsystem extends SubsystemBase {
         rightTalonMotor.set(ControlMode.Position, EXTEND_DISTANCE);
     }
 
-    public void retractLeftContinuouslyToZero(){
+    public void retractLeftContinuouslyToZero() {
         logger.info("Retracting Left Continuously for zero");
-
         leftTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractRightContinuouslyToZero(){
+    public void retractRightContinuouslyToZero() {
         logger.info("Retracting Right Continuously for zero");
         rightTalonMotor.set(ControlMode.PercentOutput, -1 * HANGER_ZEROING_PERCENT_SPEED);
     }
 
-    public void retractToHang(){
+    public void retractToHang() {
         logger.info("Retracting to Hang");
         leftTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
         rightTalonMotor.set(TalonFXControlMode.PercentOutput, -1 * HANGER_RETRACT_PERCENT_SPEED);
@@ -116,8 +116,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the full reached intended distance
      */
     public boolean isFullPositionReached() {
-        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, 300) &&
-                isWithinRange(getRightPosition(), EXTEND_DISTANCE, 300);
+        return isWithinRange(getLeftPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), EXTEND_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
@@ -125,8 +125,8 @@ public class HangerSubsystem extends SubsystemBase {
      * @return returns true if master talon has the partial reached intended distance
      */
     public boolean isPartialPositionReached() {
-        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, 100) &&
-                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, 100);
+        return isWithinRange(getLeftPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD) &&
+                isWithinRange(getRightPosition(), PARTIAL_DISTANCE, RANGE_THRESHOLD);
     }
 
     /**
@@ -141,8 +141,16 @@ public class HangerSubsystem extends SubsystemBase {
         return leftTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
     }
 
+    public boolean isLeftHangerCurrentSpiking(double threshold){
+        return leftTalonMotor.getSupplyCurrent() >= threshold;
+    }
+
     public boolean isRightHangerCurrentSpiking(){
         return rightTalonMotor.getSupplyCurrent() >= CURRENT_THRESHOLD;
+    }
+
+    public boolean isRightHangerCurrentSpiking(double threshold){
+        return rightTalonMotor.getSupplyCurrent() >= threshold;
     }
 
     public void stopLeftMotor(){

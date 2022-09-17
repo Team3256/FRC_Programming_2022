@@ -6,7 +6,6 @@ public class TrainingDataPoint {
     public double flywheelRPM;
     public double time;
 
-
     public TrainingDataPoint(double distance, double hoodAngle, double flywheelRPM) {
         this.distance = distance;
         this.hoodAngle = hoodAngle;
@@ -19,5 +18,4 @@ public class TrainingDataPoint {
         this.flywheelRPM = flywheelRPM;
         this.time = time;
     }
-
 }
