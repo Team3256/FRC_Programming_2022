@@ -217,7 +217,7 @@ public class RobotContainer {
              // );
 
              operatorLeftTrigger.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
+                     new SetShooterPIDFromInterpolation(shooterSubsystem, driverController)
              );
         }
     }

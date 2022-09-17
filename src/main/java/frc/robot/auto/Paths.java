@@ -473,7 +473,7 @@ public class Paths {
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
                     new AutoAlignDriveCommand(driveSubsystem),
-                    new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting),
+                    new SetShooterPIDFromInterpolation(shooterSubsystem),
 //                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.20).andThen(
                             new InstantCommand(
@@ -487,7 +487,7 @@ public class Paths {
 
     private static Command getRevUpCommand() {
 //        return new SetShooterPIDVelocityFromState(shooterSubsystem, ()->new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
-        return new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting);
+        return new SetShooterPIDFromInterpolation(shooterSubsystem);
     }
 }
 

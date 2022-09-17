@@ -85,7 +85,7 @@ public class SetShooterWhileMoving extends CommandBase {
         }
 
         shooterSubsystem.setHoodAngle(targetHoodAngle);
-        shooterSubsystem.setVelocity(pidOutput);
+        shooterSubsystem.setVelocityPID(targetVelocity, pidOutput);
 
         swerveDrive.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
