@@ -36,6 +36,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     public static final double MAX_VOLTAGE = 12.0;
+    double lastTimestamp = -1; // illegal initial value so we can check when to Initialize it
+
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
             new Translation2d(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -56,7 +58,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
-    private Pose2d curr_velocity = new Pose2d();
+    private Pose2d hubRelativeVelocity = new Pose2d();
     private final Field2d field = new Field2d();
     private SwerveDrivePoseEstimator poseEstimator;
 
@@ -64,9 +66,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.012, 0.012, 0.01), // Current state X, Y, theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.015, 0.015, 0.01), // Current state X, Y, theta.
                 new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.11, 0.11, 0.05) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.011, 0.011, 0.05) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
@@ -134,7 +136,16 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
 
 
     public double getEstimatedDistance(){
-        return Math.hypot(poseEstimator.getEstimatedPosition().getX(), poseEstimator.getEstimatedPosition().getY());
+        return getPose().getTranslation().getDistance(HUB_POSITION);
+    }
+
+    public double getEstimatedThetaOffset() {
+        Pose2d currentPose = getPose(); 
+        Rotation2d currentRotation = currentPose.getRotation();
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
+        double thetaToHub = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+
+        return currentRotation.getDegrees() - thetaToHub;
     }
 
     /**
@@ -167,7 +178,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         }
     }
 
-    public Pose2d getVelocity() { return curr_velocity; }
+    public Pose2d getVelocity() { return hubRelativeVelocity; }
 
     /**
      * Sets the swerve ModuleStates.
@@ -230,6 +241,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Right Speed", backRightModule.getDriveVelocity());
+            SmartDashboard.putNumber("Swerve X Velocity", hubRelativeVelocity.getX());
+            SmartDashboard.putNumber("Swerve Y Velocity", hubRelativeVelocity.getY());
 
             SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
@@ -247,6 +260,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
+        if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
+        double dt = timestamp - lastTimestamp;
         limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();
@@ -255,8 +270,16 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         SwerveModuleState frontRightState = new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle()));
         SwerveModuleState backLeftState = new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle()));
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
+
+        Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
+
         pose = poseEstimator.updateWithTime(timestamp, gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
+
+        Pose2d diff = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d())).relativeTo(lastPose);
+        hubRelativeVelocity = new Pose2d(diff.getX() / dt, diff.getY() / dt, diff.getRotation().times(1/dt));
+
+        lastTimestamp = timestamp;
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);

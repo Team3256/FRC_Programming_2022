@@ -37,6 +37,8 @@ import static java.util.Map.entry;
 public final class Constants {
 
     public static final boolean DEBUG = true;
+    public static final boolean GOING_CRAZY = false;
+
     public static final boolean LOG_DEBUG_TO_CONSOLE = true;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
@@ -391,6 +393,9 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+        
+        public static final double SHOOTING_WHILE_MOVING_THRESHOLD = 0.5; // m/s
+
 
         // Presets
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
