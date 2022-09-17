@@ -73,7 +73,7 @@ public class SwerveDriveController {
                 thetaController.calculate(currentRotation, angleRef.getRadians());
 
 
-        if (Constants.DEBUG || true) {
+        if (Constants.DEBUG) {
             SmartDashboard.putNumber("Theta Current", currentRotation * 180 / Math.PI);
             SmartDashboard.putNumber("Theta Setpoint", angleRef.getDegrees());
         }

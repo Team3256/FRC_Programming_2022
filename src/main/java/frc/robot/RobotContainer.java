@@ -212,12 +212,12 @@ public class RobotContainer {
         }
 
         if(LIMELIGHT) {
-             // driverLeftBumper.whileActiveOnce(
-             //         new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting, driverController)
-             // );
+             driverLeftBumper.whileActiveOnce(
+                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+             );
 
              operatorLeftTrigger.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, driverController)
+                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
              );
         }
     }

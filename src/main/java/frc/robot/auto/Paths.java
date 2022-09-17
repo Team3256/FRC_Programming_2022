@@ -7,15 +7,14 @@ import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
-import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.auto.AutoCommandMarker;
 import frc.robot.helper.auto.AutoCommandRunner;
-import frc.robot.helper.shooter.ShooterState;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.TransferSubsystem;
 
@@ -473,7 +472,7 @@ public class Paths {
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
                     new AutoAlignDriveCommand(driveSubsystem),
-                    new SetShooterPIDFromInterpolation(shooterSubsystem),
+                    new SetShooterPIDFromInterpolation(shooterSubsystem, driveSubsystem::getEstimatedDistance, Limelight::isTargetDetected),
 //                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.20).andThen(
                             new InstantCommand(
@@ -487,7 +486,7 @@ public class Paths {
 
     private static Command getRevUpCommand() {
 //        return new SetShooterPIDVelocityFromState(shooterSubsystem, ()->new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
-        return new SetShooterPIDFromInterpolation(shooterSubsystem);
+        return new SetShooterPIDFromInterpolation(shooterSubsystem, driveSubsystem::getEstimatedDistance, Limelight::isTargetDetected);
     }
 }
 
