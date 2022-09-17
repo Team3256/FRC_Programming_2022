@@ -244,6 +244,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Right Speed", backRightModule.getDriveVelocity());
+            SmartDashboard.putNumber("Swerve X Velocity", hubRelativeVelocity.getX());
+            SmartDashboard.putNumber("Swerve Y Velocity", hubRelativeVelocity.getY());
 
             SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
