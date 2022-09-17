@@ -13,21 +13,25 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-import jdk.jfr.Label;
-import frc.robot.Constants;
 
-import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
-import static frc.robot.Constants.SwerveConstants.*;
+import java.util.function.DoubleSupplier;
+
 import static frc.robot.Constants.IDConstants.*;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
+import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
+import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.FieldConstants.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable {
@@ -134,19 +138,26 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
 
 
+    public double getEstimatedDistance(){
+        return Math.hypot(poseEstimator.getEstimatedPosition().getX(), poseEstimator.getEstimatedPosition().getY());
+    }
+
     /**
      * @param distanceToTarget Distance to target in meters
      * @param thetaTargetOffset Limelight angle error in degrees
      */
-    public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
-        Pose2d currentPose = getPose(); // TODO: Add values for Limelight interpolation
-        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
+    public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
+        Pose2d currentPose = getPose(); 
+        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
 
-        double r = distanceToTarget;
-        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        double theta = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+        if(theta < 0) theta += 2*Math.PI;
         Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
 
-        Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
+        double distanceToTarget = limelightDistanceToTarget + Constants.FieldConstants.UPPER_HUB_RADIUS;
+        Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
+        Translation2d visionTranslation = visionTranslationHubCentered.plus(Constants.FieldConstants.HUB_POSITION);
+
         Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
 
         if (
@@ -243,6 +254,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double timestamp = Timer.getFPGATimestamp();
         if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
         double dt = timestamp - lastTimestamp;
+        limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
@@ -250,7 +262,6 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         SwerveModuleState frontRightState = new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle()));
         SwerveModuleState backLeftState = new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle()));
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
-
 
         Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
 
