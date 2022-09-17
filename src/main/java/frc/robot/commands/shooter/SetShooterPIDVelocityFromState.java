@@ -50,19 +50,8 @@ public class SetShooterPIDVelocityFromState extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), shooterStateSupplier.get().rpmVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00010082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0109208876");
-
-        BigDecimal feedforward = (new BigDecimal(shooterStateSupplier.get().rpmVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         shooterSubsystem.setHoodAngle(shooterStateSupplier.get().hoodAngle);
+        shooterSubsystem.setVelocity(pidOutput);
     }
 
     @Override

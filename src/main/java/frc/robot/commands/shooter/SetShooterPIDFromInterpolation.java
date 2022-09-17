@@ -24,10 +24,6 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     private double currentDistance = 0;
 
-    private BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
-    private BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
-
     private ShooterSubsystem shooterSubsystem;
     private BooleanSupplier isShooting;
 
@@ -74,14 +70,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative or over 100%
-        double clampedPositiveFinalMotorOutput = MathUtil.clamp(feedForwardedPidOutput, 0, 1);
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setVelocity(pidOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
     }
 

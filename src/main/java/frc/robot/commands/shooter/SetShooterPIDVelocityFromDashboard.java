@@ -27,6 +27,7 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
+
     public  SetShooterPIDVelocityFromDashboard(ShooterSubsystem flywheelSubsystem, XboxController operatorController) {
         this(flywheelSubsystem);
         flywheelSubsystem.setTargetVelocity(SmartDashboard.getNumber("Custom Velocity", 0));
@@ -53,20 +54,8 @@ public class SetShooterPIDVelocityFromDashboard extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), velocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0156208876");
-
-        BigDecimal feedforward = (new BigDecimal(velocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setVelocity(pidOutput);
         shooterSubsystem.setHoodAngle(hoodAngle);
-
     }
 
     @Override

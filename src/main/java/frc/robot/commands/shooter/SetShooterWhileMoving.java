@@ -84,19 +84,8 @@ public class SetShooterWhileMoving extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
-        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
+        shooterSubsystem.setVelocity(pidOutput);
 
         swerveDrive.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
