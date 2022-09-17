@@ -56,6 +56,13 @@ public class ShootingWhileMovingHelper {
         double error = Double.POSITIVE_INFINITY;
         double predictedDistanceToHub = 0;
 
+        if (Math.hypot(velocityXSupplier.getAsDouble(), velocityYSupplier.getAsDouble()) > SHOOTING_WHILE_MOVING_THRESHOLD) {
+            // if we are moving slow
+            // no need to use shooting while moving
+            // so just shoot normally
+            return new ShootingWhileMovingState(distanceSupplier.getAsDouble(), 0, true); 
+        }
+
         while (iterations < maxIterations && error > TARGET_SHOOTING_WHILE_MOVING_ERROR) {
             double xAim = distanceSupplier.getAsDouble()/((Math.tan(Math.PI/2 - alpha)) - (velocityYSupplier.getAsDouble()/velocityXSupplier.getAsDouble()));
             double yAim = findSolutionLineY(xAim);

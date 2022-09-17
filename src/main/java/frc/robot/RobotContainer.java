@@ -33,6 +33,7 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromDashboard;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
+import frc.robot.commands.shooter.SetShooterWhileMoving;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferManualReverse;
@@ -48,6 +49,7 @@ import java.awt.Robot;
 
 import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 import static frc.robot.Constants.SubsystemEnableFlags.*;
+import static frc.robot.Constants.GOING_CRAZY;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
 
@@ -184,9 +186,21 @@ public class RobotContainer {
 
         if (LIMELIGHT) {
             // Left Bumper Enables Auto Align
-            driverLeftBumper.whenPressed(
-                autoAlign
-            );
+            if (!GOING_CRAZY) {
+                driverLeftBumper.whenPressed(
+                    autoAlign
+                );
+            }
+
+            if (SHOOTER && GOING_CRAZY && LIMELIGHT) {
+                driverLeftBumper.whenPressed(
+                    new SetShooterWhileMoving(drivetrainSubsystem, shooterSubsystem, 
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                    )
+                );
+                
+            }
         }
 
         // Any Significant Movement in driver's X interrupt auto align
@@ -212,15 +226,17 @@ public class RobotContainer {
         }
 
         if(LIMELIGHT) {
-             driverLeftBumper.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-             );
-
-             operatorLeftTrigger.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-             );
+                if (!GOING_CRAZY) {
+                 // driverLeftBumper.whileActiveOnce(
+                 //         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                 // );
+                 //
+                 // operatorLeftTrigger.whileActiveOnce(
+                 //         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                 // );
+                }
+            }
         }
-    }
 
     private void configureTransfer() {
         JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);

@@ -34,8 +34,7 @@ public class SetShooterWhileMoving extends CommandBase {
 
     public SetShooterWhileMoving(SwerveDrive swerveDrive, ShooterSubsystem shooterSubsystem,
                                             DoubleSupplier translationXSupplier,
-                                            DoubleSupplier translationYSupplier,
-                                            DoubleSupplier rotationSupplier) {
+                                            DoubleSupplier translationYSupplier) {
 
         this.translationXSupplier = translationXSupplier;
         this.translationYSupplier = translationYSupplier;
