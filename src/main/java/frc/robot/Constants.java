@@ -407,7 +407,9 @@ public final class Constants {
                 // tuned 9/10
                    new TrainingDataPoint(57.00706, 000000, 2350, 1.090000),
                    new TrainingDataPoint(89.28630, 050000, 2370, 1.190000),
+                   new TrainingDataPoint(102.1644, 060000, 2400, 1.201000),
                    new TrainingDataPoint(111.5242, 075000, 2550, 1.244000),
+                   new TrainingDataPoint(142.1402, 140000, 2700, 1.254000),
                    new TrainingDataPoint(169.7674, 190000, 2800, 1.296875),
                    new TrainingDataPoint(186.2049, 195000, 2925, 1.432000)
                 );

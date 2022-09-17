@@ -216,7 +216,7 @@ public class RobotContainer {
         operatorLeftTrigger.setThreshold(0.1);
 
         // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
-        // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0));
+        driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0)));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
 
@@ -227,13 +227,13 @@ public class RobotContainer {
 
         if(LIMELIGHT) { 
                 if (!GOING_CRAZY) { // shooting while moving is in configureDrivetrain cause it uses drive
-                    driverLeftBumper.whileActiveOnce(
-                         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-                    );
-
-                    operatorLeftTrigger.whileActiveOnce(
-                         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-                    );
+                    // driverLeftBumper.whileActiveOnce(
+                    //      new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                    // );
+                    //
+                    // operatorLeftTrigger.whileActiveOnce(
+                    //      new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                    // );
                 }
             }
         }

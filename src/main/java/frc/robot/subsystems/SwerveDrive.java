@@ -69,9 +69,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.015, 0.015, 0.01), // Current state X, Y, theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0015, 0.0015, 0.03), // Current state X, Y, theta.
                 new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.011, 0.011, 0.05) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0002, 0.0002, 0.005) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
@@ -138,17 +138,22 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
 
 
+    @Log(name = "Pose estimated Distance")
     public double getEstimatedDistance(){
-        return getPose().getTranslation().getDistance(HUB_POSITION);
+        return Units.metersToInches(getPose().getTranslation().getDistance(HUB_POSITION) - Constants.FieldConstants.UPPER_HUB_RADIUS);
     }
 
+    @Log(name = "Pose Estimated Theta Offset")
     public double getEstimatedThetaOffset() {
-        Pose2d currentPose = getPose(); 
-        Rotation2d currentRotation = currentPose.getRotation();
-        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
-        double thetaToHub = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+        if (Limelight.isTargetDetected()) return Limelight.getTx();
 
-        return currentRotation.getDegrees() - thetaToHub;
+        Pose2d currentPose = getPose(); 
+        Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
+
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        if(theta < 0) theta += 2*Math.PI;
+
+        return theta - currentPose.getRotation().getDegrees();
     }
 
     /**
@@ -157,28 +162,28 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
      */
     public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
         Pose2d currentPose = getPose(); 
-        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(HUB_POSITION); // coordinates with hub as origin
+        Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
 
-        double theta = Math.atan2(-hubCenteredRobotPosition.getY(), -hubCenteredRobotPosition.getX());
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
         if(theta < 0) theta += 2*Math.PI;
-        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
+        Rotation2d robotCorrectedHeading = new Rotation2d(theta - Math.toRadians(thetaTargetOffset));
 
-        double distanceToTarget = limelightDistanceToTarget + Constants.FieldConstants.UPPER_HUB_RADIUS;
+        double distanceToTarget = Units.inchesToMeters(limelightDistanceToTarget) + Constants.FieldConstants.UPPER_HUB_RADIUS;
         Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
-        Translation2d visionTranslation = visionTranslationHubCentered.plus(Constants.FieldConstants.HUB_POSITION);
+        Translation2d visionTranslation = HUB_POSITION.minus(visionTranslationHubCentered);
 
         Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
 
-        if (
-                Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
-                Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
-        ){
+        // if (
+        //         Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
+        //         Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION || true
+        // ){
             // only update position if measurement is not obviously wrong
             SwerveDrive.logger.info("Updating Pose Based off vision");
             poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
-        } else {
-            SwerveDrive.logger.info("Not Updating Pose Based off vision");
-        }
+        // } else {
+        //     SwerveDrive.logger.info("Not Updating Pose Based off vision");
+        // }
     }
 
     public Pose2d getVelocity() { return hubRelativeVelocity; }
@@ -240,6 +245,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
 
     public void outputToDashboard() {
         if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
             SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
@@ -265,7 +271,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double timestamp = Timer.getFPGATimestamp();
         if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
         double dt = timestamp - lastTimestamp;
-        limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
+        if (Limelight.isTargetDetected()) limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
