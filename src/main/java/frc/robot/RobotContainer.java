@@ -9,7 +9,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+
 import edu.wpi.first.wpilibj2.command.*;
+
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,6 +33,7 @@ import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromDashboard;
 import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
+import frc.robot.commands.shooter.SetShooterWhileMoving;
 import frc.robot.commands.shooter.ZeroHoodMotorCommand;
 import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferManualReverse;
@@ -42,6 +49,7 @@ import java.awt.Robot;
 
 import static frc.robot.Constants.ShooterConstants.ALL_SHOOTER_PRESETS;
 import static frc.robot.Constants.SubsystemEnableFlags.*;
+import static frc.robot.Constants.GOING_CRAZY;
 import static frc.robot.Constants.SwerveConstants.AUTO_AIM_BREAKOUT_TOLERANCE;
 import static frc.robot.Constants.TransferConstants.MAX_BALL_COUNT;
 
@@ -178,9 +186,21 @@ public class RobotContainer {
 
         if (LIMELIGHT) {
             // Left Bumper Enables Auto Align
-            driverLeftBumper.whenPressed(
-                autoAlign
-            );
+            if (!GOING_CRAZY) {
+                driverLeftBumper.whenPressed(
+                    autoAlign
+                );
+            }
+
+            if (SHOOTER && GOING_CRAZY) {
+                driverLeftBumper.whenPressed(
+                    new SetShooterWhileMoving(drivetrainSubsystem, shooterSubsystem, 
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
+                    )
+                );
+                
+            }
         }
 
         // Any Significant Movement in driver's X interrupt auto align
@@ -190,11 +210,12 @@ public class RobotContainer {
 
     private void configureShooter() {
         DPadButton dPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
+
         Button driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         JoystickAnalogButton operatorLeftTrigger = new JoystickAnalogButton(operatorController, XboxController.Axis.kLeftTrigger.value);
         operatorLeftTrigger.setThreshold(0.1);
 
-        driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
+        // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromDashboard(shooterSubsystem));
         // driverLeftBumper.whenHeld(new SetShooterPIDVelocityFromState(shooterSubsystem, () -> new ShooterState(1200, 0));
 
         dPadUp.whenHeld(new ZeroHoodMotorCommand(shooterSubsystem));
@@ -204,17 +225,18 @@ public class RobotContainer {
             new Button(() -> transferSubsystem.getCurrentBallCount() >= MAX_BALL_COUNT).whenPressed(new WaitAndVibrateCommand(driverController, 0.1, 0.1));
         }
 
-        if(LIMELIGHT) {
-             driverLeftBumper.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-             );
+        if(LIMELIGHT) { 
+                if (!GOING_CRAZY) { // shooting while moving is in configureDrivetrain cause it uses drive
+                    driverLeftBumper.whileActiveOnce(
+                         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                    );
 
-             operatorLeftTrigger.whileActiveOnce(
-                     new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
-             );
+                    operatorLeftTrigger.whileActiveOnce(
+                         new SetShooterPIDFromInterpolation(shooterSubsystem, drivetrainSubsystem::getEstimatedDistance, Limelight::isTargetDetected)
+                    );
+                }
+            }
         }
-
-    }
 
     private void configureTransfer() {
         JoystickAnalogButton driverLeftTrigger = new JoystickAnalogButton(driverController, XboxController.Axis.kLeftTrigger.value);

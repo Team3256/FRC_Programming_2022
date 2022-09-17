@@ -15,19 +15,19 @@ import java.math.BigDecimal;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
     private PIDController flywheelControllerLow;
 
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
+    private double pidOutput = 0;
+
     private double currentDistance = 0;
 
-    private BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
-    private BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
-
     private ShooterSubsystem shooterSubsystem;
+
     private DoubleSupplier estimatedDistance;
     private BooleanSupplier isTargetDetected;
 
@@ -53,17 +53,14 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput;
-        //logic does not work right after the ir is triggered because it switches back to limelight. Maybe always switch to odom whenever the limelight is blocked --> try this now
         if(isTargetDetected.getAsBoolean()){
             currentDistance = Limelight.getRawDistanceToTarget();
         }
         else{
             currentDistance = estimatedDistance.getAsDouble();
         }
+        
         targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
-        shooterSubsystem.setTargetVelocity(targetVelocity);
-
         targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
 
         if (Constants.DEBUG) {
@@ -77,14 +74,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative or over 100%
-        double clampedPositiveFinalMotorOutput = MathUtil.clamp(feedForwardedPidOutput, 0, 1);
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setVelocityPID(targetVelocity, pidOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
     }
 

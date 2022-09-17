@@ -23,6 +23,7 @@ import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInt
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import java.math.BigDecimal;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.IDConstants.*;
@@ -42,6 +43,9 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
+
+    BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
+    BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
 
     private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
@@ -64,7 +68,6 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
         distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelTime);
     }
-
 
     public ShooterSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -99,20 +102,29 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         logger.info("Flywheel Initialized");
     }
 
-    public void setTargetVelocity(double targetVelocity) {
-        this.targetVelocity = targetVelocity;
-    }
-
-    public double getTargetVelocity() {
-        return this.targetVelocity;
-    }
-
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
      * Flywheel speed is set by integrated get controller
      */
     public void setPercentSpeed(double percent) {
         masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
+    }
+
+    /**
+     * @param RPM of the flywheel (including gearing)
+     * Flywheel speed is set by integrated get controller
+     */
+    public void setVelocityPID(double targetVelocity, double pidOutput) {
+        this.targetVelocity = targetVelocity;
+        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
+
+        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
+
+        // Ensure it is never negative
+        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
+        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
+
+        this.setPercentSpeed(clampedPositiveFinalMotorOutput);
     }
 
     /**
@@ -210,5 +222,5 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
             NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean(this.isHoodLimitSwitchPressed());
         }
     }
-
 }
+
