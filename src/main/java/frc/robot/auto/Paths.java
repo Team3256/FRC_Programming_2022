@@ -66,7 +66,7 @@ public class Paths {
         );
 
         return taxiSegment
-                .andThen(getShootCommand(3));
+                .andThen(getShootCommand(5));
     }
 
     /* --------------------------------------------- */
@@ -80,7 +80,9 @@ public class Paths {
                 true
         ); // path planner commands cannot be reused so this whole statement cannot be in a function
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3)); // shoot
     }
 
@@ -97,8 +99,10 @@ public class Paths {
                 false // is first segment
         );
 
-        return twoBallTarmacSideSegment
-                .andThen(getShootCommand(3))
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
+                .andThen(getShootCommand(4))
                 .andThen(fourBallTarmacSideSegment);
     }
 
@@ -124,7 +128,7 @@ public class Paths {
         );
 
         return oneBallSegment
-                .andThen(getShootCommand(4))
+                .andThen(getShootCommand(5))
                 .andThen(outtakeSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
     }
@@ -162,8 +166,10 @@ public class Paths {
         );
 
 
-        return twoBallTarmacSideSegment
-                .andThen(getShootCommand(5))
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
+                .andThen(getShootCommand(3))
                 .andThen(twoBallTarmacDefenseSideSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
     }
@@ -264,7 +270,8 @@ public class Paths {
         ); // path planner commands cannot be reused so this whole statement cannot be in a function
 
         return
-                twoBallTarmacSideSegment
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3)); // shoot
     }
 
@@ -287,7 +294,9 @@ public class Paths {
                 new IntakeReverse(intakeSubsystem)
         );
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(4))
                 .andThen(coolSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(out)));
@@ -306,7 +315,9 @@ public class Paths {
                 false // is first segment
         );
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3))
                 .andThen(threeBallTarmacSideSegment)
                 .andThen(getShootCommand(3));
@@ -332,7 +343,9 @@ public class Paths {
         );
 
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(4.5))
                 .andThen(threeBallTarmacSideSegment)
                 .andThen(getShootCommand(3))
