@@ -68,8 +68,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
 
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
                 new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0015, 0.0015, 0.03), // Current state X, Y, theta.
-                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0002, 0.0002, 0.005) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.0008), // Gyro reading theta stdevs
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0002, 0.0002, 0.05) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 

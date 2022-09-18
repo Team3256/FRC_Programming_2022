@@ -340,8 +340,8 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
-        public static final double EXTEND_DISTANCE = 126391; // in Sensor units
-        public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double EXTEND_DISTANCE = 150391; // in Sensor units
+        public static final double PARTIAL_DISTANCE = 75000; // Sensor Units
         public static final double RANGE_THRESHOLD = 50000.0;
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 

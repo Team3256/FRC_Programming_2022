@@ -57,7 +57,7 @@ public class SetShooterWhileMoving extends CommandBase {
                 shooterSubsystem,
                 () -> swerveDrive.getEstimatedDistance(),
                 () -> swerveDrive.getVelocity().getX(),
-                () -> -swerveDrive.getVelocity().getY()
+                () -> swerveDrive.getVelocity().getY()
         );
     }
 

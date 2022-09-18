@@ -1,9 +1,13 @@
 package frc.robot.helper.shooter;
 
 import frc.robot.subsystems.ShooterSubsystem;
+
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 
 import java.util.function.DoubleSupplier;
 
@@ -56,7 +60,7 @@ public class ShootingWhileMovingHelper {
         double error = Double.POSITIVE_INFINITY;
         double predictedDistanceToHub = 0;
 
-        if (Math.hypot(velocityXSupplier.getAsDouble(), velocityYSupplier.getAsDouble()) > SHOOTING_WHILE_MOVING_THRESHOLD) {
+        if (Math.hypot(velocityXSupplier.getAsDouble(), velocityYSupplier.getAsDouble()) < SHOOTING_WHILE_MOVING_THRESHOLD) {
             // if we are moving slow
             // no need to use shooting while moving
             // so just shoot normally
@@ -75,15 +79,20 @@ public class ShootingWhileMovingHelper {
             alpha = calculateNextAlpha(error, alpha);
         }
 
-        return new ShootingWhileMovingState(predictedDistanceToHub, alpha, error < TARGET_SHOOTING_WHILE_MOVING_ERROR);
+        return new ShootingWhileMovingState(predictedDistanceToHub, Units.radiansToDegrees(alpha), error < TARGET_SHOOTING_WHILE_MOVING_ERROR);
     }
 
     private double findSolutionLineY(double x) {
-        return (velocityYSupplier.getAsDouble()/velocityXSupplier.getAsDouble()) * x + distanceSupplier.getAsDouble();
+        double vx = velocityXSupplier.getAsDouble();
+        double vy = velocityYSupplier.getAsDouble();
+        double dist = distanceSupplier.getAsDouble();
+
+        if (vx < 0.05) return dist;
+        return (vy/vx) * x + dist;
     }
 
     public double calculateNextAlpha(double error, double alpha){
-        return error*-kP + alpha;
+        return MathUtil.clamp(error*-kP + alpha, -90.0, 90.0);
     }
 
     private double calculateError(double time, double x, double y) {

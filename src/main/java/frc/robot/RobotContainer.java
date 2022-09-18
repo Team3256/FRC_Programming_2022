@@ -292,8 +292,8 @@ public class RobotContainer {
                 new HangerPneumaticUpright(hangerSubsystem)
         ), false);
 
-        operatorDPadRight.whenHeld(new HangerPneumaticSlant(hangerSubsystem, intakeSubsystem));
-        operatorDPadLeft.whenHeld(new HangerPneumaticUpright(hangerSubsystem));
+        operatorDPadLeft.whenHeld(new HangerPneumaticSlant(hangerSubsystem, intakeSubsystem));
+        operatorDPadRight.whenHeld(new HangerPneumaticUpright(hangerSubsystem));
 
         operatorDPadDown.whenHeld(new HangerRetractForHang(hangerSubsystem));
 
