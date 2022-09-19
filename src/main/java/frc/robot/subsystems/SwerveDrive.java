@@ -27,8 +27,6 @@ import io.github.oblarg.oblog.annotations.Log;
 
 import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
 import static frc.robot.Constants.SwerveConstants.*;
 
 
@@ -269,6 +267,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double timestamp = Timer.getFPGATimestamp();
         if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
         double dt = timestamp - lastTimestamp;
+
         if (Limelight.isTargetDetected()) limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();

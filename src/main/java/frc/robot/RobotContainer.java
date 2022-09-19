@@ -18,7 +18,6 @@ import frc.robot.auto.AutoChooser;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.drivetrain.DefaultDriveCommandFieldOriented;
-import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.hanger.*;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
@@ -170,8 +169,7 @@ public class RobotContainer {
                 drivetrainSubsystem,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftY()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 () -> -ControllerUtil.modifyAxis(driverController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                transferSubsystem::isShooting
+                () -> -ControllerUtil.modifyAxis(operatorController.getLeftX()) * SwerveConstants.MAX_VELOCITY_METERS_PER_SECOND
         );
 
         if (LIMELIGHT) {
@@ -244,7 +242,6 @@ public class RobotContainer {
         JoystickButton driverBButton = new JoystickButton(driverController, XboxController.Button.kB.value);
         JoystickButton driverYButton = new JoystickButton(driverController, XboxController.Button.kY.value);
 
-        // Operator's Intake Up Button
         driverRightBumper.whenHeld(new IntakeOn(intakeSubsystem));
 
         if (TRANSFER) {
@@ -265,7 +262,6 @@ public class RobotContainer {
         JoystickButton operatorBButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
 
         JoystickButton operatorStartButton = new JoystickButton(operatorController, XboxController.Button.kStart.value);
-        JoystickButton operatorRB = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
 
         DPadButton operatorDPadDown = new DPadButton(operatorController, DPadButton.Direction.DOWN);
         DPadButton operatorDPadUp = new DPadButton(operatorController, DPadButton.Direction.UP);
@@ -284,9 +280,9 @@ public class RobotContainer {
 
         operatorStartButton.whenHeld(new SequentialCommandGroup(
                 new HangerPartial(hangerSubsystem),
-                new InstantCommand(()->{System.out.println("Finsihed Partial!");}),
+                new InstantCommand(()->{System.out.println("Finished Partial!");}),
                 new HangerPneumaticSlant(hangerSubsystem, intakeSubsystem),
-                new InstantCommand(()->{System.out.println("Finsihed Slant!");}),
+                new InstantCommand(()->{System.out.println("Finished Slant!");}),
                 new WaitCommand(0.5),
                 new HangerExtend(hangerSubsystem),
                 new HangerPneumaticUpright(hangerSubsystem)
