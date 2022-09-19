@@ -149,7 +149,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
         if(theta < 0) theta += 2*Math.PI;
 
-        return theta - currentPose.getRotation().getDegrees();
+        return Math.toDegrees(theta) - currentPose.getRotation().getDegrees();
     }
 
     /**
