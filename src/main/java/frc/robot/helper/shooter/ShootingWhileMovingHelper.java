@@ -32,8 +32,8 @@ public class ShootingWhileMovingHelper {
     private DoubleSupplier velocityXSupplier;
     private DoubleSupplier velocityYSupplier;
 
-    private int maxIterations = 50;
-    private final double kP = 0.05;
+    private int maxIterations = 200;
+    private final double kP = 0.0001;
 
     public ShootingWhileMovingHelper(ShooterSubsystem shooterSubsystem, DoubleSupplier distance, DoubleSupplier vX, DoubleSupplier vY) {
         this.shooterSubsystem = shooterSubsystem;
@@ -51,7 +51,7 @@ public class ShootingWhileMovingHelper {
     }
 
     public ShootingWhileMovingState calculate() {
-        return calculate(0.1);
+        return calculate(0);
     }
 
     public ShootingWhileMovingState calculate(double alphaGuess) {
@@ -68,7 +68,7 @@ public class ShootingWhileMovingHelper {
         }
 
         while (iterations < maxIterations && error > TARGET_SHOOTING_WHILE_MOVING_ERROR) {
-            double xAim = distanceSupplier.getAsDouble()/((Math.tan(Math.PI/2 - alpha)) - (velocityYSupplier.getAsDouble()/velocityXSupplier.getAsDouble()));
+            double xAim = distanceSupplier.getAsDouble()/((Math.tan(Math.PI/2 - alpha)) - (getVelocityY()/getVelocityX()));
             double yAim = findSolutionLineY(xAim);
 
             //finding time to get to predicted dn
@@ -82,12 +82,21 @@ public class ShootingWhileMovingHelper {
         return new ShootingWhileMovingState(predictedDistanceToHub, Units.radiansToDegrees(alpha), error < TARGET_SHOOTING_WHILE_MOVING_ERROR);
     }
 
+    private double getVelocityX() {
+        double vx = Units.metersToInches(velocityXSupplier.getAsDouble());
+        if (Math.abs(vx) < 1) vx = Math.copySign(1, vx);
+        return vx;
+    }
+
+    private double getVelocityY() {
+        return Units.metersToInches(velocityYSupplier.getAsDouble());
+    }
+
     private double findSolutionLineY(double x) {
-        double vx = velocityXSupplier.getAsDouble();
-        double vy = velocityYSupplier.getAsDouble();
+        double vx = getVelocityX();
+        double vy = getVelocityY();
         double dist = distanceSupplier.getAsDouble();
 
-        if (vx < 0.05) return dist;
         return (vy/vx) * x + dist;
     }
 
@@ -96,18 +105,21 @@ public class ShootingWhileMovingHelper {
     }
 
     private double calculateError(double time, double x, double y) {
+        double vx = getVelocityX();
+        double vy = getVelocityY();
+
         return Math.copySign(
             Math.sqrt(
                 Math.pow(
-                    (time * -velocityXSupplier.getAsDouble() - x),
+                    (time * -vx - x),
                     2
                 ) + 
                 Math.pow(
-                    ((time * -velocityYSupplier.getAsDouble() + distanceSupplier.getAsDouble()) - y),
+                    ((time * -vy + distanceSupplier.getAsDouble()) - y),
                     2
                 )
             ),
-            time * velocityXSupplier.getAsDouble() - x
+            time * vx - x
         );
     }
 }

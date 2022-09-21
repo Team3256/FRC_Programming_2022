@@ -417,7 +417,7 @@ public final class Constants {
         public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 57.00707;
         public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 186.2048;
 
-        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 0.01;
+        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 5; // in inches
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

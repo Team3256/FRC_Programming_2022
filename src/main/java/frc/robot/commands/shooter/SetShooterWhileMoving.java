@@ -2,6 +2,7 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -86,11 +87,18 @@ public class SetShooterWhileMoving extends CommandBase {
         shooterSubsystem.setHoodAngle(targetHoodAngle);
         shooterSubsystem.setVelocityPID(targetVelocity, pidOutput);
 
+        // thanks to dylan for this code <3
+        double alphaPID = alphaController.calculate(swerveDrive.getEstimatedThetaOffset(), alpha);
+        double speedSquared = Math.pow(translationXSupplier.getAsDouble(), 2) + Math.pow(translationYSupplier.getAsDouble(),2);
+        double rotationalVelocity = speedSquared > Math.pow(0.1, 2) ?
+                alphaPID :
+                alphaPID + Math.copySign(SWERVE_TURRET_STATIONARY_MIN, alphaPID);
+
         swerveDrive.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         translationXSupplier.getAsDouble(),
                         translationYSupplier.getAsDouble(),
-                        alphaController.calculate(swerveDrive.getEstimatedDistance(), alpha),
+                        rotationalVelocity,
                         swerveDrive.getGyroscopeRotation()
                 )
         );
