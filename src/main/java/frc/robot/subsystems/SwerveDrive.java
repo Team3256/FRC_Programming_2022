@@ -27,8 +27,6 @@ import io.github.oblarg.oblog.annotations.Log;
 
 import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
 import static frc.robot.Constants.SwerveConstants.*;
 
 
@@ -151,7 +149,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
         if(theta < 0) theta += 2*Math.PI;
 
-        return theta - currentPose.getRotation().getDegrees();
+        return Math.toDegrees(theta) - currentPose.getRotation().getDegrees();
     }
 
     /**
@@ -163,8 +161,13 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
 
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        if(theta < 0) theta += 2*Math.PI;
-        Rotation2d robotCorrectedHeading = new Rotation2d(theta - Math.toRadians(thetaTargetOffset));
+        double correctedTheta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX()) - Math.toRadians(thetaTargetOffset);
+
+        if(correctedTheta < -Math.PI){
+            correctedTheta+=2*Math.PI;
+        }
+
+        Rotation2d robotCorrectedHeading = new Rotation2d(correctedTheta);
 
         double distanceToTarget = Units.inchesToMeters(limelightDistanceToTarget) + Constants.FieldConstants.UPPER_HUB_RADIUS;
         Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
@@ -269,6 +272,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double timestamp = Timer.getFPGATimestamp();
         if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
         double dt = timestamp - lastTimestamp;
+
         if (Limelight.isTargetDetected()) limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();

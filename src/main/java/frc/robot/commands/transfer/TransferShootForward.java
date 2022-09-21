@@ -57,14 +57,12 @@ public class TransferShootForward extends CommandBase {
 
     @Override
     public void initialize() {
-        transferSubsystem.setShooting(true);
         lastTimeReady = Timer.getFPGATimestamp();
     }
 
     @Override
     public void end(boolean interrupted) {
         transferSubsystem.off();
-        transferSubsystem.setShooting(false);
     }
 
     // Returns true when the command should end.

@@ -8,22 +8,19 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.transfer.TransferIndexForward;
+import frc.robot.commands.transfer.TransferOff;
 import frc.robot.hardware.BallColorSensor;
 import frc.robot.hardware.TalonConfiguration;
 import frc.robot.hardware.TalonFXFactory;
-import frc.robot.commands.transfer.TransferIndexForward;
-import frc.robot.commands.transfer.TransferOff;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.BallColor;
 import frc.robot.helper.logging.RobotLogger;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 import java.util.LinkedList;
@@ -31,7 +28,6 @@ import java.util.LinkedList;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.IDConstants.MANI_CAN_BUS;
 import static frc.robot.Constants.LEDConstants.BALL_PATTERN;
-
 import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
 import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
 import static frc.robot.Constants.TransferConstants.*;
@@ -58,7 +54,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
     @Log(name = "Transfer Reversed")
     private boolean isReversed = false;
     @Log(name = "Transfer is shooting")
-    private boolean isShooting = false;
 
     DriverStation.Alliance alliance;
 
@@ -100,14 +95,6 @@ public class TransferSubsystem extends SubsystemBase implements Loggable {
 
         logger.info("Transfer Initialized");
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
-    }
-
-    public boolean isShooting() {
-        return this.isShooting;
-    }
-
-    public void setShooting(boolean shoot) {
-        this.isShooting = shoot;
     }
 
     public void forward() {
