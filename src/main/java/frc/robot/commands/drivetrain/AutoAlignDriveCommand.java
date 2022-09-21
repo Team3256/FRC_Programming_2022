@@ -18,8 +18,7 @@ import static frc.robot.Constants.SwerveConstants.*;
 public class AutoAlignDriveCommand extends CommandBase {
     private RobotLogger logger = new RobotLogger(AutoAlignDriveCommand.class.getCanonicalName());
 
-    PIDController autoAlignVisionPIDController;
-    PIDController autoAlignOdometryPIDController;
+    PIDController autoAlignPIDController;
 
     DoubleSupplier driverJoystickX;
     DoubleSupplier driverJoystickY;
@@ -64,56 +63,30 @@ public class AutoAlignDriveCommand extends CommandBase {
         addRequirements(drivetrainSubsystem);
 
     }
-//    public void alignWithVision(){
-//        autoAlignVisionPIDController.setSetpoint(0);
-//        autoAlignVisionPIDController.enableContinuousInput(-180, 180);
-//    }
 
-    public void alignWithOdometry(){
-        autoAlignOdometryPIDController.setSetpoint(0);
-        autoAlignOdometryPIDController.enableContinuousInput(-180, 180);
+    public void autoAlign(){
+        autoAlignPIDController.setSetpoint(0);
+        autoAlignPIDController.enableContinuousInput(-180, 180);
     }
 
-
-    //The angle between the hub and the robot
-//    public double angleBetweenHub(Pose2d robotPose) {
-//        Translation2d hubCenteredRobotPosition = FieldConstants.HUB_POSITION.minus(robotPose.getTranslation());
-//        return Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-//    }
-
-    //The setpoint angle for the robot to turn towards the hub
-//    public double setAligningAngle(Pose2d robotPose) {
-//        return (Math.toDegrees(angleBetweenHub(robotPose))) % 360;
-//    }
-
-
-
-//    public void alignWithoutVision(){
-//        autoAlignOdometryPIDController.setSetpoint(setAligningAngle(swerveDrive.getPose()));
-//        autoAlignOdometryPIDController.enableContinuousInput(0, 360);
-//    }
 
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Limelight Detected", Limelight.isTargetDetected());
+        double autoAlignPidOutput;
 
-        alignWithOdometry();
-        double autoAlignPidOutput = autoAlignVisionPIDController.calculate(swerveDrive.getEstimatedThetaOffset());
+        autoAlign();
+
+        if(Limelight.isTargetDetected()){
+            autoAlignPidOutput = autoAlignPIDController.calculate(Limelight.getTx());
+        }
+        else{
+            autoAlignPidOutput = autoAlignPIDController.calculate(swerveDrive.getEstimatedThetaOffset());
+        }
+
 
         SmartDashboard.putNumber("Limelight Distance", Limelight.getRawDistanceToTarget());
         SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
-
-//        if(Limelight.isTargetDetected()){
-//            alignWithVision();
-//            autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
-//            SmartDashboard.putNumber("Limelight Distance", Limelight.getRawDistanceToTarget());
-//            SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
-//        }
-//        else {
-//            alignWithoutVision();
-//            autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getEstimatedThetaOffset());
-//            SmartDashboard.putNumber("Swerve Turret Setpoint",swerveDrive.getEstimatedThetaOffset());
-//        }
 
         //Save some Computation from Sqrt
         double speedSquared = Math.pow(driverJoystickX.getAsDouble(), 2) + Math.pow(driverJoystickY.getAsDouble(),2);
@@ -147,9 +120,8 @@ public class AutoAlignDriveCommand extends CommandBase {
     public void initialize() {
 //        Limelight.enable();
         AUTO_AIM_PATTERN.update(true);
-        autoAlignVisionPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
-        autoAlignOdometryPIDController = new PIDController(SWERVE_ODOMETRY_TURRET_KP, SWERVE_ODOMETRY_TURRET_KI, SWERVE_ODOMETRY_TURRET_KD);
-        SmartDashboard.putData("SWERVE TURREt", autoAlignVisionPIDController);
+        autoAlignPIDController = new PIDController(SWERVE_TURRET_KP, SWERVE_TURRET_KI, SWERVE_TURRET_KD);
+        SmartDashboard.putData("SWERVE TURREt", autoAlignPIDController);
         logger.info("Auto Align Enabled");
     }
 
