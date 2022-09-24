@@ -30,7 +30,7 @@ public class AutoChooser {
 
             // path planner dot is the shooter
             if (flywheel != null) {
-                Command oneBallTaxi = new WaitCommand(8).andThen(Paths.get1BallTaxi());
+                Command oneBallTaxi = Paths.get1BallTaxi();
                 autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
 
                 if (intake != null && transfer != null) {

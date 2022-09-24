@@ -54,7 +54,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
         if(isTargetDetected.getAsBoolean()){
             currentDistance = Limelight.getRawDistanceToTarget();
         }
-        else{
+        else {
             currentDistance = estimatedDistance.getAsDouble();
         }
         
