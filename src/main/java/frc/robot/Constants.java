@@ -36,7 +36,7 @@ import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean GOING_CRAZY = false;
 
     public static final boolean LOG_DEBUG_TO_CONSOLE = true;  // Requires DEBUG to be true
@@ -94,7 +94,7 @@ public final class Constants {
         public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 
         public static final int MAX_BALL_COUNT = 2;
-        public static final int STARTING_BALL_COUNT = 1;
+        public static final int STARTING_BALL_COUNT = 2;
 
         public static final int MIN_BALL_COLOR_PROXIMITY = 1000; // Raw Proximity value 0 - 2047 (0 being far away)
 

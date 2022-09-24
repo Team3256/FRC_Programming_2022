@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     SmartDashboard.putData("Auto Chooser", robotContainer.getCommandChooser());
 
-    Logger.configureLoggingAndConfig(robotContainer, false);
+//    Logger.configureLoggingAndConfig(robotContainer, false);
   }
 
   @Override
@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
     logger.info("Test Enabled");
     CommandScheduler.getInstance().cancelAll();
 
-    robotContainer.zeroSubsystems();
+//    robotContainer.zeroSubsystems();
   }
 
   @Override
