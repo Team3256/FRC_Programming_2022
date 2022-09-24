@@ -156,12 +156,19 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
      * @param thetaTargetOffset Limelight angle error in degrees
      */
     public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
-        Pose2d currentPose = getPose(); 
+        Pose2d currentPose = getPose();
         Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
-
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        if(theta < 0) theta += 2*Math.PI;
-        Rotation2d robotCorrectedHeading = new Rotation2d(theta - Math.toRadians(thetaTargetOffset));
+        double correctedHeading = theta - Math.toRadians(thetaTargetOffset);
+
+        if(correctedHeading < -Math.PI){
+            correctedHeading+= 2*Math.PI;
+        }
+        else if(correctedHeading > Math.PI){
+            correctedHeading-= 2*Math.PI;
+        }
+
+        Rotation2d robotCorrectedHeading = new Rotation2d(correctedHeading);
 
         double distanceToTarget = Units.inchesToMeters(limelightDistanceToTarget) + Constants.FieldConstants.UPPER_HUB_RADIUS;
         Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
