@@ -27,8 +27,6 @@ import io.github.oblarg.oblog.annotations.Log;
 
 import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_HEADING_CORRECTION;
-import static frc.robot.Constants.LimelightAutoCorrectConstants.MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION;
 import static frc.robot.Constants.SwerveConstants.*;
 
 
@@ -149,9 +147,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
 
         double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        if(theta < 0) theta += 2*Math.PI;
 
-        return theta - currentPose.getRotation().getDegrees();
+        return Math.toDegrees(theta - currentPose.getRotation().getRadians());
     }
 
     /**
