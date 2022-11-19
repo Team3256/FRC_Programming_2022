@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
+import frc.robot.commands.drivetrain.DefaultDriveCommandRobotOriented;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
@@ -37,142 +38,14 @@ public class Paths {
         transferSubsystem = transfer;
     }
 
-    /* --------------------------------------------- */
-    /* |          ANYWHERE: TARMAC (TAXIS)         | */
-    /* --------------------------------------------- */
-
-    public static Command get0BallTaxi() {
-        Command taxiSegment = trajectoryFactory.createPathPlannerCommand(
-                "1BallTaxi-StartTarmac",
-                1, // max vel
-                1, // max accel
-                1, // thetakP
-                0, // thetakI
-                0 // thetakD
-        );
-
-        return taxiSegment;
-    }
-
-    public static Command get1BallTaxi() {
-        Command taxiSegment = trajectoryFactory.createPathPlannerCommand(
-                "1BallTaxi-StartTarmac",
-                getOneBallRunner(),
-                1, // max vel
-                1, // max accel
-                1, // thetakP
-                0, // thetakI
-                0 // thetakD
-        );
-
-        return taxiSegment
-                .andThen(getShootCommand(5));
+    // TODO: Implement this
+    public static Command team3256Command() {
+        return new DefaultDriveCommandRobotOriented(driveSubsystem);
     }
 
     /* --------------------------------------------- */
-    /* |         TWO BALL SIDE: MID TARMAC         | */
+    /* |            EXAMPLE AUTOS BELOW            | */
     /* --------------------------------------------- */
-
-    public static Command get2BallMidTarmac2BallSide() {
-        Command twoBallTarmacSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "2BallAuto-StartMidTarmac-2BallSide",
-                MidTarmac2BallSide.get2BallRunner(),
-                true
-        ); // path planner commands cannot be reused so this whole statement cannot be in a function
-
-        return 
-            getShootCommand(3)
-                .andThen(twoBallTarmacSideSegment)
-                .andThen(getShootCommand(3)); // shoot
-    }
-
-    public static Command get4BallMidTarmac2BallSide() {
-        Command twoBallTarmacSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "2BallAuto-StartMidTarmac-2BallSide",
-                MidTarmac2BallSide.get2BallRunner(),
-                true // is first segment
-        );
-
-        Command fourBallTarmacSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "4BallAuto-StartTarmac-2BallSide",
-                MidTarmac2BallSide.get4BallRunner(),
-                false // is first segment
-        );
-
-        return 
-            getShootCommand(3)
-                .andThen(twoBallTarmacSideSegment)
-                .andThen(getShootCommand(4))
-                .andThen(fourBallTarmacSideSegment);
-    }
-
-    /* --------------------------------------------- */
-    /* |         ONE BALL SIDE: FAR TARMAC         | */
-    /* --------------------------------------------- */
-
-    public static Command get1BallOuttakeFarTarmac1BallSide() {
-        Command oneBallSegment = trajectoryFactory.createPathPlannerCommand(
-                "1BallAuto-StartFarTarmac-1BallSide",
-                FarTarmac1BallSide.getOneBallRunner(),
-                13, // max vel
-                5, // max accel
-                P_THETA_CONTROLLER, // thetakP
-                I_THETA_CONTROLLER, // thetakI
-                D_THETA_CONTROLLER // thetakD
-        );
-
-        Command outtakeSegment = trajectoryFactory.createPathPlannerCommand(
-                "1BallAuto-StartFarTarmac-1BallSide",
-                FarTarmac1BallSide.getOuttakeRunner(),
-                false // is first segment
-        );
-
-        return oneBallSegment
-                .andThen(getShootCommand(5))
-                .andThen(outtakeSegment)
-                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
-    }
-
-    /* --------------------------------------------- */
-    /* |         ONE BALL SIDE: MID TARMAC         | */
-    /* --------------------------------------------- */
-
-    public static Command get2BallMidTarmac1BallSide() {
-        Command twoBallTarmacSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "2BallAuto-StartMidTarmac-1BallSide",
-                MidTarmac1BallSide.get2BallRunner(),
-                true // is first segment
-        );
-
-        return twoBallTarmacSideSegment
-                .andThen(getShootCommand(3)); // shoot
-    }
-
-    public static Command get2BallDefenseMidTarmac1BallSide() {
-        Command twoBallTarmacSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "2BallAuto-StartMidTarmac-1BallSide",
-                MidTarmac1BallSide.get2BallRunner(),
-                true // is first segment
-        );
-
-        Command twoBallTarmacDefenseSideSegment = trajectoryFactory.createPathPlannerCommand(
-                "2BallAutoBallDefense-StartMidTarmac-1BallSide",
-                MidTarmac1BallSide.get2BallDefenseRunner(),
-                13,
-                3,
-                5.5,
-                I_THETA_CONTROLLER,
-                D_THETA_CONTROLLER
-        );
-
-
-        return 
-            getShootCommand(3)
-                .andThen(twoBallTarmacSideSegment)
-                .andThen(getShootCommand(3))
-                .andThen(twoBallTarmacDefenseSideSegment)
-                .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
-    }
 
     /* --------------------------------------------- */
     /* |         1619 & 254 PLEASE PICK US         | */
@@ -391,24 +264,6 @@ public class Paths {
         return new AutoCommandRunner(oneBallSegmentMarkers);
     }
 
-    private static class FarTarmac1BallSide {
-        public static AutoCommandRunner getOneBallRunner() {
-            List<AutoCommandMarker> oneBallMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(6.81, 6.11), getRevUpCommand())
-            );
-
-            return new AutoCommandRunner(oneBallMarkers);
-        }
-
-        public static AutoCommandRunner getOuttakeRunner() {
-            List<AutoCommandMarker> outtakeRunner = List.of(
-                    new AutoCommandMarker(new Translation2d(6.15, 6.40), new IntakeOn(intakeSubsystem))
-            );
-
-            return new AutoCommandRunner(outtakeRunner);
-        }
-    }
-
     private static class FarTarmac2BallSide {
         public static AutoCommandRunner getTwoBallRunner() {
             List<AutoCommandMarker> twoBallSegmentMarkers = List.of(
@@ -435,46 +290,6 @@ public class Paths {
             );
 
             return new AutoCommandRunner(fourBallSegmentMarkers);
-        }
-    }
-
-    private static class MidTarmac2BallSide {
-        public static AutoCommandRunner get2BallRunner() {
-            List<AutoCommandMarker> twoBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(6.29, 2.65), new Translation2d(3.76, 3.48), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(5.15, 1.92), getRevUpCommand())
-            );
-
-            return new AutoCommandRunner(twoBallSegmentMarkers);
-        }
-
-        public static AutoCommandRunner get4BallRunner() {
-            List<AutoCommandMarker> fourBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(5.74, 2.78), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(1.72, 0.94), getRevUpCommand())
-            );
-
-            return new AutoCommandRunner(fourBallSegmentMarkers);
-        }
-    }
-
-    private static class MidTarmac1BallSide {
-        public static AutoCommandRunner get2BallRunner() {
-            List<AutoCommandMarker> twoBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(5.97, 5.20), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(5.97, 5.20), getRevUpCommand())
-            );
-
-            return new AutoCommandRunner(twoBallSegmentMarkers);
-        }
-
-        public static AutoCommandRunner get2BallDefenseRunner() {
-            List<AutoCommandMarker> twoBallSegmentMarkers = List.of(
-                    new AutoCommandMarker(new Translation2d(3.69, 4.66), new Translation2d(4.62, 3.16), new IntakeOn(intakeSubsystem)),
-                    new AutoCommandMarker(new Translation2d(4.07,6.00), new Translation2d(6.25, 7.18), new IntakeOn(intakeSubsystem))
-            );
-
-            return new AutoCommandRunner(twoBallSegmentMarkers);
         }
     }
 

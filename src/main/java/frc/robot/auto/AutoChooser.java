@@ -25,15 +25,10 @@ public class AutoChooser {
             Command doNothing = new DefaultDriveCommandRobotOriented(drive);
             autoChooser.setDefaultOption("Do Nothing", doNothing);
 
-            Command zeroBallTaxi = Paths.get0BallTaxi();
-            autoChooser.addOption("0 Ball Taxi | Start Tarmac | Any Side", zeroBallTaxi);
-
             // path planner dot is the shooter
             if (flywheel != null) {
-                Command oneBallTaxi = Paths.get1BallTaxi();
-                autoChooser.addOption("1 Ball Taxi | Start Tarmac | Any Side", oneBallTaxi);
-
                 if (intake != null && transfer != null) {
+                    // TODO: Add your command to the chooser
 
                     Command oneBallPicked = Paths.getPleasePickUsOneBall();
                     autoChooser.addOption("JUST ONE BALL", oneBallPicked);
@@ -44,20 +39,8 @@ public class AutoChooser {
                     Command oneBallPickedFender = Paths.getPleasePickUsFender();
                     autoChooser.addOption("FENDER DEFENSE", oneBallPickedFender);
 
-                    Command oneBallTarmacFar1BallSide = Paths.get1BallOuttakeFarTarmac1BallSide();
-                    autoChooser.addOption("1 Ball Outtake | Start Far Tarmac | 1 Ball Side", oneBallTarmacFar1BallSide);
-
                     Command cool = Paths.getCoolAuto();
                     autoChooser.addOption("COOL AUTO RUN THIS", cool);
-
-                    Command twoBallTarmacMid2BallSide = Paths.get2BallMidTarmac2BallSide();
-                    autoChooser.addOption("2 Ball Knock Red | Start Mid Tarmac | 2 Ball Side", twoBallTarmacMid2BallSide);
-
-                    Command twoBallTarmacMid1BallSide = Paths.get2BallMidTarmac1BallSide();
-                    autoChooser.addOption("2 Ball | Start Mid Tarmac | 1 Ball Side", twoBallTarmacMid1BallSide);
-
-                    Command twoBallDefenseMidTarmac1BallSide = Paths.get2BallDefenseMidTarmac1BallSide();
-                    autoChooser.addOption("2 Ball Outtake | Start Mid Tarmac | 1 Ball Side", twoBallDefenseMidTarmac1BallSide);
 
                     Command twoBallTarmacEdge2BallSide = Paths.get2BallFarTarmac2BallSide();
                     autoChooser.addOption("2 Ball | Start Edge Tarmac | 2 Ball Side", twoBallTarmacEdge2BallSide);
@@ -67,9 +50,6 @@ public class AutoChooser {
 
                     Command fourBallTarmacEdge2BallSide = Paths.get4BallFarTarmac2BallSide();
                     autoChooser.addOption("4/5 Ball | Start Edge Tarmac | 2 Ball Side", fourBallTarmacEdge2BallSide);
-
-                    Command fourBallTarmacMid2BallSide = Paths.get4BallMidTarmac2BallSide();
-                    autoChooser.addOption("4 Ball | Start Mid Tarmac | 2 Ball Side", fourBallTarmacMid2BallSide);
                 }
             }
         }
