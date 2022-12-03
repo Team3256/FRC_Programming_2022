@@ -22,6 +22,9 @@ import frc.robot.commands.transfer.TransferOff;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.helper.BallColor;
 import frc.robot.helper.logging.RobotLogger;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 import java.util.LinkedList;
 
@@ -33,7 +36,7 @@ import static frc.robot.Constants.SubsystemEnableFlags.BALL_COLOR_SENSOR;
 import static frc.robot.Constants.SubsystemEnableFlags.IR_SENSORS;
 import static frc.robot.Constants.TransferConstants.*;
 
-public class TransferSubsystem extends SubsystemBase {
+public class TransferSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(TransferSubsystem.class.getCanonicalName());
 
     private final TalonFX transferMotor;
@@ -41,7 +44,6 @@ public class TransferSubsystem extends SubsystemBase {
     private final DigitalInput transferStopIRSensor;
     private final DigitalInput transferEndIRSensor;
     private BallColorSensor ballColorSensor;
-
 
     // Counts how many times what color is being detected
     // To avoid single bad reading skewing data
@@ -51,8 +53,11 @@ public class TransferSubsystem extends SubsystemBase {
     private int currBlueCount = 0;
     private int currRedCount = 0;
 
+    @Log(name = "Is detecting ball color")
     private boolean isDetectingBallColor = false;
+    @Log(name = "Transfer Reversed")
     private boolean isReversed = false;
+    @Log(name = "Transfer is shooting")
     private boolean isShooting = false;
 
     DriverStation.Alliance alliance;
@@ -60,9 +65,7 @@ public class TransferSubsystem extends SubsystemBase {
     // Linked list for FIFO queue
     LinkedList<BallColor> ballColorIndex = new LinkedList<>();
 
-    // For Tracking Ball RPM
-    public static ShooterSubsystem flywheelSubsystem;
-
+    @Log
     private double currentBallCount;
 
     public TransferSubsystem() {
@@ -99,14 +102,6 @@ public class TransferSubsystem extends SubsystemBase {
         logger.info("Starting Ball Count Initialized to: " + currentBallCount);
     }
 
-    public void setCoast(boolean coast) {
-        if (coast) {
-            transferMotor.setNeutralMode(NeutralMode.Coast);
-        } else {
-            transferMotor.setNeutralMode(NeutralMode.Brake);
-        }
-    }
-
     public boolean isShooting() {
         return this.isShooting;
     }
@@ -115,40 +110,41 @@ public class TransferSubsystem extends SubsystemBase {
         this.isShooting = shoot;
     }
 
-    public void forward(){
+    public void forward() {
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.PercentOutput, TransferConstants.DEFAULT_TRANSFER_SPEED);
+        transferMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TRANSFER_SPEED);
         logger.info("Transfer On");
     }
 
-    public void forwardShoot(){
+    public void forwardShoot() {
         isReversed = false;
-        transferMotor.set(TalonFXControlMode.Velocity, TransferConstants.SHOOT_FORWARD_TRANSFER_SPEED);
+        transferMotor.set(TalonFXControlMode.Velocity, SHOOT_FORWARD_TRANSFER_SPEED * 2048);
         logger.info("Transfer Shooting Mode On");
     }
 
-    public double getCurrentBallCount(){
+    public double getCurrentBallCount() {
         return currentBallCount;
     }
 
-    public void manualReverse(){
+    public void manualReverse() {
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, MANUAL_REVERSE_TRANSFER_SPEED);
         logger.info("Transfer Manually Reversed");
     }
 
-    public void outtake(){
+    public void outtake() {
         isReversed = true;
         transferMotor.set(TalonFXControlMode.PercentOutput, OUTTAKE_REVERSE_SPEED);
         logger.info("Transfer Manually Reversed");
     }
 
-    public void off(){
+    public void off() {
         isReversed = false;
         transferMotor.neutralOutput();
         logger.info("Transfer Off");
     }
 
+    @Log.BooleanBox(name = "Transfer Start IR")
     /**
      * @return Returns whether the IR sensor at the front of the transfer's line of sight is broken.
      */
@@ -156,6 +152,7 @@ public class TransferSubsystem extends SubsystemBase {
         return !transferStartIRSensor.get();
     }
 
+    @Log.BooleanBox(name = "Transfer Stop IR")
     /**
      * @return Returns whether the IR sensor in the middle of the transfer's line of sight is broken,
      * which signifies when the ball should stop.
@@ -164,6 +161,7 @@ public class TransferSubsystem extends SubsystemBase {
         return !transferStopIRSensor.get();
     }
 
+    @Log.BooleanBox(name = "Transfer End IR")
     /**
      * @return Returns whether the IR sensor at the end of the transfer's line of sight is broken,
      * which signifies when the ball leaves the transfer via the shooter
@@ -172,7 +170,7 @@ public class TransferSubsystem extends SubsystemBase {
         return !transferEndIRSensor.get();
     }
 
-    public boolean isFull(){
+    public boolean isFull() {
         return currentBallCount >= TransferConstants.MAX_BALL_COUNT;
     }
 
@@ -186,7 +184,7 @@ public class TransferSubsystem extends SubsystemBase {
         new Trigger(this::isTransferStartIRBroken).and(new Trigger(()->!isReversed))
                 .whenActive(
                         new ParallelRaceGroup(
-                                new WaitCommand(0.50),
+                                new WaitCommand(1), // 1 second timeout
                                 new TransferIndexForward(this)
                         )
                 )
@@ -300,9 +298,6 @@ public class TransferSubsystem extends SubsystemBase {
     private void removeShotBallFromIndex(){
         logger.info("Ball Leaving Transfer by Shooting");
 
-        if (flywheelSubsystem != null)
-            logger.info("Ball Leaving At RPM: " + flywheelSubsystem.getFlywheelRPM() + " rpm");
-
         currentBallCount--;
         if (currentBallCount < 0) {
             currentBallCount = 0;
@@ -354,19 +349,18 @@ public class TransferSubsystem extends SubsystemBase {
                 ")");
     }
 
+    @Log(name = "Transfer Velocity")
+    public double getTransferVelocity() {
+        return transferMotor.getSelectedSensorVelocity(0) / 2048;
+    }
+
     @Override
     public void periodic() {
         if (isDetectingBallColor)
             ballColorSamplingPeriodic();
-        NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
-        NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
+        // NetworkTableInstance.getDefault().getTable("Debug").getEntry("Forward IR").setBoolean( this.isTransferStartIRBroken());
+        // NetworkTableInstance.getDefault().getTable("Debug").getEntry("END IR").setBoolean( this.isTransferEndIRBroken());
         if (DEBUG) {
-            SmartDashboard.putNumber("Transfer Speed", transferMotor.getSelectedSensorVelocity(0));
-            SmartDashboard.putNumber("Ball Count", getCurrentBallCount());
-            if (!ballColorIndex.isEmpty()) {
-                SmartDashboard.putString("First Ball Color", ballColorIndex.getFirst().toString());
-                SmartDashboard.putString("Last Ball Color", ballColorIndex.getLast().toString());
-            }
         }
     }
 }

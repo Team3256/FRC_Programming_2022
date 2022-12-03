@@ -84,10 +84,7 @@ public class PPTrajectoryFollowCommand extends CommandBase {
 
     public void setFirstSegment(boolean first) {
         if (!first) {
-//            logger.info("Set trajectory as NOT first segment");
             this.startPose = null;
-        } else {
-//            logger.info("Set trajectory AS first segment");
         }
     }
 

@@ -7,15 +7,14 @@ import frc.robot.commands.drivetrain.AutoAlignDriveCommand;
 import frc.robot.commands.intake.IntakeOn;
 import frc.robot.commands.intake.IntakeReverse;
 import frc.robot.commands.shooter.SetShooterPIDFromInterpolation;
-import frc.robot.commands.shooter.SetShooterPIDVelocityFromState;
 import frc.robot.commands.transfer.OuttakeFast;
 import frc.robot.commands.transfer.TransferManualReverse;
 import frc.robot.commands.transfer.TransferShootForward;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.auto.AutoCommandMarker;
 import frc.robot.helper.auto.AutoCommandRunner;
-import frc.robot.helper.shooter.ShooterState;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.TransferSubsystem;
 
@@ -30,11 +29,11 @@ public class Paths {
     private static ShooterSubsystem shooterSubsystem;
     private static TransferSubsystem transferSubsystem;
 
-    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem flywheel, TransferSubsystem transfer) {
+    public static void initialize(SwerveDrive drive, IntakeSubsystem intake, ShooterSubsystem shooter, TransferSubsystem transfer) {
         trajectoryFactory = trajectoryFactory == null ? new TrajectoryFactory(drive) : trajectoryFactory;
         driveSubsystem = drive;
         intakeSubsystem = intake;
-        shooterSubsystem = flywheel;
+        shooterSubsystem = shooter;
         transferSubsystem = transfer;
     }
 
@@ -67,7 +66,7 @@ public class Paths {
         );
 
         return taxiSegment
-                .andThen(getShootCommand(3));
+                .andThen(getShootCommand(5));
     }
 
     /* --------------------------------------------- */
@@ -81,7 +80,9 @@ public class Paths {
                 true
         ); // path planner commands cannot be reused so this whole statement cannot be in a function
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3)); // shoot
     }
 
@@ -98,8 +99,10 @@ public class Paths {
                 false // is first segment
         );
 
-        return twoBallTarmacSideSegment
-                .andThen(getShootCommand(3))
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
+                .andThen(getShootCommand(4))
                 .andThen(fourBallTarmacSideSegment);
     }
 
@@ -125,7 +128,7 @@ public class Paths {
         );
 
         return oneBallSegment
-                .andThen(getShootCommand(4))
+                .andThen(getShootCommand(5))
                 .andThen(outtakeSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
     }
@@ -163,8 +166,10 @@ public class Paths {
         );
 
 
-        return twoBallTarmacSideSegment
-                .andThen(getShootCommand(5))
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
+                .andThen(getShootCommand(3))
                 .andThen(twoBallTarmacDefenseSideSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new OuttakeFast(transferSubsystem, intakeSubsystem))));
     }
@@ -265,7 +270,8 @@ public class Paths {
         ); // path planner commands cannot be reused so this whole statement cannot be in a function
 
         return
-                twoBallTarmacSideSegment
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3)); // shoot
     }
 
@@ -288,7 +294,9 @@ public class Paths {
                 new IntakeReverse(intakeSubsystem)
         );
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(4))
                 .andThen(coolSegment)
                 .andThen(new InstantCommand(() -> CommandScheduler.getInstance().schedule(out)));
@@ -307,7 +315,9 @@ public class Paths {
                 false // is first segment
         );
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(3))
                 .andThen(threeBallTarmacSideSegment)
                 .andThen(getShootCommand(3));
@@ -333,7 +343,9 @@ public class Paths {
         );
 
 
-        return twoBallTarmacSideSegment
+        return 
+            getShootCommand(3)
+                .andThen(twoBallTarmacSideSegment)
                 .andThen(getShootCommand(4.5))
                 .andThen(threeBallTarmacSideSegment)
                 .andThen(getShootCommand(3))
@@ -473,7 +485,7 @@ public class Paths {
                 new ParallelDeadlineGroup( // TODO dont be bad
                     new WaitCommand(timeToShoot * 0.7),
                     new AutoAlignDriveCommand(driveSubsystem),
-                    new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting),
+                    new SetShooterPIDFromInterpolation(shooterSubsystem, driveSubsystem::getEstimatedDistance, Limelight::isTargetDetected),
 //                    new SetShooterPIDVelocityFromState(flywheelSubsystem, ()->new ShooterState( 2450, 140000)), //TODO: FIX ME (TESTING)
                     new WaitCommand(timeToShoot * 0.20).andThen(
                             new InstantCommand(
@@ -487,7 +499,7 @@ public class Paths {
 
     private static Command getRevUpCommand() {
 //        return new SetShooterPIDVelocityFromState(shooterSubsystem, ()->new ShooterState( 2450, 140000)); //TODO: FIX ME (TESTING)
-        return new SetShooterPIDFromInterpolation(shooterSubsystem, transferSubsystem::isShooting);
+        return new SetShooterPIDFromInterpolation(shooterSubsystem, driveSubsystem::getEstimatedDistance, Limelight::isTargetDetected);
     }
 }
 

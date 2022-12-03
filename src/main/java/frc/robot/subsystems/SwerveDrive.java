@@ -13,25 +13,30 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.hardware.Limelight;
 import frc.robot.helper.AdaptiveSlewRateLimiter;
 import frc.robot.helper.logging.RobotLogger;
-import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-import static frc.robot.Constants.LimelightAutoCorrectConstants.*;
-import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.FieldConstants.HUB_POSITION;
 import static frc.robot.Constants.IDConstants.*;
+import static frc.robot.Constants.SwerveConstants.*;
 
 
-public class SwerveDrive extends SubsystemBase {
+public class SwerveDrive extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(SwerveDrive.class.getCanonicalName());
     private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     public static final double MAX_VOLTAGE = 12.0;
+    double lastTimestamp = -1; // illegal initial value so we can check when to Initialize it
+
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
             new Translation2d(DRIVETRAIN_TRACK_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -42,6 +47,7 @@ public class SwerveDrive extends SubsystemBase {
             // Back right
             new Translation2d(-DRIVETRAIN_TRACK_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
+
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(DRIVETRAIN_PIGEON_ID);
 
     private final SwerveModule frontLeftModule;
@@ -51,20 +57,17 @@ public class SwerveDrive extends SubsystemBase {
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Pose2d pose = new Pose2d(0, 0, new Rotation2d(0));
-    private Pose2d curr_velocity = new Pose2d();
+    private Pose2d hubRelativeVelocity = new Pose2d();
     private final Field2d field = new Field2d();
-    private double last_timestamp = Timer.getFPGATimestamp();
     private SwerveDrivePoseEstimator poseEstimator;
-
-    private boolean highAccDetectedPrev = false;
 
     public SwerveDrive() {
         pigeon.configMountPoseYaw(GYRO_YAW_OFFSET);
 
         poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), new Pose2d(), kinematics,
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.012, 0.012, 0.01), // Current state X, Y, theta.
-                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.008), // Gyro reading theta stdevs
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.11, 0.11, 0.05) // Vision stdevs X, Y, and theta.
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0015, 0.0015, 0.03), // Current state X, Y, theta.
+                new MatBuilder<>(Nat.N1(), Nat.N1()).fill(0.0008), // Gyro reading theta stdevs
+                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0002, 0.0002, 0.05) // Vision stdevs X, Y, and theta.
         );
 //            new SwerveDrivePoseEstimator(kinematics, getGyroscopeRotation(), pose);
 
@@ -108,6 +111,7 @@ public class SwerveDrive extends SubsystemBase {
         logger.info("zeroed gyroscope");
     }
 
+    // @Log.Gyro(name = "Gyro Angle")
     public Rotation2d getGyroscopeRotation() {
         return Rotation2d.fromDegrees(pigeon.getYaw());
     }
@@ -125,40 +129,66 @@ public class SwerveDrive extends SubsystemBase {
         chassisSpeeds.vxMetersPerSecond = adaptiveXRateLimiter.calculate(chassisSpeeds.vxMetersPerSecond);
         chassisSpeeds.vyMetersPerSecond = adaptiveYRateLimiter.calculate(chassisSpeeds.vyMetersPerSecond);
         this.chassisSpeeds = chassisSpeeds;
-
     }
 
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}
 
 
-    /**
-     * @param distanceToTarget Distance to target in meters
-     * @param thetaTargetOffset Limelight angle error in degrees
-     */
-    public void limelightLocalization(double distanceToTarget, double thetaTargetOffset) {
-        Pose2d currentPose = getPose(); // TODO: Add values for Limelight interpolation
-        Translation2d hubCenteredRobotPosition = currentPose.getTranslation().minus(Constants.FieldConstants.HUB_POSITION); // coordinates with hub as origin
-
-        double r = distanceToTarget;
-        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
-        Rotation2d robotCorrectedHeading = new Rotation2d(theta + Math.toRadians(thetaTargetOffset));
-
-        Translation2d visionTranslation = new Translation2d(r * Math.cos(theta), r * Math.sin(theta));
-        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
-
-        if (
-                Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
-                Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION
-        ){
-            // only update position if measurement is not obviously wrong
-            this.logger.info("Updating Pose Based off vision");
-            poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
-        } else {
-            this.logger.info("Not Updating Pose Based off vision");
-        }
+    @Log(name = "Pose estimated Distance")
+    public double getEstimatedDistance(){
+        return Units.metersToInches(getPose().getTranslation().getDistance(HUB_POSITION) - Constants.FieldConstants.UPPER_HUB_RADIUS);
     }
 
-    public Pose2d getVelocity() { return curr_velocity; }
+    @Log(name = "Pose Estimated Theta Offset")
+    public double getEstimatedThetaOffset() {
+        if (Limelight.isTargetDetected()) return Limelight.getTx();
+
+        Pose2d currentPose = getPose(); 
+        Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
+
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+
+        return Math.toDegrees(theta - currentPose.getRotation().getRadians());
+    }
+
+    /**
+     * @param limelightDistanceToTarget Distance to target in meters
+     * @param thetaTargetOffset Limelight angle error in degrees
+     */
+    public void limelightLocalization(double limelightDistanceToTarget, double thetaTargetOffset) {
+        Pose2d currentPose = getPose();
+        Translation2d hubCenteredRobotPosition = HUB_POSITION.minus(currentPose.getTranslation());
+        double theta = Math.atan2(hubCenteredRobotPosition.getY(), hubCenteredRobotPosition.getX());
+        double correctedHeading = theta - Math.toRadians(thetaTargetOffset);
+
+        if(correctedHeading < -Math.PI){
+            correctedHeading+= 2*Math.PI;
+        }
+        else if(correctedHeading > Math.PI){
+            correctedHeading-= 2*Math.PI;
+        }
+
+        Rotation2d robotCorrectedHeading = new Rotation2d(correctedHeading);
+
+        double distanceToTarget = Units.inchesToMeters(limelightDistanceToTarget) + Constants.FieldConstants.UPPER_HUB_RADIUS;
+        Translation2d visionTranslationHubCentered = new Translation2d(distanceToTarget * Math.cos(theta), distanceToTarget * Math.sin(theta));
+        Translation2d visionTranslation = HUB_POSITION.minus(visionTranslationHubCentered);
+
+        Pose2d visionPose = new Pose2d(visionTranslation, robotCorrectedHeading);
+
+        // if (
+        //         Math.abs(currentPose.relativeTo(visionPose).getTranslation().getNorm()) <= MAX_VISION_LOCALIZATION_TRANSLATION_CORRECTION &&
+        //         Math.abs(currentPose.getRotation().minus(robotCorrectedHeading).getDegrees()) <= MAX_VISION_LOCALIZATION_HEADING_CORRECTION || true
+        // ){
+            // only update position if measurement is not obviously wrong
+            SwerveDrive.logger.info("Updating Pose Based off vision");
+            poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
+        // } else {
+        //     SwerveDrive.logger.info("Not Updating Pose Based off vision");
+        // }
+    }
+
+    public Pose2d getVelocity() { return hubRelativeVelocity; }
 
     /**
      * Sets the swerve ModuleStates.
@@ -216,12 +246,14 @@ public class SwerveDrive extends SubsystemBase {
     } // only used for debug on Glass, not for following trajectories
 
     public void outputToDashboard() {
-
         if (Constants.DEBUG) {
+            SmartDashboard.putNumber("Limelight", Limelight.getRawDistanceToTarget());
             SmartDashboard.putNumber("Front Left Speed", frontLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Front Right Speed", frontRightModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Left Speed", backLeftModule.getDriveVelocity());
             SmartDashboard.putNumber("Back Right Speed", backRightModule.getDriveVelocity());
+            SmartDashboard.putNumber("Swerve X Velocity", hubRelativeVelocity.getX());
+            SmartDashboard.putNumber("Swerve Y Velocity", hubRelativeVelocity.getY());
 
             SmartDashboard.putNumber("Position in Inches", Units.metersToInches(pose.getTranslation().getX()));
 
@@ -239,7 +271,9 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
-        last_timestamp = timestamp;
+        if (lastTimestamp == -1) lastTimestamp = timestamp - 0.2;
+        double dt = timestamp - lastTimestamp;
+        if (Limelight.isTargetDetected()) limelightLocalization(Limelight.getRawDistanceToTarget(), Limelight.getTx());
 
         Rotation2d gyroAngle = getGyroscopeRotation();
         // Update the pose
@@ -248,8 +282,15 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backLeftState = new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle()));
         SwerveModuleState backRightState = new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()));
 
+        Pose2d lastPose = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d()));
+
         pose = poseEstimator.updateWithTime(timestamp, gyroAngle, frontRightState, backRightState,
                 frontLeftState, backLeftState);
+
+        Pose2d diff = pose.relativeTo(new Pose2d(Constants.FieldConstants.HUB_POSITION, new Rotation2d())).relativeTo(lastPose);
+        hubRelativeVelocity = new Pose2d(diff.getX() / dt, diff.getY() / dt, diff.getRotation().times(1/dt));
+
+        lastTimestamp = timestamp;
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(states);
@@ -257,33 +298,7 @@ public class SwerveDrive extends SubsystemBase {
         outputToDashboard();
     }
 
-    public void forward(double meters){
-        drive(new ChassisSpeeds(0,meters,0));
-    }
-
-    public void backward(double meters){
-        drive(new ChassisSpeeds(0,-meters,0));
-    }
-
-    public void pivotTurn(double rad){
-        drive( new ChassisSpeeds(0,0,rad));
-    }
-
-    public void fixedRightRotate(int volts){
-        frontLeftModule.set(deadzoneMotor(volts), 0);
-        backLeftModule.set(deadzoneMotor(volts), 0);
-    }
-    public void fixedLeftRotate(int volts){
-        frontRightModule.set(deadzoneMotor(volts), 0);
-        backRightModule.set(deadzoneMotor(volts), 0);
-    }
-    public void stop(){
-        drive(new ChassisSpeeds(0,0,0));
-    }
-
-
     public void debugSwerveOffsets() {
-
         SmartDashboard.putNumber("Front Left Swerve Module Standard Offset: ", frontLeftModule.getSteerAngle());
         SmartDashboard.putNumber("Front Right Swerve Module Standard Offset: ", frontRightModule.getSteerAngle());
         SmartDashboard.putNumber("Back Left Swerve Module Standard Offset: ", backLeftModule.getSteerAngle());

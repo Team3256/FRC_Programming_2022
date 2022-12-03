@@ -119,10 +119,9 @@ public class AutoAlignDriveCommand extends CommandBase {
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
         else {
-            return;
-//            alignWithoutVision();
-//            autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getPose().getRotation().getDegrees());
-//            SmartDashboard.putNumber("Swerve Turret Setpoint", swerveDrive.getPose().getRotation().getDegrees());
+           // alignWithoutVision();
+           // autoAlignPidOutput = autoAlignOdometryPIDController.calculate(swerveDrive.getEstimatedThetaOffset());
+           // SmartDashboard.putNumber("Swerve Turret Setpoint",swerveDrive.getEstimatedThetaOffset());
         }
 
         //Save some Computation from Sqrt

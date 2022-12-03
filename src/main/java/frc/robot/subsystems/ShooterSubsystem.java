@@ -15,18 +15,21 @@ import frc.robot.hardware.TalonFXFactory;
 import frc.robot.helper.logging.RobotLogger;
 import frc.robot.helper.shooter.ShooterState;
 import frc.robot.helper.shooter.TrainingDataPoint;
+import io.github.oblarg.oblog.Loggable;
+
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.PiecewiseBicubicSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import java.math.BigDecimal;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.IDConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements Loggable {
     private static final RobotLogger logger = new RobotLogger(ShooterSubsystem.class.getCanonicalName());
 
     public enum ShooterLocationPreset {
@@ -41,26 +44,30 @@ public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX hoodAngleMotor;
     private final DigitalInput limitSwitch;
 
-    private ShooterLocationPreset shooterLocationPreset = ShooterLocationPreset.TARMAC_VERTEX;
+    BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018082895");
+    BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
 
     private static final PolynomialSplineFunction distanceToHoodAngleInterpolatingFunction;
     private static final PolynomialSplineFunction distanceToFlywheelRPMInterpolatingFunction;
+    private static final PolynomialSplineFunction distanceToTimeInterpolatingFunction;
 
     static {
         double[] trainDistance = new double[SHOOTER_DATA.size()];
         double[] trainFlywheelHood = new double[SHOOTER_DATA.size()];
         double[] trainFlywheelRPM = new double[SHOOTER_DATA.size()];
+        double[] trainFlywheelTime = new double[SHOOTER_DATA.size()];
         for(int i = 0; i < SHOOTER_DATA.size(); i++) {
             TrainingDataPoint dataPoint = SHOOTER_DATA.get(i);
             trainDistance[i] = dataPoint.distance;
             trainFlywheelHood[i] = dataPoint.hoodAngle;
             trainFlywheelRPM[i] = dataPoint.flywheelRPM;
+            trainFlywheelTime[i] = dataPoint.time;
         }
 
         distanceToFlywheelRPMInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelRPM);
         distanceToHoodAngleInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelHood);
+        distanceToTimeInterpolatingFunction = new LinearInterpolator().interpolate(trainDistance, trainFlywheelTime);
     }
-
 
     public ShooterSubsystem() {
         TalonConfiguration MASTER_CONFIG = new TalonConfiguration();
@@ -95,21 +102,29 @@ public class ShooterSubsystem extends SubsystemBase {
         logger.info("Flywheel Initialized");
     }
 
-    public void setTargetVelocity(double targetVelocity) {
-        this.targetVelocity = targetVelocity;
-    }
-
-    public double getTargetVelocity() {
-        return this.targetVelocity;
-    }
-
-
     /**
      * @param percent Velocity from min to max as percent from xbox controller (0% - 100%)
      * Flywheel speed is set by integrated get controller
      */
     public void setPercentSpeed(double percent) {
         masterLeftShooterMotor.set(ControlMode.PercentOutput, percent);
+    }
+
+    /**
+     * @param RPM of the flywheel (including gearing)
+     * Flywheel speed is set by integrated get controller
+     */
+    public void setVelocityPID(double targetVelocity, double pidOutput) {
+        this.targetVelocity = targetVelocity;
+        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
+
+        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
+
+        // Ensure it is never negative
+        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
+        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
+
+        this.setPercentSpeed(clampedPositiveFinalMotorOutput);
     }
 
     /**
@@ -161,6 +176,14 @@ public class ShooterSubsystem extends SubsystemBase {
                 (velocity >= this.targetVelocity - SET_POINT_ERROR_MARGIN*this.targetVelocity);
     }
 
+    public double getTimeFromInterpolator(double distance) {
+        if(distanceToTimeInterpolatingFunction == null){
+            logger.warning("Distance to Time Interpolation Function is NULL");
+        }
+
+        return distanceToTimeInterpolatingFunction.value(clampDistanceToInterpolation(distance));
+    }
+
     public double getHoodAngleFromInterpolator(double distance) {
         if(distanceToHoodAngleInterpolatingFunction == null){
             logger.warning("Distance to Hood Angle Interpolation Function is NULL");
@@ -188,7 +211,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getFlywheelRPM(){
-        return this.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
+        return ShooterSubsystem.fromSuToRPM(masterLeftShooterMotor.getSelectedSensorVelocity());
     }
 
     @Override
@@ -199,5 +222,5 @@ public class ShooterSubsystem extends SubsystemBase {
             NetworkTableInstance.getDefault().getTable("Debug").getEntry("HOOD Limit").setBoolean(this.isHoodLimitSwitchPressed());
         }
     }
-
 }
+

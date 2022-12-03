@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 
 public class TransferShootForward extends CommandBase {
     private RobotLogger logger = new RobotLogger(TransferSubsystem.class.getCanonicalName());
+
     private final ShooterSubsystem shooterSubsystem;
     private final TransferSubsystem transferSubsystem;
     private double lastTimeReady = 0;
@@ -39,6 +40,7 @@ public class TransferShootForward extends CommandBase {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Ready to Shoot", shooterSubsystem.isAtSetPoint());
+        
         // if (shooterSubsystem.isAtSetPoint() || override.getAsBoolean()) {
         //     if (override.getAsBoolean() && shooterSubsystem.isAtSetPoint()) {
         //         logger.warning("Overriding Shooting because of timeout override");
@@ -56,7 +58,6 @@ public class TransferShootForward extends CommandBase {
     @Override
     public void initialize() {
         transferSubsystem.setShooting(true);
-        transferSubsystem.setCoast(true);
         lastTimeReady = Timer.getFPGATimestamp();
     }
 
@@ -64,7 +65,6 @@ public class TransferShootForward extends CommandBase {
     public void end(boolean interrupted) {
         transferSubsystem.off();
         transferSubsystem.setShooting(false);
-        transferSubsystem.setCoast(false);
     }
 
     // Returns true when the command should end.

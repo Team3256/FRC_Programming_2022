@@ -9,10 +9,10 @@ import frc.robot.Constants;
 import frc.robot.commands.WaitAndVibrateCommand;
 import frc.robot.hardware.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
-import jdk.jfr.BooleanFlag;
 
-import java.math.BigDecimal;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 
 public class SetShooterPIDFromInterpolation extends CommandBase {
     private PIDController flywheelControllerFar;
@@ -20,25 +20,29 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     private double targetVelocity = 0;
     private double targetHoodAngle = 0;
+    private double pidOutput = 0;
+
     private double currentDistance = 0;
 
     private ShooterSubsystem shooterSubsystem;
-    private BooleanSupplier isShooting;
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting) {
+    private DoubleSupplier estimatedDistance;
+    private BooleanSupplier isTargetDetected;
+
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, DoubleSupplier estimatedDistance, BooleanSupplier isTargetDetected) {
         this.shooterSubsystem = flywheelSubsystem;
-        this.isShooting = isShooting;
+        this.isTargetDetected = isTargetDetected;
+        this.estimatedDistance = estimatedDistance;
 
         flywheelControllerFar = new PIDController(0.0005,0,0.000008);
         flywheelControllerLow = new PIDController(0.00025,0,0.000008);
     }
 
-    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, BooleanSupplier isShooting, XboxController operatorController) {
-        this(flywheelSubsystem, isShooting);
+    public SetShooterPIDFromInterpolation(ShooterSubsystem flywheelSubsystem, DoubleSupplier odomDistanceToTarget, BooleanSupplier isTargetDetected, XboxController operatorController) {
+        this(flywheelSubsystem, odomDistanceToTarget, isTargetDetected);
         new Button(() -> flywheelSubsystem.isAtSetPoint()).whenPressed(new WaitAndVibrateCommand(operatorController, 0.5, 0.1));
     }
 
-    //shooting all balls
     @Override
     public void initialize() {
         System.out.println("Velocity PID Ramping Up");
@@ -47,21 +51,20 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
 
     @Override
     public void execute() {
-        double pidOutput;
-
-        currentDistance = Limelight.getRawDistanceToTarget();
-
-        //if the current ball count > 0 && tranfer forward is on
-        if (!isShooting.getAsBoolean() || targetVelocity == 0) { // dont update when shooting because limelight gets blocked by shooting ball
-            targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
-            shooterSubsystem.setTargetVelocity(targetVelocity);
-
-            targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
+        if(isTargetDetected.getAsBoolean()){
+            currentDistance = Limelight.getRawDistanceToTarget();
         }
+        else {
+            currentDistance = estimatedDistance.getAsDouble();
+        }
+        
+        targetVelocity = shooterSubsystem.getFlywheelRPMFromInterpolator(currentDistance) + 15; // PID bad ig
+        targetHoodAngle = shooterSubsystem.getHoodAngleFromInterpolator(currentDistance);
 
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Interpolation Target Velocity", targetVelocity);
             SmartDashboard.putNumber("Interpolation Target Hood Angle", targetHoodAngle);
+
         }
 
         if (targetVelocity < 3500){
@@ -70,18 +73,7 @@ public class SetShooterPIDFromInterpolation extends CommandBase {
             pidOutput = flywheelControllerFar.calculate(shooterSubsystem.getFlywheelRPM(), targetVelocity);
         }
 
-        BigDecimal KF_PERCENT_FACTOR_FLYWHEEL = new BigDecimal("0.00018482895");
-        BigDecimal KF_CONSTANT = new BigDecimal("0.0159208876");
-
-        BigDecimal feedforward = (new BigDecimal(targetVelocity).multiply(KF_PERCENT_FACTOR_FLYWHEEL)).add(KF_CONSTANT);
-
-        double feedForwardedPidOutput = pidOutput + feedforward.doubleValue();
-
-        // Ensure it is never negative
-        double positiveMotorOutput = (feedForwardedPidOutput <= 0) ? 0 : feedForwardedPidOutput;
-        double clampedPositiveFinalMotorOutput = (positiveMotorOutput > 1) ? 1 : positiveMotorOutput;
-
-        shooterSubsystem.setPercentSpeed(clampedPositiveFinalMotorOutput);
+        shooterSubsystem.setVelocityPID(targetVelocity, pidOutput);
         shooterSubsystem.setHoodAngle(targetHoodAngle);
     }
 

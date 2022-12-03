@@ -11,31 +11,34 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.helper.LED.helpers.*;
-import frc.robot.helper.LED.PatternGenerators.*;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.hardware.TalonConfiguration;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import frc.robot.helper.Polynomial;
-
+import frc.robot.helper.LED.PatternGenerators.AutoAimPatternGenerator;
+import frc.robot.helper.LED.PatternGenerators.BallColorPatternGenerator;
+import frc.robot.helper.LED.PatternGenerators.DebugLEDWalkUpPatternGenerator;
+import frc.robot.helper.LED.helpers.HashMapFiller;
+import frc.robot.helper.LED.helpers.LEDColor;
+import frc.robot.helper.LED.helpers.LEDRange;
+import frc.robot.helper.LED.helpers.LEDSectionAttributes;
 import frc.robot.helper.shooter.ShooterPreset;
 import frc.robot.helper.shooter.TrainingDataPoint;
 import frc.robot.subsystems.ShooterSubsystem.ShooterLocationPreset;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-
 import java.util.logging.Level;
 
-import static frc.robot.Constants.LEDConstants.LEDSectionName.*;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.AUTO_AIM;
+import static frc.robot.Constants.LEDConstants.LEDSectionName.BALL_COLOR;
 import static java.util.Map.entry;
 
 public final class Constants {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
+    public static final boolean GOING_CRAZY = false;
+
     public static final boolean LOG_DEBUG_TO_CONSOLE = true;  // Requires DEBUG to be true
 
     public static final double PDH_FAULT_WATCHER_INTERVAL = 1;
@@ -47,18 +50,21 @@ public final class Constants {
         public static final boolean TRANSFER = true;
         public static final boolean INTAKE = true;
 
-        public static final boolean HANGER = false;
+        public static final boolean HANGER = true;
 
-        public static final boolean DRIVETRAIN = false;
+        public static final boolean DRIVETRAIN = true;
 
         public static final boolean BALL_COLOR_SENSOR = false;
         public static final boolean BOTTOM_COLOR_SENSORS = false;
+
 
         public static final boolean IR_SENSORS = true;
     }
 
     public static class FieldConstants {
         public static final Translation2d HUB_POSITION = new Translation2d(Units.inchesToMeters(324), Units.inchesToMeters(163.99)); // in meters
+        public static final double UPPER_HUB_RADIUS = 0.61; // in meters
+
         // position of the hub on the field with the origin at the blue alliance terminal (similar to path planner)
     }
 
@@ -82,13 +88,13 @@ public final class Constants {
     }
 
     public static class TransferConstants {
-        public static final double DEFAULT_TRANSFER_SPEED = 0.35; // In Percent 0.0 - 1.0
-        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 3000; // Not in percent
+        public static final double DEFAULT_TRANSFER_SPEED = 0.25; // In Percent 0.0 - 1.0
+        public static final double SHOOT_FORWARD_TRANSFER_SPEED = 2.4; // In rotations/second
         public static final double MANUAL_REVERSE_TRANSFER_SPEED = -0.20; // In Percent -1.0 - 0.0
         public static final double OUTTAKE_REVERSE_SPEED = -0.5;
 
         public static final int MAX_BALL_COUNT = 2;
-        public static final int STARTING_BALL_COUNT = 1;
+        public static final int STARTING_BALL_COUNT = 2;
 
         public static final int MIN_BALL_COLOR_PROXIMITY = 1000; // Raw Proximity value 0 - 2047 (0 being far away)
 
@@ -97,10 +103,10 @@ public final class Constants {
 
         public static final double MAX_BALL_COLOR_DEVIATION = 0.15;
 
-        public static final double transfer_kP = 0.039;
-        public static final double transfer_kD = 0;
+        public static final double transfer_kP = 0.0032;
+        public static final double transfer_kD = 0.0000;
         public static final double transfer_kI = 0;
-        public static final double transfer_kF = 0.07;
+        public static final double transfer_kF = 0.0710;
 
 }
 
@@ -334,8 +340,8 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 0; // from spool to motor
 
-        public static final double EXTEND_DISTANCE = 126391; // in Sensor units
-        public static final double PARTIAL_DISTANCE = 20000.0; // Sensor Units
+        public static final double EXTEND_DISTANCE = 150391; // in Sensor units
+        public static final double PARTIAL_DISTANCE = 75000; // Sensor Units
         public static final double RANGE_THRESHOLD = 50000.0;
         public static final double ADJUSTMENT_RETRACT_DISTANCE = 1000.0; //in Rotations of Spool
 
@@ -387,35 +393,31 @@ public final class Constants {
         // In sensor units
         public static final double HOOD_ANGLE_UPPER_LIMIT = 2048 * 15; // TODO: Change to actual amount from 15 rotations
         public static final double HOOD_ANGLE_LOWER_LIMIT = 0;
+        
+        public static final double SHOOTING_WHILE_MOVING_THRESHOLD = 0.5; // m/s
+
 
         // Presets
         public static final HashMap<ShooterLocationPreset, ShooterPreset> ALL_SHOOTER_PRESETS = HashMapFiller.populateHashMap(
                 entry(ShooterLocationPreset.LAUNCHPAD, new ShooterPreset(2600, 235000, 0, "Launchpad")),
                 entry(ShooterLocationPreset.TARMAC_VERTEX, new ShooterPreset(2290, 140000, 0, "Tarmac Vertex"))
-        ); // TODO: Create all shooter presets
-
-        // Velocity Training Points
-        public static final List<TrainingDataPoint> ALL_SHOOTER_CALIB_TRAINING = Arrays.asList(
-                new TrainingDataPoint(100, 123, 1.23, 110) // TODO: Change this to actual calibrated training (given test)
-        ); // TODO: Create all training data
+        ); 
 
         public static final List<TrainingDataPoint> SHOOTER_DATA = Arrays.asList(
-                // tuned 4/11 at 9:17:54 after 12pm on monday of easter break!!
-//                    new TrainingDataPoint(60.40864, 000000, 2470),
-//                    new TrainingDataPoint(75.33697, 000000, 2450),
-                    new TrainingDataPoint(92.11719, 070000, 2375),
-                    new TrainingDataPoint(107.1820, 120000, 2420),
-                    new TrainingDataPoint(114.4050, 120000, 2460),
-                    new TrainingDataPoint(122.4000, 120000, 2490),
-                    new TrainingDataPoint(138.0660, 125000, 2540),
-                    new TrainingDataPoint(154.0136, 160000, 2550),
-                    new TrainingDataPoint(177.1405, 190000, 2720),
-                    new TrainingDataPoint(206.1429, 210000, 2840)
+                // tuned 9/10
+                   new TrainingDataPoint(57.00706, 000000, 2350, 1.090000),
+                   new TrainingDataPoint(89.28630, 050000, 2370, 1.190000),
+                   new TrainingDataPoint(102.1644, 060000, 2400, 1.201000),
+                   new TrainingDataPoint(111.5242, 075000, 2550, 1.244000),
+                   new TrainingDataPoint(142.1402, 140000, 2700, 1.254000),
+                   new TrainingDataPoint(169.7674, 190000, 2800, 1.296875),
+                   new TrainingDataPoint(186.2049, 195000, 2925, 1.432000)
                 );
-        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 92.1172;
-        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 206;
 
-        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 0.01;
+        public static final double SHOOTER_INTERPOLATION_MIN_VALUE = 57.00707;
+        public static final double SHOOTER_INTERPOLATION_MAX_VALUE = 186.2048;
+
+        public static final double TARGET_SHOOTING_WHILE_MOVING_ERROR = 5; // in inches
     }
     public static class LEDConstants {
         public static final double MIN_WAIT_TIME_BETWEEN_INSTRUCTIONS = 0.03;  // In Seconds

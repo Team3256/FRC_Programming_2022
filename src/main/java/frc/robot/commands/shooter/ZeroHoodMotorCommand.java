@@ -6,35 +6,35 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ZeroHoodMotorCommand extends CommandBase {
     private RobotLogger logger = new RobotLogger(ZeroHoodMotorCommand.class.getCanonicalName());
 
-    private final ShooterSubsystem flywheel;
+    private final ShooterSubsystem shooterSubsystem;
 
     /**
      * @param subsystem
      * zeros the hood motor and it's sensor
      */
-    public ZeroHoodMotorCommand(ShooterSubsystem subsystem) {
-        flywheel = subsystem;
+    public ZeroHoodMotorCommand(ShooterSubsystem shooter) {
+        shooterSubsystem = shooter;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
+        addRequirements(shooter);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         logger.info("Zeroing Hood Motor");
-        flywheel.hoodSlowReverse();
+        shooterSubsystem.hoodSlowReverse();
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        flywheel.stopHood();
-        flywheel.zeroHoodMotorSensor();
+        shooterSubsystem.stopHood();
+        shooterSubsystem.zeroHoodMotorSensor();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return flywheel.isHoodLimitSwitchPressed();
+        return shooterSubsystem.isHoodLimitSwitchPressed();
     }
 }

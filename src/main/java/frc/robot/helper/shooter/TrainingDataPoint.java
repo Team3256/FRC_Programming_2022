@@ -18,5 +18,4 @@ public class TrainingDataPoint {
         this.flywheelRPM = flywheelRPM;
         this.time = time;
     }
-
 }
