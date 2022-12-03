@@ -39,8 +39,9 @@ public class Paths {
     }
 
     // TODO: Implement this
-    public static Command team3256Command() {
-        return new DefaultDriveCommandRobotOriented(driveSubsystem);
+    public static Command getSymbol5Command() {
+        Command Symbol5Command = trajectoryFactory.createPathPlannerCommand("Symbol5");
+        return Symbol5Command;
     }
 
     /* --------------------------------------------- */

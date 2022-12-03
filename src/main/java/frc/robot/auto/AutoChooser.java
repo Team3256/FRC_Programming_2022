@@ -29,6 +29,8 @@ public class AutoChooser {
             if (flywheel != null) {
                 if (intake != null && transfer != null) {
                     // TODO: Add your command to the chooser
+                    Command symbol5 = Paths.getSymbol5Command();
+                    autoChooser.addOption("SYMBOL 5", symbol5);
 
                     Command oneBallPicked = Paths.getPleasePickUsOneBall();
                     autoChooser.addOption("JUST ONE BALL", oneBallPicked);
