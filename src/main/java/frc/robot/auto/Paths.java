@@ -40,8 +40,10 @@ public class Paths {
 
     // TODO: Implement this
     public static Command getSymbol5Command() {
-        Command Symbol5Command = trajectoryFactory.createPathPlannerCommand("Symbol5");
-        return Symbol5Command;
+        return trajectoryFactory.createPathPlannerCommand("Symbol5");
+    }
+    public static Command getSymbol6Command() {
+        return trajectoryFactory.createPathPlannerCommand("Symbol6");
     }
 
     /* --------------------------------------------- */

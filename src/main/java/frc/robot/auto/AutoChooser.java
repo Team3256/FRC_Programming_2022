@@ -32,6 +32,9 @@ public class AutoChooser {
                     Command symbol5 = Paths.getSymbol5Command();
                     autoChooser.addOption("SYMBOL 5", symbol5);
 
+                    Command symbol6 = Paths.getSymbol6Command();
+                    autoChooser.addOption("SYMBOL 6", symbol6);
+
                     Command oneBallPicked = Paths.getPleasePickUsOneBall();
                     autoChooser.addOption("JUST ONE BALL", oneBallPicked);
 
@@ -60,12 +63,13 @@ public class AutoChooser {
     }
 
     public static Command getCommand() {
-        return flywheelSubsystem != null ?
-                new ParallelRaceGroup(
-                    new WaitCommand(3),
-                    new ZeroHoodMotorCommand(flywheelSubsystem)
-                ).andThen(autoChooser.getSelected())
-                :
-            autoChooser.getSelected();
+//        return flywheelSubsystem != null ?
+//                new ParallelRaceGroup(
+//                    new WaitCommand(3),
+//                    new ZeroHoodMotorCommand(flywheelSubsystem)
+//                ).andThen(autoChooser.getSelected())
+//                :
+//            autoChooser.getSelected();
+        return autoChooser.getSelected();
     }
 }
