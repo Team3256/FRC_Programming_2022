@@ -39,6 +39,7 @@ public class TrajectoryFactory {
         this.drive = drive;
     }
 
+
     public Command createPathPlannerCommand(String path, Pose2d startPose) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
         return getCommand(trajectory, startPose);
@@ -67,26 +68,6 @@ public class TrajectoryFactory {
     public Command createPathPlannerCommand(String path, double max_vel, double max_accel) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
         return getCommand(trajectory);
-    }
-
-    public Command createPathPlannerCommand(String path, double max_vel, double max_accel, double thetakp, double thetaki, double thetakd) {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
-        return getCommand(trajectory, thetakp, thetaki, thetakd);
-    }
-
-    public Command createPathPlannerCommand(String path, AutoCommandRunner runner, double max_vel, double max_accel, double thetakp, double thetaki, double thetakd) {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
-        PPTrajectoryFollowCommand command = getCommand(trajectory, thetakp, thetaki, thetakd);
-        command.setAutoCommandRunner(runner);
-        return command;
-    }
-
-    public Command createPathPlannerCommand(String path, AutoCommandRunner runner, double max_vel, double max_accel, double thetakp, double thetaki, double thetakd, boolean firstSegment) {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, max_vel, max_accel);
-        PPTrajectoryFollowCommand command = getCommand(trajectory, thetakp, thetaki, thetakd);
-        command.setAutoCommandRunner(runner);
-        command.setFirstSegment(firstSegment);
-        return command;
     }
 
     public Command createCommand(String jsonFilePath) {
@@ -244,31 +225,12 @@ public class TrajectoryFactory {
     }
 
     private Trajectory generateTrajectoryFromJSON(String trajectoryFile){
-        Trajectory trajectory = new Trajectory();
-        String fileExtension;
         try {
-            fileExtension = trajectoryFile.split("\\.")[trajectoryFile.split("\\.").length-1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            DriverStation.reportError("Unable to open trajectory: " + trajectoryFile, e.getStackTrace());
+            String path = trajectoryFile.replaceFirst("\\.(.*)", "");
+            return PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
+        }
+        catch(Exception e) {
             return new Trajectory();
         }
-
-        switch (fileExtension) {
-            case "path": // for PathPlanner files
-                String path = trajectoryFile.replaceFirst("\\.(.*)", "");
-                trajectory = PathPlanner.loadPath(path, MAX_SPEED_CONTROLLER_METERS_PER_SECOND, MAX_ACCELERATION_CONTROLLER_METERS_PER_SECOND_SQUARED);
-                break;
-            case "json": // for wpilib PathWeaver files
-                try {
-                    Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryFile);
-                    trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-                } catch (IOException ex) {
-                    DriverStation.reportError("Unable to open trajectory: " + trajectoryFile, ex.getStackTrace());
-                }
-                break;
-            default:
-                trajectory = new Trajectory();
-        }
-        return trajectory;
     }
 }
