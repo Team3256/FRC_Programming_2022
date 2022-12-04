@@ -36,6 +36,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     private final AdaptiveSlewRateLimiter adaptiveXRateLimiter = new AdaptiveSlewRateLimiter(X_ACCEL_RATE_LIMIT, X_DECEL_RATE_LIMIT);
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, THETA_CONTROLLER_CONSTRAINTS);
+    private double gyroSetpoint = 0;
 
     public static final double MAX_VOLTAGE = 12.0;
     double lastTimestamp = -1; // illegal initial value so we can check when to Initialize it
@@ -133,10 +134,10 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
         double dt = currentTime - lastDriveTimestamp;
 
         Rotation2d currGyroPosition = getGyroscopeRotation();
-        double gyroPosition = Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond * dt);
+        gyroSetpoint += Math.copySign(Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond * dt), chassisSpeeds.omegaRadiansPerSecond);
 
 //        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
-        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -thetaController.calculate(currGyroPosition.getDegrees(), gyroPosition) : thetaController.calculate(currGyroPosition.getDegrees(), gyroPosition);
+        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -thetaController.calculate(currGyroPosition.getDegrees(), gyroSetpoint) : thetaController.calculate(currGyroPosition.getDegrees(), gyroSetpoint);
         chassisSpeeds.vxMetersPerSecond = adaptiveXRateLimiter.calculate(chassisSpeeds.vxMetersPerSecond);
         chassisSpeeds.vyMetersPerSecond = adaptiveYRateLimiter.calculate(chassisSpeeds.vyMetersPerSecond);
 
