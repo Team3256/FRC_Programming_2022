@@ -117,9 +117,9 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
 
         public static final double X_ACCEL_RATE_LIMIT = 15;
-        public static final double X_DECEL_RATE_LIMIT = 10;
+        public static final double X_DECEL_RATE_LIMIT = 20;
         public static final double Y_ACCEL_RATE_LIMIT = 15;
-        public static final double Y_DECEL_RATE_LIMIT = 10;
+        public static final double Y_DECEL_RATE_LIMIT = 20;
 
         public static final double GYRO_YAW_OFFSET = 45; // degrees //TODO: CHECK OFFSET is right, Intake is forward
 
@@ -172,6 +172,11 @@ public final class Constants {
 
         // TELEOP
         public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
+
+        public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
+        public static double P_THETA_CONTROLLER = 5.4;
+        public static double I_THETA_CONTROLLER = 0.02;
+        public static double D_THETA_CONTROLLER = 1.5;
 
     }
     public static class AutoConstants {
