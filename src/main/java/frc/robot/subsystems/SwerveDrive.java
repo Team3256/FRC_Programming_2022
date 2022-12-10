@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -37,10 +38,12 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     private final AdaptiveSlewRateLimiter adaptiveYRateLimiter = new AdaptiveSlewRateLimiter(Y_ACCEL_RATE_LIMIT, Y_DECEL_RATE_LIMIT);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(P_THETA_CONTROLLER, I_THETA_CONTROLLER, D_THETA_CONTROLLER, THETA_CONTROLLER_CONSTRAINTS);
     private double gyroSetpoint = 0;
+    private Rotation2d currGyroPosition;
 
     public static final double MAX_VOLTAGE = 12.0;
     double lastTimestamp = -1; // illegal initial value so we can check when to Initialize it
-    double lastDriveTimestamp = 0;
+    double lastDriveTimestamp = -1;
+    boolean updateSetpoint = true;
 
     private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front Right
@@ -108,6 +111,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
                 -BACK_RIGHT_MODULE_STEER_OFFSET
         );
         logger.info("Swerve Drive Modules Initialized");
+
+        currGyroPosition = getGyroscopeRotation();
+        thetaController.enableContinuousInput(-180, 180);
     }
 
     public void zeroGyroscope() {
@@ -130,20 +136,29 @@ public class SwerveDrive extends SubsystemBase implements Loggable {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        double currentTime = Timer.getFPGATimestamp();
-        double dt = currentTime - lastDriveTimestamp;
 
-        Rotation2d currGyroPosition = getGyroscopeRotation();
-        gyroSetpoint += Math.copySign(Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond * dt), chassisSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("Current Gyro Position", currGyroPosition.getDegrees());
 
-//        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
-        chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -thetaController.calculate(currGyroPosition.getDegrees(), gyroSetpoint) : thetaController.calculate(currGyroPosition.getDegrees(), gyroSetpoint);
+        currGyroPosition = getGyroscopeRotation();
+
+        if (chassisSpeeds.omegaRadiansPerSecond == 0) {
+            if (updateSetpoint) gyroSetpoint = currGyroPosition.getRadians();
+            updateSetpoint = false;
+            double modMeasure = Units.radiansToDegrees(MathUtil.angleModulus(currGyroPosition.getRadians()));
+            double modSetpoint = Units.radiansToDegrees(MathUtil.angleModulus(gyroSetpoint));
+
+            SmartDashboard.putNumber("Mod Setpoint", modSetpoint);
+            SmartDashboard.putNumber("Mod Measure", modMeasure);
+            chassisSpeeds.omegaRadiansPerSecond = thetaController.calculate(modMeasure, modSetpoint);
+        } else {
+            updateSetpoint = true;
+            chassisSpeeds.omegaRadiansPerSecond = INVERT_TURN ? -chassisSpeeds.omegaRadiansPerSecond : chassisSpeeds.omegaRadiansPerSecond;
+        }
+
         chassisSpeeds.vxMetersPerSecond = adaptiveXRateLimiter.calculate(chassisSpeeds.vxMetersPerSecond);
         chassisSpeeds.vyMetersPerSecond = adaptiveYRateLimiter.calculate(chassisSpeeds.vyMetersPerSecond);
 
         this.chassisSpeeds = chassisSpeeds;
-
-        lastDriveTimestamp = currentTime;
     }
 
     public Pose2d getPose() { return poseEstimator.getEstimatedPosition();}

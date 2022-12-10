@@ -115,7 +115,7 @@ public class AutoAlignDriveCommand extends CommandBase {
             alignWithVision();
             autoAlignPidOutput = autoAlignVisionPIDController.calculate(Limelight.getTx());
 //            swerveDrive.limelightLocalization(Limelight.getTunedDistanceToTarget(), Limelight.getTx());
-            SmartDashboard.putNumber("Limelight Diatance", Limelight.getRawDistanceToTarget());
+            SmartDashboard.putNumber("Limelight Distance", Limelight.getRawDistanceToTarget());
             SmartDashboard.putNumber("Swerve Turret Setpoint", Limelight.getTx());
         }
         else {

@@ -174,9 +174,9 @@ public final class Constants {
         public static final double AUTO_AIM_BREAKOUT_TOLERANCE = 0.05;
 
         public static TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(2.5 * Math.PI, 1.5 * Math.PI);
-        public static double P_THETA_CONTROLLER = 5.4;
-        public static double I_THETA_CONTROLLER = 0.02;
-        public static double D_THETA_CONTROLLER = 1.5;
+        public static double P_THETA_CONTROLLER = 0.008;
+        public static double I_THETA_CONTROLLER = 0.0;
+        public static double D_THETA_CONTROLLER = 0.0;
 
     }
     public static class AutoConstants {
